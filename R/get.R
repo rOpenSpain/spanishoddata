@@ -6,33 +6,43 @@ get_latest_v2_xml = function(
     fs::dir_create(data_dir)
   }
 
-  current_filename = glue::glue("cache/{current_timestamp}_data_links.xml")
+  current_filename = glue::glue("{data_dir}/data_links_{current_timestamp}.xml")
+
+  message("Saving the file to: ", current_filename)
   xml_requested = curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
+  return(current_filename)
 }
 
-load_latest_v2_xml = function(data_dir = get_data_dir()) {
-  xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links.xml") |> sort()
+get_data_dictionary = function(data_dir = get_data_dir()) {
+  browser()
+  xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_") |> sort()
   latest_data_links_xml_path = tail(xml_files_list, 1)
+  if (length(latest_data_links_xml_path) == 0) {
+    message("Getting latest data links xml")
+    latest_data_links_xml_path = get_latest_v2_xml(data_dir = data_dir)
+  }
 
   x_xml = xml2::read_xml(latest_data_links_xml_path)
 
-  download_dt = data.table::data.table(
+  download_dt = data.frame(
     target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |> xml2::xml_text(),
     pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |> xml2::xml_text()
   )
 
-  download_dt[, pub_ts := lubridate::dmy_hms(pub_date)]
-  download_dt[, file_extension := tools::file_ext(target_url)]
-  download_dt = download_dt[file_extension != ""]
-  download_dt[, pub_date := NULL]
+  download_dt$pub_ts <- lubridate::dmy_hms(download_dt$pub_date)
+  download_dt$file_extension <- tools::file_ext(download_dt$target_url)
+  download_dt <- download_dt[download_dt$file_extension != "", ]
+  download_dt$pub_date <- NULL
 
-  download_dt[, data_ym := lubridate::ym(str_extract(target_url, "[0-9]{4}-[0-9]{2}"))]
-  download_dt[, data_ymd := lubridate::ymd(str_extract(target_url, "[0-9]{8}"))]
-
-  setorder(download_dt, pub_ts)
-
-  download_dt[, local_path := paste0(data_dir, stringr::str_replace(target_url, "https://movilidad-opendata.mitma.es/", ""))]
-  download_dt[, local_path := stringr::str_replace_all(local_path, "\\/\\/\\/|\\/\\/", "/")]
+  download_dt$data_ym <- lubridate::ym(str_extract(download_dt$target_url, "[0-9]{4}-[0-9]{2}"))
+  download_dt$data_ymd <- lubridate::ymd(str_extract(download_dt$target_url, "[0-9]{8}"))
+  # order by pub_ts
+  download_dt <- download_dt[order(download_dt$pub_ts, decreasing = TRUE), ]
+  download_dt$local_path <- file.path(
+    data_dir,
+    stringr::str_replace(download_dt$target_url, "https://movilidad-opendata.mitma.es/", "")
+  )
+  download_dt$local_path <- stringr::str_replace_all(download_dt$local_path, "\\/\\/\\/|\\/\\/", "/")
 
   return(download_dt)
 }
