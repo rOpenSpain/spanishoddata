@@ -1,1 +1,7 @@
 ^data-raw$
+^data-raw$
+^.*\.csv$
+^.*\.csv\.gz$
+README.qmd
+^.*\.db$
+^draft-code$

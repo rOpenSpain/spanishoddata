@@ -97,6 +97,11 @@ DBI::dbDisconnect(con)
 #| label: repo-setup
 # Create data-raw and data folders
 usethis::use_data_raw()
+usethis::use_description()
+usethis::use_r("get.R")
+
+
+devtools::check()
 ```
 
 

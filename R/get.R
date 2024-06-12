@@ -1,19 +1,19 @@
 
 get_latest_v2_xml <- function(
-  data_dir = tempdir(),
-  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
+  data_dir = get_data_dir(),
+  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
+  current_timestamp <- format(Sys.time(), format = "%Y-%m-01", usetz = FALSE, tz = "UTC")
   ) {
     if (!fs::dir_exists(data_dir)) {
         fs::dir_create(data_dir)
     }
     
-    current_timestamp <- format(Sys.time(), format = "%Y-%m-01", usetz = FALSE, tz = "UTC")
     current_filename <- glue::glue("cache/{current_timestamp}_data_links.xml")
     xml_requested <- curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
 }
 
-load_latest_v2_xml <- function(data_dir = "data/raw_data/v2/") {
-    xml_files_list <- fs::dir_ls("cache/", type = "file", regexp = "data_links.xml") |> sort()
+load_latest_v2_xml <- function(data_dir = get_data_dir()) {
+    xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links.xml") |> sort()
     latest_data_links_xml_path <- tail(xml_files_list, 1)
     
     x_xml <- xml2::read_xml(latest_data_links_xml_path)
@@ -37,4 +37,12 @@ load_latest_v2_xml <- function(data_dir = "data/raw_data/v2/") {
     download_dt[, local_path := stringr::str_replace_all(local_path, "\\/\\/\\/|\\/\\/", "/")]
     
     return(download_dt)
+}
+
+get_data_dir <- function() {
+    data_dir_env <- Sys.getenv("SPANISHOD_DATA_DIR")
+    if (data_dir_env == "") {
+        data_dir_env <- tempdir()
+    }
+    return(data_dir_env)
 }
