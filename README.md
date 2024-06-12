@@ -24,6 +24,7 @@ remotes::install_cran("duckdb")
 ``` r
 library(duckdb)
 library(tidyverse)
+devtools::load_all()
 ```
 
 ## Zones
@@ -31,24 +32,11 @@ library(tidyverse)
 Zones can be downloaded as follows:
 
 ``` r
-#  zonificacion_distritos.cpg   2023-04-19 10:57:02 5 Bytes
-# zonificacion_distritos.dbf    2023-04-19 10:57:02 309 KB
-# zonificacion_distritos.prj    2023-04-19 10:57:02 393 Bytes
-# zonificacion_distritos.qmd    2022-12-20 15:25:26 657 Bytes
-# zonificacion_distritos.qpj    2023-04-19 10:57:02 618 Bytes
-# zonificacion_distritos.shp    2023-04-19 10:57:02 22 MB
-# zonificacion_distritos.shx
-shp_extensions = c("cpg", "dbf", "prj", "qmd", "qpj", "shp", "shx")
-base_url = "https://movilidad-opendata.mitma.es/zonificacion/zonificacion_distritos/zonificacion_distritos"
-dir.create("zonificacion_distritos", showWarnings = FALSE)
-for (ext in shp_extensions) {
-  u = paste0(base_url, ".", ext)
-  f = file.path("zonificacion_distritos", paste0("zonificacion_distritos.", ext))
-  if (!file.exists(f)) {
-    download.file(u, f)
-  }
-}
+distritos = get_zones(type = "distritos")
+plot(distritos)
 ```
+
+![](man/figures/README-distritos-1.png)
 
 ## Estudios basicos
 
@@ -82,14 +70,14 @@ od1_head |>
   knitr::kable()
 ```
 
-|    fecha | periodo | origen   | destino | distancia | actividad_origen | actividad_destino | estudio_origen_posible | estudio_destino_posible | residencia | renta | edad | sexo | viajes | viajes_km |
-|---------:|:--------|:---------|:--------|:----------|:-----------------|:------------------|:-----------------------|:------------------------|:-----------|:------|:-----|:-----|-------:|----------:|
-| 20240301 | 19      | 01009_AM | 01001   | 0.5-2     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  5.124 |     6.120 |
-| 20240301 | 15      | 01002    | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  2.360 |   100.036 |
-| 20240301 | 00      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  1.743 |    22.293 |
-| 20240301 | 05      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  2.404 |    24.659 |
-| 20240301 | 06      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  5.124 |    80.118 |
-| 20240301 | 09      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  7.019 |    93.938 |
+| fecha | periodo | origen | destino | distancia | actividad_origen | actividad_destino | estudio_origen_posible | estudio_destino_posible | residencia | renta | edad | sexo | viajes | viajes_km |
+|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|
+| 20240301 | 19 | 01009_AM | 01001 | 0.5-2 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 6.120 |
+| 20240301 | 15 | 01002 | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.360 | 100.036 |
+| 20240301 | 00 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 1.743 | 22.293 |
+| 20240301 | 05 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.404 | 24.659 |
+| 20240301 | 06 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 80.118 |
+| 20240301 | 09 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 7.019 | 93.938 |
 
 ``` r
 DBI::dbDisconnect(con)

@@ -46,3 +46,28 @@ get_data_dir <- function() {
     }
     return(data_dir_env)
 }
+
+get_zones <- function(
+    data_dir = get_data_dir(),
+    type = "distritos"
+) {
+    shp_extensions <- c("cpg", "dbf", "prj", "qmd", "qpj", "shp", "shx")
+    base_url <- "https://movilidad-opendata.mitma.es/zonificacion"
+    # base_url <- "/zonificacion_distritos/zonificacion_distritos"
+    if (type == "distritos") {
+        zone_data_folder <- file.path(data_dir, "zonificacion_distritos")
+
+    if (!fs::dir_exists(zone_data_folder)) {
+        base_url = paste0(base_url, "/zonificacion_distritos/zonificacion_distritos")
+        fs::dir_create(file.path(data_dir, "zonificacion_distritos"))
+        for (ext in shp_extensions) {
+            url <- paste0(base_url, ".", ext)
+            file <- file.path(zone_data_folder, basename(url))
+            download.file(url, file)
+        }
+    }
+
+    return(sf::read_sf(zone_data_folder))
+
+    }
+}
