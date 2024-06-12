@@ -99,8 +99,12 @@ DBI::dbDisconnect(con)
 usethis::use_data_raw()
 usethis::use_description()
 usethis::use_r("get.R")
-
-
+usethis::use_package("glue")
+usethis::use_package("xml2")
+#     ‘fs’ ‘lubridate’ ‘stringr’
+usethis::use_package("fs")
+usethis::use_package("lubridate")
+usethis::use_package("stringr")
 devtools::check()
 ```
 

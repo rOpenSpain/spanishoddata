@@ -2,7 +2,7 @@
 get_latest_v2_xml <- function(
   data_dir = get_data_dir(),
   xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
-  current_timestamp <- format(Sys.time(), format = "%Y-%m-01", usetz = FALSE, tz = "UTC")
+  current_timestamp = format(Sys.time(), format = "%Y-%m-01", usetz = FALSE, tz = "UTC")
   ) {
     if (!fs::dir_exists(data_dir)) {
         fs::dir_create(data_dir)
