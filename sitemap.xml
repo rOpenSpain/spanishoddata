@@ -13,6 +13,12 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/get_data_dictionary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_zones.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
 </urlset>
