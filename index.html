@@ -50,8 +50,224 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
-What the package does (one paragraph).
+  <main id="main" class="col-md-9"><p>This repo demonstrates how to download and use OD data from Spain, published by <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" class="external-link">transportes.gob.es</a></p>
+<p>The data is provided as follows:</p>
+<ul>
+<li>Estudios basicos
+<ul>
+<li>Por disitritos
+<ul>
+<li>Personas (population)</li>
+<li>Pernoctaciones (overnight stays)</li>
+<li>Viajes
+<ul>
+<li>ficheros-diarios</li>
+<li>meses-completos</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The package is designed to save people time by providing the data in analyis-ready formats. Automating the process of downloading, cleaning and importing the data can also reduce the risk of errors in the laborious process of data preparation.</p>
+<p>The datasets are large, so the package aims to reduce computational resources, by using computationally efficient packages behind the scenes. If you want to use many of the data files, it’s recommended you set a data directory where the package will look for the data, only downloading the files that are not already present.</p>
+<p>Set the data directory by setting the <code>SPANISHOD_DATA_DIR</code> environment variable, e.g. the following command:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># Then set the data director, by typing this line in the file:</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>SPANISHOD_DATA_DIR <span class="ot">=</span> <span class="st">"/path/to/data"</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_cran</span><span class="op">(</span><span class="st">"duckdb"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.duckdb.org/" class="external-link">duckdb</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="zones">Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
+</h2>
+<p>Zones can be downloaded as follows:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">distritos</span> <span class="op">=</span> <span class="fu">get_zones</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"distritos"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">distritos</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-distritos-1.png"></p>
+</div>
+<div class="section level2">
+<h2 id="estudios-basicos">Estudios basicos<a class="anchor" aria-label="anchor" href="#estudios-basicos"></a>
+</h2>
+<p>Each day in the <code>ficheros-diarios</code> folder contains a file with the following columns:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># set timeout for downloads</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>timeout <span class="op">=</span> <span class="fl">600</span><span class="op">)</span> <span class="co"># 10 minutes</span></span>
+<span><span class="va">u1</span> <span class="op">=</span> <span class="st">"https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz"</span></span>
+<span><span class="va">f1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">u1</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">u1</span>, <span class="va">f1</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">drv</span> <span class="op">=</span> <span class="fu">duckdb</span><span class="fu">::</span><span class="fu">duckdb</span><span class="op">(</span><span class="st">"daily.duckdb"</span><span class="op">)</span></span>
+<span><span class="va">con</span> <span class="op">=</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu">dbConnect</span><span class="op">(</span><span class="va">drv</span><span class="op">)</span></span>
+<span><span class="va">od1</span> <span class="op">=</span> <span class="fu">duckdb</span><span class="fu">::</span><span class="fu">tbl_file</span><span class="op">(</span><span class="va">con</span>, <span class="va">f1</span><span class="op">)</span></span>
+<span><span class="co"># colnames(od1)</span></span>
+<span><span class="co">#  [1] "fecha"                   "periodo"                </span></span>
+<span><span class="co">#  [3] "origen"                  "destino"                </span></span>
+<span><span class="co">#  [5] "distancia"               "actividad_origen"       </span></span>
+<span><span class="co">#  [7] "actividad_destino"       "estudio_origen_posible" </span></span>
+<span><span class="co">#  [9] "estudio_destino_posible" "residencia"             </span></span>
+<span><span class="co"># [11] "renta"                   "edad"                   </span></span>
+<span><span class="co"># [13] "sexo"                    "viajes"                 </span></span>
+<span><span class="co"># [15] "viajes_km"</span></span>
+<span><span class="va">od1_head</span> <span class="op">=</span> <span class="va">od1</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">collect</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">od1_head</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">fecha</th>
+<th align="left">periodo</th>
+<th align="left">origen</th>
+<th align="left">destino</th>
+<th align="left">distancia</th>
+<th align="left">actividad_origen</th>
+<th align="left">actividad_destino</th>
+<th align="left">estudio_origen_posible</th>
+<th align="left">estudio_destino_posible</th>
+<th align="left">residencia</th>
+<th align="left">renta</th>
+<th align="left">edad</th>
+<th align="left">sexo</th>
+<th align="right">viajes</th>
+<th align="right">viajes_km</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">20240301</td>
+<td align="left">19</td>
+<td align="left">01009_AM</td>
+<td align="left">01001</td>
+<td align="left">0.5-2</td>
+<td align="left">frecuente</td>
+<td align="left">casa</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">01</td>
+<td align="left">10-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">5.124</td>
+<td align="right">6.120</td>
+</tr>
+<tr class="even">
+<td align="right">20240301</td>
+<td align="left">15</td>
+<td align="left">01002</td>
+<td align="left">01001</td>
+<td align="left">10-50</td>
+<td align="left">frecuente</td>
+<td align="left">casa</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">01</td>
+<td align="left">10-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">2.360</td>
+<td align="right">100.036</td>
+</tr>
+<tr class="odd">
+<td align="right">20240301</td>
+<td align="left">00</td>
+<td align="left">01009_AM</td>
+<td align="left">01001</td>
+<td align="left">10-50</td>
+<td align="left">frecuente</td>
+<td align="left">casa</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">01</td>
+<td align="left">10-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">1.743</td>
+<td align="right">22.293</td>
+</tr>
+<tr class="even">
+<td align="right">20240301</td>
+<td align="left">05</td>
+<td align="left">01009_AM</td>
+<td align="left">01001</td>
+<td align="left">10-50</td>
+<td align="left">frecuente</td>
+<td align="left">casa</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">01</td>
+<td align="left">10-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">2.404</td>
+<td align="right">24.659</td>
+</tr>
+<tr class="odd">
+<td align="right">20240301</td>
+<td align="left">06</td>
+<td align="left">01009_AM</td>
+<td align="left">01001</td>
+<td align="left">10-50</td>
+<td align="left">frecuente</td>
+<td align="left">casa</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">01</td>
+<td align="left">10-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">5.124</td>
+<td align="right">80.118</td>
+</tr>
+<tr class="even">
+<td align="right">20240301</td>
+<td align="left">09</td>
+<td align="left">01009_AM</td>
+<td align="left">01001</td>
+<td align="left">10-50</td>
+<td align="left">frecuente</td>
+<td align="left">casa</td>
+<td align="left">no</td>
+<td align="left">no</td>
+<td align="left">01</td>
+<td align="left">10-15</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">7.019</td>
+<td align="right">93.938</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu">dbDisconnect</span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></code></pre></div>
+</div>
+
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
