@@ -26,7 +26,7 @@ get_latest_v2_xml = function(
 #' head(data_dict)
 get_data_dictionary = function(data_dir = get_data_dir()) {
   xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_") |> sort()
-  latest_data_links_xml_path = tail(xml_files_list, 1)
+  latest_data_links_xml_path = utils::tail(xml_files_list, 1)
   if (length(latest_data_links_xml_path) == 0) {
     message("Getting latest data links xml")
     latest_data_links_xml_path = get_latest_v2_xml(data_dir = data_dir)

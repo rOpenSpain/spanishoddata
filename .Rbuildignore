@@ -2,9 +2,10 @@
 ^.*\.csv$
 ^.*\.csv\.gz$
 README.qmd
-^.*\.db$
+.db$
 ^draft-code$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^\.github$
+^LICENSE\.md$
