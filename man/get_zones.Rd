@@ -18,3 +18,6 @@ A spatial object containing the zones data.
 This function retrieves the zones data from the specified data directory.
 It can retrieve either "distritos" or "municipios" zones data.
 }
+\examples{
+zones = get_zones()
+}

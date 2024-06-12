@@ -77,24 +77,88 @@ get_data_dir = function() {
 #' @param type The type of zones data to retrieve ("distritos" or "municipios").
 #' @return A spatial object containing the zones data.
 #' @export
+#' @examples
+#' zones = get_zones()
 get_zones = function(
   data_dir = get_data_dir(),
   type = "distritos") {
-  shp_extensions = c("cpg", "dbf", "prj", "qmd", "qpj", "shp", "shx")
-  base_url = "https://movilidad-opendata.mitma.es/zonificacion"
-  if (type == "distritos") {
-  zone_data_folder = file.path(data_dir, "zonificacion_distritos")
-
-  if (!fs::dir_exists(zone_data_folder)) {
-    base_url = paste0(base_url, "/zonificacion_distritos/zonificacion_distritos")
-    fs::dir_create(file.path(data_dir, "zonificacion_distritos"))
-    for (ext in shp_extensions) {
-    url = paste0(base_url, ".", ext)
-    file = file.path(zone_data_folder, basename(url))
-    utils::download.file(url, file)
+  metadata = get_metadata(data_dir)
+  regex = glue::glue("zonificacion_{type}\\.")
+  sel_distritos = stringr::str_detect(metadata$target_url, regex)
+  metadata_distritos = metadata[sel_distritos, ]
+  dir_name = dirname(metadata_distritos$local_path[1])
+  if (!fs::dir_exists(dir_name)) {
+    fs::dir_create(dir_name)
+  }
+  for (i in 1:nrow(metadata_distritos)) {
+    if (!fs::file_exists(metadata_distritos$local_path[i])) {
+      message("Downloading ", metadata_distritos$target_url[i])
+      curl::curl_download(url = metadata_distritos$target_url[i], destfile = metadata_distritos$local_path[i], quiet = FALSE)
     }
   }
-
-  return(sf::read_sf(zone_data_folder))
-  }
+  sel_shp = stringr::str_detect(metadata_distritos$local_path, "\\.shp$")
+  shp_file = metadata_distritos$local_path[sel_shp]
+  suppressWarnings({
+    return(sf::read_sf(shp_file))
+  })
 }
+
+#' Retrieves the origin-destination data
+#' 
+#' This function downloads data from URLs such as
+#' https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz
+#' if the file does not exist in the data directory.
+#' 
+#' @param data_dir The directory where the data is stored.
+#' @param subdir The subdirectory where the data is stored.
+#' @param date_regex The regular expression to match the date of the data to download.
+#' @param read_fun The function to read the data. Defaults to `duckdb::tbl_file`.
+#' @return The local path of the downloaded file (`download_od`), or a data frame with the origin-destination data (`get_od`).
+#' @export
+#' @examples
+#' # Download the origin-destination data for the first two days of March 2024
+#' if (FALSE) {
+#' od_20240301_20240302 = get_od(date_regex = "2024-03-0[1-2]")
+#' }
+get_od = function(
+  data_dir = get_data_dir(),
+  subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
+  date_regex = "2024-03-0[1-2]",
+  read_fun = duckdb::tbl_file
+) {
+  file_paths = download_od(data_dir = data_dir, subdir = subdir, date_regex = date_regex)
+  if (identical(read_fun, readr::read_csv)) {
+    return(purrr::map_dfr(file_paths, read_fun))
+  }
+  drv = duckdb::duckdb()
+  con = DBI::dbConnect(drv)
+  # file.exists(file_paths[1])
+  # od1 = duckdb::tbl_file(con, file_paths[2])
+  od_list = purrr::map(file_paths, ~duckdb::tbl_file(con, .))
+}
+download_od = function(
+  data_dir = get_data_dir(),
+  subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
+  date_regex = "2024-03-0[1-2]"
+) {
+  date_month = stringr::str_sub(date_regex, 1, 7)
+  date_format = stringr::str_replace(date_regex, "-", "")
+  date_format = stringr::str_replace(date_format, "-", "")
+  regex = glue::glue("{subdir}/{date_month}/{date_format}_Viajes_distritos.csv.gz")
+  metadata = get_metadata(data_dir)
+  sel_od = stringr::str_detect(metadata$target_url, regex)
+  metadata_od = metadata[sel_od, ]
+  metadata_od[[1]]
+  dir_name = dirname(metadata_od$local_path[1])
+  if (!fs::dir_exists(dir_name)) {
+    fs::dir_create(dir_name)
+  }
+  for (i in 1:nrow(metadata_od)) {
+    if (!fs::file_exists(metadata_od$local_path[i])) {
+      message("Downloading ", metadata_od$target_url[i])
+      curl::curl_download(url = metadata_od$target_url[i], destfile = metadata_od$local_path[i], quiet = FALSE)
+    }
+  }
+  return(metadata_od$local_path)
+}
+  

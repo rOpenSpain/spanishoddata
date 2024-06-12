@@ -17,4 +17,8 @@ Imports:
     lubridate,
     stringr,
     xml2,
-    tibble
+    tibble,
+    purrr,
+    DBI,
+    duckdb,
+    readr
