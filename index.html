@@ -77,29 +77,16 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_cran</span><span class="op">(</span><span class="st">"duckdb"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.duckdb.org/" class="external-link">duckdb</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="zones">Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
 </h2>
 <p>Zones can be downloaded as follows:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#  zonificacion_distritos.cpg   2023-04-19 10:57:02 5 Bytes</span></span>
-<span><span class="co"># zonificacion_distritos.dbf    2023-04-19 10:57:02 309 KB</span></span>
-<span><span class="co"># zonificacion_distritos.prj    2023-04-19 10:57:02 393 Bytes</span></span>
-<span><span class="co"># zonificacion_distritos.qmd    2022-12-20 15:25:26 657 Bytes</span></span>
-<span><span class="co"># zonificacion_distritos.qpj    2023-04-19 10:57:02 618 Bytes</span></span>
-<span><span class="co"># zonificacion_distritos.shp    2023-04-19 10:57:02 22 MB</span></span>
-<span><span class="co"># zonificacion_distritos.shx</span></span>
-<span><span class="va">shp_extensions</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cpg"</span>, <span class="st">"dbf"</span>, <span class="st">"prj"</span>, <span class="st">"qmd"</span>, <span class="st">"qpj"</span>, <span class="st">"shp"</span>, <span class="st">"shx"</span><span class="op">)</span></span>
-<span><span class="va">base_url</span> <span class="op">=</span> <span class="st">"https://movilidad-opendata.mitma.es/zonificacion/zonificacion_distritos/zonificacion_distritos"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">"zonificacion_distritos"</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">ext</span> <span class="kw">in</span> <span class="va">shp_extensions</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">u</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">base_url</span>, <span class="st">"."</span>, <span class="va">ext</span><span class="op">)</span></span>
-<span>  <span class="va">f</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"zonificacion_distritos"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"zonificacion_distritos."</span>, <span class="va">ext</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">u</span>, <span class="va">f</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">distritos</span> <span class="op">=</span> <span class="fu">get_zones</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"distritos"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">distritos</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-distritos-1.png"></p>
 </div>
 <div class="section level2">
 <h2 id="estudios-basicos">Estudios basicos<a class="anchor" aria-label="anchor" href="#estudios-basicos"></a>
@@ -132,21 +119,21 @@
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
-<col width="5%">
-<col width="4%">
-<col width="5%">
-<col width="4%">
-<col width="5%">
-<col width="9%">
-<col width="10%">
-<col width="12%">
-<col width="13%">
 <col width="6%">
-<col width="3%">
-<col width="3%">
-<col width="3%">
-<col width="4%">
-<col width="5%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
 </colgroup>
 <thead><tr class="header">
 <th align="right">fecha</th>
