@@ -20,6 +20,24 @@ The data is provided as follows:
         - ficheros-diarios
         - meses-completos
 
+The package is designed to save people time by providing the data in analyis-ready formats.
+Automating the process of downloading, cleaning and importing the data can also reduce the risk of errors in the laborious process of data preparation.
+
+The datasets are large, so the package aims to reduce computational resources, by using computationally efficient packages behind the scenes.
+If you want to use many of the data files, it's recommended you set a data directory where the package will look for the data, only downloading the files that are not already present.
+
+Set the data directory by setting the `SPANISHOD_DATA_DIR` environment variable, e.g. the following command:
+
+```{r}
+usethis::edit_r_environ()
+# Then set the data director, by typing this line in the file:
+```
+
+```
+SPANISHOD_DATA_DIR = "/path/to/data"
+```
+
+
 ```{r}
 #| label: installation
 if (!requireNamespace("remotes", quietly = TRUE)) {
