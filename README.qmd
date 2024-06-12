@@ -53,6 +53,14 @@ library(tidyverse)
 devtools::load_all()
 ```
 
+Get metadata for the datasets as follows:
+
+```{r}
+#| label: metadata
+metadata = get_metadata()
+metadata
+```
+
 ## Zones
 
 Zones can be downloaded as follows:

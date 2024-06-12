@@ -16,4 +16,5 @@ Imports:
     glue,
     lubridate,
     stringr,
-    xml2
+    xml2,
+    tibble
