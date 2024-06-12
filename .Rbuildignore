@@ -4,3 +4,7 @@
 README.qmd
 ^.*\.db$
 ^draft-code$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
