@@ -7,13 +7,16 @@
     <loc>/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/reference/get_data_dictionary.html</loc>
+    <loc>/reference/get_metadata.html</loc>
   </url>
   <url>
     <loc>/reference/get_zones.html</loc>

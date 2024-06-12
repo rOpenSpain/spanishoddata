@@ -86,11 +86,30 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.duckdb.org/" class="external-link">duckdb</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Get metadata for the datasets as follows:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">metadata</span> <span class="op">=</span> <span class="fu"><a href="reference/get_metadata.html">get_metadata</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">metadata</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># A tibble: 8,453 × 6</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>   target_url           pub_ts              file_extension data_ym data_ymd</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>                <span class="er">&lt;</span>dttm<span class="sc">&gt;</span>              <span class="er">&lt;</span>chr<span class="sc">&gt;</span>          <span class="er">&lt;</span>date<span class="sc">&gt;</span>  <span class="er">&lt;</span>date<span class="sc">&gt;</span>  </span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a> <span class="dv">1</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">09</span><span class="sc">:</span><span class="dv">00</span><span class="sc">:</span><span class="dv">45</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a> <span class="dv">2</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">58</span><span class="sc">:</span><span class="dv">20</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a> <span class="dv">3</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">58</span><span class="sc">:</span><span class="dv">18</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a> <span class="dv">4</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">57</span><span class="sc">:</span><span class="dv">24</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a> <span class="dv">5</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">55</span><span class="sc">:</span><span class="dv">49</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a> <span class="dv">6</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">55</span><span class="sc">:</span><span class="dv">47</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a> <span class="dv">7</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">55</span><span class="sc">:</span><span class="dv">10</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a> <span class="dv">8</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">54</span><span class="sc">:</span><span class="dv">13</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a> <span class="dv">9</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">54</span><span class="sc">:</span><span class="dv">11</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="dv">10</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-05-16</span> <span class="dv">08</span><span class="sc">:</span><span class="dv">52</span><span class="sc">:</span><span class="dv">26</span> tar            <span class="cn">NA</span>      <span class="cn">NA</span>      </span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co"># ℹ 8,443 more rows</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># ℹ 1 more variable: local_path &lt;chr&gt;</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="zones">Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
 </h2>
 <p>Zones can be downloaded as follows:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distritos</span> <span class="op">=</span> <span class="fu"><a href="reference/get_zones.html">get_zones</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"distritos"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">distritos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-distritos-1.png"></p>
@@ -99,7 +118,7 @@
 <h2 id="estudios-basicos">Estudios basicos<a class="anchor" aria-label="anchor" href="#estudios-basicos"></a>
 </h2>
 <p>Each day in the <code>ficheros-diarios</code> folder contains a file with the following columns:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set timeout for downloads</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>timeout <span class="op">=</span> <span class="fl">600</span><span class="op">)</span> <span class="co"># 10 minutes</span></span>
 <span><span class="va">u1</span> <span class="op">=</span> <span class="st">"https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz"</span></span>
@@ -264,16 +283,15 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html" class="external-link">dbDisconnect</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 
