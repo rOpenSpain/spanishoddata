@@ -50,7 +50,9 @@ remotes::install_cran("duckdb")
 #| label: pkgs
 library(duckdb)
 library(tidyverse)
+theme_set(theme_minimal())
 devtools::load_all()
+sf::sf_use_s2(FALSE)
 ```
 
 Get metadata for the datasets as follows:
@@ -68,7 +70,8 @@ Zones can be downloaded as follows:
 ```{r}
 #| label: distritos
 distritos = get_zones(type = "distritos")
-plot(distritos)
+distritos_wgs84 = sf::st_transform(distritos, 4326)
+plot(distritos_wgs84)
 ```
 
 ## Estudios basicos
@@ -104,7 +107,177 @@ od1_head |>
 DBI::dbDisconnect(con)
 ```
 
+You can get the same result, but for multiple files, as follows:
 
+```{r}
+od_multi_list = get_od(
+  subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
+  date_regex = "2024-03-0[1-7]"
+)
+od_multi_list[[1]]
+class(od_multi_list[[1]])
+```
+
+The result is a list of duckdb tables which load almost instantly, and can be used with dplyr functions.
+Let's do an aggregation to find the total number trips per hour over the 7 days:
+
+```{r}
+#| label: trips-per-hour
+n_per_hour = od_multi_list |>
+  map(~ .x |>
+        group_by(periodo, fecha) |>
+        summarise(n = n(), Trips = sum(viajes)) |>
+        collect()
+  ) |>
+  list_rbind() |>
+  mutate(Time = lubridate::ymd_h(paste0(fecha, periodo))) |>
+  mutate(Day = lubridate::wday(Time, label = TRUE)) 
+n_per_hour |>
+  ggplot(aes(x = Time, y = Trips)) +
+  geom_line(aes(colour = Day)) +
+  labs(title = "Number of trips per hour over 7 days")
+```
+
+The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
+
+# Desire lines
+
+We'll use the same input data to pick-out the most important flows in Spain, with a focus on longer trips for visualisation:
+
+```{r}
+od_large = od_multi_list |>
+  map(~ .x |>
+        group_by(origen, destino) |>
+        summarise(Trips = sum(viajes), .groups = "drop") |>
+        filter(Trips > 500) |>
+        collect()
+  ) |>
+  list_rbind() |>
+  group_by(origen, destino) |>
+  summarise(Trips = sum(Trips)) |>
+  arrange(desc(Trips))
+od_large
+```
+
+The results show that the largest flows are intra-zonal.
+Let's keep only the inter-zonal flows:
+
+```{r}
+od_large_interzonal = od_large |>
+  filter(origen != destino)
+```
+
+We can convert these to geographic data with the {od} package:
+
+```{r}
+#| label: desire-lines
+od_large_interzonal_sf = od::od_to_sf(
+  od_large_interzonal,
+  z = distritos_wgs84
+)
+od_large_interzonal_sf |>
+  ggplot() +
+  geom_sf(aes(size = Trips), colour = "red") +
+  theme_void()
+```
+
+Let's focus on trips in and around a particular area (Salamanca):
+
+```{r}
+#| label: salamanca-zones
+salamanca_zones = zonebuilder::zb_zone("Salamanca")
+distritos_salamanca = distritos_wgs84[salamanca_zones, ]
+plot(distritos_salamanca)
+```
+
+We will use this information to subset the rows, to capture all movement within the study area:
+
+```{r}
+#| label: salamanca
+ids_salamanca = distritos_salamanca$ID
+od_salamanca = od_multi_list |>
+  map(~ .x |>
+        filter(origen %in% ids_salamanca) |>
+        filter(destino %in% ids_salamanca) |>
+        collect()
+  ) |>
+  list_rbind() |>
+  group_by(origen, destino) |>
+  summarise(Trips = sum(viajes)) |>
+  arrange(Trips)
+
+```
+
+Let's plot the results:
+
+```{r}
+#| label: salamanca-plot
+od_salamanca_sf = od::od_to_sf(
+  od_salamanca,
+  z = distritos_salamanca
+)
+od_salamanca_sf |>
+  filter(origen != destino) |>
+  ggplot() +
+  geom_sf(aes(colour = Trips), size = 1) +
+  scale_colour_viridis_c() +
+  theme_void()
+
+```
+
+# Disaggregating desire lines
+
+For this you'll need some additional dependencies:
+
+```{r}
+library(sf)
+library(tmap)
+```
+
+We'll get the road network from OSM:
+
+```{r}
+#| results: hide
+salamanca_boundary = sf::st_union(distritos_salamanca)
+osm_full = osmactive::get_travel_network(salamanca_boundary)
+```
+
+```{r}
+#| label: osm
+osm = osm_full[salamanca_boundary, ]
+drive_net = osmactive::get_driving_network(osm)
+drive_net_major = osmactive::get_driving_network_major(osm)
+cycle_net = osmactive::get_cycling_network(osm)
+cycle_net = osmactive::distance_to_road(cycle_net, drive_net_major)
+cycle_net = osmactive::classify_cycle_infrastructure(cycle_net)
+map_net = osmactive::plot_osm_tmap(cycle_net)
+map_net
+```
+
+We can use the road network to disaggregate the desire lines:
+
+```{r}
+od_jittered = odjitter::jitter(
+  od_salamanca_sf,
+  zones = distritos_salamanca,
+  subpoints = drive_net,
+  disaggregation_threshold = 1000,
+  disaggregation_key = "Trips"
+)
+```
+
+Let's plot the disaggregated desire lines:
+
+```{r}
+#| label: disaggregated
+od_jittered |>
+  arrange(Trips) |>
+  ggplot() +
+  geom_sf(aes(colour = Trips), size = 1) +
+  scale_colour_viridis_c() +
+  geom_sf(data = drive_net_major, colour = "black") +
+  theme_void()
+```
 
 
 ```{r}

@@ -45,7 +45,9 @@ remotes::install_cran("duckdb")
 ``` r
 library(duckdb)
 library(tidyverse)
+theme_set(theme_minimal())
 devtools::load_all()
+sf::sf_use_s2(FALSE)
 ```
 
 Get metadata for the datasets as follows:
@@ -77,7 +79,8 @@ Zones can be downloaded as follows:
 
 ``` r
 distritos = get_zones(type = "distritos")
-plot(distritos)
+distritos_wgs84 = sf::st_transform(distritos, 4326)
+plot(distritos_wgs84)
 ```
 
 ![](man/figures/README-distritos-1.png)
@@ -126,3 +129,222 @@ od1_head |>
 ``` r
 DBI::dbDisconnect(con)
 ```
+
+You can get the same result, but for multiple files, as follows:
+
+``` r
+od_multi_list = get_od(
+  subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
+  date_regex = "2024-03-0[1-7]"
+)
+od_multi_list[[1]]
+```
+
+    # Source:   SQL [?? x 15]
+    # Database: DuckDB v0.10.2 [robin@Linux 6.5.0-35-generic:R 4.4.0/:memory:]
+          fecha periodo origen  destino distancia actividad_origen actividad_destino
+          <dbl> <chr>   <chr>   <chr>   <chr>     <chr>            <chr>            
+     1 20240307 00      01009_… 01001   0.5-2     frecuente        casa             
+     2 20240307 09      01009_… 01001   0.5-2     frecuente        casa             
+     3 20240307 18      01009_… 01001   0.5-2     frecuente        casa             
+     4 20240307 19      01009_… 01001   0.5-2     frecuente        casa             
+     5 20240307 20      01009_… 01001   0.5-2     frecuente        casa             
+     6 20240307 14      01002   01001   10-50     frecuente        casa             
+     7 20240307 22      01002   01001   10-50     frecuente        casa             
+     8 20240307 06      01009_… 01001   10-50     frecuente        casa             
+     9 20240307 09      01009_… 01001   10-50     frecuente        casa             
+    10 20240307 11      01009_… 01001   10-50     frecuente        casa             
+    # ℹ more rows
+    # ℹ 8 more variables: estudio_origen_posible <chr>,
+    #   estudio_destino_posible <chr>, residencia <chr>, renta <chr>, edad <chr>,
+    #   sexo <chr>, viajes <dbl>, viajes_km <dbl>
+
+``` r
+class(od_multi_list[[1]])
+```
+
+    [1] "tbl_duckdb_connection" "tbl_dbi"               "tbl_sql"              
+    [4] "tbl_lazy"              "tbl"                  
+
+The result is a list of duckdb tables which load almost instantly, and
+can be used with dplyr functions. Let’s do an aggregation to find the
+total number trips per hour over the 7 days:
+
+``` r
+n_per_hour = od_multi_list |>
+  map(~ .x |>
+        group_by(periodo, fecha) |>
+        summarise(n = n(), Trips = sum(viajes)) |>
+        collect()
+  ) |>
+  list_rbind() |>
+  mutate(Time = lubridate::ymd_h(paste0(fecha, periodo))) |>
+  mutate(Day = lubridate::wday(Time, label = TRUE)) 
+n_per_hour |>
+  ggplot(aes(x = Time, y = Trips)) +
+  geom_line(aes(colour = Day)) +
+  labs(title = "Number of trips per hour over 7 days")
+```
+
+![](man/figures/README-trips-per-hour-1.png)
+
+The figure above summarises 925,874,012 trips over the 7 days associated
+with 135,866,524 records.
+
+# Desire lines
+
+We’ll use the same input data to pick-out the most important flows in
+Spain, with a focus on longer trips for visualisation:
+
+``` r
+od_large = od_multi_list |>
+  map(~ .x |>
+        group_by(origen, destino) |>
+        summarise(Trips = sum(viajes), .groups = "drop") |>
+        filter(Trips > 500) |>
+        collect()
+  ) |>
+  list_rbind() |>
+  group_by(origen, destino) |>
+  summarise(Trips = sum(Trips)) |>
+  arrange(desc(Trips))
+od_large
+```
+
+    # A tibble: 37,023 × 3
+    # Groups:   origen [3,723]
+       origen  destino    Trips
+       <chr>   <chr>      <dbl>
+     1 2807908 2807908 2441404.
+     2 0801910 0801910 2112188.
+     3 0801902 0801902 2013618.
+     4 2807916 2807916 1821504.
+     5 2807911 2807911 1785981.
+     6 04902   04902   1690606.
+     7 2807913 2807913 1504484.
+     8 2807910 2807910 1299586.
+     9 0704004 0704004 1287122.
+    10 28106   28106   1286058.
+    # ℹ 37,013 more rows
+
+The results show that the largest flows are intra-zonal. Let’s keep only
+the inter-zonal flows:
+
+``` r
+od_large_interzonal = od_large |>
+  filter(origen != destino)
+```
+
+We can convert these to geographic data with the {od} package:
+
+``` r
+od_large_interzonal_sf = od::od_to_sf(
+  od_large_interzonal,
+  z = distritos_wgs84
+)
+od_large_interzonal_sf |>
+  ggplot() +
+  geom_sf(aes(size = Trips), colour = "red") +
+  theme_void()
+```
+
+![](man/figures/README-desire-lines-1.png)
+
+Let’s focus on trips in and around a particular area (Salamanca):
+
+``` r
+salamanca_zones = zonebuilder::zb_zone("Salamanca")
+distritos_salamanca = distritos_wgs84[salamanca_zones, ]
+plot(distritos_salamanca)
+```
+
+![](man/figures/README-salamanca-zones-1.png)
+
+We will use this information to subset the rows, to capture all movement
+within the study area:
+
+``` r
+ids_salamanca = distritos_salamanca$ID
+od_salamanca = od_multi_list |>
+  map(~ .x |>
+        filter(origen %in% ids_salamanca) |>
+        filter(destino %in% ids_salamanca) |>
+        collect()
+  ) |>
+  list_rbind() |>
+  group_by(origen, destino) |>
+  summarise(Trips = sum(viajes)) |>
+  arrange(Trips)
+```
+
+Let’s plot the results:
+
+``` r
+od_salamanca_sf = od::od_to_sf(
+  od_salamanca,
+  z = distritos_salamanca
+)
+od_salamanca_sf |>
+  filter(origen != destino) |>
+  ggplot() +
+  geom_sf(aes(colour = Trips), size = 1) +
+  scale_colour_viridis_c() +
+  theme_void()
+```
+
+![](man/figures/README-salamanca-plot-1.png)
+
+# Disaggregating desire lines
+
+For this you’ll need some additional dependencies:
+
+``` r
+library(sf)
+library(tmap)
+```
+
+We’ll get the road network from OSM:
+
+``` r
+salamanca_boundary = sf::st_union(distritos_salamanca)
+osm_full = osmactive::get_travel_network(salamanca_boundary)
+```
+
+``` r
+osm = osm_full[salamanca_boundary, ]
+drive_net = osmactive::get_driving_network(osm)
+drive_net_major = osmactive::get_driving_network_major(osm)
+cycle_net = osmactive::get_cycling_network(osm)
+cycle_net = osmactive::distance_to_road(cycle_net, drive_net_major)
+cycle_net = osmactive::classify_cycle_infrastructure(cycle_net)
+map_net = osmactive::plot_osm_tmap(cycle_net)
+map_net
+```
+
+![](man/figures/README-osm-1.png)
+
+We can use the road network to disaggregate the desire lines:
+
+``` r
+od_jittered = odjitter::jitter(
+  od_salamanca_sf,
+  zones = distritos_salamanca,
+  subpoints = drive_net,
+  disaggregation_threshold = 1000,
+  disaggregation_key = "Trips"
+)
+```
+
+Let’s plot the disaggregated desire lines:
+
+``` r
+od_jittered |>
+  arrange(Trips) |>
+  ggplot() +
+  geom_sf(aes(colour = Trips), size = 1) +
+  scale_colour_viridis_c() +
+  geom_sf(data = drive_net_major, colour = "black") +
+  theme_void()
+```
+
+![](man/figures/README-disaggregated-1.png)
