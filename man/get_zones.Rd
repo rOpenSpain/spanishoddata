@@ -19,5 +19,7 @@ This function retrieves the zones data from the specified data directory.
 It can retrieve either "distritos" or "municipios" zones data.
 }
 \examples{
+if (FALSE) {
 zones = get_zones()
+}
 }

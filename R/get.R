@@ -92,7 +92,9 @@ get_data_dir = function() {
 #' @return A spatial object containing the zones data.
 #' @export
 #' @examples
+#' if (FALSE) {
 #' zones = get_zones()
+#' }
 get_zones = function(
   data_dir = get_data_dir(),
   type = "distritos") {
