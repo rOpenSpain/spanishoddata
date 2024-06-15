@@ -25,7 +25,7 @@ scenes. If you want to use many of the data files, it’s recommended you
 set a data directory where the package will look for the data, only
 downloading the files that are not already present.
 
-Set the data directory by setting the `SPANISHOD_DATA_DIR` environment
+Set the data directory by setting the `SPANISH_OD_DATA_DIR` environment
 variable, e.g. the following command:
 
 ``` r
@@ -33,7 +33,7 @@ usethis::edit_r_environ()
 # Then set the data director, by typing this line in the file:
 ```
 
-    SPANISHOD_DATA_DIR = "/path/to/data"
+    SPANISH_OD_DATA_DIR = "/path/to/data"
 
 ``` r
 if (!requireNamespace("remotes", quietly = TRUE)) {
