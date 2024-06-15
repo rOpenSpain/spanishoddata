@@ -17,7 +17,9 @@ This function retrieves the data dictionary for the specified data directory.
 }
 \examples{
 # Get the data dictionary for the default data directory
+if (FALSE) {
 metadata = get_metadata()
 names(metadata)
 head(metadata)
+}
 }
