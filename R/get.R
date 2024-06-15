@@ -6,7 +6,10 @@
 #'
 #' @return The path to the downloaded XML file.
 #' @export
-#' @examples get_latest_v2_xml()
+#' @examples
+#' if (FALSE) {
+#' get_latest_v2_xml()
+#' }
 get_latest_v2_xml = function(
     data_dir = get_data_dir(),
     xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",

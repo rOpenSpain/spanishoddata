@@ -25,5 +25,7 @@ The path to the downloaded XML file.
 Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)
 }
 \examples{
+if (FALSE) {
 get_latest_v2_xml()
+}
 }
