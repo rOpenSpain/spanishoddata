@@ -34,9 +34,11 @@ get_latest_v2_xml = function(
 #' @export
 #' @examples
 #' # Get the data dictionary for the default data directory
+#' if (FALSE) {
 #' metadata = get_metadata()
 #' names(metadata)
 #' head(metadata)
+#' }
 get_metadata = function(data_dir = get_data_dir()) {
   xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_") |> sort()
   latest_data_links_xml_path = utils::tail(xml_files_list, 1)
