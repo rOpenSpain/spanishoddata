@@ -9,3 +9,5 @@ README.qmd
 ^pkgdown$
 ^\.github$
 ^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
