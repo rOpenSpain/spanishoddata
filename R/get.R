@@ -1,3 +1,12 @@
+#' Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)
+#'
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `get_data_dir()`.
+#' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
+#' @param current_timestamp The current timestamp to keep track of the version of the remote file list. Defaults to the current date.
+#'
+#' @return The path to the downloaded XML file.
+#'
+#' @examples get_latest_v2_xml()
 get_latest_v2_xml = function(
     data_dir = get_data_dir(),
     xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
@@ -104,11 +113,11 @@ get_zones = function(
 }
 
 #' Retrieves the origin-destination data
-#' 
+#'
 #' This function downloads data from URLs such as
 #' https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz
 #' if the file does not exist in the data directory.
-#' 
+#'
 #' @param data_dir The directory where the data is stored.
 #' @param subdir The subdirectory where the data is stored.
 #' @param date_regex The regular expression to match the date of the data to download.
@@ -161,4 +170,3 @@ download_od = function(
   }
   return(metadata_od$local_path)
 }
-  
