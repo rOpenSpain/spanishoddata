@@ -5,7 +5,7 @@
 #' @param current_timestamp The current timestamp to keep track of the version of the remote file list. Defaults to the current date.
 #'
 #' @return The path to the downloaded XML file.
-#'
+#' @export
 #' @examples get_latest_v2_xml()
 get_latest_v2_xml = function(
     data_dir = get_data_dir(),
