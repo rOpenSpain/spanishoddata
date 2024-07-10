@@ -2,8 +2,8 @@ Package: spanishoddata
 Title: Get Spanish Origin-Destination Data
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Egor", "Kotov", , "egor.kotov@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-5679-6536")),
+    person("Egor", "Kotov", , "kotov.egor@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6690-5345")),
     person("Robin", "Lovelace", , "rob00x@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0001-5679-6536"))
   )
