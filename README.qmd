@@ -30,7 +30,7 @@ Set the data directory by setting the `SPANISHOD_DATA_DIR` environment variable,
 
 ```{r}
 usethis::edit_r_environ()
-# Then set the data director, by typing this line in the file:
+# Then set the data directory, by typing this line in the file:
 ```
 
 ```
