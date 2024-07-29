@@ -7,7 +7,7 @@
 get_od(
   data_dir = get_data_dir(),
   subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-  date_regex = "2024-03-0[1-2]",
+  date_regex = "2024030[1-2]",
   read_fun = duckdb::tbl_file
 )
 }

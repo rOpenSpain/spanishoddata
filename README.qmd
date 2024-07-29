@@ -8,6 +8,10 @@ knitr:
     fig.path: "man/figures/README-"
 ---
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 This repo demonstrates how to download and use OD data from Spain, published by [transportes.gob.es](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
 
 The data is provided as follows:
@@ -26,15 +30,16 @@ Automating the process of downloading, cleaning and importing the data can also 
 The datasets are large, so the package aims to reduce computational resources, by using computationally efficient packages behind the scenes.
 If you want to use many of the data files, it's recommended you set a data directory where the package will look for the data, only downloading the files that are not already present.
 
-Set the data directory by setting the `SPANISHOD_DATA_DIR` environment variable, e.g. the following command:
+Set the data directory by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. the following command:
 
 ```{r}
+#| eval: false
 usethis::edit_r_environ()
 # Then set the data directory, by typing this line in the file:
 ```
 
 ```
-SPANISHOD_DATA_DIR = "/path/to/data"
+SPANISH_OD_DATA_DIR = "/path/to/data"
 ```
 
 
@@ -51,8 +56,8 @@ remotes::install_cran("duckdb")
 library(duckdb)
 library(tidyverse)
 theme_set(theme_minimal())
-devtools::load_all()
 sf::sf_use_s2(FALSE)
+devtools::load_all()
 ```
 
 Get metadata for the datasets as follows:
@@ -112,7 +117,7 @@ You can get the same result, but for multiple files, as follows:
 ```{r}
 od_multi_list = get_od(
   subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-  date_regex = "2024-03-0[1-7]"
+  date_regex = "2024030[1-7]"
 )
 od_multi_list[[1]]
 class(od_multi_list[[1]])
