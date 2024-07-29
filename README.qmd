@@ -30,26 +30,52 @@ Automating the process of downloading, cleaning and importing the data can also 
 The datasets are large, so the package aims to reduce computational resources, by using computationally efficient packages behind the scenes.
 If you want to use many of the data files, it's recommended you set a data directory where the package will look for the data, only downloading the files that are not already present.
 
-Set the data directory by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. the following command:
+# Installation
+
+Install the package as follows:
+
+```{r}
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("Robinlovelace/spanishoddata")
+```
+
+Load it as follows:
+
+```{r}
+library(spanishoddata)
+```
+
+# Setting the data directory
+
+You can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
 
 ```{r}
 #| eval: false
 usethis::edit_r_environ()
-# Then set the data directory, by typing this line in the file:
+# Then set the data directory globally, by typing this line in the file:
 ```
 
 ```
 SPANISH_OD_DATA_DIR = "/path/to/data"
 ```
 
+You can also set the data directory in the local folder by editing a local `.Renviron` file in the root of the project:
 
 ```{r}
-#| label: installation
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-remotes::install_cran("duckdb")
+#| eval: false
+file.edit(".Renviron")
 ```
+
+Finally, you can set the data directory in the current R session as follows:
+
+```{r}
+#| eval: false
+Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
+```
+
+# Using the package
+
+To run the code in this README we will use the following setup:
 
 ```{r}
 #| label: pkgs
@@ -57,7 +83,11 @@ library(duckdb)
 library(tidyverse)
 theme_set(theme_minimal())
 sf::sf_use_s2(FALSE)
-devtools::load_all()
+```
+
+```{r}
+#| include: false
+remotes::install_github("r-tmap/tmap")
 ```
 
 Get metadata for the datasets as follows:
@@ -306,11 +336,6 @@ usethis::use_github_action("pkgdown")
 # Setup gh pages:
 usethis::use_github_pages()
 ```
-
-
-
-
-
 
 ```{r}
 #| eval: false
