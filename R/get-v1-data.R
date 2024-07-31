@@ -1,0 +1,165 @@
+#' Get latest file list from the XML for MITMA open mobiltiy data v1 (2020-2021)
+#'
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `get_data_dir()`.
+#' @param xml_url The URL of the XML file to download. Defaults to "https://opendata-movilidad.mitma.es/RSS.xml".
+#'
+#' @return The path to the downloaded XML file.
+#' @export
+#' @examples
+#' if (FALSE) {
+#'   spo_get_latest_v1_file_list()
+#' }
+spo_get_latest_v1_file_list <- function(
+    data_dir = get_data_dir(),
+    xml_url = "https://opendata-movilidad.mitma.es/RSS.xml") {
+  if (!fs::dir_exists(data_dir)) {
+    fs::dir_create(data_dir)
+  }
+
+  current_timestamp <- format(Sys.time(), format = "%Y-%m-01", usetz = FALSE, tz = "UTC")
+  current_filename <- glue::glue("{data_dir}/data_links_v1_{current_timestamp}.xml")
+
+  message("Saving the file to: ", current_filename)
+  xml_requested <- curl::curl_download(
+    url = xml_url,
+    destfile = current_filename,
+    quiet = FALSE
+  )
+  return(current_filename)
+}
+
+#' Get the available v1 data list
+#'
+#' This function provides a table of the available data list of MITMA v1 (2020-2021), both remote and local.
+#'
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `get_data_dir()`.
+#' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
+#' \describe{
+#'   \item{target_url}{\code{character}. The URL link to the data file.}
+#'   \item{pub_ts}{\code{POSIXct}. The timestamp of when the file was published.}
+#'   \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
+#'   \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
+#'   \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
+#'   \item{local_path}{\code{character}. The local file path where the data is stored.}
+#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
+#' }
+#' @export
+#' @examples
+#' # Get the available v1 data list for the default data directory
+#' if (FALSE) {
+#'   metadata <- spo_available_data_v1()
+#'   names(metadata)
+#'   head(metadata)
+#' }
+spo_available_data_v1 <- function(data_dir = get_data_dir()) {
+  xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v1") |> sort()
+  latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
+  if (length(latest_data_links_xml_path) == 0) {
+    message("Getting latest data links xml")
+    latest_data_links_xml_path <- get_latest_v2_xml(data_dir = data_dir)
+  } else {
+    message("Using existing data links xml: ", latest_data_links_xml_path)
+  }
+
+  x_xml <- xml2::read_xml(latest_data_links_xml_path)
+
+  files_table <- tibble::tibble(
+    target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |> xml2::xml_text(),
+    pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |> xml2::xml_text()
+  )
+
+  files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
+  files_table$file_extension <- tools::file_ext(files_table$target_url)
+  files_table <- files_table[files_table$file_extension != "", ]
+  files_table$pub_date <- NULL
+
+  files_table$data_ym <- lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{4}-[0-9]{2}"))
+  files_table$data_ymd <- lubridate::ymd(stringr::str_extract(files_table$target_url, "[0-9]{8}"))
+  # order by pub_ts
+  files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
+  files_table$local_path <- file.path(
+    data_dir,
+    stringr::str_replace(files_table$target_url, ".*mitma.es/", "/v1/")
+  )
+
+  files_table$local_path <- stringr::str_replace_all(files_table$local_path, "\\/\\/\\/|\\/\\/", "/")
+
+  # change path for daily data files to be in hive-style format
+  files_table$local_path <- gsub("([0-9]{4})-([0-9]{2})\\/[0-9]{6}([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
+
+  # now check if any of local files exist
+  files_table$downloaded <- fs::file_exists(files_table$local_path)
+
+  return(files_table)
+}
+
+#' Retrieves the zones for v1 data
+#'
+#' This function retrieves the zones data from the specified data directory.
+#' It can retrieve either "distritos" or "municipios" zones data.
+#'
+#' @param data_dir The directory where the data is stored.
+#' @param type The type of zones data to retrieve ("distritos" or "municipios").
+#' @return A spatial object containing the zones data.
+#' @export
+#' @examples
+#' if (FALSE) {
+#'   zones <- get_zones()
+#' }
+spo_get_zones_v1 <- function(
+    data_dir = get_data_dir(),
+    type = "distritos") {
+  metadata <- spo_available_data_v1(data_dir)
+  regex <- glue::glue("zonificacion_{type}\\.")
+  sel_distritos <- stringr::str_detect(metadata$target_url, regex)
+  metadata_distritos <- metadata[sel_distritos, ]
+  dir_name <- fs::path_dir(metadata_distritos$local_path[1])
+  if (!fs::dir_exists(dir_name)) {
+    fs::dir_create(dir_name, recurse = TRUE)
+  }
+
+  downloaded_file <- curl::multi_download(metadata_distritos$target_url, destfile = metadata_distritos$local_path, resume = TRUE)
+
+  utils::unzip(downloaded_file$destfile,
+    exdir = fs::path_dir(downloaded_file$destfile)
+  )
+
+  # remove artifacts (remove __MACOSX if exists)
+  junk_path <- paste0(fs::path_dir(downloaded_file$destfile), "/__MACOSX")
+  if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
+
+  shp_file <- fs::dir_ls(data_dir, glob = glue::glue("**{type}/*.shp"), recurse = TRUE)
+
+  suppressWarnings({
+    return(sf::read_sf(shp_file))
+  })
+}
+
+#' Loads the fixed zones for v1 data
+#'
+#' This function loads the fixed zones data for the specified data directory.
+#' The geometry is cheked for validity and fixed if necessary. The 'ID' column is renamed to 'id'.
+#'
+#' @param data_dir The directory where the data is stored.
+#' @param type The type of zones data to retrieve ("distritos" or "municipios").
+#' @return A spatial object of type `sf` containing the fixed zones data.
+#' \describe{
+#'  \item{id}{\code{character}. The identifier of the zone.}
+#' }
+#' @export
+#' @examples
+#' if (FALSE) {
+#'   zones <- spo_load_zones_v1()
+#' }
+spo_load_zones_v1 <- function(
+    data_dir = get_data_dir(),
+    type = "distritos") {
+  zones <- spo_get_zones_v1(data_dir, type)
+  invalid_geometries <- !sf::st_is_valid(zones)
+  if (invalid_geometries > 0) {
+    fixed_zones <- sf::st_make_valid(zones[invalid_geometries, ])
+    zones <- rbind(zones[!invalid_geometries, ], fixed_zones)
+  }
+  names(zones)[names(zones) == "ID"] <- "id"
+  return(zones)
+}

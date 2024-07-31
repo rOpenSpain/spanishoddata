@@ -4,6 +4,7 @@ movilidad.duckdb
 zonificacion_distritos*
 *.duckdb
 docs
+private
 
 /.quarto/
 .Rproj.user

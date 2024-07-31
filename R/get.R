@@ -18,7 +18,7 @@ get_latest_v2_xml = function(
     fs::dir_create(data_dir)
   }
 
-  current_filename = glue::glue("{data_dir}/data_links_{current_timestamp}.xml")
+  current_filename = glue::glue("{data_dir}/data_links_v2_{current_timestamp}.xml")
 
   message("Saving the file to: ", current_filename)
   xml_requested = curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
@@ -40,7 +40,7 @@ get_latest_v2_xml = function(
 #' head(metadata)
 #' }
 get_metadata = function(data_dir = get_data_dir()) {
-  xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_") |> sort()
+  xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
   latest_data_links_xml_path = utils::tail(xml_files_list, 1)
   if (length(latest_data_links_xml_path) == 0) {
     message("Getting latest data links xml")
@@ -74,8 +74,15 @@ get_metadata = function(data_dir = get_data_dir()) {
   return(download_dt)
 }
 
+#' Get the data directory
+#' 
+#' This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
+#' If the environment variable is not set, it returns the temporary directory.
+#' 
+#' @return The data directory.
+#' @keywords internal
 get_data_dir = function() {
-  data_dir_env = Sys.getenv("SPANISH_OD_DATA_DIR")
+  data_dir_env = fs::path_real(Sys.getenv("SPANISH_OD_DATA_DIR"))
   if (data_dir_env == "") {
     data_dir_env = tempdir()
   }
@@ -104,7 +111,7 @@ get_zones = function(
   metadata_distritos = metadata[sel_distritos, ]
   dir_name = dirname(metadata_distritos$local_path[1])
   if (!fs::dir_exists(dir_name)) {
-    fs::dir_create(dir_name)
+    fs::dir_create(dir_name, recurse = TRUE)
   }
   for (i in 1:nrow(metadata_distritos)) {
     if (!fs::file_exists(metadata_distritos$local_path[i])) {
