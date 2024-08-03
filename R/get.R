@@ -1,6 +1,6 @@
 #' Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)
 #'
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `get_data_dir()`.
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spo_get_data_dir()`.
 #' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
 #' @param current_timestamp The current timestamp to keep track of the version of the remote file list. Defaults to the current date.
 #'
@@ -8,10 +8,10 @@
 #' @export
 #' @examples
 #' if (FALSE) {
-#' get_latest_v2_xml()
+#' spo_get_latest_v2_xml()
 #' }
-get_latest_v2_xml = function(
-    data_dir = get_data_dir(),
+spo_get_latest_v2_xml = function(
+    data_dir = spo_get_data_dir(),
     xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
     current_timestamp = format(Sys.time(), format = "%Y-%m-01", usetz = FALSE, tz = "UTC")) {
   if (!fs::dir_exists(data_dir)) {
@@ -29,22 +29,22 @@ get_latest_v2_xml = function(
 #'
 #' This function retrieves the data dictionary for the specified data directory.
 #'
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `get_data_dir()`.
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spo_get_data_dir()`.
 #' @return The data dictionary.
 #' @export
 #' @examples
 #' # Get the data dictionary for the default data directory
 #' if (FALSE) {
-#' metadata = get_metadata()
+#' metadata = spo_get_metadata()
 #' names(metadata)
 #' head(metadata)
 #' }
-get_metadata = function(data_dir = get_data_dir()) {
+spo_get_metadata = function(data_dir = spo_get_data_dir()) {
   xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_") |> sort()
   latest_data_links_xml_path = utils::tail(xml_files_list, 1)
   if (length(latest_data_links_xml_path) == 0) {
     message("Getting latest data links xml")
-    latest_data_links_xml_path = get_latest_v2_xml(data_dir = data_dir)
+    latest_data_links_xml_path = spo_get_latest_v2_xml(data_dir = data_dir)
   } else {
     message("Using existing data links xml: ", latest_data_links_xml_path)
   }
@@ -74,7 +74,7 @@ get_metadata = function(data_dir = get_data_dir()) {
   return(download_dt)
 }
 
-get_data_dir = function() {
+spo_get_data_dir = function() {
   data_dir_env = Sys.getenv("SPANISH_OD_DATA_DIR")
   if (data_dir_env == "") {
     data_dir_env = tempdir()
@@ -93,12 +93,12 @@ get_data_dir = function() {
 #' @export
 #' @examples
 #' if (FALSE) {
-#' zones = get_zones()
+#' zones = spo_get_zones()
 #' }
-get_zones = function(
-  data_dir = get_data_dir(),
+spo_get_zones = function(
+  data_dir = spo_get_data_dir(),
   type = "distritos") {
-  metadata = get_metadata(data_dir)
+  metadata = spo_get_metadata(data_dir)
   regex = glue::glue("zonificacion_{type}\\.")
   sel_distritos = stringr::str_detect(metadata$target_url, regex)
   metadata_distritos = metadata[sel_distritos, ]
@@ -129,15 +129,15 @@ get_zones = function(
 #' @param subdir The subdirectory where the data is stored.
 #' @param date_regex The regular expression to match the date of the data to download.
 #' @param read_fun The function to read the data. Defaults to `duckdb::tbl_file`.
-#' @return The local path of the downloaded file (`download_od`), or a data frame with the origin-destination data (`get_od`).
+#' @return The local path of the downloaded file (`download_od`), or a data frame with the origin-destination data (`spo_get`).
 #' @export
 #' @examples
 #' # Download the origin-destination data for the first two days of March 2024
 #' if (FALSE) {
-#' od_20240301_20240302 = get_od(date_regex = "2024-03-0[1-2]")
+#' od_20240301_20240302 = spo_get(date_regex = "2024-03-0[1-2]")
 #' }
-get_od = function(
-  data_dir = get_data_dir(),
+spo_get = function(
+  data_dir = spo_get_data_dir(),
   subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
   date_regex = "2024030[1-2]",
   read_fun = duckdb::tbl_file
@@ -153,12 +153,12 @@ get_od = function(
   od_list = purrr::map(file_paths, ~duckdb::tbl_file(con, .))
 }
 download_od = function(
-  data_dir = get_data_dir(),
+  data_dir = spo_get_data_dir(),
   subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
   date_regex = "2024030[1-2]"
 ) {
   regex = glue::glue("{subdir}*.+{date_regex}_Viajes_distritos.csv.gz")
-  metadata = get_metadata(data_dir)
+  metadata = spo_get_metadata(data_dir)
   sel_od = stringr::str_detect(metadata$target_url, regex)
   metadata_od = metadata[sel_od, ]
   metadata_od[[1]]

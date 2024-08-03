@@ -27,7 +27,7 @@ root_folder <- paste0(getwd(), "")
 # get v2 data -------------------------------------------------------------
 
 
-get_latest_v2_xml <- function(){
+spo_get_latest_v2_xml <- function(){
   
   if( fs::dir_exists("cache") == F ) { fs::dir_create("cache") }
   
@@ -83,7 +83,7 @@ get_or_update_v2_data <- function() {
   data_dir <- "data/raw_data/mitma_mobility/v2//"
   if( fs::dir_exists(data_dir) == F ) { fs::dir_create(data_dir) }
   
-  get_latest_v2_xml()
+  spo_get_latest_v2_xml()
   
   download_dt <- load_latest_v2_xml(data_dir = data_dir)
   
