@@ -4,10 +4,10 @@
 <url><loc>/LICENSE.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
-<url><loc>/reference/get_latest_v2_xml.html</loc></url>
-<url><loc>/reference/get_metadata.html</loc></url>
-<url><loc>/reference/get_od.html</loc></url>
-<url><loc>/reference/get_zones.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/spod_get.html</loc></url>
+<url><loc>/reference/spod_get_latest_v2_xml.html</loc></url>
+<url><loc>/reference/spod_get_metadata.html</loc></url>
+<url><loc>/reference/spod_get_zones.html</loc></url>
 </urlset>
 
