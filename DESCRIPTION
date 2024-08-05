@@ -1,24 +1,39 @@
 Package: spanishoddata
-Title: What the Package Does (One Line, Title Case)
+Title: Get Spanish Origin-Destination Data
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Authors@R: c(
+    person("Egor", "Kotov", , "kotov.egor@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6690-5345")),
+    person("Robin", "Lovelace", , "rob00x@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0001-5679-6536"))
+  )
+Description: Enables access to origin-destination (OD) provided by the
+    Spanish Minstry of Transport, hosted at
+    <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
+    It contains functions for downloading zone boundaries and associated
+    origin-destination data.  The OD datasets are large.  The package
+    eases working with them by using the database interface package
+    'duckdb', using an optional environment variable 'SPANISH_OD_DATA_DIR'
+    to avoid repeated downloads, and by providing documentation
+    demonstrating how to collect subsets of the resulting databases into
+    memory.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     curl,
-    sf,
+    DBI,
+    duckdb,
     fs,
     glue,
     lubridate,
-    stringr,
-    xml2,
-    tibble,
     purrr,
-    DBI,
-    duckdb,
-    readr
+    readr,
+    sf,
+    stringr,
+    tibble,
+    xml2
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

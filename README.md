@@ -1,5 +1,10 @@
 
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 This repo demonstrates how to download and use OD data from Spain,
 published by
 [transportes.gob.es](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
@@ -25,52 +30,80 @@ scenes. If you want to use many of the data files, it’s recommended you
 set a data directory where the package will look for the data, only
 downloading the files that are not already present.
 
-Set the data directory by setting the `SPANISHOD_DATA_DIR` environment
-variable, e.g. the following command:
+# Installation
+
+Install the package as follows:
+
+``` r
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("Robinlovelace/spanishoddata")
+```
+
+Load it as follows:
+
+``` r
+library(spanishoddata)
+```
+
+# Setting the data directory
+
+You can specify the data directory globally by setting the
+`SPANISH_OD_DATA_DIR` environment variable, e.g. with the following
+command:
 
 ``` r
 usethis::edit_r_environ()
-# Then set the data director, by typing this line in the file:
+# Then set the data directory globally, by typing this line in the file:
 ```
 
-    SPANISHOD_DATA_DIR = "/path/to/data"
+    SPANISH_OD_DATA_DIR = "/path/to/data"
+
+You can also set the data directory in the local folder by editing a
+local `.Renviron` file in the root of the project:
 
 ``` r
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-remotes::install_cran("duckdb")
+file.edit(".Renviron")
 ```
+
+Finally, you can set the data directory in the current R session as
+follows:
+
+``` r
+Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
+```
+
+# Using the package
+
+To run the code in this README we will use the following setup:
 
 ``` r
 library(duckdb)
 library(tidyverse)
 theme_set(theme_minimal())
-devtools::load_all()
 sf::sf_use_s2(FALSE)
 ```
 
 Get metadata for the datasets as follows:
 
 ``` r
-metadata = get_metadata()
+metadata = spod_get_metadata()
 metadata
 ```
 
-    # A tibble: 8,453 × 6
-       target_url           pub_ts              file_extension data_ym data_ymd
-       <chr>                <dttm>              <chr>          <date>  <date>  
-     1 https://movilidad-o… 2024-05-16 09:00:45 tar            NA      NA      
-     2 https://movilidad-o… 2024-05-16 08:58:20 tar            NA      NA      
-     3 https://movilidad-o… 2024-05-16 08:58:18 tar            NA      NA      
-     4 https://movilidad-o… 2024-05-16 08:57:24 tar            NA      NA      
-     5 https://movilidad-o… 2024-05-16 08:55:49 tar            NA      NA      
-     6 https://movilidad-o… 2024-05-16 08:55:47 tar            NA      NA      
-     7 https://movilidad-o… 2024-05-16 08:55:10 tar            NA      NA      
-     8 https://movilidad-o… 2024-05-16 08:54:13 tar            NA      NA      
-     9 https://movilidad-o… 2024-05-16 08:54:11 tar            NA      NA      
-    10 https://movilidad-o… 2024-05-16 08:52:26 tar            NA      NA      
-    # ℹ 8,443 more rows
+    # A tibble: 9,442 × 6
+       target_url           pub_ts              file_extension data_ym data_ymd  
+       <chr>                <dttm>              <chr>          <date>  <date>    
+     1 https://movilidad-o… 2024-07-16 11:22:03 gz             NA      2022-10-23
+     2 https://movilidad-o… 2024-07-16 11:18:41 gz             NA      2022-10-22
+     3 https://movilidad-o… 2024-07-16 11:15:06 gz             NA      2022-10-20
+     4 https://movilidad-o… 2024-07-16 11:11:35 gz             NA      2022-10-18
+     5 https://movilidad-o… 2024-07-16 11:07:58 gz             NA      2022-10-17
+     6 https://movilidad-o… 2024-07-16 11:04:18 gz             NA      2022-10-12
+     7 https://movilidad-o… 2024-07-16 11:00:20 gz             NA      2022-10-07
+     8 https://movilidad-o… 2024-07-16 10:56:03 gz             NA      2022-08-07
+     9 https://movilidad-o… 2024-07-16 10:51:05 gz             NA      2022-08-06
+    10 https://movilidad-o… 2024-07-16 10:46:24 gz             NA      2022-08-05
+    # ℹ 9,432 more rows
     # ℹ 1 more variable: local_path <chr>
 
 ## Zones
@@ -78,7 +111,7 @@ metadata
 Zones can be downloaded as follows:
 
 ``` r
-distritos = get_zones(type = "distritos")
+distritos = spod_get_zones(type = "distritos")
 distritos_wgs84 = sf::st_transform(distritos, 4326)
 plot(distritos_wgs84)
 ```
@@ -133,15 +166,15 @@ DBI::dbDisconnect(con)
 You can get the same result, but for multiple files, as follows:
 
 ``` r
-od_multi_list = get_od(
+od_multi_list = spod_get(
   subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-  date_regex = "2024-03-0[1-7]"
+  date_regex = "2024030[1-7]"
 )
 od_multi_list[[1]]
 ```
 
     # Source:   SQL [?? x 15]
-    # Database: DuckDB v0.10.2 [robin@Linux 6.5.0-35-generic:R 4.4.0/:memory:]
+    # Database: DuckDB v0.10.2 [robin@Linux 6.5.0-45-generic:R 4.4.1/:memory:]
           fecha periodo origen  destino distancia actividad_origen actividad_destino
           <dbl> <chr>   <chr>   <chr>   <chr>     <chr>            <chr>            
      1 20240307 00      01009_… 01001   0.5-2     frecuente        casa             
