@@ -86,7 +86,7 @@ sf::sf_use_s2(FALSE)
 Get metadata for the datasets as follows:
 
 ``` r
-metadata = get_metadata()
+metadata = spod_get_metadata()
 metadata
 ```
 
@@ -111,7 +111,7 @@ metadata
 Zones can be downloaded as follows:
 
 ``` r
-distritos = get_zones(type = "distritos")
+distritos = spod_get_zones(type = "distritos")
 distritos_wgs84 = sf::st_transform(distritos, 4326)
 plot(distritos_wgs84)
 ```
@@ -166,7 +166,7 @@ DBI::dbDisconnect(con)
 You can get the same result, but for multiple files, as follows:
 
 ``` r
-od_multi_list = get_od(
+od_multi_list = spod_get(
   subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
   date_regex = "2024030[1-7]"
 )
