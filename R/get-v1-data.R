@@ -89,7 +89,7 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir()) {
   files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
   files_table$local_path <- file.path(
     data_dir,
-    stringr::str_replace(files_table$target_url, ".*mitma.es/", "/v1/")
+    stringr::str_replace(files_table$target_url, ".*mitma.es/", "raw_data_cache/v1/")
   )
 
   files_table$local_path <- stringr::str_replace_all(files_table$local_path, "\\/\\/\\/|\\/\\/", "/")
@@ -122,7 +122,7 @@ spod_get_zones_v1 <- function(
   type <- match.arg(type)
 
   # check if shp files are already extracted
-  expected_gpkg_path <- fs::path(data_dir, glue::glue("v1/clean/zones/{type}_mitma.gpkg"))
+  expected_gpkg_path <- fs::path(data_dir, glue::glue("clean_data/v1//zones/{type}_mitma.gpkg"))
   if (fs::file_exists(expected_gpkg_path)) {
     message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
     return(sf::read_sf(expected_gpkg_path))
@@ -190,7 +190,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #' 
 #' This function retrieves the origin-destination data from the specified data directory.
 #' 
-# spod_get_od_v2 <- function(
+# spod_get_od_v1 <- function(
 #   date_regex = "2020"
 #   data_dir = get_data_dir()
 # ){
