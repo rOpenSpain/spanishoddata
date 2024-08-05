@@ -11,3 +11,4 @@ README.qmd
 ^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+private
