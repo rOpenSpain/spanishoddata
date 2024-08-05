@@ -190,9 +190,20 @@ spod_clean_zones_v1 <- function(zones_path) {
 #' 
 #' This function retrieves the origin-destination data from the specified data directory.
 #' 
-# spod_get_od_v1 <- function(
-#   date_regex = "2020"
-#   data_dir = get_data_dir()
-# ){
+spod_get_od_v1 <- function(
+  date_range = c("2020-02-14", "2020-02-15"),
+  dates_list = NULL,
+  date_regex = NULL,
+  data_dir = spod_get_data_dir()
+){
+  # Process the date arguments to get a vector of dates to use
+  dates_to_use <- process_date_arguments(
+    date_range, dates_list, date_regex,
+    data_ver = "v1"
+  )
+  
 
-# }
+  message("Retrieved data for dates: ", paste(dates_to_use, collapse = ", "))
+  
+  
+}

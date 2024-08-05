@@ -21,6 +21,7 @@ License: MIT + file LICENSE
 Depends:
     R (>= 3.5.0)
 Imports: 
+    assertthat,
     curl,
     DBI,
     duckdb,
