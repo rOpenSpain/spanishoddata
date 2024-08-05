@@ -7,16 +7,16 @@
 #' @export
 #' @examples
 #' if (FALSE) {
-#'   spo_get_latest_v1_file_list()
+#'   spod_get_latest_v1_file_list()
 #' }
-spo_get_latest_v1_file_list <- function(
+spod_get_latest_v1_file_list <- function(
     data_dir = get_data_dir(),
     xml_url = "https://opendata-movilidad.mitma.es/RSS.xml") {
   if (!fs::dir_exists(data_dir)) {
     fs::dir_create(data_dir)
   }
 
-  current_timestamp <- format(Sys.time(), format = "%Y-%m-01", usetz = FALSE, tz = "UTC")
+  current_timestamp <- format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE, tz = "UTC")
   current_filename <- glue::glue("{data_dir}/data_links_v1_{current_timestamp}.xml")
 
   message("Saving the file to: ", current_filename)
@@ -47,19 +47,29 @@ spo_get_latest_v1_file_list <- function(
 #' @examples
 #' # Get the available v1 data list for the default data directory
 #' if (FALSE) {
-#'   metadata <- spo_available_data_v1()
+#'   metadata <- spod_available_data_v1()
 #'   names(metadata)
 #'   head(metadata)
 #' }
-spo_available_data_v1 <- function(data_dir = get_data_dir()) {
+spod_available_data_v1 <- function(data_dir = get_data_dir()) {
   xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v1") |> sort()
   latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
-  if (length(latest_data_links_xml_path) == 0) {
-    message("Getting latest data links xml")
-    latest_data_links_xml_path <- get_latest_v2_xml(data_dir = data_dir)
+
+  # Check if the XML file is 1 day old or older from its name
+  file_date <- stringr::str_extract(latest_data_links_xml_path, "[0-9]{4}-[0-9]{2}-[0-9]{2}")
+
+  if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
+    message("File list xml is 1 day old or older, getting latest data links xml")
+    latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   } else {
     message("Using existing data links xml: ", latest_data_links_xml_path)
   }
+
+  if (length(latest_data_links_xml_path) == 0) {
+    message("Getting latest data links xml")
+    latest_data_links_xml_path <- get_latest_v2_xml(data_dir = data_dir)
+  }
+
 
   x_xml <- xml2::read_xml(latest_data_links_xml_path)
 
@@ -106,26 +116,42 @@ spo_available_data_v1 <- function(data_dir = get_data_dir()) {
 #' if (FALSE) {
 #'   zones <- get_zones()
 #' }
-spo_get_zones_v1 <- function(
-    data_dir = get_data_dir(),
-    type = "distritos") {
-  metadata <- spo_available_data_v1(data_dir)
+spod_get_zones_v1 <- function(
+    type = c("distritos", "municipios"),
+    data_dir = get_data_dir()) {
+  type <- match.arg(type)
+
+  # check if shp files are already extracted
+  expected_shp_path <- fs::path(data_dir, glue::glue("v1/zonificacion-{type}/{type}_mitma.shp"))
+  if (fs::file_exists(expected_shp_path)) {
+    message(".shp file already exists in data dir: ", expected_shp_path)
+    return(sf::read_sf(expected_shp_path))
+  }
+
+  metadata <- spod_available_data_v1(data_dir)
   regex <- glue::glue("zonificacion_{type}\\.")
-  sel_distritos <- stringr::str_detect(metadata$target_url, regex)
-  metadata_distritos <- metadata[sel_distritos, ]
-  dir_name <- fs::path_dir(metadata_distritos$local_path[1])
+  sel_zones <- stringr::str_detect(metadata$target_url, regex)
+  metadata_zones <- metadata[sel_zones, ]
+  dir_name <- fs::path_dir(metadata_zones$local_path[1])
   if (!fs::dir_exists(dir_name)) {
     fs::dir_create(dir_name, recurse = TRUE)
   }
 
-  downloaded_file <- curl::multi_download(metadata_distritos$target_url, destfile = metadata_distritos$local_path, resume = TRUE)
+  if (!fs::file_exists(metadata_zones$local_path)) {
+    message("Downloading the file to: ", metadata_zones$local_path)
+    downloaded_file <- curl::curl_download(metadata_zones$target_url, destfile = metadata_zones$local_path, mode = "wb", quiet = FALSE)
+  } else {
+    message("File already exists: ", metadata_zones$local_path)
+    downloaded_file <- metadata_zones$local_path
+  }
 
-  utils::unzip(downloaded_file$destfile,
-    exdir = fs::path_dir(downloaded_file$destfile)
+  message("Unzipping the file: ", downloaded_file)
+  utils::unzip(downloaded_file,
+    exdir = fs::path_dir(downloaded_file)
   )
 
   # remove artifacts (remove __MACOSX if exists)
-  junk_path <- paste0(fs::path_dir(downloaded_file$destfile), "/__MACOSX")
+  junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
   if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
 
   shp_file <- fs::dir_ls(data_dir, glob = glue::glue("**{type}/*.shp"), recurse = TRUE)
@@ -149,14 +175,16 @@ spo_get_zones_v1 <- function(
 #' @export
 #' @examples
 #' if (FALSE) {
-#'   zones <- spo_load_zones_v1()
+#'   zones <- spod_load_zones_v1()
 #' }
-spo_load_zones_v1 <- function(
-    data_dir = get_data_dir(),
-    type = "distritos") {
-  zones <- spo_get_zones_v1(data_dir, type)
+spod_load_zones_v1 <- function(
+    type = c("distritos", "municipios"),
+    data_dir = get_data_dir()) {
+  type <- match.arg(type)
+  zones <- spod_get_zones_v1(type = type, data_dir = data_dir)
+
   invalid_geometries <- !sf::st_is_valid(zones)
-  if (invalid_geometries > 0) {
+  if (sum(invalid_geometries) > 0) {
     fixed_zones <- sf::st_make_valid(zones[invalid_geometries, ])
     zones <- rbind(zones[!invalid_geometries, ], fixed_zones)
   }

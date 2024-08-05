@@ -7,7 +7,7 @@
 get_latest_v2_xml(
   data_dir = get_data_dir(),
   xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
-  current_timestamp = format(Sys.time(), format = "\%Y-\%m-01", usetz = FALSE, tz =
+  current_timestamp = format(Sys.time(), format = "\%Y-\%m-\%d", usetz = FALSE, tz =
     "UTC")
 )
 }
