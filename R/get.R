@@ -40,9 +40,7 @@ spod_get_latest_v2_xml = function(
 #' head(metadata)
 #' }
 spod_get_metadata = function(data_dir = spod_get_data_dir()) {
-  xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_") |> sort()
-get_metadata = function(data_dir = get_data_dir()) {
-  xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
+    xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
   latest_data_links_xml_path = utils::tail(xml_files_list, 1)
   if (length(latest_data_links_xml_path) == 0) {
     message("Getting latest data links xml")
@@ -83,7 +81,7 @@ get_metadata = function(data_dir = get_data_dir()) {
 #' 
 #' @return The data directory.
 #' @keywords internal
-get_data_dir = function() {
+spod_get_data_dir = function() {
   data_dir_env = fs::path_real(Sys.getenv("SPANISH_OD_DATA_DIR"))
   if (data_dir_env == "") {
     data_dir_env = tempdir()

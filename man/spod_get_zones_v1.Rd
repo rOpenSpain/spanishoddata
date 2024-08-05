@@ -6,7 +6,7 @@
 \usage{
 spod_get_zones_v1(
   type = c("distritos", "municipios"),
-  data_dir = get_data_dir()
+  data_dir = spod_get_data_dir()
 )
 }
 \arguments{
@@ -23,6 +23,6 @@ It can retrieve either "distritos" or "municipios" zones data.
 }
 \examples{
 if (FALSE) {
-  zones <- get_zones()
+  zones <- spod_get_zones()
 }
 }

@@ -4,10 +4,10 @@
 \alias{spod_available_data_v1}
 \title{Get the available v1 data list}
 \usage{
-spod_available_data_v1(data_dir = get_data_dir())
+spod_available_data_v1(data_dir = spod_get_data_dir())
 }
 \arguments{
-\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{get_data_dir()}.}
+\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
 }
 \value{
 A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.

@@ -1,6 +1,6 @@
 #' Get latest file list from the XML for MITMA open mobiltiy data v1 (2020-2021)
 #'
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `get_data_dir()`.
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param xml_url The URL of the XML file to download. Defaults to "https://opendata-movilidad.mitma.es/RSS.xml".
 #'
 #' @return The path to the downloaded XML file.
@@ -10,7 +10,7 @@
 #'   spod_get_latest_v1_file_list()
 #' }
 spod_get_latest_v1_file_list <- function(
-    data_dir = get_data_dir(),
+    data_dir = spod_get_data_dir(),
     xml_url = "https://opendata-movilidad.mitma.es/RSS.xml") {
   if (!fs::dir_exists(data_dir)) {
     fs::dir_create(data_dir)
@@ -32,7 +32,7 @@ spod_get_latest_v1_file_list <- function(
 #'
 #' This function provides a table of the available data list of MITMA v1 (2020-2021), both remote and local.
 #'
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `get_data_dir()`.
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
 #' \describe{
 #'   \item{target_url}{\code{character}. The URL link to the data file.}
@@ -51,7 +51,7 @@ spod_get_latest_v1_file_list <- function(
 #'   names(metadata)
 #'   head(metadata)
 #' }
-spod_available_data_v1 <- function(data_dir = get_data_dir()) {
+spod_available_data_v1 <- function(data_dir = spod_get_data_dir()) {
   xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v1") |> sort()
   latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
 
@@ -114,19 +114,21 @@ spod_available_data_v1 <- function(data_dir = get_data_dir()) {
 #' @export
 #' @examples
 #' if (FALSE) {
-#'   zones <- get_zones()
+#'   zones <- spod_get_zones()
 #' }
 spod_get_zones_v1 <- function(
     type = c("distritos", "municipios"),
-    data_dir = get_data_dir()) {
+    data_dir = spod_get_data_dir()) {
   type <- match.arg(type)
 
   # check if shp files are already extracted
-  expected_shp_path <- fs::path(data_dir, glue::glue("v1/zonificacion-{type}/{type}_mitma.shp"))
-  if (fs::file_exists(expected_shp_path)) {
-    message(".shp file already exists in data dir: ", expected_shp_path)
-    return(sf::read_sf(expected_shp_path))
+  expected_gpkg_path <- fs::path(data_dir, glue::glue("v1/clean/zones/{type}_mitma.gpkg"))
+  if (fs::file_exists(expected_gpkg_path)) {
+    message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
+    return(sf::read_sf(expected_gpkg_path))
   }
+
+  # if data is not available, download, extract, clean and save it to gpkg
 
   metadata <- spod_available_data_v1(data_dir)
   regex <- glue::glue("zonificacion_{type}\\.")
@@ -154,35 +156,27 @@ spod_get_zones_v1 <- function(
   junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
   if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
 
-  shp_file <- fs::dir_ls(data_dir, glob = glue::glue("**{type}/*.shp"), recurse = TRUE)
+  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("**{type}/*.shp"), recurse = TRUE)
 
-  suppressWarnings({
-    return(sf::read_sf(shp_file))
-  })
+  zones <- spod_clean_zones_v1(zones_path)
+  fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
+  sf::st_write(zones, expected_gpkg_path, delete_dsn = TRUE, delete_layer = TRUE)
+
+  return(zones)
 }
 
-#' Loads the fixed zones for v1 data
-#'
-#' This function loads the fixed zones data for the specified data directory.
-#' The geometry is cheked for validity and fixed if necessary. The 'ID' column is renamed to 'id'.
-#'
-#' @param data_dir The directory where the data is stored.
-#' @param type The type of zones data to retrieve ("distritos" or "municipios").
-#' @return A spatial object of type `sf` containing the fixed zones data.
-#' \describe{
-#'  \item{id}{\code{character}. The identifier of the zone.}
-#' }
-#' @export
-#' @examples
-#' if (FALSE) {
-#'   zones <- spod_load_zones_v1()
-#' }
-spod_load_zones_v1 <- function(
-    type = c("distritos", "municipios"),
-    data_dir = get_data_dir()) {
-  type <- match.arg(type)
-  zones <- spod_get_zones_v1(type = type, data_dir = data_dir)
-
+#' Fixes common issues in the zones data and cleans up variable names
+#' 
+#' This function fixes any invalid geometries in the zones data and renames the "ID" column to "id".
+#' 
+#' @param zones_path The path to the zones spatial data file.
+#' @return A spatial object of class `sf`.
+#' @keywords internal
+#' 
+spod_clean_zones_v1 <- function(zones_path) {
+  suppressWarnings({
+    zones <- sf::read_sf(zones_path)
+  })
   invalid_geometries <- !sf::st_is_valid(zones)
   if (sum(invalid_geometries) > 0) {
     fixed_zones <- sf::st_make_valid(zones[invalid_geometries, ])
@@ -191,3 +185,14 @@ spod_load_zones_v1 <- function(
   names(zones)[names(zones) == "ID"] <- "id"
   return(zones)
 }
+
+#' Retrieve the origin-destination v1 data (2020-2021)
+#' 
+#' This function retrieves the origin-destination data from the specified data directory.
+#' 
+# spod_get_od_v2 <- function(
+#   date_regex = "2020"
+#   data_dir = get_data_dir()
+# ){
+
+# }
