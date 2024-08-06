@@ -3,20 +3,26 @@
 #' Process multiple date arguments
 #' 
 #' This function processes the date arguments provided to various functions in the package.
-#' It checks if more than one date argument is provided and returns the appropriate dates as a POSIXct vector.
+#' It checks if more than one date argument is provided and returns the appropriate dates as a Dates vector.
 #' The function ensures that the dates are in ISO format (yyyy-mm-dd) or yyyymmdd format.
 #' 
 #' @param date_range A vector of dates in ISO format (yyyy-mm-dd) or yyyymmdd format.
 #' @param dates_list A vector of dates in ISO format (yyyy-mm-dd) or yyyymmdd format.
 #' @param date_regex A regular expression to match dates in the format yyyymmdd.
-#' @return A POSIXct vector of dates.
+#' @return A Dates vector of dates.
 #' @keywords internal
-process_date_arguments <- function(date_range = NULL,
+process_date_arguments <- function(
+  date_range = NULL,
   dates_list = NULL,
   date_regex = NULL,
-  data_ver = c("v1", "v2")
+  ver = c(1, 2)
 ) {
-  data_ver <- match.arg(data_ver)
+  rlang:::check_number_whole(ver)
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 or 2.")
+  }
+
+  # perhaps this funciton should automatically detect the type of dates passed. This will dramatically simplify the API and allow the download and get functions to have just one argument for dates that will accept any format.
 
   # Helper function to check if dates are in ISO format or yyyymmdd format
   is_valid_date <- function(dates) {
@@ -25,16 +31,6 @@ process_date_arguments <- function(date_range = NULL,
     }))
   }
   
-  # Convert valid dates to POSIXct
-  convert_to_posixct <- function(dates) {
-    as.POSIXct(sapply(dates, function(date) {
-      if (!is.na(lubridate::ymd(date))) {
-        lubridate::ymd(date)
-      } else {
-        as.Date(date, format = "%Y%m%d")
-      }
-    }), tz = "UTC")
-  }
   
   # Check if more than one date argument is provided
   args_provided <- list(
@@ -54,16 +50,16 @@ process_date_arguments <- function(date_range = NULL,
   if (!is.null(date_range)) {
     assertthat::assert_that(is_valid_date(date_range),
       msg = "date_range must be in ISO format (yyyy-mm-dd) or yyyymmdd format.")
-    return(convert_to_posixct(date_range))
+    return(date_range)
     
   } else if (!is.null(dates_list)) {
     assertthat::assert_that(is_valid_date(dates_list),
       msg = "dates_list must be in ISO format (yyyy-mm-dd) or yyyymmdd format.")
-    return(convert_to_posixct(dates_list))
+    return(dates_list)
     
   } else if (!is.null(date_regex)) {
-    dates <- expand_dates_from_regex(date_regex, data_ver = data_ver)
-    return(convert_to_posixct(dates))
+    dates <- expand_dates_from_regex(date_regex, ver = ver)
+    return(dates)
   }
 }
 
@@ -73,19 +69,25 @@ process_date_arguments <- function(date_range = NULL,
 #' based on the provided regular expression.
 #' 
 #' @param date_regex A regular expression to match dates in the format yyyymmdd.
-#' @param data_ver The version of the data to use. Defaults to "v1". Can be "v1" or "v2".
+#' @param ver The version of the data to use. Defaults to "v1". Can be "v1" or "v2".
 #' @return A character vector of dates matching the regex.
 #' @keywords internal
 expand_dates_from_regex <- function(date_regex,
-  data_ver = c("v1", "v2")
+  ver = c(1, 2)
 ) {
-  data_ver <- match.arg(data_ver)
+
+  # currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
+
+  rlang:::check_number_whole(ver)
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 or 2.")
+  }
   
-  if(data_ver == "v1") {
-    available_data <- spod_available_data_v1()
-    date_range <- range(available_data[grepl("maestra2.*diarios", available_data$target_url),]$data_ymd, na.rm = TRUE)
-  } else if(data_ver == "v2") {
-    available_data <- spod_get_metadata() # replace with spod_available_data_v2() when available
+  if(ver == 1) {
+    available_data <- spod_available_data_v1(check_local_files = FALSE)
+    date_range <- range(available_data[grepl("maestra1.*diarios", available_data$target_url),]$data_ymd, na.rm = TRUE)
+  } else if(ver == 2) {
+    available_data <- spod_get_metadata() # replace with spod_available_data_v2() when available, spod_get_metadata can become a wrapper with v1/v2 argument. Potentially we can even automaticaly detect the data version based on the time intervals that user requests, but this is a bit controversial, as the methodology behind v1 and v2 data generation is not the same and Nommon+MITMA do not recommend mixing those together and comparing absoloute numbers of trips.
     date_range <- range(available_data[grepl("viajes.*diarios", available_data$target_url),]$data_ymd, na.rm = TRUE)
   }
   start_date <- date_range[1]
@@ -97,4 +99,58 @@ expand_dates_from_regex <- function(date_regex,
   matching_dates <- all_dates[grepl(date_regex, format(all_dates, "%Y%m%d"))]
   
   return(as.character(matching_dates))
+}
+
+spod_zone_names_en2es <- function(
+  zones = c("districts", "dist", "distr",
+    "municipalities", "muni", "municip")
+) {
+  zones <- tolower(zones)
+  zones <- match.arg(zones)
+  if(zones %in% c("districts", "dist", "distr")) {
+    return("distritos")
+  } else if(zones %in% c("municipalities", "muni", "municip")) {
+    return("municipios")
+  }
+}
+
+#' Match data types to folders
+#' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
+#' @param ver The version of the data to use. Defaults to 1. Can be 1 or 2.
+#' @keywords internal
+spod_match_data_type <- function(
+  type = c(
+    "od", "origin-destination",
+    "os", "overnight_stays",
+    "tpp", "trips_per_person"),
+  ver = c(1, 2)
+){
+  rlang:::check_number_whole(ver)
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 or 2.")
+  }
+
+  type <- tolower(type)
+  type <- match.arg(type)
+
+  if(ver == 1) {
+    if (type %in% c("od", "origin-destination")) {
+      return("maestra1")
+    } else if(type %in% c("tpp", "trips_per_person")) {
+      return("maestra2")
+    }
+  }
+
+  if(ver == 2) {
+    if (type %in% c("od", "origin-destination")) {
+      return("viajes")
+    } else if(type %in% c("os", "overnight_stays")) {
+      return("pernoctaciones")
+    } else if(type %in% c("tpp", "trips_per_person")) {
+      return("personas")
+    }
+  }
+
+  # need to add a warning here that the type is not recognized
+  return(NULL)
 }

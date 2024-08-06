@@ -4,7 +4,10 @@
 \alias{spod_available_data_v1}
 \title{Get the available v1 data list}
 \usage{
-spod_available_data_v1(data_dir = spod_get_data_dir())
+spod_available_data_v1(
+  data_dir = spod_get_data_dir(),
+  check_local_files = FALSE
+)
 }
 \arguments{
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}

@@ -30,6 +30,7 @@ Imports:
     lubridate,
     purrr,
     readr,
+    rlang (>= 1.1.0),
     sf,
     stringr,
     tibble,
