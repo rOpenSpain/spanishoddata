@@ -63,7 +63,7 @@ You can also set the data directory in the local folder by editing a local `.Ren
 
 ```{r}
 #| eval: false
-file.edit("~/.Renviron")
+file.edit(".Renviron")
 ```
 
 Finally, you can set the data directory in the current R session as follows:
