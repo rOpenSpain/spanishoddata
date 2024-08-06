@@ -82,7 +82,14 @@ spod_get_metadata = function(data_dir = spod_get_data_dir()) {
 #' @return The data directory.
 #' @keywords internal
 spod_get_data_dir = function() {
-  data_dir_env = fs::path_real(Sys.getenv("SPANISH_OD_DATA_DIR"))
+  data_dir_env = fs::path_real(
+    Sys.getenv("SPANISH_OD_DATA_DIR",
+      {
+        warning("Warning: SPANISH_OD_DATA_DIR is not set. Using the temporary directory, which is not recommended, as the data will be deleted when the session ends.\n\n To set the data directory, use Sys.setenv(SPANISH_OD_DATA_DIR = '/path/to/data').")
+        tempdir() # if not set, use the temp directory
+      }
+    )
+  )
   if (data_dir_env == "") {
     data_dir_env = tempdir()
   }
