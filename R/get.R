@@ -84,7 +84,7 @@ spod_get_metadata = function(data_dir = spod_get_data_dir()) {
 spod_get_data_dir = function() {
   data_dir_env = Sys.getenv("SPANISH_OD_DATA_DIR")
   if( data_dir_env == "" ) {
-    warning("Warning: SPANISH_OD_DATA_DIR is not set. Using the temporary directory, which is not recommended, as the data will be deleted when the session ends.\n\n To set the data directory, use Sys.setenv(SPANISH_OD_DATA_DIR = '/path/to/data').")
+    warning("Warning: SPANISH_OD_DATA_DIR is not set. Using the temporary directory, which is not recommended, as the data will be deleted when the session ends.\n\n To set the data directory, use `Sys.setenv(SPANISH_OD_DATA_DIR = '/path/to/data')` or set SPANISH_OD_DATA_DIR permanently in the environment by editing the `.Renviron` file locally for current project with `usethis::edit_r_environ('project')` or `file.edit('.Renviron')` or globally for all projects with `usethis::edit_r_environ('user')` or `file.edit('~/.Renviron')`.")
     data_dir_env = tempdir() # if not set, use the temp directory
   }
   return(fs::path_real(data_dir_env))
