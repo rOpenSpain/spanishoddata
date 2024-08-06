@@ -243,7 +243,7 @@ spod_download_od_v1 <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
   
-  downloaded_files <- spod_download_tables(
+  downloaded_files <- spod_download_data(
     date_range = date_range,
     dates_list = dates_list,
     date_regex = date_regex,
@@ -268,11 +268,16 @@ spod_download_od_v1 <- function(
 #' @export 
 #' @example 
 #'\dontrun{
-#' spod_download_tables(type = "od", zones = "districts", date_range = c("2020-02-14", "2020-02-15"))
-#' spod_download_tables(type = "os", zones = "municipalities", date_range = c("2020-02-14", "2020-02-15"))
-#' spod_download_tables(type = "tpp", zones = "districts", date_range = c("2020-02-14", "2020-02-15"))
+#' # Download the origin-destination on district level for the a date range in March 2020
+#' spod_download_tables(type = "od", zones = "districts", date_range = c("2020-03-20", "2020-03-24"), ver = 1)
+#' 
+#' # Download the origin-destination on district level for select dates in 2020 and 2021
+#' spod_download_tables(type = "od", zones = "districts", dates_list = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24"), ver = 1)
+#' 
+#' # Download the origin-destination on district level using regex for a date range in March 2020 (the regex will capture the dates 2020-03-20 to 2020-03-24)
+#' spod_download_tables(type = "od", zones = "districts", date_regex = "2020032[0-4]", ver = 1)
 #' }
-spod_download_tables <- function(
+spod_download_data <- function(
   type = c(
     "od", "origin-destination",
     "os", "overnight_stays",
