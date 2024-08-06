@@ -210,7 +210,7 @@ spod_get_od_v1 <- function(
   data_dir = spod_get_data_dir(),
   read_fun = duckdb::tbl_file
 ) {
-  # Processing of the date arguments is performed in subsequent functions, because we would want the downloading functions to be able to use the same date arguments for flexibility. So `spod_download_tables()` will handle the date arguments.`
+  # Processing of the date arguments is performed in subsequent functions, because we would want the downloading functions to be able to use the same date arguments for flexibility. So `spod_download_data()` will handle the date arguments.`
   
   zones <- match.arg(zones)
   
@@ -259,7 +259,7 @@ spod_download_od_v1 <- function(
 #' This function downloads the data files of the specified type, zones, dates and data version.
 #' @param type The type of data to download. Can be "origin-destination" (or ust "od"), or "trips_per_person" (or just "tpp") for v1 data. For v2 data "overnight_stays" (or just "os") is also available. More data types to be supported in the future. See respective codebooks for more information. [ADD CODEBOOKS!]
 #' @param zones The zones for which to download the data. Can be "districts" (or "dist", "distr") or "municipalities" (or "muni", "municip") for v1 data. Additionaly, these can be "urban_areas" (GAUs) for v2 data.
-#' @param date_range A character vector of dates in ISO format (YYYY-MM-DD) to download the data for.
+#' @param date_range A character vector of dates, length 2, in ISO format (YYYY-MM-DD) to download the data for. Defaults to NULL.
 #' @param dates_list A character vector of dates in ISO format (YYYY-MM-DD) to download the data for. Defaults to NULL.
 #' @param date_regex A regular expression to match the dates of the data to download. Defaults to NULL.
 #' @param ver The version of the data to use. Defaults to 1. Can be 1 or 2.
@@ -269,13 +269,13 @@ spod_download_od_v1 <- function(
 #' @example 
 #'\dontrun{
 #' # Download the origin-destination on district level for the a date range in March 2020
-#' spod_download_tables(type = "od", zones = "districts", date_range = c("2020-03-20", "2020-03-24"), ver = 1)
+#' spod_download_data(type = "od", zones = "districts", date_range = c("2020-03-20", "2020-03-24"), ver = 1)
 #' 
 #' # Download the origin-destination on district level for select dates in 2020 and 2021
-#' spod_download_tables(type = "od", zones = "districts", dates_list = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24"), ver = 1)
+#' spod_download_data(type = "od", zones = "dist", dates_list = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24"), ver = 1)
 #' 
-#' # Download the origin-destination on district level using regex for a date range in March 2020 (the regex will capture the dates 2020-03-20 to 2020-03-24)
-#' spod_download_tables(type = "od", zones = "districts", date_regex = "2020032[0-4]", ver = 1)
+#' # Download the origin-destination on municipality level using regex for a date range in March 2020 (the regex will capture the dates 2020-03-20 to 2020-03-24)
+#' spod_download_data(type = "od", zones = "municip", date_regex = "2020032[0-4]", ver = 1)
 #' }
 spod_download_data <- function(
   type = c(
