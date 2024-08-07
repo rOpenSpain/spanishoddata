@@ -1,4 +1,9 @@
+# Ignore all gz files
 *.gz
+
+# Exceptions for gz files in inst/extdata
+!inst/extdata/*.gz
+
 movilidad.duckdb
 .Rhistory
 zonificacion_distritos*
