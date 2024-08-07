@@ -126,7 +126,7 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
 #' It can retrieve either "distritos" or "municipios" zones data.
 #'
 #' @param data_dir The directory where the data is stored.
-#' @param type The type of zones data to retrieve ("distritos" or "municipios").
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`) or `"municipalities"` (or `"muni"`, `"municip"`).
 #' @return A spatial object containing the zones data.
 #' @export
 #' @examples
@@ -134,13 +134,15 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
 #'   zones <- spod_get_zones()
 #' }
 spod_get_zones_v1 <- function(
-  type = c("distritos", "municipios"),
+  zones = c("districts", "dist", "distr",
+    "municipalities", "muni", "municip"),
   data_dir = spod_get_data_dir()
 ) {
-  type <- match.arg(type)
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
 
   # check if shp files are already extracted
-  expected_gpkg_path <- fs::path(data_dir, glue::glue("clean_data/v1//zones/{type}_mitma.gpkg"))
+  expected_gpkg_path <- fs::path(data_dir, glue::glue("clean_data/v1//zones/{zones}_mitma.gpkg"))
   if (fs::file_exists(expected_gpkg_path)) {
     message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
     return(sf::read_sf(expected_gpkg_path))
@@ -149,7 +151,7 @@ spod_get_zones_v1 <- function(
   # if data is not available, download, extract, clean and save it to gpkg
 
   metadata <- spod_available_data_v1(data_dir, check_local_files = FALSE)
-  regex <- glue::glue("zonificacion_{type}\\.")
+  regex <- glue::glue("zonificacion_{zones}\\.")
   sel_zones <- stringr::str_detect(metadata$target_url, regex)
   metadata_zones <- metadata[sel_zones, ]
   dir_name <- fs::path_dir(metadata_zones$local_path[1])
@@ -174,7 +176,7 @@ spod_get_zones_v1 <- function(
   junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
   if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
 
-  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("**{type}/*.shp"), recurse = TRUE)
+  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("**{zones}/*.shp"), recurse = TRUE)
 
   zones <- spod_clean_zones_v1(zones_path)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
