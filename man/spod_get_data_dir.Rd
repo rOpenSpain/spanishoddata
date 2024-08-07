@@ -4,7 +4,7 @@
 \alias{spod_get_data_dir}
 \title{Get the data directory}
 \usage{
-spod_get_data_dir()
+spod_get_data_dir(quiet = FALSE)
 }
 \value{
 The data directory.
