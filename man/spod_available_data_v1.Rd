@@ -12,6 +12,10 @@ spod_available_data_v1(
 }
 \arguments{
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
+
+\item{check_local_files}{Whether to check if the local files exist. Defaults to \code{FALSE}.}
+
+\item{quiet}{Whether to suppress messages. Defaults to \code{FALSE}.}
 }
 \value{
 A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.

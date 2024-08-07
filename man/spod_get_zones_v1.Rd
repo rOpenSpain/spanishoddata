@@ -5,12 +5,12 @@
 \title{Retrieves the zones for v1 data}
 \usage{
 spod_get_zones_v1(
-  type = c("distritos", "municipios"),
+  zones = c("districts", "dist", "distr", "municipalities", "muni", "municip"),
   data_dir = spod_get_data_dir()
 )
 }
 \arguments{
-\item{type}{The type of zones data to retrieve ("distritos" or "municipios").}
+\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}).}
 
 \item{data_dir}{The directory where the data is stored.}
 }

@@ -33,6 +33,8 @@ spod_get_latest_v1_file_list <- function(
 #' This function provides a table of the available data list of MITMA v1 (2020-2021), both remote and local.
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
+#' @param check_local_files Whether to check if the local files exist. Defaults to `FALSE`.
+#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
 #' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
 #' \describe{
 #'   \item{target_url}{\code{character}. The URL link to the data file.}

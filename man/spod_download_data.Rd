@@ -44,3 +44,19 @@ A character vector of the paths to the downloaded files. Unless \code{return_out
 \description{
 This function downloads the data files of the specified type, zones, dates and data version.
 }
+\examples{
+\dontrun{
+# Download the origin-destination on district level for the a date range in March 2020
+spod_download_data(type = "od", zones = "districts", 
+                   date_range = c("2020-03-20", "2020-03-24"))
+
+# Download the origin-destination on district level for select dates in 2020 and 2021
+spod_download_data(type = "od", zones = "dist", 
+                   dates_list = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24"))
+
+# Download the origin-destination on municipality level using regex for a date range in March 2020 
+# (the regex will capture the dates 2020-03-20 to 2020-03-24)
+spod_download_data(type = "od", zones = "municip", 
+                   date_regex = "2020032[0-4]")
+}
+}
