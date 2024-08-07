@@ -2,7 +2,6 @@
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
-#' @param current_timestamp The current timestamp to keep track of the version of the remote file list. Defaults to the current date.
 #'
 #' @return The path to the downloaded XML file.
 #' @export
@@ -12,12 +11,13 @@
 #' }
 spod_get_latest_v2_xml = function(
     data_dir = spod_get_data_dir(),
-    xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
-    current_timestamp = format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE, tz = "UTC")) {
+    xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
+) {
   if (!fs::dir_exists(data_dir)) {
     fs::dir_create(data_dir)
   }
 
+  current_timestamp = format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE, tz = "UTC")
   current_filename = glue::glue("{data_dir}/data_links_v2_{current_timestamp}.xml")
 
   message("Saving the file to: ", current_filename)
