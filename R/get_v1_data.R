@@ -212,7 +212,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #' Retrieve the origin-destination v1 data (2020-2021)
 #' 
 #' This function retrieves the v1 (2020-2021) origin-destination data from the specified data directory.
-#' 
+#' @param read_fun The function to read the data. Defaults to `duckdb::tbl_file`.
 #' @inheritParams spod_download_data
 #' @return A tibble with the origin-destination data.
 spod_get_od <- function(

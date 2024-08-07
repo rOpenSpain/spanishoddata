@@ -1,4 +1,4 @@
-#' Download the data files of specified type, zones, dates and data version
+#' Download the data files of specified type, zones, and dates
 #' 
 #' This function downloads the data files of the specified type, zones, dates and data version.
 #' @param type The type of data to download. Can be `"origin-destination"` (or ust `"od"`), or `"trips_per_person"` (or just `"tpp"`) for v1 data. For v2 data `"overnight_stays"` (or just `"os"`) is also available. More data types to be supported in the future. See respective codebooks for more information. **ADD CODEBOOKS! to the package**

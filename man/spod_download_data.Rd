@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data.R
 \name{spod_download_data}
 \alias{spod_download_data}
-\title{Download the data files of specified type, zones, dates and data version}
+\title{Download the data files of specified type, zones, and dates}
 \usage{
 spod_download_data(
   type = c("od", "origin-destination", "os", "overnight_stays", "tpp",

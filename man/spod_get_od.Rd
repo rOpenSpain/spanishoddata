@@ -30,6 +30,8 @@ The possible values can be any of the following:
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 
 \item{quiet}{Logical. If \code{TRUE}, the function does not print messages to the console. Defaults to \code{FALSE}.}
+
+\item{read_fun}{The function to read the data. Defaults to \code{duckdb::tbl_file}.}
 }
 \value{
 A tibble with the origin-destination data.

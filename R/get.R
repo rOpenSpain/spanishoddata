@@ -30,6 +30,7 @@ spod_get_latest_v2_xml = function(
 #' This function retrieves the data dictionary for the specified data directory.
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
+#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
 #' @return The data dictionary.
 #' @export
 #' @examples
