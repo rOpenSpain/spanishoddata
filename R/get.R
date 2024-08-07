@@ -39,14 +39,14 @@ spod_get_latest_v2_xml = function(
 #' names(metadata)
 #' head(metadata)
 #' }
-spod_get_metadata = function(data_dir = spod_get_data_dir()) {
+spod_get_metadata = function(data_dir = spod_get_data_dir(), quiet = FALSE) {
     xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
   latest_data_links_xml_path = utils::tail(xml_files_list, 1)
   if (length(latest_data_links_xml_path) == 0) {
-    message("Getting latest data links xml")
+    if(isFALSE(quiet)) message("Getting latest data links xml")
     latest_data_links_xml_path = spod_get_latest_v2_xml(data_dir = data_dir)
   } else {
-    message("Using existing data links xml: ", latest_data_links_xml_path)
+    if(isFALSE(quiet)) message("Using existing data links xml: ", latest_data_links_xml_path)
   }
 
   x_xml = xml2::read_xml(latest_data_links_xml_path)
@@ -81,10 +81,10 @@ spod_get_metadata = function(data_dir = spod_get_data_dir()) {
 #' 
 #' @return The data directory.
 #' @keywords internal
-spod_get_data_dir = function() {
+spod_get_data_dir = function(quiet = FALSE) {
   data_dir_env = Sys.getenv("SPANISH_OD_DATA_DIR")
   if( data_dir_env == "" ) {
-    warning("Warning: SPANISH_OD_DATA_DIR is not set. Using the temporary directory, which is not recommended, as the data will be deleted when the session ends.\n\n To set the data directory, use `Sys.setenv(SPANISH_OD_DATA_DIR = '/path/to/data')` or set SPANISH_OD_DATA_DIR permanently in the environment by editing the `.Renviron` file locally for current project with `usethis::edit_r_environ('project')` or `file.edit('.Renviron')` or globally for all projects with `usethis::edit_r_environ('user')` or `file.edit('~/.Renviron')`.")
+    if (isFALSE(quiet)) warning("Warning: SPANISH_OD_DATA_DIR is not set. Using the temporary directory, which is not recommended, as the data will be deleted when the session ends.\n\n To set the data directory, use `Sys.setenv(SPANISH_OD_DATA_DIR = '/path/to/data')` or set SPANISH_OD_DATA_DIR permanently in the environment by editing the `.Renviron` file locally for current project with `usethis::edit_r_environ('project')` or `file.edit('.Renviron')` or globally for all projects with `usethis::edit_r_environ('user')` or `file.edit('~/.Renviron')`.")
     data_dir_env = tempdir() # if not set, use the temp directory
   }
   return(fs::path_real(data_dir_env))
