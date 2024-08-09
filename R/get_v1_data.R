@@ -232,7 +232,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #'   \item{month}{\code{double}. The month of the trip.}
 #'   \item{day}{\code{double}. The day of the trip.}
 #' }
-#' 
+#' @export 
 spod_get_od_v1 <- function(
   zones = c("districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios"),
