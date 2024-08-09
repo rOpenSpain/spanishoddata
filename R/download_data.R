@@ -39,10 +39,6 @@ spod_download_data <- function(
   quiet = FALSE,
   return_output = TRUE
 ) {
-  # convert english data type names to spanish words used in the default data paths
-  type <- match.arg(type)
-  type <- spod_match_data_type(type = type, ver = ver)
-  
   # convert english zone names to spanish words used in the default data paths
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
@@ -55,6 +51,10 @@ spod_download_data <- function(
   # replace this argument with automatic version detection based on the dates requested?
   ver <- spod_infer_data_v_from_dates(dates_to_use) # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1() or spod_get_metadata(). This results in reading the xml files with metadata for the second time. This is not optimal and should be fixed.
   if (isFALSE(quiet)) message("Data version detected from dates: ", ver)
+  
+  # convert english data type names to spanish words used in the default data paths
+  type <- match.arg(type)
+  type <- spod_match_data_type(type = type, ver = ver)
   
   
   
