@@ -13,3 +13,5 @@ private
 
 /.quarto/
 .Rproj.user
+inst/doc
+.Renviron
