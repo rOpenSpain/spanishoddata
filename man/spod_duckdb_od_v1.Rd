@@ -44,7 +44,7 @@ The structure of the cleaned up views \code{od} and \code{od_filtered} is as fol
 \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
 \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work').}
 \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other').}
-\item{residence_province}{\code{factor}. The province of residence for the individual making the trip.}
+\item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g. 'Cuenca', 'Girona').}
 \item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
 \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
 \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}

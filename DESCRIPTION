@@ -23,6 +23,7 @@ Depends:
 Imports: 
     curl,
     DBI,
+    dplyr,
     duckdb,
     fs,
     glue,
