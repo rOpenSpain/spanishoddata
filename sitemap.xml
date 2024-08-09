@@ -5,9 +5,20 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/spod_available_data_v1.html</loc></url>
+<url><loc>/reference/spod_clean_zones_v1.html</loc></url>
+<url><loc>/reference/spod_dates_argument_to_dates_seq.html</loc></url>
+<url><loc>/reference/spod_download_data.html</loc></url>
+<url><loc>/reference/spod_expand_dates_from_regex.html</loc></url>
 <url><loc>/reference/spod_get.html</loc></url>
+<url><loc>/reference/spod_get_data_dir.html</loc></url>
+<url><loc>/reference/spod_get_latest_v1_file_list.html</loc></url>
 <url><loc>/reference/spod_get_latest_v2_xml.html</loc></url>
 <url><loc>/reference/spod_get_metadata.html</loc></url>
+<url><loc>/reference/spod_get_od.html</loc></url>
 <url><loc>/reference/spod_get_zones.html</loc></url>
+<url><loc>/reference/spod_get_zones_v1.html</loc></url>
+<url><loc>/reference/spod_is_data_version_overlaps.html</loc></url>
+<url><loc>/reference/spod_match_data_type.html</loc></url>
 </urlset>
 
