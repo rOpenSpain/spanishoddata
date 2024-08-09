@@ -1,6 +1,9 @@
-# change subfolder name for raw data cache here to apply globally
+#' Change subfolder name for raw data cache here to apply globally
+#' @param ver Integer. The version of the data. Must be 1 or 2.
+#' @return Character string with the subfolder name for the raw data cache.
+#' @keywords internal
 spod_subfolder_raw_data_cache <- function(ver = 1) {
-  rlang:::check_number_whole(ver)
+  ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
   }

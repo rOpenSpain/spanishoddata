@@ -2,7 +2,7 @@
 #' 
 #' This function downloads the data files of the specified type, zones, dates and data version.
 #' @param type The type of data to download. Can be `"origin-destination"` (or ust `"od"`), or `"trips_per_person"` (or just `"tpp"`) for v1 data. For v2 data `"overnight_stays"` (or just `"os"`) is also available. More data types to be supported in the future. See respective codebooks for more information. **ADD CODEBOOKS! to the package**
-#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`) or `"municipalities"` (or `"muni"`, `"municip"`) for v1 data. Additionaly, these can be `"large_urban_areas"` (or `"lau"`) for v2 data.
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`). Additionaly, these can be `"large_urban_areas"` (or `"lau"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data.
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set.
 #' @param quiet Logical. If `TRUE`, the function does not print messages to the console. Defaults to `FALSE`.
@@ -31,9 +31,9 @@ spod_download_data <- function(
     "od", "origin-destination",
     "os", "overnight_stays",
     "tpp", "trips_per_person"),
-  zones = c("districts", "dist", "distr",
-    "municipalities", "muni", "municip",
-    "lau", "large_urban_areas"), # implement "urban_areas" for v2 data
+  zones = c("districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"), # implement "urban_areas" for v2 data
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
@@ -43,13 +43,12 @@ spod_download_data <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
   
-  # this is where the date arguments are processed
-  # for all the wrapper functions that use the spod_download_data() function the dates are also processed here
   dates_to_use <- spod_dates_argument_to_dates_seq(dates = dates)
+
 
   # check version
   # replace this argument with automatic version detection based on the dates requested?
-  ver <- spod_infer_data_v_from_dates(dates_to_use) # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1() or spod_get_metadata(). This results in reading the xml files with metadata for the second time. This is not optimal and should be fixed.
+  ver <- spod_infer_data_v_from_dates(dates_to_use) # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1() or spod_get_metadata(). This results in reading thedates_to_use <- spod_dates_argument_to_dates_seq(dates = dates) xml files with metadata for the second time. This is not optimal and should be fixed.
   if (isFALSE(quiet)) message("Data version detected from dates: ", ver)
   
   # convert english data type names to spanish words used in the default data paths

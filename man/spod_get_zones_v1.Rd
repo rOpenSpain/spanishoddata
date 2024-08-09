@@ -5,14 +5,18 @@
 \title{Retrieves the zones for v1 data}
 \usage{
 spod_get_zones_v1(
-  zones = c("districts", "dist", "distr", "municipalities", "muni", "municip"),
-  data_dir = spod_get_data_dir()
+  zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
+    "municip", "municipios"),
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
 )
 }
 \arguments{
-\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}).}
+\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}).}
 
 \item{data_dir}{The directory where the data is stored.}
+
+\item{quiet}{Whether to suppress messages. Defaults to \code{FALSE}.}
 }
 \value{
 A spatial object containing the zones data.

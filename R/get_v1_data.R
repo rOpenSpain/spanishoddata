@@ -128,7 +128,8 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
 #' It can retrieve either "distritos" or "municipios" zones data.
 #'
 #' @param data_dir The directory where the data is stored.
-#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`) or `"municipalities"` (or `"muni"`, `"municip"`).
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
+#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
 #' @return A spatial object containing the zones data.
 #' @export
 #' @examples
@@ -136,9 +137,10 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
 #'   zones <- spod_get_zones()
 #' }
 spod_get_zones_v1 <- function(
-  zones = c("districts", "dist", "distr",
-    "municipalities", "muni", "municip"),
-  data_dir = spod_get_data_dir()
+  zones = c("districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios"),
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
 ) {
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
@@ -146,7 +148,7 @@ spod_get_zones_v1 <- function(
   # check if shp files are already extracted
   expected_gpkg_path <- fs::path(data_dir, glue::glue("clean_data/v1//zones/{zones}_mitma.gpkg"))
   if (fs::file_exists(expected_gpkg_path)) {
-    message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
+    if (isFALSE(quiet)) message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
     return(sf::read_sf(expected_gpkg_path))
   }
 
@@ -162,14 +164,14 @@ spod_get_zones_v1 <- function(
   }
 
   if (!fs::file_exists(metadata_zones$local_path)) {
-    message("Downloading the file to: ", metadata_zones$local_path)
+    if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
     downloaded_file <- curl::curl_download(metadata_zones$target_url, destfile = metadata_zones$local_path, mode = "wb", quiet = FALSE)
   } else {
-    message("File already exists: ", metadata_zones$local_path)
+    if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
     downloaded_file <- metadata_zones$local_path
   }
 
-  message("Unzipping the file: ", downloaded_file)
+  if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
   utils::unzip(downloaded_file,
     exdir = fs::path_dir(downloaded_file)
   )
@@ -209,35 +211,81 @@ spod_clean_zones_v1 <- function(zones_path) {
 }
 
 
-#' Retrieve the origin-destination v1 data (2020-2021)
+#' Load the origin-destination v1 data (2020-2021) for specified dates
 #' 
-#' This function retrieves the v1 (2020-2021) origin-destination data from the specified data directory.
-#' @param read_fun The function to read the data. Defaults to `duckdb::tbl_file`.
+#' This function retrieves the v1 (2020-2021) origin_destination_data for the specified dates. It checks if the requested data is already cached locally and downloads it if it is not. When all the requested data is cached, it creates a `DuckDB` connection to the cache data folder and provides an table
 #' @inheritParams spod_download_data
-#' @return A tibble with the origin-destination data.
-spod_get_od <- function(
+#' @return A duckdb table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`. The structure of the object is as follows:
+#' 
+#' \describe{
+#'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
+#'   \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
+#'   \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
+#'   \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work').}
+#'   \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other').}
+#'   \item{residence_province}{\code{factor}. The province of residence for the individual making the trip.}
+#'   \item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
+#'   \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
+#'   \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}
+#'   \item{trips_total_length_km}{\code{double}. The total length of all trips in kilometers for the specified time slot and distance.}
+#'   \item{year}{\code{double}. The year of the trip.}
+#'   \item{month}{\code{double}. The month of the trip.}
+#'   \item{day}{\code{double}. The day of the trip.}
+#' }
+#' 
+spod_get_od_v1 <- function(
   zones = c("districts", "dist", "distr",
     "municipalities", "muni", "municip"), # add "urban_areas" for v2 data
   dates = NULL,
   data_dir = spod_get_data_dir(),
-  quiet = FALSE,
-  read_fun = duckdb::tbl_file
+  quiet = FALSE
 ) {
-  # Processing of the date arguments is performed in `spod_download_data()`
+  # hardcode od as this is a wrapper to get origin-destiation data
+  type <- "od"
   
   zones <- match.arg(zones)
   
+  dates <- spod_dates_argument_to_dates_seq(dates = dates)
+  
   # use the spot_download_data() function to download any missing data
-  downloaded_files <- spod_download_data(
-    type = "od",
+  spod_download_data(
+    type = type,
+    zones = zones,
+    dates = dates,
+    data_dir = data_dir,
+    return_output = FALSE
+  )
+
+  # attach the od folder with predefined and cleaned up data types
+  con <- spod_duckdb_od_v1(
     zones = zones,
     dates = dates,
     data_dir = data_dir
   )
 
+  # DBI::dbListTables(con) # for debugging only
+  # dplyr::tbl(con, "trips_view") |> dplyr::glimpse() # for debugging only
+  # DBI::dbDisconnect(con) # for debugging only
+  
+  # speed comparison REMOVE a bit later AFTER TESTING
+  # b1 <- bench::mark(iterations = 5, check = FALSE,
+  #   hive_date = {dplyr::tbl(con, "trips") |>
+  #     dplyr::distinct(full_date) |> 
+  #     dplyr::collect()}, # this is prefiltered using custom SQL query using only the columns (year, month, day) that we know are constructed from the hive style partitioning
+  #   full_date = {dplyr::tbl(con, "trips_view") |>
+  #     dplyr::filter(full_date %in% dates) |>
+  #     dplyr::distinct(full_date) |>
+  #     dplyr::collect()} # this is causing DuckDB to scan ALL csv.gz files in the folder because it has to match the desired dates with full_date column
+  # )
+  # bench:::plot.bench_mark(b1, type = "violin") + ggpubr::theme_pubclean(base_size = 24)
+  
+  # perhaps let's not confuse the user with the duckdb connection, see help for the @return of the spod_duckdb_od_v1() function
+  # return(con)
 
-  # read data from cached files
+  # return the tbl conection for user friendly data manipulation
+  # this may have an implication that there is no way for the user to properly disconnect the db connection, should think how this can be addressed
+  # not a problem! can be done with:
+  # DBI::dbDisconnect(od$src$con)
   
-  
-  
+  return(dplyr::tbl(con, "od_filtered"))
 }

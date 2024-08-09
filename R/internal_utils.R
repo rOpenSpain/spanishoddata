@@ -147,9 +147,12 @@ spod_expand_dates_from_regex <- function(date_regex) {
   return(matching_dates)
 }
 
-
+#' Get valid dates for the specified data version
+#' @param ver The version of the data to use. Defaults to 1. Can be 1 or 2.
+#' @return A Dates vector of valid dates for the specified data version.
+#' @keywords internal
 spod_get_valid_dates <- function(ver = 1) {
-  rlang:::check_number_whole(ver)
+  ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
   }  
@@ -174,15 +177,18 @@ spod_get_valid_dates <- function(ver = 1) {
 
 
 spod_zone_names_en2es <- function(
-  zones = c("districts", "dist", "distr",
-    "municipalities", "muni", "municip")
+  zones = c("districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas")
 ) {
   zones <- tolower(zones)
   zones <- match.arg(zones)
-  if(zones %in% c("districts", "dist", "distr")) {
+  if (zones %in% c("districts", "dist", "distr", "distritos")) {
     return("distritos")
-  } else if(zones %in% c("municipalities", "muni", "municip")) {
+  } else if (zones %in% c("municipalities", "muni", "municip", "municipios")) {
     return("municipios")
+  } else if (zones %in% c("lau", "large_urban_areas", "gau", "grandes_areas_urbanas")) {
+    return("GAU")
   }
 }
 
@@ -197,7 +203,6 @@ spod_match_data_type <- function(
     "tpp", "trips_per_person"),
   ver = c(1, 2)
 ){
-  rlang:::check_number_whole(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
   }
@@ -225,4 +230,35 @@ spod_match_data_type <- function(
 
   # need to add a warning here that the type is not recognized
   return(NULL)
+}
+
+
+#' Function to generate the SQL query from a sequence of dates
+#' @param dates A Dates vector of dates to process.
+#' @return A character vector of the SQL query.
+#' @keywords internal
+spod_sql_where_dates <- function(dates) {
+  # Extract unique year, month, and day combinations from the dates
+  date_parts <- data.frame(
+    year = format(dates, "%Y"),
+    month = format(dates, "%m"),
+    day = format(dates, "%d")
+  )
+  
+  # Get distinct rows and sort them by year, month, and day
+  date_parts <- date_parts[!duplicated(date_parts), ]
+  date_parts <- date_parts[order(date_parts$year, date_parts$month, date_parts$day), ]
+  
+  # Create the WHERE conditions for each unique date
+  where_conditions <- stats::aggregate(day ~ year + month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
+  where_conditions$condition <- paste0("(year = ", where_conditions$year, 
+    " AND month = ", where_conditions$month, 
+    " AND day IN (", where_conditions$day, "))")
+  
+  # Combine all conditions into a single WHERE clause
+  sql_query <- paste0("WHERE ",
+    paste(where_conditions$condition, collapse = " OR ")
+  )
+  
+  return(sql_query)
 }
