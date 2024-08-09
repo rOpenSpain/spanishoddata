@@ -15,3 +15,5 @@ private
 .Rproj.user
 inst/doc
 .Renviron
+/doc/
+/Meta/

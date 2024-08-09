@@ -31,20 +31,20 @@ The possible values can be any of the following:
 \value{
 A duckdb connection object with 3 views:
 \itemize{
-\item \code{all_od_v1_csv_files} - a raw table view of all cached CSV files with the origin-destination data that has benn previosly cached in $SPANISH_OD_DATA_DIR
-\item \verb{od`` - a cleaned-up table view of }all_od_v1_csv_files` with column names and values translated and mapped to English. This still includes all cached data
-\item \code{od_filtered} - a filtered view of \code{od} with the desired dates
+\item \code{all_od_v1_csv_files} - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+\item \code{od} - a cleaned-up table view of \code{all_od_v1_csv_files} with column names and values translated and mapped to English. This still includes all cached data.
+\item \code{od_filtered} - a filtered view of \code{od} with the desired dates.
 }
 
-The structure of the cleaned up views \code{od} and \code{od_filtered} is as follows:
+The structure of the cleaned-up views \code{od} and \code{od_filtered} is as follows:
 
 \describe{
 \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
 \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
 \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
-\item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work'). \txtbf{Note:} Only available for district level data.}
-\item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other'). \txtbf{Note:} Only available for district level data.}
-\item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g. 'Cuenca', 'Girona'). \txtbf{Note:} Only available for district level data.}
+\item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work'). \strong{Note:} Only available for district level data.}
+\item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other'). \strong{Note:} Only available for district level data.}
+\item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g., 'Cuenca', 'Girona'). Provinces are stored as factors, and are encoded in a way that the province code can be used for queries. \strong{Note:} Only available for district level data.}
 \item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
 \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
 \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}
@@ -56,14 +56,14 @@ The structure of the cleaned up views \code{od} and \code{od_filtered} is as fol
 
 The structure of the original data in \code{all_od_v1_csv_files} is as follows:
 
-#' \describe{
+\describe{
 \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}
 \item{origen}{\code{character}. The identifier for the origin location of the trip, formatted as a character string (e.g., '01001_AM').}
 \item{destino}{\code{character}. The identifier for the destination location of the trip, formatted as a character string (e.g., '01001_AM').}
 \item{actividad_origen}{\code{character}. The type of activity at the origin location (e.g., 'casa', 'trabajo').}
 \item{actividad_destino}{\code{character}. The type of activity at the destination location (e.g., 'otros', 'trabajo').}
-\item{residencia}{\code{character}. The code representing the residence of the individual making the trip (e.g., '01').}
-\item{edad}{\code{character}. The age of the individual making the trip, if available. This field may contain 'NA' if the age is not recorded.}
+\item{residencia}{\code{character}. The code representing the residence of the individual making the trip (e.g., '01') according to the official INE classification.}
+\item{edad}{\code{character}. The age of the individual making the trip. This data is actaully filled with 'NA' values, which is why this column is removed in the cleaned-up and translated view described above.}
 \item{periodo}{\code{integer}. The time period during which the trip started, represented as an integer (e.g., 0, 1, 2).}
 \item{distancia}{\code{character}. The distance category of the trip, represented as a character string (e.g., '002-005' for 2-5 km).}
 \item{viajes}{\code{double}. The number of trips taken within the specified time period and distance.}
