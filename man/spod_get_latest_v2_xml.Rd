@@ -6,17 +6,13 @@
 \usage{
 spod_get_latest_v2_xml(
   data_dir = spod_get_data_dir(),
-  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
-  current_timestamp = format(Sys.time(), format = "\%Y-\%m-\%d", usetz = FALSE, tz =
-    "UTC")
+  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
 )
 }
 \arguments{
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
 
 \item{xml_url}{The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".}
-
-\item{current_timestamp}{The current timestamp to keep track of the version of the remote file list. Defaults to the current date.}
 }
 \value{
 The path to the downloaded XML file.

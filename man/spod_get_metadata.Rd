@@ -4,10 +4,12 @@
 \alias{spod_get_metadata}
 \title{Get the data dictionary}
 \usage{
-spod_get_metadata(data_dir = spod_get_data_dir())
+spod_get_metadata(data_dir = spod_get_data_dir(), quiet = FALSE)
 }
 \arguments{
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
+
+\item{quiet}{Whether to suppress messages. Defaults to \code{FALSE}.}
 }
 \value{
 The data dictionary.

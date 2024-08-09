@@ -2,7 +2,6 @@
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
-#' @param current_timestamp The current timestamp to keep track of the version of the remote file list. Defaults to the current date.
 #'
 #' @return The path to the downloaded XML file.
 #' @export
@@ -12,13 +11,14 @@
 #' }
 spod_get_latest_v2_xml = function(
     data_dir = spod_get_data_dir(),
-    xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
-    current_timestamp = format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE, tz = "UTC")) {
+    xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
+) {
   if (!fs::dir_exists(data_dir)) {
     fs::dir_create(data_dir)
   }
 
-  current_filename = glue::glue("{data_dir}/data_links_{current_timestamp}.xml")
+  current_timestamp = format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE, tz = "UTC")
+  current_filename = glue::glue("{data_dir}/data_links_v2_{current_timestamp}.xml")
 
   message("Saving the file to: ", current_filename)
   xml_requested = curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
@@ -30,6 +30,7 @@ spod_get_latest_v2_xml = function(
 #' This function retrieves the data dictionary for the specified data directory.
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
+#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
 #' @return The data dictionary.
 #' @export
 #' @examples
@@ -39,14 +40,14 @@ spod_get_latest_v2_xml = function(
 #' names(metadata)
 #' head(metadata)
 #' }
-spod_get_metadata = function(data_dir = spod_get_data_dir()) {
-  xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_") |> sort()
+spod_get_metadata = function(data_dir = spod_get_data_dir(), quiet = FALSE) {
+    xml_files_list = fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
   latest_data_links_xml_path = utils::tail(xml_files_list, 1)
   if (length(latest_data_links_xml_path) == 0) {
-    message("Getting latest data links xml")
+    if(isFALSE(quiet)) message("Getting latest data links xml")
     latest_data_links_xml_path = spod_get_latest_v2_xml(data_dir = data_dir)
   } else {
-    message("Using existing data links xml: ", latest_data_links_xml_path)
+    if(isFALSE(quiet)) message("Using existing data links xml: ", latest_data_links_xml_path)
   }
 
   x_xml = xml2::read_xml(latest_data_links_xml_path)
@@ -74,12 +75,24 @@ spod_get_metadata = function(data_dir = spod_get_data_dir()) {
   return(download_dt)
 }
 
-spod_get_data_dir = function() {
+#' Get the data directory
+#' 
+#' This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
+#' If the environment variable is not set, it returns the temporary directory.
+#' 
+#' @return The data directory.
+#' @keywords internal
+spod_get_data_dir = function(quiet = FALSE) {
   data_dir_env = Sys.getenv("SPANISH_OD_DATA_DIR")
-  if (data_dir_env == "") {
-    data_dir_env = tempdir()
+  if( data_dir_env == "" ) {
+    if (isFALSE(quiet)) warning("Warning: SPANISH_OD_DATA_DIR is not set. Using the temporary directory, which is not recommended, as the data will be deleted when the session ends.\n\n To set the data directory, use `Sys.setenv(SPANISH_OD_DATA_DIR = '/path/to/data')` or set SPANISH_OD_DATA_DIR permanently in the environment by editing the `.Renviron` file locally for current project with `usethis::edit_r_environ('project')` or `file.edit('.Renviron')` or globally for all projects with `usethis::edit_r_environ('user')` or `file.edit('~/.Renviron')`.")
+    data_dir_env = tempdir() # if not set, use the temp directory
   }
-  return(data_dir_env)
+  # check if dir exists and create it if it doesn't
+  if (!fs::dir_exists(data_dir_env)) {
+    fs::dir_create(data_dir_env)
+  }
+  return(fs::path_real(data_dir_env))
 }
 
 #' Retrieves the zones data
@@ -104,7 +117,7 @@ spod_get_zones = function(
   metadata_distritos = metadata[sel_distritos, ]
   dir_name = dirname(metadata_distritos$local_path[1])
   if (!fs::dir_exists(dir_name)) {
-    fs::dir_create(dir_name)
+    fs::dir_create(dir_name, recurse = TRUE)
   }
   for (i in 1:nrow(metadata_distritos)) {
     if (!fs::file_exists(metadata_distritos$local_path[i])) {
