@@ -17,9 +17,9 @@
 #'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
 #'   \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
 #'   \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
-#'   \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work').}
-#'   \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other').}
-#'   \item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g. 'Cuenca', 'Girona').}
+#'   \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work'). \txtbf{Note:} Only available for district level data.}
+#'   \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other'). \txtbf{Note:} Only available for district level data.}
+#'   \item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g. 'Cuenca', 'Girona'). \txtbf{Note:} Only available for district level data.}
 #'   \item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
 #'   \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
 #'   \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}
@@ -73,24 +73,49 @@ spod_duckdb_od_v1 <- function(
   con <- DBI::dbConnect(drv, dbdir = ":memory:", read_only = TRUE)
 
   # create view of csv files and preset variable types
-  DBI::dbSendStatement(con,
-    dplyr::sql(
-      glue::glue(
-        "CREATE VIEW all_od_v1_csv_files AS SELECT *
-        FROM read_csv_auto('{csv_folder}**/*.txt.gz', delim='|', header=TRUE, hive_partitioning=TRUE,
-        columns={{
-        'fecha': 'DATE',
-        'origen': 'VARCHAR', 'destino': 'VARCHAR',
-        'actividad_origen': 'VARCHAR', 'actividad_destino': 'VARCHAR',
-        'residencia': 'VARCHAR',
-        'edad': 'VARCHAR',
-        'periodo': 'INTEGER',
-        'distancia': 'VARCHAR',
-        'viajes': 'DOUBLE', 'viajes_km': 'DOUBLE'}},
-        dateformat='%Y%m%d');"
+  if (zones == "distritos") {
+    DBI::dbSendStatement(con,
+      dplyr::sql(
+        glue::glue(
+          "CREATE VIEW all_od_v1_csv_files AS SELECT *
+          FROM read_csv_auto('{csv_folder}**/*.txt.gz', delim='|', header=TRUE, hive_partitioning=TRUE,
+          columns={{
+            'fecha': 'DATE',
+            'origen': 'VARCHAR',
+            'destino': 'VARCHAR',
+            'actividad_origen': 'VARCHAR',
+            'actividad_destino': 'VARCHAR',
+            'residencia': 'VARCHAR',
+            'edad': 'VARCHAR',
+            'periodo': 'INTEGER',
+            'distancia': 'VARCHAR',
+            'viajes': 'DOUBLE',
+            'viajes_km': 'DOUBLE'
+          }},
+          dateformat='%Y%m%d');"
+        )
       )
     )
-  )
+  } else if (zones  == "municipios") {
+    DBI::dbSendStatement(con,
+      dplyr::sql(
+        glue::glue(
+          "CREATE VIEW all_od_v1_csv_files AS SELECT *
+          FROM read_csv_auto('{csv_folder}**/*.txt.gz', delim='|', header=TRUE, hive_partitioning=TRUE,
+          columns={{
+            'fecha': 'DATE',
+            'origen': 'VARCHAR',
+            'destino': 'VARCHAR',
+            'periodo': 'INTEGER',
+            'distancia': 'VARCHAR',
+            'viajes': 'DOUBLE',
+            'viajes_km': 'DOUBLE'
+          }},
+          dateformat='%Y%m%d');"
+        )
+      )
+    )
+  }
 
   # preview table
   # DBI::dbGetQuery(con, "SELECT * FROM all_od_v1_csv_files LIMIT 10") |> dplyr::glimpse() # for debugging
@@ -112,10 +137,12 @@ spod_duckdb_od_v1 <- function(
   )
 
   # create ACTIV_ENUM
-  DBI::dbSendStatement(
+  if (zones == "distritos") {
+    DBI::dbSendStatement(
     con,
     dplyr::sql("CREATE TYPE ACTIV_ENUM AS ENUM ('home', 'work', 'other')")
-  )
+    )
+  }
 
   # create DISTANCE_ENUM    
   DBI::dbSendStatement(
@@ -124,53 +151,72 @@ spod_duckdb_od_v1 <- function(
   )
 
   # create INE province ENUM
-  spod_duckdb_create_province_enum(con)
-  # DBI::dbGetQuery(con, "SELECT enum_range(NULL::INE_PROV_ENUM)") # check that it was created, remove this line when package is stable
-  # for debugging
-  # DBI::dbSendStatement(con, "DROP TYPE INE_PROV_ENUM") # remove this line when package is stable
-  
-  # create second view with desired data types including ENUMs
-  # create view to fix variable types and recode values to English
-  # NOTE: thsi raises non-ASCII character WARNING on R CMD check, so will need to store this query in a text file
-  # load when_then_provinces from a system file in inst/extdata/sql-queries/when-recode-provinces.txt
-  when_then_provinces <- readLines(
-    system.file(
-      "extdata/sql-queries/when-recode-provinces.txt",
-      package = "spanishoddata")) |>
-    paste(collapse = "\n")
+  if (zones == "distritos") {
+    spod_duckdb_create_province_enum(con)
+    # DBI::dbGetQuery(con, "SELECT enum_range(NULL::INE_PROV_ENUM)") # check that it was created, remove this line when package is stable
+    # for debugging
+    # DBI::dbSendStatement(con, "DROP TYPE INE_PROV_ENUM") # remove this line when package is stable
+    
+    # create second view with desired data types including ENUMs
+    # create view to fix variable types and recode values to English
+    # NOTE: thsi raises non-ASCII character WARNING on R CMD check, so will need to store this query in a text file
+    # load when_then_provinces from a system file in inst/extdata/sql-queries/when-recode-provinces.txt
+    when_then_provinces <- readLines(
+      system.file(
+        "extdata/sql-queries/when-recode-provinces.txt",
+        package = "spanishoddata")) |>
+      paste(collapse = "\n")
 
-  # now execute the query pasting in the contents of when_then_provinces
-  DBI::dbSendStatement(con,
-    dplyr::sql(
-      glue::glue(
+    # now execute the query pasting in the contents of when_then_provinces
+    DBI::dbSendStatement(con,
+      dplyr::sql(
+        glue::glue(
+          "CREATE VIEW od AS SELECT
+                            fecha AS full_date,
+          CAST(origen AS ZONES_ENUM) AS id_origin,
+          CAST(destino AS ZONES_ENUM) AS id_destination,
+          CAST(CASE actividad_origen
+            WHEN 'casa' THEN 'home'
+            WHEN 'otros' THEN 'other'
+            WHEN 'trabajo_estudio' THEN 'work'
+            END AS ACTIV_ENUM) AS activity_origin,
+          CAST(CASE actividad_destino
+            WHEN 'casa' THEN 'home'
+            WHEN 'otros' THEN 'other'
+            WHEN 'trabajo_estudio' THEN 'work_or_study'
+            END AS ACTIV_ENUM) AS activity_destination,
+            CAST (CASE residencia
+                {when_then_provinces}
+                END AS INE_PROV_ENUM) AS residence_province,
+          periodo AS time_slot,
+          CAST(distancia AS DISTANCE_ENUM) AS distance,
+          viajes AS n_trips,
+          viajes_km AS trips_total_length_km,
+          year AS year,
+          month AS month,
+          day AS day
+          FROM all_od_v1_csv_files;"
+        )
+      )
+    )
+  } else if (zones == "municipios") {
+    DBI::dbSendStatement(con,
+      dplyr::sql(
         "CREATE VIEW od AS SELECT
-                          fecha AS full_date,
-        CAST(origen AS ZONES_ENUM) AS id_origin,
-        CAST(destino AS ZONES_ENUM) AS id_destination,
-        CAST(CASE actividad_origen
-          WHEN 'casa' THEN 'home'
-          WHEN 'otros' THEN 'other'
-          WHEN 'trabajo_estudio' THEN 'work'
-          END AS ACTIV_ENUM) AS activity_origin,
-        CAST(CASE actividad_destino
-          WHEN 'casa' THEN 'home'
-          WHEN 'otros' THEN 'other'
-          WHEN 'trabajo_estudio' THEN 'work_or_study'
-          END AS ACTIV_ENUM) AS activity_destination,
-          CAST (CASE residencia
-              {when_then_provinces}
-              END AS INE_PROV_ENUM) AS residence_province,
-        periodo AS time_slot,
-        CAST(distancia AS DISTANCE_ENUM) AS distance,
-        viajes AS n_trips,
-        viajes_km AS trips_total_length_km,
-        year AS year,
-        month AS month,
-        day AS day
+          fecha AS full_date,
+          CAST(origen AS ZONES_ENUM) AS id_origin,
+          CAST(destino AS ZONES_ENUM) AS id_destination,
+          periodo AS time_slot,
+          CAST(distancia AS DISTANCE_ENUM) AS distance,
+          viajes AS n_trips,
+          viajes_km AS trips_total_length_km,
+          year AS year,
+          month AS month,
+          day AS day
         FROM all_od_v1_csv_files;"
       )
     )
-  )
+  }
 
   # preview result for debugging
   # DBI::dbGetQuery(con, "SELECT * FROM trips_view LIMIT 10") |> dplyr::glimpse()
