@@ -45,6 +45,20 @@ Load it as follows:
 library(spanishoddata)
 ```
 
+Local development: to load the package locally, clone it and navigate to
+the root of the package in the terminal, e.g. with the following:
+
+``` bash
+gh repo clone Robinlovelace/spanishoddata
+code spanishoddata
+```
+
+then run the following command from the R console:
+
+``` r
+devtools::load_all()
+```
+
 # Setting the data directory
 
 You can specify the data directory globally by setting the
@@ -93,16 +107,16 @@ metadata
     # A tibble: 9,442 × 6
        target_url           pub_ts              file_extension data_ym data_ymd  
        <chr>                <dttm>              <chr>          <date>  <date>    
-     1 https://movilidad-o… 2024-07-16 11:22:03 gz             NA      2022-10-23
-     2 https://movilidad-o… 2024-07-16 11:18:41 gz             NA      2022-10-22
-     3 https://movilidad-o… 2024-07-16 11:15:06 gz             NA      2022-10-20
-     4 https://movilidad-o… 2024-07-16 11:11:35 gz             NA      2022-10-18
-     5 https://movilidad-o… 2024-07-16 11:07:58 gz             NA      2022-10-17
-     6 https://movilidad-o… 2024-07-16 11:04:18 gz             NA      2022-10-12
-     7 https://movilidad-o… 2024-07-16 11:00:20 gz             NA      2022-10-07
-     8 https://movilidad-o… 2024-07-16 10:56:03 gz             NA      2022-08-07
-     9 https://movilidad-o… 2024-07-16 10:51:05 gz             NA      2022-08-06
-    10 https://movilidad-o… 2024-07-16 10:46:24 gz             NA      2022-08-05
+     1 https://movilidad-o… 2024-07-30 10:54:08 gz             NA      2022-10-23
+     2 https://movilidad-o… 2024-07-30 10:51:07 gz             NA      2022-10-22
+     3 https://movilidad-o… 2024-07-30 10:47:52 gz             NA      2022-10-20
+     4 https://movilidad-o… 2024-07-30 10:14:55 gz             NA      2022-10-18
+     5 https://movilidad-o… 2024-07-30 10:11:58 gz             NA      2022-10-17
+     6 https://movilidad-o… 2024-07-30 10:09:03 gz             NA      2022-10-12
+     7 https://movilidad-o… 2024-07-30 10:05:57 gz             NA      2022-10-07
+     8 https://movilidad-o… 2024-07-30 10:02:12 gz             NA      2022-08-07
+     9 https://movilidad-o… 2024-07-30 09:58:34 gz             NA      2022-08-06
+    10 https://movilidad-o… 2024-07-30 09:54:30 gz             NA      2022-08-05
     # ℹ 9,432 more rows
     # ℹ 1 more variable: local_path <chr>
 
@@ -174,7 +188,7 @@ od_multi_list[[1]]
 ```
 
     # Source:   SQL [?? x 15]
-    # Database: DuckDB v0.10.2 [robin@Linux 6.5.0-45-generic:R 4.4.1/:memory:]
+    # Database: DuckDB v1.0.0 [robin@Linux 6.5.0-45-generic:R 4.4.1/:memory:]
           fecha periodo origen  destino distancia actividad_origen actividad_destino
           <dbl> <chr>   <chr>   <chr>   <chr>     <chr>            <chr>            
      1 20240307 00      01009_… 01001   0.5-2     frecuente        casa             
