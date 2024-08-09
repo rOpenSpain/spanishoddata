@@ -79,8 +79,9 @@ spod_get_metadata = function(data_dir = spod_get_data_dir(), quiet = FALSE) {
 #' 
 #' This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
 #' If the environment variable is not set, it returns the temporary directory.
-#' 
+#' @param quiet Logical. If `TRUE`, the function does not print messages to the console. Defaults to `FALSE`.
 #' @return The data directory.
+#' @export 
 #' @keywords internal
 spod_get_data_dir = function(quiet = FALSE) {
   data_dir_env = Sys.getenv("SPANISH_OD_DATA_DIR")

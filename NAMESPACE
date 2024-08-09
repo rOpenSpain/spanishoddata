@@ -3,6 +3,7 @@
 export(spod_available_data_v1)
 export(spod_download_data)
 export(spod_get)
+export(spod_get_data_dir)
 export(spod_get_latest_v1_file_list)
 export(spod_get_latest_v2_xml)
 export(spod_get_metadata)
