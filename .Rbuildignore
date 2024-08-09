@@ -14,3 +14,4 @@ README.qmd
 ^private$
 ^doc$
 ^Meta$
+^vignettes/*_files$
