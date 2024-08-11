@@ -257,12 +257,15 @@ spod_get_od_v1 <- function(
     return_output = FALSE
   )
 
-  # attach the od folder with predefined and cleaned up data types
+  # attach the od folder of csv.gz files with predefined and cleaned up data types
   con <- spod_duckdb_od_v1(
     zones = zones,
-    dates = dates,
     data_dir = data_dir
   )
+  
+  # filter by date
+  # actually, it seems like this works even if we do not return the 'con' from the function below, but I guess it is safer to return the 'con' and resave it to the 'con' of the environment/scope of this function
+  con <- spod_duckdb_filter_by_dates(con, "od", "od_filtered", dates)
 
   # DBI::dbListTables(con) # for debugging only
   # dplyr::tbl(con, "trips_view") |> dplyr::glimpse() # for debugging only

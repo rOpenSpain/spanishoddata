@@ -233,32 +233,3 @@ spod_match_data_type <- function(
 }
 
 
-#' Function to generate the SQL query from a sequence of dates
-#' @param dates A Dates vector of dates to process.
-#' @return A character vector of the SQL query.
-#' @keywords internal
-spod_sql_where_dates <- function(dates) {
-  # Extract unique year, month, and day combinations from the dates
-  date_parts <- data.frame(
-    year = format(dates, "%Y"),
-    month = format(dates, "%m"),
-    day = format(dates, "%d")
-  )
-  
-  # Get distinct rows and sort them by year, month, and day
-  date_parts <- date_parts[!duplicated(date_parts), ]
-  date_parts <- date_parts[order(date_parts$year, date_parts$month, date_parts$day), ]
-  
-  # Create the WHERE conditions for each unique date
-  where_conditions <- stats::aggregate(day ~ year + month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
-  where_conditions$condition <- paste0("(year = ", where_conditions$year, 
-    " AND month = ", where_conditions$month, 
-    " AND day IN (", where_conditions$day, "))")
-  
-  # Combine all conditions into a single WHERE clause
-  sql_query <- paste0("WHERE ",
-    paste(where_conditions$condition, collapse = " OR ")
-  )
-  
-  return(sql_query)
-}

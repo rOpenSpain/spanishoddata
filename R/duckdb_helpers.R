@@ -1,17 +1,15 @@
 
-#' Function to create a duckdb connection to v1 OD data
+#' Creates a duckdb connection to v1 OD data
 #' 
 #' This function creates a duckdb connection to the v1 OD data.
 #' @inheritParams spod_download_data
-#' @return A duckdb connection object with 3 views:
+#' @return A duckdb connection object with 2 views:
 #'  
 #'  * `all_od_v1_csv_files` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
 #'  
 #'  * `od` - a cleaned-up table view of `all_od_v1_csv_files` with column names and values translated and mapped to English. This still includes all cached data.
 #' 
-#'  * `od_filtered` - a filtered view of `od` with the desired dates.
-#' 
-#' The structure of the cleaned-up views `od` and `od_filtered` is as follows:
+#' The structure of the cleaned-up views `od` is as follows:
 #' 
 #' \describe{
 #'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
@@ -52,7 +50,6 @@ spod_duckdb_od_v1 <- function(
   zones = c("districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios",
     "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
-  dates = NULL,
   data_dir = spod_get_data_dir()
 ) {
   ver <- 1
@@ -220,17 +217,6 @@ spod_duckdb_od_v1 <- function(
   # preview result for debugging
   # DBI::dbGetQuery(con, "SELECT * FROM trips_view LIMIT 10") |> dplyr::glimpse()
 
-  # prepare query to filter by dates
-  query <- dplyr::sql(
-    paste0(
-      "CREATE VIEW od_filtered AS SELECT * FROM od ",
-      spod_sql_where_dates(dates)
-    )
-  )
-  
-  # create a view with a filter to the desired dates
-  DBI::dbSendStatement(con, query)
-
   # preview the new view for debugging
   # DBI::dbGetQuery(con, "SELECT * FROM trips LIMIT 10") |> dplyr::glimpse()
 
@@ -238,6 +224,23 @@ spod_duckdb_od_v1 <- function(
   return(con)
 }
 
+#' Filter a duckdb conenction by dates
+#' @param con A duckdb connection
+#' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files)
+spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, dates){
+  # prepare query to filter by dates
+  query <- dplyr::sql(
+    glue::glue(
+      "CREATE VIEW {new_view_name} AS SELECT * FROM {source_view_name} ",
+      spod_sql_where_dates(dates)
+    )
+  )
+  
+  # create a view with a filter to the desired dates
+  DBI::dbSendStatement(con, query)
+
+  return(con)
+}
 
 spod_duckdb_create_province_enum <- function(con){
   
@@ -264,4 +267,34 @@ spod_duckdb_create_province_enum <- function(con){
   # DBI::dbSendStatement(con, "DROP TYPE INE_PROV_ENUM") # remove this line when package is stable
 
   return(con)
+}
+
+#' Generate a WHERE part of an SQL query from a sequence of dates
+#' @param dates A Dates vector of dates to process.
+#' @return A character vector of the SQL query.
+#' @keywords internal
+spod_sql_where_dates <- function(dates) {
+  # Extract unique year, month, and day combinations from the dates
+  date_parts <- data.frame(
+    year = format(dates, "%Y"),
+    month = format(dates, "%m"),
+    day = format(dates, "%d")
+  )
+  
+  # Get distinct rows and sort them by year, month, and day
+  date_parts <- date_parts[!duplicated(date_parts), ]
+  date_parts <- date_parts[order(date_parts$year, date_parts$month, date_parts$day), ]
+  
+  # Create the WHERE conditions for each unique date
+  where_conditions <- stats::aggregate(day ~ year + month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
+  where_conditions$condition <- paste0("(year = ", where_conditions$year, 
+    " AND month = ", where_conditions$month, 
+    " AND day IN (", where_conditions$day, "))")
+  
+  # Combine all conditions into a single WHERE clause
+  sql_query <- paste0("WHERE ",
+    paste(where_conditions$condition, collapse = " OR ")
+  )
+  
+  return(sql_query)
 }
