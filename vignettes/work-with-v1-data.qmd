@@ -4,6 +4,8 @@ vignette: >
   %\VignetteIndexEntry{Working with v1 MITMA data}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+execute: 
+  eval: false
 ---
 
 
