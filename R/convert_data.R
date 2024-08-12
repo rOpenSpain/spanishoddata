@@ -36,17 +36,21 @@ spod_convert_od_v1_to_duckdb <- function(
   duckdb_save_path <- glue::glue("{save_dir}/od_{zones}.duckdb")
 
   # check if duckdb file already exists
-  if (fs::file_exists(duckdb_save_path) & !overwrite) {
-    message("Duckdb file already exists: ", duckdb_save_path)
-    # in future, perhaps add code that provides a summary of what's inside that file
-    # ask user if they want to overwrite
-    response <- readline(prompt = "Overwrite existing duckdb file? (yes/no) ")
-    overwrite_duckdb <- any(tolower(response) %in% c("y", "yes", "yes."))
-    if (!overwrite_duckdb) {
-      message(glue::glue("Exiting without overwriting existing duckdb file. You may delete it from {duckdb_save_path} manually and rerun the function. Or rerun it with `overwrite = TRUE`."))
-      return()
-    } else {
-      if (isFALSE(quiet)) message(glue::glue("Overwriting existing duckdb file: ", duckdb_save_path))
+  if (fs::file_exists(duckdb_save_path)) {
+    if (!overwrite) {
+      message("Duckdb file already exists: ", duckdb_save_path)
+      response <- readline(prompt = "Overwrite existing duckdb file? (yes/no) ")
+      overwrite <- tolower(response) %in% c("y", "yes", "Yes")
+      
+      if (!overwrite) {
+        message(glue::glue("Exiting without overwriting existing duckdb file. You may delete it from {duckdb_save_path} manually and rerun the function. Or rerun the function with `overwrite = TRUE`."))
+        return()
+      }
+    }
+    if (overwrite) {
+      if (isFALSE(quiet)) {
+        message(glue::glue("Overwriting existing duckdb file: ", duckdb_save_path))
+      }
       fs::file_delete(duckdb_save_path)
     }
   }
