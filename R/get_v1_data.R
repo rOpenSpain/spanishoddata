@@ -142,7 +142,9 @@ spod_get_zones_v1 <- function(
       "municipalities", "muni", "municip", "municipios"
     ),
     data_dir = spod_get_data_dir(),
-    quiet = FALSE) {
+    quiet = FALSE
+  ) {
+  browser()
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
@@ -152,7 +154,9 @@ spod_get_zones_v1 <- function(
     glue::glue(spod_subfolder_clean_data_cache(), "/zones/{zones}_mitma.gpkg")
   )
   if (fs::file_exists(expected_gpkg_path)) {
-    if (isFALSE(quiet)) message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
+    if (isFALSE(quiet)) {
+      message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
+    }
     return(sf::read_sf(expected_gpkg_path))
   }
 
@@ -184,8 +188,7 @@ spod_get_zones_v1 <- function(
   junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
   if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
 
-  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("**{zones}/*.shp"), recurse = TRUE)
-
+  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("*v1**{zones}/*.shp"), recurse = TRUE)
   zones <- spod_clean_zones_v1(zones_path)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
   sf::st_write(zones, expected_gpkg_path, delete_dsn = TRUE, delete_layer = TRUE)
