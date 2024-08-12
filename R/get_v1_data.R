@@ -144,7 +144,6 @@ spod_get_zones_v1 <- function(
     data_dir = spod_get_data_dir(),
     quiet = FALSE
   ) {
-  browser()
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
