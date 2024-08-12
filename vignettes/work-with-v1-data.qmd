@@ -38,7 +38,7 @@ library(spanishoddata)
 
 # Introduction
 
-v1 MITMA data covers the period from 2020-02-14 to 2021-05-09. Add references...
+v1 data, from the Ministerio de Transportes, Movilidad y Agenda Urbana ([MITMA](https://sede.mitma.gob.es/sede_electronica/lang_castellano/)) covers the period from 2020-02-14 to 2021-05-09. 
 
 # Set a directory to store the data
 
@@ -91,12 +91,13 @@ od_dist_1 <- spod_get_od_v1(
 Look at the data structure. This is a lazy table with DuckDB backend. That is, the files on disk are still raw gzipped CSV files, but they are cleverly connected to a dynamic view in in-memory DuckDB database.
 
 ```{r}
-od_dist_1 |> glimpse()
+od_dist_1 |>
+  glimpse()
 ```
 
 You can work with it using dplyr verbs as if it were a regular data frame, but if you want to load the results into memory, you can use the `collect()` function.
 
-For example this code below will not execute the query, but will only create another "lazy" object.
+For example, this code below will not execute the query, but will only create another "lazy" object, and executes instantly.
 
 ```{r}
 od_dist_1_lazy <- od_dist_1 |>
@@ -115,15 +116,19 @@ od_dist_1_lazy <- od_dist_1 |>
 In fact this is a "lazy" object with an SQL query attached to it. You can see the query with the `show_query()` function.
 
 ```{r}
-od_dist_1_lazy |> show_query()
+od_dist_1_lazy |>
+  show_query()
 ```
+
+No data has been loaded to memory yet:
 
 ```{r}
 format(object.size(od_dist_1_lazy), units = "Mb")
 class(od_dist_1_lazy)
 ```
 
-If you want to load the results into memory, you can use the `collect()` function. It can be added either at the end of the original pipeline, like so:
+Use the `collect()` function to import the object into memory (your global environment).
+It can be added either at the end of the original pipeline, like so:
 
 ```{r}
 #| eval=FALSE
@@ -141,18 +146,21 @@ od_dist_1_data <- od_dist_1 |>
   collect()
 ```
 
-Or you can just add collect() to the "lazy" object that you created before, like so:
+Or you can just add `collect()` to the "lazy" object that you created before, like so:
 
 ```{r}
-od_dist_1_data <- od_dist_1_lazy |> collect()
+od_dist_1_data <- od_dist_1_lazy |>
+  collect()
 ```
+
+Now the data is in memory and is consuming computational resources (around 10 MB in this case because we've aggregated the data, removing the hour-by-hour detail):
 
 ```{r}
 format(object.size(od_dist_1_data), units = "Mb")
 class(od_dist_1_data)
 ```
 
-To safely disconnect the in-memory database, you can use the `DBI::dbDisconnect()` function.
+To disconnect the in-memory database, you can use the `DBI::dbDisconnect()` function.
 
 ```{r}
 DBI::dbDisconnect(od_dist_1$src$con)
@@ -174,7 +182,8 @@ od_muni_1 <- spod_get_od_v1(
 Look at the data structure.
 
 ```{r}
-od_muni_1 |> glimpse()
+od_muni_1 |>
+  glimpse()
 ```
 
 ```{r}
