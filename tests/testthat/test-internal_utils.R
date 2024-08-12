@@ -86,14 +86,18 @@ test_that("invalid input type", {
 
 test_that("dates span both v1 and v2 data", {
   dates <- c("2021-05-09", "2022-01-01")
-  expect_error(spod_dates_argument_to_dates_seq(dates),
-    "Dates found in both v1 and v2 data.")
+  expect_error(
+    spod_dates_argument_to_dates_seq(dates),
+    "Dates found in both v1 and v2 data."
+  )
 })
 
 test_that("dates that are out of availabe range of v1 data", {
   dates <- c("2020-01-01", "2021-01-01")
-  expect_error(spod_dates_argument_to_dates_seq(dates),
-    "Some dates do not match the available data.")
+  expect_error(
+    spod_dates_argument_to_dates_seq(dates),
+    "Some dates do not match the available data."
+  )
 })
 
 # clean up

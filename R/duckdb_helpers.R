@@ -1,18 +1,17 @@
-
 #' Creates a duckdb connection to v1 OD data
-#' 
+#'
 #' This function creates a duckdb connection to the v1 OD data.
-#' 
+#'
 #' @param con A duckdb connection object. If not specified, a new in-memory connection will be created.
 #' @inheritParams spod_download_data
 #' @return A duckdb connection object with 2 views:
-#'  
+#'
 #'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
-#'  
+#'
 #'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
-#' 
+#'
 #' The structure of the cleaned-up views `od_csv_clean` is as follows:
-#' 
+#'
 #' \describe{
 #'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
 #'   \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
@@ -28,9 +27,9 @@
 #'   \item{month}{\code{double}. The month of the trip.}
 #'   \item{day}{\code{double}. The day of the trip.}
 #' }
-#' 
+#'
 #' The structure of the original data in `od_csv_raw` is as follows:
-#' 
+#'
 #' \describe{
 #'   \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}
 #'   \item{origen}{\code{character}. The identifier for the origin location of the trip, formatted as a character string (e.g., '01001_AM').}
@@ -49,17 +48,18 @@
 #' }
 #' @keywords internal
 spod_duckdb_od_v1 <- function(
-  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
-  zones = c("districts", "dist", "distr", "distritos",
-    "municipalities", "muni", "municip", "municipios",
-    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
-  data_dir = spod_get_data_dir()
-) {
+    con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
+    zones = c(
+      "districts", "dist", "distr", "distritos",
+      "municipalities", "muni", "municip", "municipios",
+      "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+    ),
+    data_dir = spod_get_data_dir()) {
   ver <- 1
-  
+
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
-  
+
   csv_folder <- paste0(
     data_dir, "/",
     spod_subfolder_raw_data_cache(ver = ver),
@@ -70,7 +70,8 @@ spod_duckdb_od_v1 <- function(
 
   # create view of csv files and preset variable types
   if (zones == "distritos") {
-    DBI::dbSendStatement(con,
+    DBI::dbSendStatement(
+      con,
       dplyr::sql(
         glue::glue(
           "CREATE VIEW od_csv_raw AS SELECT *
@@ -92,8 +93,9 @@ spod_duckdb_od_v1 <- function(
         )
       )
     )
-  } else if (zones  == "municipios") {
-    DBI::dbSendStatement(con,
+  } else if (zones == "municipios") {
+    DBI::dbSendStatement(
+      con,
       dplyr::sql(
         glue::glue(
           "CREATE VIEW od_csv_raw AS SELECT *
@@ -117,7 +119,7 @@ spod_duckdb_od_v1 <- function(
   # DBI::dbGetQuery(con, "SELECT * FROM od_csv_raw LIMIT 10") |> dplyr::glimpse() # for debugging
 
   # create ENUMs
-  
+
   # zones ENUMs
   zones <- spod_zone_names_en2es(zones)
   spatial_data <- spod_get_zones_v1(zones, quiet = TRUE)
@@ -125,7 +127,8 @@ spod_duckdb_od_v1 <- function(
   DBI::dbSendStatement(
     con,
     dplyr::sql(
-      paste0("CREATE TYPE ZONES_ENUM AS ENUM ('",
+      paste0(
+        "CREATE TYPE ZONES_ENUM AS ENUM ('",
         paste0(unique_ids, collapse = "','"),
         "');"
       )
@@ -135,12 +138,12 @@ spod_duckdb_od_v1 <- function(
   # create ACTIV_ENUM
   if (zones == "distritos") {
     DBI::dbSendStatement(
-    con,
-    dplyr::sql("CREATE TYPE ACTIV_ENUM AS ENUM ('home', 'work', 'other')")
+      con,
+      dplyr::sql("CREATE TYPE ACTIV_ENUM AS ENUM ('home', 'work', 'other')")
     )
   }
 
-  # create DISTANCE_ENUM    
+  # create DISTANCE_ENUM
   DBI::dbSendStatement(
     con,
     dplyr::sql("CREATE TYPE DISTANCE_ENUM AS ENUM ('002-005', '005-010', '010-050', '0005-002', '050-100', '100+');")
@@ -152,7 +155,7 @@ spod_duckdb_od_v1 <- function(
     # DBI::dbGetQuery(con, "SELECT enum_range(NULL::INE_PROV_ENUM)") # check that it was created, remove this line when package is stable
     # for debugging
     # DBI::dbSendStatement(con, "DROP TYPE INE_PROV_ENUM") # remove this line when package is stable
-    
+
     # create second view with desired data types including ENUMs
     # create view to fix variable types and recode values to English
     # NOTE: thsi raises non-ASCII character WARNING on R CMD check, so will need to store this query in a text file
@@ -160,11 +163,14 @@ spod_duckdb_od_v1 <- function(
     when_then_provinces <- readLines(
       system.file(
         "extdata/sql-queries/when-recode-provinces.txt",
-        package = "spanishoddata")) |>
+        package = "spanishoddata"
+      )
+    ) |>
       paste(collapse = "\n")
 
     # now execute the query pasting in the contents of when_then_provinces
-    DBI::dbSendStatement(con,
+    DBI::dbSendStatement(
+      con,
       dplyr::sql(
         glue::glue(
           "CREATE VIEW od_csv_clean AS SELECT
@@ -196,7 +202,8 @@ spod_duckdb_od_v1 <- function(
       )
     )
   } else if (zones == "municipios") {
-    DBI::dbSendStatement(con,
+    DBI::dbSendStatement(
+      con,
       dplyr::sql(
         "CREATE VIEW od_csv_clean AS SELECT
           fecha AS full_date,
@@ -227,7 +234,7 @@ spod_duckdb_od_v1 <- function(
 #' @param new_view_name The name of the new duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files)
-spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, dates){
+spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, dates) {
   # prepare query to filter by dates
   query <- dplyr::sql(
     glue::glue(
@@ -235,21 +242,22 @@ spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, da
       spod_sql_where_dates(dates)
     )
   )
-  
+
   # create a view with a filter to the desired dates
   DBI::dbSendStatement(con, query)
 
   return(con)
 }
 
-spod_duckdb_create_province_enum <- function(con){
-  
+spod_duckdb_create_province_enum <- function(con) {
   # load provinces with non-ASCII names
   provinces_enum <- readLines(
     system.file("extdata/sql-queries/provinces-enum.txt",
-      package = "spanishoddata")) |>
+      package = "spanishoddata"
+    )
+  ) |>
     paste(collapse = "\n")
-  
+
   # create INE_PROV_ENUM
   DBI::dbSendStatement(
     con,
@@ -280,22 +288,25 @@ spod_sql_where_dates <- function(dates) {
     month = format(dates, "%m"),
     day = format(dates, "%d")
   )
-  
+
   # Get distinct rows and sort them by year, month, and day
   date_parts <- date_parts[!duplicated(date_parts), ]
   date_parts <- date_parts[order(date_parts$year, date_parts$month, date_parts$day), ]
-  
+
   # Create the WHERE conditions for each unique date
   where_conditions <- stats::aggregate(day ~ year + month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
-  where_conditions$condition <- paste0("(year = ", where_conditions$year, 
-    " AND month = ", where_conditions$month, 
-    " AND day IN (", where_conditions$day, "))")
-  
+  where_conditions$condition <- paste0(
+    "(year = ", where_conditions$year,
+    " AND month = ", where_conditions$month,
+    " AND day IN (", where_conditions$day, "))"
+  )
+
   # Combine all conditions into a single WHERE clause
-  sql_query <- paste0("WHERE ",
+  sql_query <- paste0(
+    "WHERE ",
     paste(where_conditions$condition, collapse = " OR ")
   )
-  
+
   return(sql_query)
 }
 
@@ -304,23 +315,23 @@ spod_sql_where_dates <- function(dates) {
 #' @param duck_max_mem The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
 #' @param duck_max_threads The maximum number of threads to use. Defaults to the number of available cores minus 1.
 spod_duckdb_limit_resources <- function(
-  con,
-  duck_max_mem = 3, # in GB, default to 3 GB, should be enough to resave the data and small enough to fit in memory of most even old computers
-  duck_max_threads = parallelly::availableCores() - 1 # leave one core for other tasks by default 
-) {
-  
-  DBI::dbExecute(con,
+    con,
+    duck_max_mem = 3, # in GB, default to 3 GB, should be enough to resave the data and small enough to fit in memory of most even old computers
+    duck_max_threads = parallelly::availableCores() - 1 # leave one core for other tasks by default
+    ) {
+  DBI::dbExecute(
+    con,
     dplyr::sql(
       glue::glue("SET max_memory='{duck_max_mem}GB';")
     )
   )
-  
-  DBI::dbExecute(con,
+
+  DBI::dbExecute(
+    con,
     dplyr::sql(
       glue::glue("SET threads='{duck_max_threads}';")
     )
   )
-  
+
   return(con)
 }
-
