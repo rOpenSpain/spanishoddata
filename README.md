@@ -100,7 +100,7 @@ sf::sf_use_s2(FALSE)
 Get metadata for the datasets as follows:
 
 ``` r
-metadata = spod_get_metadata()
+metadata = spod_available_data_v2()
 metadata
 ```
 

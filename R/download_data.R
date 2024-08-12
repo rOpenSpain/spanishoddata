@@ -55,8 +55,9 @@ spod_download_data <- function(
 
 
   # check version
-  # replace this argument with automatic version detection based on the dates requested?
-  ver <- spod_infer_data_v_from_dates(dates_to_use) # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1() or spod_get_metadata(). This results in reading thedates_to_use <- spod_dates_argument_to_dates_seq(dates = dates) xml files with metadata for the second time. This is not optimal and should be fixed.
+  ver <- spod_infer_data_v_from_dates(dates_to_use)
+  # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1/2(). This results in reading xml files with metadata for the second time. This is not optimal and should be fixed.
+  
   if (isFALSE(quiet)) {
     message("Data version detected from dates: ", ver)
   }
@@ -69,25 +70,27 @@ spod_download_data <- function(
 
   # get the available  data list while checking for files already cached on disk
   if (ver == 1) {
-    metadata <- spod_available_data_v1(
+    available_data <- spod_available_data_v1(
       data_dir = data_dir,
       check_local_files = TRUE
     )
   } else if (ver == 2) {
-    metadata <- spod_get_metadata(data_dir = data_dir)
-    # replace with spod_available_data_v2() when available, spod_get_metadata can become a wrapper with v1/v2 argument. Potentially we can even automaticaly detect the data version based on the time intervals that user requests, but this is a bit controversial, as the methodology behind v1 and v2 data generation is not the same and Nommon+MITMA do not recommend mixing those together and comparing absoloute numbers of trips.
+    available_data <- spod_available_data_v2(
+      data_dir = data_dir,
+    check_local_files = TRUE
+  )
   }
 
-  # match the metadata to type, zones, version and dates
+  # match the available_data to type, zones, version and dates
   if (ver == 1) {
-    requested_files <- metadata[
-      grepl(glue::glue("v{ver}.*{type}.*{zones}"), metadata$local_path) &
-        metadata$data_ymd %in% dates_to_use,
+    requested_files <- available_data[
+      grepl(glue::glue("v{ver}.*{type}.*{zones}"), available_data$local_path) &
+        available_data$data_ymd %in% dates_to_use,
     ]
   } else if (ver == 2) {
-    requested_files <- metadata[
-      grepl(glue::glue("v{ver}.*{zones}.*{type}"), metadata$local_path) &
-        metadata$data_ymd %in% dates_to_use,
+    requested_files <- available_data[
+      grepl(glue::glue("v{ver}.*{zones}.*{type}"), available_data$local_path) &
+        available_data$data_ymd %in% dates_to_use,
     ]
   }
 

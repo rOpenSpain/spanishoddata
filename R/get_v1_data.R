@@ -60,7 +60,9 @@ spod_available_data_v1 <- function(
     quiet = FALSE) {
   xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v1") |> sort()
   if (length(xml_files_list) == 0) {
-    if (isFALSE(quiet)) message("No data links xml files found, getting latest data links xml")
+    if (isFALSE(quiet)) {
+      message("No data links xml files found, getting latest data links xml")
+    }
     latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   } else {
     latest_data_links_xml_path <- utils::tail(xml_files_list, 1)

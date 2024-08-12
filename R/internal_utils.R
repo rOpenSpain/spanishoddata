@@ -162,7 +162,7 @@ spod_get_valid_dates <- function(ver = 1) {
     # perahps it is worth hardcoding at lest the v1 data range as it is unlikely to change at this point
     all_dates <- seq.Date(from = as.Date("2020-02-14"), to = as.Date("2021-05-09"), by = "day")
   } else if (ver == 2) {
-    available_data <- spod_get_metadata(quiet = TRUE) # replace with spod_available_data_v2() when available
+    available_data <- spod_available_data_v2(quiet = TRUE)
     all_dates <- unique(available_data[grepl("viajes.*diarios", available_data$target_url), ]$data_ymd, na.rm = TRUE)
   }
 
@@ -170,8 +170,6 @@ spod_get_valid_dates <- function(ver = 1) {
 }
 # currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
 
-
-# replace with spod_available_data_v2() when available, spod_get_metadata can become a wrapper with v1/v2 argument. Potentially we can even automaticaly detect the data version based on the time intervals that user requests, but this is a bit controversial, as the methodology behind v1 and v2 data generation is not the same and Nommon+MITMA do not recommend mixing those together and comparing absoloute numbers of trips.
 
 
 spod_zone_names_en2es <- function(

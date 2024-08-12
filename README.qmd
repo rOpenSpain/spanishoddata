@@ -108,7 +108,7 @@ Get metadata for the datasets as follows:
 
 ```{r}
 #| label: metadata
-metadata = spod_get_metadata()
+metadata = spod_available_data_v2()
 metadata
 ```
 

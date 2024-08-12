@@ -7,9 +7,9 @@
 #' @export
 #' @examples
 #' if (FALSE) {
-#'   spod_get_latest_v2_xml()
+#'   spod_get_latest_v2_file_list()
 #' }
-spod_get_latest_v2_xml <- function(
+spod_get_latest_v2_file_list <- function(
     data_dir = spod_get_data_dir(),
     xml_url = "https://movilidad-opendata.mitma.es/RSS.xml") {
   if (!fs::dir_exists(data_dir)) {
@@ -35,18 +35,25 @@ spod_get_latest_v2_xml <- function(
 #' @examples
 #' # Get the data dictionary for the default data directory
 #' if (FALSE) {
-#'   metadata <- spod_get_metadata()
+#'   metadata <- spod_available_data_v2()
 #'   names(metadata)
 #'   head(metadata)
 #' }
-spod_get_metadata <- function(data_dir = spod_get_data_dir(), quiet = FALSE) {
+spod_available_data_v2 <- function(
+  data_dir = spod_get_data_dir(),
+  check_local_files = FALSE,
+  quiet = FALSE) {
   xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
   latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
   if (length(latest_data_links_xml_path) == 0) {
-    if (isFALSE(quiet)) message("Getting latest data links xml")
-    latest_data_links_xml_path <- spod_get_latest_v2_xml(data_dir = data_dir)
+    if (isFALSE(quiet)) {
+      message("Getting latest data links xml")
+    }
+    latest_data_links_xml_path <- spod_get_latest_v2_file_list(data_dir = data_dir)
   } else {
-    if (isFALSE(quiet)) message("Using existing data links xml: ", latest_data_links_xml_path)
+    if (isFALSE(quiet)){
+      message("Using existing data links xml: ", latest_data_links_xml_path)
+    }
   }
 
   x_xml <- xml2::read_xml(latest_data_links_xml_path)
@@ -111,7 +118,7 @@ spod_get_data_dir <- function(quiet = FALSE) {
 spod_get_zones <- function(
     data_dir = spod_get_data_dir(),
     type = "distritos") {
-  metadata <- spod_get_metadata(data_dir)
+  metadata <- spod_available_data_v2(data_dir)
   regex <- glue::glue("zonificacion_{type}\\.")
   sel_distritos <- stringr::str_detect(metadata$target_url, regex)
   metadata_distritos <- metadata[sel_distritos, ]
@@ -169,7 +176,7 @@ download_od <- function(
     subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
     date_regex = "2024030[1-2]") {
   regex <- glue::glue("{subdir}*.+{date_regex}_Viajes_distritos.csv.gz")
-  metadata <- spod_get_metadata(data_dir)
+  metadata <- spod_available_data_v2(data_dir)
   sel_od <- stringr::str_detect(metadata$target_url, regex)
   metadata_od <- metadata[sel_od, ]
   metadata_od[[1]]
