@@ -20,6 +20,6 @@ It can retrieve either "distritos" or "municipios" zones data.
 }
 \examples{
 if (FALSE) {
-zones = spod_get_zones()
+  zones <- spod_get_zones()
 }
 }

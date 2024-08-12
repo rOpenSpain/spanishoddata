@@ -18,8 +18,9 @@
 #'   \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
 #'   \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work'). \strong{Note:} Only available for district level data.}
 #'   \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other'). \strong{Note:} Only available for district level data.}
-#'   \item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g., 'Cuenca', 'Girona'). Provinces are stored as factors, and are encoded in a way that the province code can be used for queries. \strong{Note:} Only available for district level data.}
-#'   \item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
+#'   \item{residence_province_ine_code}{\code{factor}. The province of residence for the group of individual making the trip, encoded according to the INE classification. \strong{Note:} Only available for district level data.}
+#'   \item{residence_province_name}{\code{factor}. The province of residence for the group of individuals making the trip (e.g., 'Cuenca', 'Girona'). \strong{Note:} Only available for district level data.}
+#'   \item{time_slot}{\code{integer}. The time slot (the hour of the day) during which the trip started, represented as an integer (e.g., 0, 1, 2).}
 #'   \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
 #'   \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}
 #'   \item{trips_total_length_km}{\code{double}. The total length of all trips in kilometers for the specified time slot and distance.}
@@ -149,58 +150,26 @@ spod_duckdb_od_v1 <- function(
     dplyr::sql("CREATE TYPE DISTANCE_ENUM AS ENUM ('002-005', '005-010', '010-050', '0005-002', '050-100', '100+');")
   )
 
-  # create INE province ENUM
+  # create named INE province ENUM
   if (zones == "distritos") {
     spod_duckdb_create_province_enum(con)
-    # DBI::dbGetQuery(con, "SELECT enum_range(NULL::INE_PROV_ENUM)") # check that it was created, remove this line when package is stable
-    # for debugging
-    # DBI::dbSendStatement(con, "DROP TYPE INE_PROV_ENUM") # remove this line when package is stable
-
-    # create second view with desired data types including ENUMs
-    # create view to fix variable types and recode values to English
-    # NOTE: thsi raises non-ASCII character WARNING on R CMD check, so will need to store this query in a text file
-    # load when_then_provinces from a system file in inst/extdata/sql-queries/when-recode-provinces.txt
-    when_then_provinces <- readLines(
+    
+    # load sql statement to create od_csv_clean view
+    od_csv_clean_sql <- readLines(
       system.file(
-        "extdata/sql-queries/when-recode-provinces.txt",
+        "extdata/sql-queries/v1-create-od_csv_clean.sql",
         package = "spanishoddata"
       )
     ) |>
-      paste(collapse = "\n")
+      paste(collapse = "\n") |> 
+      dplyr::sql()
 
-    # now execute the query pasting in the contents of when_then_provinces
+    # create od_csv_clean view
     DBI::dbSendStatement(
       con,
-      dplyr::sql(
-        glue::glue(
-          "CREATE VIEW od_csv_clean AS SELECT
-                            fecha AS full_date,
-          CAST(origen AS ZONES_ENUM) AS id_origin,
-          CAST(destino AS ZONES_ENUM) AS id_destination,
-          CAST(CASE actividad_origen
-            WHEN 'casa' THEN 'home'
-            WHEN 'otros' THEN 'other'
-            WHEN 'trabajo_estudio' THEN 'work'
-            END AS ACTIV_ENUM) AS activity_origin,
-          CAST(CASE actividad_destino
-            WHEN 'casa' THEN 'home'
-            WHEN 'otros' THEN 'other'
-            WHEN 'trabajo_estudio' THEN 'work_or_study'
-            END AS ACTIV_ENUM) AS activity_destination,
-            CAST (CASE residencia
-                {when_then_provinces}
-                END AS INE_PROV_ENUM) AS residence_province,
-          periodo AS time_slot,
-          CAST(distancia AS DISTANCE_ENUM) AS distance,
-          viajes AS n_trips,
-          viajes_km AS trips_total_length_km,
-          year AS year,
-          month AS month,
-          day AS day
-          FROM od_csv_raw;"
-        )
-      )
+      od_csv_clean_sql
     )
+    
   } else if (zones == "municipios") {
     DBI::dbSendStatement(
       con,
@@ -250,29 +219,37 @@ spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, da
 }
 
 spod_duckdb_create_province_enum <- function(con) {
-  # load provinces with non-ASCII names
-  provinces_enum <- readLines(
-    system.file("extdata/sql-queries/provinces-enum.txt",
+  # load SQL statement to create province names ENUM
+  province_names_enum_sql <- readLines(
+    system.file("extdata/sql-queries/province_names_enum.sql",
       package = "spanishoddata"
     )
   ) |>
-    paste(collapse = "\n")
+    paste(collapse = "\n") |> 
+    dplyr::sql()
 
-  # create INE_PROV_ENUM
+  # create INE_PROV_NAME_ENUM
+  DBI::dbSendStatement(
+    con,
+    province_names_enum_sql
+  )
+
+  # also create INE encoded INE_PROV_CODE_ENUM
+  
+  # format codes 1:52 as 2 digits with leading zeros
+  ine_codes <- sprintf("%02d", 1:52)
+
+  # create INE_PROV_CODE_ENUM
   DBI::dbSendStatement(
     con,
     dplyr::sql(
-      glue::glue(
-        "CREATE TYPE INE_PROV_ENUM AS ENUM (
-        {provinces_enum}
-        );"
+      paste0(
+        "CREATE TYPE INE_PROV_CODE_ENUM AS ENUM ('",
+        paste0(ine_codes, collapse = "','"),
+        "');"
       )
     )
   )
-
-  # for debugging
-  # DBI::dbGetQuery(con, "SELECT enum_range(NULL::INE_PROV_ENUM)") # check that it was created, remove this line when package is stable
-  # DBI::dbSendStatement(con, "DROP TYPE INE_PROV_ENUM") # remove this line when package is stable
 
   return(con)
 }

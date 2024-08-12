@@ -31,6 +31,6 @@ if the file does not exist in the data directory.
 \examples{
 # Download the origin-destination data for the first two days of March 2024
 if (FALSE) {
-od_20240301_20240302 = spod_get(date_regex = "2024-03-0[1-2]")
+  od_20240301_20240302 <- spod_get(date_regex = "2024-03-0[1-2]")
 }
 }

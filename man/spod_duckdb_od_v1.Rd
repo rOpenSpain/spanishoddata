@@ -33,8 +33,9 @@ The structure of the cleaned-up views \code{od_csv_clean} is as follows:
 \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
 \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work'). \strong{Note:} Only available for district level data.}
 \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other'). \strong{Note:} Only available for district level data.}
-\item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g., 'Cuenca', 'Girona'). Provinces are stored as factors, and are encoded in a way that the province code can be used for queries. \strong{Note:} Only available for district level data.}
-\item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
+\item{residence_province_ine_code}{\code{factor}. The province of residence for the group of individual making the trip, encoded according to the INE classification. \strong{Note:} Only available for district level data.}
+\item{residence_province_name}{\code{factor}. The province of residence for the group of individuals making the trip (e.g., 'Cuenca', 'Girona'). \strong{Note:} Only available for district level data.}
+\item{time_slot}{\code{integer}. The time slot (the hour of the day) during which the trip started, represented as an integer (e.g., 0, 1, 2).}
 \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
 \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}
 \item{trips_total_length_km}{\code{double}. The total length of all trips in kilometers for the specified time slot and distance.}

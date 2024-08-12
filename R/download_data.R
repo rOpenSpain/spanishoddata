@@ -57,7 +57,9 @@ spod_download_data <- function(
   # check version
   # replace this argument with automatic version detection based on the dates requested?
   ver <- spod_infer_data_v_from_dates(dates_to_use) # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1() or spod_get_metadata(). This results in reading thedates_to_use <- spod_dates_argument_to_dates_seq(dates = dates) xml files with metadata for the second time. This is not optimal and should be fixed.
-  if (isFALSE(quiet)) message("Data version detected from dates: ", ver)
+  if (isFALSE(quiet)) {
+    message("Data version detected from dates: ", ver)
+  }
 
   # convert english data type names to spanish words used in the default data paths
   type <- match.arg(type)
@@ -91,24 +93,27 @@ spod_download_data <- function(
 
   files_to_download <- requested_files[!requested_files$downloaded, ]
 
-  # pre-generate target paths for the files to download
-  fs::dir_create(
-    unique(fs::path_dir(files_to_download$local_path)),
-    recurse = TRUE
-  )
+  # only download files if some are missing
+  if (nrow(files_to_download) > 0) {
+    # pre-generate target paths for the files to download
+    fs::dir_create(
+      unique(fs::path_dir(files_to_download$local_path)),
+      recurse = TRUE
+    )
 
-  # download the missing files
-  downloaded_files <- curl::multi_download(
-    urls = files_to_download$target_url,
-    destfiles = files_to_download$local_path,
-    progress = TRUE,
-    resume = TRUE
-  )
+    # download the missing files
+    downloaded_files <- curl::multi_download(
+      urls = files_to_download$target_url,
+      destfiles = files_to_download$local_path,
+      progress = TRUE,
+      resume = TRUE
+    )
 
-  # set download status for downloaded files as TRUE in requested_files
-  requested_files$downloaded[requested_files$local_path %in% downloaded_files$destfile] <- TRUE
+    # set download status for downloaded files as TRUE in requested_files
+    requested_files$downloaded[requested_files$local_path %in% downloaded_files$destfile] <- TRUE
 
-  message("Retrieved data for requested dates: ", paste(dates_to_use, collapse = ", ")) # this may output too many dates, shoudl be fixed when we create a flexible date argument processing function. Keeping for now.
+    message("Retrieved data for requested dates: ", paste(dates_to_use, collapse = ", ")) # this may output too many dates, shoudl be fixed when we create a flexible date argument processing function. Keeping for now.
+  }
 
   if (return_output) {
     return(requested_files$local_path)
