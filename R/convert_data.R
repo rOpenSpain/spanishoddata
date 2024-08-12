@@ -5,6 +5,7 @@
 #' @inheritParams spod_get_zones_v1
 #' @inheritParams spod_duckdb_limit_resources
 #' @param overwrite Logical. If `TRUE`, overwrites existing duckdb files. Defaults to `FALSE`.
+#' @return Path to saved DuckDB file.
 #' @export
 spod_convert_od_v1_to_duckdb <- function(
   zones = c("districts", "dist", "distr", "distritos",
@@ -87,5 +88,5 @@ spod_convert_od_v1_to_duckdb <- function(
   
   message("Cached v1 origin-destination data imported to DuckDB at: ", duckdb_save_path)
 
-  return(invisible(NULL))
+  return(duckdb_save_path)
 }

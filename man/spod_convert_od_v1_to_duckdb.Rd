@@ -30,6 +30,9 @@ spod_convert_od_v1_to_duckdb(
 
 \item{overwrite}{Logical. If \code{TRUE}, overwrites existing duckdb files. Defaults to \code{FALSE}.}
 }
+\value{
+Path to saved DuckDB file.
+}
 \description{
 Convert all downloaded v1 origin-destination data to duckdb
 }
