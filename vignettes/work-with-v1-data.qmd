@@ -25,9 +25,6 @@ packages <- c("sf", "dplyr", "DBI")
 pak::pkg_install(packages, ask = FALSE, upgrade = FALSE)
 
 pak::pkg_install("Robinlovelace/spanishoddata@1a53ed9f834f720f47cb016769464acfdad599a8", ask = FALSE, upgrade = TRUE)
-
-suppressPackageStartupMessages(invisible(lapply(packages, library, character.only = TRUE)))
-library(spanishoddata)
 ```
 
 ```{r setup}
