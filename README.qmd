@@ -45,6 +45,20 @@ Load it as follows:
 library(spanishoddata)
 ```
 
+Local development: to load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
+
+```bash
+gh repo clone Robinlovelace/spanishoddata
+code spanishoddata
+```
+
+then run the following command from the R console:
+
+```{r}
+#| eval: false
+devtools::load_all()
+```
+
 # Setting the data directory
 
 You can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
@@ -335,6 +349,8 @@ usethis::use_pkgdown()
 usethis::use_github_action("pkgdown")
 # Setup gh pages:
 usethis::use_github_pages()
+# Auto-style with styler
+styler::style_pkg()
 ```
 
 ```{r}

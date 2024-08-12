@@ -12,3 +12,6 @@ README.qmd
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^private$
+^doc$
+^Meta$
+^vignettes/*_files$

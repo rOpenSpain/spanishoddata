@@ -53,14 +53,14 @@ spod_get_latest_v1_file_list <- function(
 #'   names(metadata)
 #'   head(metadata)
 #' }
-spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
-  # check_local_files (below) is FALSE by default to avoid excessive filesystem access, perhaps should be TRUE. Download functions use it to load the xml file, but we probably do not want the script to check all local cache directories every time we run a get data function. Perhaps it is better to offload this check to a separate function and have a csv file or some other way to keep track of the files that were downloaded and cached. An output of curl::multi_download() could be used for this purpose.
-  check_local_files = FALSE,
-  quiet = FALSE
-) {
+spod_available_data_v1 <- function(
+    data_dir = spod_get_data_dir(),
+    # check_local_files (below) is FALSE by default to avoid excessive filesystem access, perhaps should be TRUE. Download functions use it to load the xml file, but we probably do not want the script to check all local cache directories every time we run a get data function. Perhaps it is better to offload this check to a separate function and have a csv file or some other way to keep track of the files that were downloaded and cached. An output of curl::multi_download() could be used for this purpose.
+    check_local_files = FALSE,
+    quiet = FALSE) {
   xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v1") |> sort()
-  if(length(xml_files_list) == 0) {
-    if(isFALSE(quiet)) message("No data links xml files found, getting latest data links xml")
+  if (length(xml_files_list) == 0) {
+    if (isFALSE(quiet)) message("No data links xml files found, getting latest data links xml")
     latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   } else {
     latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
@@ -70,14 +70,14 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
   file_date <- stringr::str_extract(latest_data_links_xml_path, "[0-9]{4}-[0-9]{2}-[0-9]{2}")
 
   if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-    if(isFALSE(quiet)) message("File list xml is 1 day old or older, getting latest data links xml")
+    if (isFALSE(quiet)) message("File list xml is 1 day old or older, getting latest data links xml")
     latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   } else {
-    if(isFALSE(quiet)) message("Using existing data links xml: ", latest_data_links_xml_path)
+    if (isFALSE(quiet)) message("Using existing data links xml: ", latest_data_links_xml_path)
   }
 
   if (length(latest_data_links_xml_path) == 0) {
-    if(isFALSE(quiet)) message("Getting latest data links xml")
+    if (isFALSE(quiet)) message("Getting latest data links xml")
     latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   }
 
@@ -109,10 +109,10 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
 
   # fix paths for files that are in '0000-referencia' folder
   files_table$local_path <- gsub("0000-referencia\\/([0-9]{4})([0-9]{2})([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
-  
+
   # replace 2 digit month with 1 digit month
   files_table$local_path <- gsub("month=0([1-9])", "month=\\1", files_table$local_path)
-  
+
   # replace 2 digit day with 1 digit day
   files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
 
@@ -128,7 +128,8 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
 #' It can retrieve either "distritos" or "municipios" zones data.
 #'
 #' @param data_dir The directory where the data is stored.
-#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`) or `"municipalities"` (or `"muni"`, `"municip"`).
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
+#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
 #' @return A spatial object containing the zones data.
 #' @export
 #' @examples
@@ -136,17 +137,25 @@ spod_available_data_v1 <- function(data_dir = spod_get_data_dir(),
 #'   zones <- spod_get_zones()
 #' }
 spod_get_zones_v1 <- function(
-  zones = c("districts", "dist", "distr",
-    "municipalities", "muni", "municip"),
-  data_dir = spod_get_data_dir()
-) {
+    zones = c(
+      "districts", "dist", "distr", "distritos",
+      "municipalities", "muni", "municip", "municipios"
+    ),
+    data_dir = spod_get_data_dir(),
+    quiet = FALSE
+  ) {
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
   # check if shp files are already extracted
-  expected_gpkg_path <- fs::path(data_dir, glue::glue("clean_data/v1//zones/{zones}_mitma.gpkg"))
+  expected_gpkg_path <- fs::path(
+    data_dir,
+    glue::glue(spod_subfolder_clean_data_cache(), "/zones/{zones}_mitma.gpkg")
+  )
   if (fs::file_exists(expected_gpkg_path)) {
-    message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
+    if (isFALSE(quiet)) {
+      message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
+    }
     return(sf::read_sf(expected_gpkg_path))
   }
 
@@ -162,14 +171,14 @@ spod_get_zones_v1 <- function(
   }
 
   if (!fs::file_exists(metadata_zones$local_path)) {
-    message("Downloading the file to: ", metadata_zones$local_path)
+    if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
     downloaded_file <- curl::curl_download(metadata_zones$target_url, destfile = metadata_zones$local_path, mode = "wb", quiet = FALSE)
   } else {
-    message("File already exists: ", metadata_zones$local_path)
+    if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
     downloaded_file <- metadata_zones$local_path
   }
 
-  message("Unzipping the file: ", downloaded_file)
+  if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
   utils::unzip(downloaded_file,
     exdir = fs::path_dir(downloaded_file)
   )
@@ -178,8 +187,7 @@ spod_get_zones_v1 <- function(
   junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
   if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
 
-  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("**{zones}/*.shp"), recurse = TRUE)
-
+  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("*v1**{zones}/*.shp"), recurse = TRUE)
   zones <- spod_clean_zones_v1(zones_path)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
   sf::st_write(zones, expected_gpkg_path, delete_dsn = TRUE, delete_layer = TRUE)
@@ -188,13 +196,13 @@ spod_get_zones_v1 <- function(
 }
 
 #' Fixes common issues in the zones data and cleans up variable names
-#' 
+#'
 #' This function fixes any invalid geometries in the zones data and renames the "ID" column to "id".
-#' 
+#'
 #' @param zones_path The path to the zones spatial data file.
 #' @return A spatial object of class `sf`.
 #' @keywords internal
-#' 
+#'
 spod_clean_zones_v1 <- function(zones_path) {
   suppressWarnings({
     zones <- sf::read_sf(zones_path)
@@ -209,35 +217,159 @@ spod_clean_zones_v1 <- function(zones_path) {
 }
 
 
-#' Retrieve the origin-destination v1 data (2020-2021)
-#' 
-#' This function retrieves the v1 (2020-2021) origin-destination data from the specified data directory.
-#' @param read_fun The function to read the data. Defaults to `duckdb::tbl_file`.
+#' Load the origin-destination v1 data (2020-2021) for specified dates
+#'
+#' This function retrieves the v1 (2020-2021) origin_destination_data for the specified dates. It checks if the requested data is already cached locally and downloads it if it is not. When all the requested data is cached, it creates a `DuckDB` connection to the cache data folder and provides an table
+#'
 #' @inheritParams spod_download_data
-#' @return A tibble with the origin-destination data.
-spod_get_od <- function(
-  zones = c("districts", "dist", "distr",
-    "municipalities", "muni", "municip"), # add "urban_areas" for v2 data
-  dates = NULL,
-  data_dir = spod_get_data_dir(),
-  quiet = FALSE,
-  read_fun = duckdb::tbl_file
-) {
-  # Processing of the date arguments is performed in `spod_download_data()`
-  
+#' @inheritParams spod_duckdb_limit_resources
+#' @return A DuckDB table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`. The structure of the object is as follows:
+#'
+#' \describe{
+#'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
+#'   \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
+#'   \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
+#'   \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work').}
+#'   \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other').}
+#'   \item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g. 'Cuenca', 'Girona').}
+#'   \item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
+#'   \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
+#'   \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}
+#'   \item{trips_total_length_km}{\code{double}. The total length of all trips in kilometers for the specified time slot and distance.}
+#'   \item{year}{\code{double}. The year of the trip.}
+#'   \item{month}{\code{double}. The month of the trip.}
+#'   \item{day}{\code{double}. The day of the trip.}
+#' }
+#'
+#' This object also contains the reference to the source DuckDB conneciton with the full view of the cached data. It can be accessed using `od_table$src$con`. See examples below. The connection includes two views:
+#'
+#'
+#'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+#'
+#'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
+#'
+#' View `od_csv_clean` has the same structure as the filtered view 'od_filtered', which is returned by `spod_get_od_v1()` as a DuckDB table connection object. The view `od_csv_raw` has original Spanish column names and values and has the following structure:
+#' \describe{
+#'   \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}
+#'   \item{origen}{\code{character}. The identifier for the origin location of the trip, formatted as a character string (e.g., '01001_AM').}
+#'   \item{destino}{\code{character}. The identifier for the destination location of the trip, formatted as a character string (e.g., '01001_AM').}
+#'   \item{actividad_origen}{\code{character}. The type of activity at the origin location (e.g., 'casa', 'trabajo').}
+#'   \item{actividad_destino}{\code{character}. The type of activity at the destination location (e.g., 'otros', 'trabajo').}
+#'   \item{residencia}{\code{character}. The code representing the residence of the individual making the trip (e.g., '01') according to the official INE classification.}
+#'   \item{edad}{\code{character}. The age of the individual making the trip. This data is actaully filled with 'NA' values, which is why this column is removed in the cleaned-up and translated view described above.}
+#'   \item{periodo}{\code{integer}. The time period during which the trip started, represented as an integer (e.g., 0, 1, 2).}
+#'   \item{distancia}{\code{character}. The distance category of the trip, represented as a character string (e.g., '002-005' for 2-5 km).}
+#'   \item{viajes}{\code{double}. The number of trips taken within the specified time period and distance.}
+#'   \item{viajes_km}{\code{double}. The total length of all trips in kilometers for the specified time period and distance.}
+#'   \item{day}{\code{double}. The day of the trip.}
+#'   \item{month}{\code{double}. The month of the trip.}
+#'   \item{year}{\code{double}. The year of the trip.}
+#' }
+#'
+#' @export
+#' @examples
+#' \dontrun{
+#'
+#' # create a connection to the v1 data
+#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/home/nosync/cache/mitma")
+#' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
+#' od_dist <- spod_get_od_v1(zones = "distr", dates = dates)
+#'
+#' # od dist is a table view filtered to the specified dates
+#'
+#' # access the source connection with all dates
+#' # list tables
+#' DBI::dbListTables(od_dist$src$con)
+#' }
+spod_get_od_v1 <- function(
+    zones = c(
+      "districts", "dist", "distr", "distritos",
+      "municipalities", "muni", "municip", "municipios"
+    ),
+    dates = NULL,
+    data_dir = spod_get_data_dir(),
+    quiet = FALSE,
+    duck_max_mem = 2,
+    duck_max_threads = parallelly::availableCores())
+  {
+  # hardcode od as this is a wrapper to get origin-destiation data
+  type <- "od"
+
   zones <- match.arg(zones)
-  
-  # use the spot_download_data() function to download any missing data
-  downloaded_files <- spod_download_data(
-    type = "od",
-    zones = zones,
-    dates = dates,
-    data_dir = data_dir
+  zones <- spod_zone_names_en2es(zones)
+
+
+  if (is.character(dates)) {
+    if (all(dates != "cached")) {
+      dates <- spod_dates_argument_to_dates_seq(dates = dates)
+      # use the spot_download_data() function to download any missing data
+      spod_download_data(
+        type = type,
+        zones = zones,
+        dates = dates,
+        data_dir = data_dir,
+        return_output = FALSE
+      )
+    }
+  }
+
+  # create in memory duckdb connection
+  drv <- duckdb::duckdb()
+  con <- DBI::dbConnect(drv, dbdir = ":memory:", read_only = FALSE)
+
+  # define memory and threads limits
+  con <- spod_duckdb_limit_resources(
+    con = con,
+    duck_max_mem = duck_max_mem,
+    duck_max_threads = duck_max_threads
   )
 
 
-  # read data from cached files
-  
-  
-  
+  # attach the od folder of csv.gz files with predefined and cleaned up data types
+  con <- spod_duckdb_od_v1(
+    con = con,
+    zones = zones,
+    data_dir = data_dir
+  )
+
+  # filter by date
+  # actually, it seems like this works even if we do not return the 'con' from the function below, but I guess it is safer to return the 'con' and resave it to the 'con' of the environment/scope of this function
+  if (is.character(dates)) {
+    if (all(dates != "cached")) {
+      con <- spod_duckdb_filter_by_dates(con, "od_csv_clean", "od_csv_clean_filtered", dates)
+    }
+  }
+
+
+  # DBI::dbListTables(con) # for debugging only
+  # dplyr::tbl(con, "od_csv_clean") |> dplyr::glimpse() # for debugging only
+  # DBI::dbDisconnect(con) # for debugging only
+
+  # speed comparison REMOVE a bit later AFTER TESTING
+  # b1 <- bench::mark(iterations = 5, check = FALSE,
+  #   hive_date = {dplyr::tbl(con, "od_csv_clean") |>
+  #     dplyr::distinct(full_date) |>
+  #     dplyr::collect()}, # this is prefiltered using custom SQL query using only the columns (year, month, day) that we know are constructed from the hive style partitioning
+  #   full_date = {dplyr::tbl(con, "od_csv_clean") |>
+  #     dplyr::filter(full_date %in% dates) |>
+  #     dplyr::distinct(full_date) |>
+  #     dplyr::collect()} # this is causing DuckDB to scan ALL csv.gz files in the folder because it has to match the desired dates with full_date column
+  # )
+  # bench:::plot.bench_mark(b1, type = "violin") + ggpubr::theme_pubclean(base_size = 24)
+
+  # perhaps let's not confuse the user with the duckdb connection, see help for the @return of the spod_duckdb_od_v1() function
+  # return(con)
+
+  # return the tbl conection for user friendly data manipulation
+  # this may have an implication that there is no way for the user to properly disconnect the db connection, should think how this can be addressed
+  # not a problem! can be done with:
+  # DBI::dbDisconnect(od$src$con)
+
+  if (is.character(dates)) {
+    if (all(dates != "cached")) {
+      return(dplyr::tbl(con, "od_csv_clean_filtered"))
+    }
+  } else {
+    return(dplyr::tbl(con, "od_csv_clean"))
+  }
 }

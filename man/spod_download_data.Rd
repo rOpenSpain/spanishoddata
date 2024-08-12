@@ -7,8 +7,8 @@
 spod_download_data(
   type = c("od", "origin-destination", "os", "overnight_stays", "tpp",
     "trips_per_person"),
-  zones = c("districts", "dist", "distr", "municipalities", "muni", "municip", "lau",
-    "large_urban_areas"),
+  zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
+    "municip", "municipios", "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
@@ -18,7 +18,7 @@ spod_download_data(
 \arguments{
 \item{type}{The type of data to download. Can be \code{"origin-destination"} (or ust \code{"od"}), or \code{"trips_per_person"} (or just \code{"tpp"}) for v1 data. For v2 data \code{"overnight_stays"} (or just \code{"os"}) is also available. More data types to be supported in the future. See respective codebooks for more information. \strong{ADD CODEBOOKS! to the package}}
 
-\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}) for v1 data. Additionaly, these can be \code{"large_urban_areas"} (or \code{"lau"}) for v2 data.}
+\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}). Additionaly, these can be \code{"large_urban_areas"} (or \code{"lau"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data.}
 
 \item{dates}{A \code{character} or \code{Date} vector of dates to process. Kindly keep in mind that v1 and v2 data follow different data collection methodologies and may not be directly comparable. Therefore, do not try to request data from both versions for the same date range. If you need to compare data from both versions, please refer to the respective codebooks and methodology documents. The v1 data covers the period from 2020-02-14 to 2021-05-09, and the v2 data covers the period from 2022-01-01 to the present until further notice. The true dates range is checked against the available data for each version on every function run.
 
@@ -27,8 +27,10 @@ The possible values can be any of the following:
 \item A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object.
 \item A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object. Can be any non-consecutive sequence of dates.
 \item A date range
+\itemize{
 \item eigher a \code{character} or \code{Date} object of length 2 with clearly named elements \code{start} and \code{end} in ISO (YYYY-MM-DD) or YYYYMMDD format. E.g. \code{c(start = "2020-02-15", end = "2020-02-17")};
 \item or a \code{character} object of the form \code{YYYY-MM-DD_YYYY-MM-DD} or \code{YYYYMMDD_YYYYMMDD}. For example, \verb{2020-02-15_2020-02-17} or \verb{20200215_20200217}.
+}
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 
