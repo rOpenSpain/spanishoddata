@@ -290,7 +290,8 @@ spod_get_od_v1 <- function(
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
     duck_max_mem = 2,
-    duck_max_threads = parallelly::availableCores()) {
+    duck_max_threads = parallelly::availableCores())
+  {
   # hardcode od as this is a wrapper to get origin-destiation data
   type <- "od"
 
@@ -299,7 +300,7 @@ spod_get_od_v1 <- function(
 
 
   if (is.character(dates)) {
-    if (dates != "cached") {
+    if (all(dates != "cached")) {
       dates <- spod_dates_argument_to_dates_seq(dates = dates)
       # use the spot_download_data() function to download any missing data
       spod_download_data(
@@ -334,7 +335,7 @@ spod_get_od_v1 <- function(
   # filter by date
   # actually, it seems like this works even if we do not return the 'con' from the function below, but I guess it is safer to return the 'con' and resave it to the 'con' of the environment/scope of this function
   if (is.character(dates)) {
-    if (dates != "cached") {
+    if (all(dates != "cached")) {
       con <- spod_duckdb_filter_by_dates(con, "od_csv_clean", "od_csv_clean_filtered", dates)
     }
   }
@@ -365,7 +366,7 @@ spod_get_od_v1 <- function(
   # DBI::dbDisconnect(od$src$con)
 
   if (is.character(dates)) {
-    if (dates != "cached") {
+    if (all(dates != "cached")) {
       return(dplyr::tbl(con, "od_csv_clean_filtered"))
     }
   } else {
