@@ -146,7 +146,8 @@ spod_get_zones_v1 <- function(
   zones <- spod_zone_names_en2es(zones)
 
   # check if shp files are already extracted
-  expected_gpkg_path <- fs::path(data_dir, glue::glue("clean_data/v1//zones/{zones}_mitma.gpkg"))
+  expected_gpkg_path <- fs::path(data_dir,
+    glue::glue(spod_subfolder_clean_data_cache(), "/zones/{zones}_mitma.gpkg"))
   if (fs::file_exists(expected_gpkg_path)) {
     if (isFALSE(quiet)) message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
     return(sf::read_sf(expected_gpkg_path))
@@ -214,8 +215,10 @@ spod_clean_zones_v1 <- function(zones_path) {
 #' Load the origin-destination v1 data (2020-2021) for specified dates
 #' 
 #' This function retrieves the v1 (2020-2021) origin_destination_data for the specified dates. It checks if the requested data is already cached locally and downloads it if it is not. When all the requested data is cached, it creates a `DuckDB` connection to the cache data folder and provides an table
+#' 
 #' @inheritParams spod_download_data
-#' @return A duckdb table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`. The structure of the object is as follows:
+#' @inheritParams spod_duckdb_limit_resources
+#' @return A DuckDB table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`. The structure of the object is as follows:
 #' 
 #' \describe{
 #'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
@@ -232,13 +235,55 @@ spod_clean_zones_v1 <- function(zones_path) {
 #'   \item{month}{\code{double}. The month of the trip.}
 #'   \item{day}{\code{double}. The day of the trip.}
 #' }
+#' 
+#' This object also contains the reference to the source DuckDB conneciton with the full view of the cached data. It can be accessed using `od_table$src$con`. See examples below. The connection includes two views:
+#' 
+#' 
+#'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+#'  
+#'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
+#' 
+#' View `od_csv_clean` has the same structure as the filtered view 'od_filtered', which is returned by `spod_get_od_v1()` as a DuckDB table connection object. The view `od_csv_raw` has original Spanish column names and values and has the following structure:
+#' \describe{
+#'   \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}
+#'   \item{origen}{\code{character}. The identifier for the origin location of the trip, formatted as a character string (e.g., '01001_AM').}
+#'   \item{destino}{\code{character}. The identifier for the destination location of the trip, formatted as a character string (e.g., '01001_AM').}
+#'   \item{actividad_origen}{\code{character}. The type of activity at the origin location (e.g., 'casa', 'trabajo').}
+#'   \item{actividad_destino}{\code{character}. The type of activity at the destination location (e.g., 'otros', 'trabajo').}
+#'   \item{residencia}{\code{character}. The code representing the residence of the individual making the trip (e.g., '01') according to the official INE classification.}
+#'   \item{edad}{\code{character}. The age of the individual making the trip. This data is actaully filled with 'NA' values, which is why this column is removed in the cleaned-up and translated view described above.}
+#'   \item{periodo}{\code{integer}. The time period during which the trip started, represented as an integer (e.g., 0, 1, 2).}
+#'   \item{distancia}{\code{character}. The distance category of the trip, represented as a character string (e.g., '002-005' for 2-5 km).}
+#'   \item{viajes}{\code{double}. The number of trips taken within the specified time period and distance.}
+#'   \item{viajes_km}{\code{double}. The total length of all trips in kilometers for the specified time period and distance.}
+#'   \item{day}{\code{double}. The day of the trip.}
+#'   \item{month}{\code{double}. The month of the trip.}
+#'   \item{year}{\code{double}. The year of the trip.}
+#' }
+#' 
 #' @export 
+#' @examples
+#' \dontrun{
+#' 
+#' # create a connection to the v1 data
+#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/home/nosync/cache/mitma")
+#' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
+#' od_dist <- spod_get_od_v1(zones = "distr", dates = dates)
+#' 
+#' # od dist is a table view filtered to the specified dates
+#' 
+#' # access the source connection with all dates
+#' # list tables
+#' DBI::dbListTables(od_dist$src$con)
+#' }
 spod_get_od_v1 <- function(
   zones = c("districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios"),
   dates = NULL,
   data_dir = spod_get_data_dir(),
-  quiet = FALSE
+  quiet = FALSE,
+  duck_max_mem = 2,
+  duck_max_threads = parallelly::availableCores()
 ) {
   # hardcode od as this is a wrapper to get origin-destiation data
   type <- "od"
@@ -246,37 +291,59 @@ spod_get_od_v1 <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
   
-  dates <- spod_dates_argument_to_dates_seq(dates = dates)
   
-  # use the spot_download_data() function to download any missing data
-  spod_download_data(
-    type = type,
-    zones = zones,
-    dates = dates,
-    data_dir = data_dir,
-    return_output = FALSE
+  if (is.character(dates)) {
+    if ( dates != "cached" ) {
+      dates <- spod_dates_argument_to_dates_seq(dates = dates)
+      # use the spot_download_data() function to download any missing data
+    spod_download_data(
+      type = type,
+      zones = zones,
+      dates = dates,
+      data_dir = data_dir,
+      return_output = FALSE
+    )
+    }
+  }
+
+  # create in memory duckdb connection
+  drv <- duckdb::duckdb()
+  con <- DBI::dbConnect(drv, dbdir = ":memory:", read_only = FALSE)
+
+  # define memory and threads limits
+  con <- spod_duckdb_limit_resources(
+    con = con,
+    duck_max_mem = duck_max_mem,
+    duck_max_threads = duck_max_threads
   )
+  
 
   # attach the od folder of csv.gz files with predefined and cleaned up data types
   con <- spod_duckdb_od_v1(
+    con = con,
     zones = zones,
     data_dir = data_dir
   )
   
   # filter by date
   # actually, it seems like this works even if we do not return the 'con' from the function below, but I guess it is safer to return the 'con' and resave it to the 'con' of the environment/scope of this function
-  con <- spod_duckdb_filter_by_dates(con, "od", "od_filtered", dates)
+  if (is.character(dates)) {
+    if ( dates != "cached" ) {
+      con <- spod_duckdb_filter_by_dates(con, "od_csv_clean", "od_csv_clean_filtered", dates)
+    }
+  }
+  
 
   # DBI::dbListTables(con) # for debugging only
-  # dplyr::tbl(con, "trips_view") |> dplyr::glimpse() # for debugging only
+  # dplyr::tbl(con, "od_csv_clean") |> dplyr::glimpse() # for debugging only
   # DBI::dbDisconnect(con) # for debugging only
   
   # speed comparison REMOVE a bit later AFTER TESTING
   # b1 <- bench::mark(iterations = 5, check = FALSE,
-  #   hive_date = {dplyr::tbl(con, "trips") |>
+  #   hive_date = {dplyr::tbl(con, "od_csv_clean") |>
   #     dplyr::distinct(full_date) |> 
   #     dplyr::collect()}, # this is prefiltered using custom SQL query using only the columns (year, month, day) that we know are constructed from the hive style partitioning
-  #   full_date = {dplyr::tbl(con, "trips_view") |>
+  #   full_date = {dplyr::tbl(con, "od_csv_clean") |>
   #     dplyr::filter(full_date %in% dates) |>
   #     dplyr::distinct(full_date) |>
   #     dplyr::collect()} # this is causing DuckDB to scan ALL csv.gz files in the folder because it has to match the desired dates with full_date column
@@ -291,5 +358,11 @@ spod_get_od_v1 <- function(
   # not a problem! can be done with:
   # DBI::dbDisconnect(od$src$con)
   
-  return(dplyr::tbl(con, "od_filtered"))
+  if (is.character(dates)) {
+    if ( dates != "cached" ) {
+      return(dplyr::tbl(con, "od_csv_clean_filtered"))
+    }
+  } else {
+    return(dplyr::tbl(con, "od_csv_clean"))
+  }
 }

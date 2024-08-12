@@ -2,14 +2,16 @@
 #' Creates a duckdb connection to v1 OD data
 #' 
 #' This function creates a duckdb connection to the v1 OD data.
+#' 
+#' @param con A duckdb connection object. If not specified, a new in-memory connection will be created.
 #' @inheritParams spod_download_data
 #' @return A duckdb connection object with 2 views:
 #'  
-#'  * `all_od_v1_csv_files` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+#'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
 #'  
-#'  * `od` - a cleaned-up table view of `all_od_v1_csv_files` with column names and values translated and mapped to English. This still includes all cached data.
+#'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
 #' 
-#' The structure of the cleaned-up views `od` is as follows:
+#' The structure of the cleaned-up views `od_csv_clean` is as follows:
 #' 
 #' \describe{
 #'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
@@ -27,7 +29,7 @@
 #'   \item{day}{\code{double}. The day of the trip.}
 #' }
 #' 
-#' The structure of the original data in `all_od_v1_csv_files` is as follows:
+#' The structure of the original data in `od_csv_raw` is as follows:
 #' 
 #' \describe{
 #'   \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}
@@ -47,6 +49,7 @@
 #' }
 #' @keywords internal
 spod_duckdb_od_v1 <- function(
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
   zones = c("districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios",
     "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
@@ -64,16 +67,13 @@ spod_duckdb_od_v1 <- function(
     "/ficheros-diarios/"
   )
 
-  # create in memory duckdb connection
-  drv <- duckdb::duckdb()
-  con <- DBI::dbConnect(drv, dbdir = ":memory:", read_only = TRUE)
 
   # create view of csv files and preset variable types
   if (zones == "distritos") {
     DBI::dbSendStatement(con,
       dplyr::sql(
         glue::glue(
-          "CREATE VIEW all_od_v1_csv_files AS SELECT *
+          "CREATE VIEW od_csv_raw AS SELECT *
           FROM read_csv_auto('{csv_folder}**/*.txt.gz', delim='|', header=TRUE, hive_partitioning=TRUE,
           columns={{
             'fecha': 'DATE',
@@ -96,7 +96,7 @@ spod_duckdb_od_v1 <- function(
     DBI::dbSendStatement(con,
       dplyr::sql(
         glue::glue(
-          "CREATE VIEW all_od_v1_csv_files AS SELECT *
+          "CREATE VIEW od_csv_raw AS SELECT *
           FROM read_csv_auto('{csv_folder}**/*.txt.gz', delim='|', header=TRUE, hive_partitioning=TRUE,
           columns={{
             'fecha': 'DATE',
@@ -114,7 +114,7 @@ spod_duckdb_od_v1 <- function(
   }
 
   # preview table
-  # DBI::dbGetQuery(con, "SELECT * FROM all_od_v1_csv_files LIMIT 10") |> dplyr::glimpse() # for debugging
+  # DBI::dbGetQuery(con, "SELECT * FROM od_csv_raw LIMIT 10") |> dplyr::glimpse() # for debugging
 
   # create ENUMs
   
@@ -167,7 +167,7 @@ spod_duckdb_od_v1 <- function(
     DBI::dbSendStatement(con,
       dplyr::sql(
         glue::glue(
-          "CREATE VIEW od AS SELECT
+          "CREATE VIEW od_csv_clean AS SELECT
                             fecha AS full_date,
           CAST(origen AS ZONES_ENUM) AS id_origin,
           CAST(destino AS ZONES_ENUM) AS id_destination,
@@ -191,14 +191,14 @@ spod_duckdb_od_v1 <- function(
           year AS year,
           month AS month,
           day AS day
-          FROM all_od_v1_csv_files;"
+          FROM od_csv_raw;"
         )
       )
     )
   } else if (zones == "municipios") {
     DBI::dbSendStatement(con,
       dplyr::sql(
-        "CREATE VIEW od AS SELECT
+        "CREATE VIEW od_csv_clean AS SELECT
           fecha AS full_date,
           CAST(origen AS ZONES_ENUM) AS id_origin,
           CAST(destino AS ZONES_ENUM) AS id_destination,
@@ -209,16 +209,13 @@ spod_duckdb_od_v1 <- function(
           year AS year,
           month AS month,
           day AS day
-        FROM all_od_v1_csv_files;"
+        FROM od_csv_raw;"
       )
     )
   }
 
   # preview result for debugging
-  # DBI::dbGetQuery(con, "SELECT * FROM trips_view LIMIT 10") |> dplyr::glimpse()
-
-  # preview the new view for debugging
-  # DBI::dbGetQuery(con, "SELECT * FROM trips LIMIT 10") |> dplyr::glimpse()
+  # DBI::dbGetQuery(con, "SELECT * FROM od_csv_clean LIMIT 10") |> dplyr::glimpse()
 
   # return the connection as duckdb object
   return(con)
@@ -226,6 +223,9 @@ spod_duckdb_od_v1 <- function(
 
 #' Filter a duckdb conenction by dates
 #' @param con A duckdb connection
+#' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
+#' @param new_view_name The name of the new duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
+#' @inheritParams spod_dates_argument_to_dates_seq
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files)
 spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, dates){
   # prepare query to filter by dates
@@ -298,3 +298,29 @@ spod_sql_where_dates <- function(dates) {
   
   return(sql_query)
 }
+
+#' Set maximum memory and number of threads for a DuckDB connection
+#' @param con A duckdb connection
+#' @param duck_max_mem The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
+#' @param duck_max_threads The maximum number of threads to use. Defaults to the number of available cores minus 1.
+spod_duckdb_limit_resources <- function(
+  con,
+  duck_max_mem = 3, # in GB, default to 3 GB, should be enough to resave the data and small enough to fit in memory of most even old computers
+  duck_max_threads = parallelly::availableCores() - 1 # leave one core for other tasks by default 
+) {
+  
+  DBI::dbExecute(con,
+    dplyr::sql(
+      glue::glue("SET max_memory='{duck_max_mem}GB';")
+    )
+  )
+  
+  DBI::dbExecute(con,
+    dplyr::sql(
+      glue::glue("SET threads='{duck_max_threads}';")
+    )
+  )
+  
+  return(con)
+}
+

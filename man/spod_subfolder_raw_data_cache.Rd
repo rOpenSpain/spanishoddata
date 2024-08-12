@@ -2,7 +2,7 @@
 % Please edit documentation in R/folders.R
 \name{spod_subfolder_raw_data_cache}
 \alias{spod_subfolder_raw_data_cache}
-\title{Change subfolder name for raw data cache here to apply globally}
+\title{Get raw data cache subfolder name}
 \usage{
 spod_subfolder_raw_data_cache(ver = 1)
 }
@@ -13,6 +13,6 @@ spod_subfolder_raw_data_cache(ver = 1)
 Character string with the subfolder name for the raw data cache.
 }
 \description{
-Change subfolder name for raw data cache here to apply globally
+Change subfolder name in the code of this function for raw data cache here to apply globally, as all functions in the package should use this function to get the raw data cache path.
 }
 \keyword{internal}

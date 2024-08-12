@@ -2,41 +2,30 @@
 % Please edit documentation in R/duckdb_helpers.R
 \name{spod_duckdb_od_v1}
 \alias{spod_duckdb_od_v1}
-\title{Function to create a duckdb connection to v1 OD data}
+\title{Creates a duckdb connection to v1 OD data}
 \usage{
 spod_duckdb_od_v1(
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
     "municip", "municipios", "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
-  dates = NULL,
   data_dir = spod_get_data_dir()
 )
 }
 \arguments{
+\item{con}{A duckdb connection object. If not specified, a new in-memory connection will be created.}
+
 \item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}). Additionaly, these can be \code{"large_urban_areas"} (or \code{"lau"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data.}
-
-\item{dates}{A \code{character} or \code{Date} vector of dates to process. Kindly keep in mind that v1 and v2 data follow different data collection methodologies and may not be directly comparable. Therefore, do not try to request data from both versions for the same date range. If you need to compare data from both versions, please refer to the respective codebooks and methodology documents. The v1 data covers the period from 2020-02-14 to 2021-05-09, and the v2 data covers the period from 2022-01-01 to the present until further notice. The true dates range is checked against the available data for each version on every function run.
-
-The possible values can be any of the following:
-\itemize{
-\item A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object.
-\item A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object. Can be any non-consecutive sequence of dates.
-\item A date range
-\item eigher a \code{character} or \code{Date} object of length 2 with clearly named elements \code{start} and \code{end} in ISO (YYYY-MM-DD) or YYYYMMDD format. E.g. \code{c(start = "2020-02-15", end = "2020-02-17")};
-\item or a \code{character} object of the form \code{YYYY-MM-DD_YYYY-MM-DD} or \code{YYYYMMDD_YYYYMMDD}. For example, \verb{2020-02-15_2020-02-17} or \verb{20200215_20200217}.
-\item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
-}}
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 }
 \value{
-A duckdb connection object with 3 views:
+A duckdb connection object with 2 views:
 \itemize{
-\item \code{all_od_v1_csv_files} - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
-\item \code{od} - a cleaned-up table view of \code{all_od_v1_csv_files} with column names and values translated and mapped to English. This still includes all cached data.
-\item \code{od_filtered} - a filtered view of \code{od} with the desired dates.
+\item \code{od_csv_raw} - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+\item \code{od_csv_clean} - a cleaned-up table view of \code{od_csv_raw} with column names and values translated and mapped to English. This still includes all cached data.
 }
 
-The structure of the cleaned-up views \code{od} and \code{od_filtered} is as follows:
+The structure of the cleaned-up views \code{od_csv_clean} is as follows:
 
 \describe{
 \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
@@ -54,7 +43,7 @@ The structure of the cleaned-up views \code{od} and \code{od_filtered} is as fol
 \item{day}{\code{double}. The day of the trip.}
 }
 
-The structure of the original data in \code{all_od_v1_csv_files} is as follows:
+The structure of the original data in \code{od_csv_raw} is as follows:
 
 \describe{
 \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}

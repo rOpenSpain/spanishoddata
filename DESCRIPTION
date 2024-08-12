@@ -28,6 +28,7 @@ Imports:
     fs,
     glue,
     lubridate,
+    parallelly,
     purrr,
     readr,
     sf,

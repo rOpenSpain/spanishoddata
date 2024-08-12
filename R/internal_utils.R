@@ -12,9 +12,9 @@
 #' 
 #' * A date range
 #' 
-#'  * eigher a `character` or `Date` object of length 2 with clearly named elements `start` and `end` in ISO (YYYY-MM-DD) or YYYYMMDD format. E.g. `c(start = "2020-02-15", end = "2020-02-17")`;
+#'   * eigher a `character` or `Date` object of length 2 with clearly named elements `start` and `end` in ISO (YYYY-MM-DD) or YYYYMMDD format. E.g. `c(start = "2020-02-15", end = "2020-02-17")`;
 #' 
-#'  * or a `character` object of the form `YYYY-MM-DD_YYYY-MM-DD` or `YYYYMMDD_YYYYMMDD`. For example, `2020-02-15_2020-02-17` or `20200215_20200217`.
+#'   * or a `character` object of the form `YYYY-MM-DD_YYYY-MM-DD` or `YYYYMMDD_YYYYMMDD`. For example, `2020-02-15_2020-02-17` or `20200215_20200217`.
 #' 
 #' * A regular expression to match dates in the format `YYYYMMDD`. `character` object. For example, `^202002` will match all dates in February 2020.
 #' 
@@ -22,6 +22,7 @@
 #' @return A character vector of dates in ISO format (YYYY-MM-DD).
 #' @keywords internal
 spod_dates_argument_to_dates_seq <- function(dates) {
+  
   if (is.null(dates) || (!is.character(dates) && !inherits(dates, "Date"))) {
     stop("Invalid date input format. Please provide a character vector or Date object.")
   }
@@ -231,5 +232,3 @@ spod_match_data_type <- function(
   # need to add a warning here that the type is not recognized
   return(NULL)
 }
-
-

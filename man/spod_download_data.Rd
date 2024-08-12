@@ -27,8 +27,10 @@ The possible values can be any of the following:
 \item A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object.
 \item A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object. Can be any non-consecutive sequence of dates.
 \item A date range
+\itemize{
 \item eigher a \code{character} or \code{Date} object of length 2 with clearly named elements \code{start} and \code{end} in ISO (YYYY-MM-DD) or YYYYMMDD format. E.g. \code{c(start = "2020-02-15", end = "2020-02-17")};
 \item or a \code{character} object of the form \code{YYYY-MM-DD_YYYY-MM-DD} or \code{YYYYMMDD_YYYYMMDD}. For example, \verb{2020-02-15_2020-02-17} or \verb{20200215_20200217}.
+}
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 
