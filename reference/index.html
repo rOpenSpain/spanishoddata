@@ -16,6 +16,10 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/work-with-v1-data.html">Working with v1 MITMA data</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
       </ul></div>
@@ -48,10 +52,28 @@
         <dd>Get the available v1 data list</dd>
       </dl><dl><dt>
 
+          <code><a href="spod_convert_od_v1_to_duckdb.html">spod_convert_od_v1_to_duckdb()</a></code>
+
+        </dt>
+        <dd>Convert all downloaded v1 origin-destination data to duckdb</dd>
+      </dl><dl><dt>
+
           <code><a href="spod_download_data.html">spod_download_data()</a></code>
 
         </dt>
         <dd>Download the data files of specified type, zones, and dates</dd>
+      </dl><dl><dt>
+
+          <code><a href="spod_duckdb_filter_by_dates.html">spod_duckdb_filter_by_dates()</a></code>
+
+        </dt>
+        <dd>Filter a duckdb conenction by dates</dd>
+      </dl><dl><dt>
+
+          <code><a href="spod_duckdb_limit_resources.html">spod_duckdb_limit_resources()</a></code>
+
+        </dt>
+        <dd>Set maximum memory and number of threads for a DuckDB connection</dd>
       </dl><dl><dt>
 
           <code><a href="spod_get.html">spod_get()</a></code>
@@ -78,10 +100,10 @@
         <dd>Get the data dictionary</dd>
       </dl><dl><dt>
 
-          <code><a href="spod_get_od.html">spod_get_od()</a></code>
+          <code><a href="spod_get_od_v1.html">spod_get_od_v1()</a></code>
 
         </dt>
-        <dd>Retrieve the origin-destination v1 data (2020-2021)</dd>
+        <dd>Load the origin-destination v1 data (2020-2021) for specified dates</dd>
       </dl><dl><dt>
 
           <code><a href="spod_get_zones.html">spod_get_zones()</a></code>
