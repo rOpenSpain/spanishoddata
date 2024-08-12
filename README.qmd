@@ -349,6 +349,8 @@ usethis::use_pkgdown()
 usethis::use_github_action("pkgdown")
 # Setup gh pages:
 usethis::use_github_pages()
+# Auto-style with styler
+styler::style_pkg()
 ```
 
 ```{r}

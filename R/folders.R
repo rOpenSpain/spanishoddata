@@ -1,5 +1,5 @@
 #' Get raw data cache subfolder name
-#' 
+#'
 #' Change subfolder name in the code of this function for raw data cache here to apply globally, as all functions in the package should use this function to get the raw data cache path.
 #' @param ver Integer. The version of the data. Must be 1 or 2.
 #' @return Character string with the subfolder name for the raw data cache.
@@ -14,7 +14,7 @@ spod_subfolder_raw_data_cache <- function(ver = 1) {
 }
 
 #' Get clean data subfolder name
-#' 
+#'
 #' Change subfolder name in the code of this function for clean data cache here to apply globally, as all functions in the package should use this function to get the clean data cache path.
 #' @param ver Integer. The version of the data. Must be 1 or 2.
 #' @return Character string with the subfolder name for the clean data cache.
