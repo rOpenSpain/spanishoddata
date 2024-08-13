@@ -185,7 +185,7 @@ spod_zone_names_en2es <- function(
   } else if (zones %in% c("municipalities", "muni", "municip", "municipios")) {
     return("municipios")
   } else if (zones %in% c("lau", "large_urban_areas", "gau", "grandes_areas_urbanas")) {
-    return("GAU")
+    return("gau")
   }
 }
 
