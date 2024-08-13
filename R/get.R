@@ -1,3 +1,48 @@
+#' Get zones
+#' 
+#' @description
+#' Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
+#' 
+#' @inheritParams spod_download_data
+#' @inheritParams spod_get_valid_dates
+#' @return An `sf` object (Simple Feature collection).
+#' 
+#' The columns include (for both v1 (2020-2021) and v2 (2022 onwards) data:
+#' \describe{
+#'   \item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
+#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
+#'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
+#' }
+#' Additionally, for v2 (2022 onwards) data:
+#' \describe{
+#'   \item{name}{A character vector with the name of the zone.}
+#'   \item{population}{A numeric vector representing the population of each zone (as of 2022).}
+#' }
+#' @export
+spod_get_zones <- function(
+  zones = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ),
+  ver = 2,
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
+) {
+  ver <- as.integer(ver)
+
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
+
+  if (ver == 1) {
+    zones_sf <- spod_get_zones_v1(zones = zones, data_dir = data_dir, quiet = quiet)
+  } else if (ver == 2) {
+    zones_sf <- spod_get_zones_v2(zones = zones, data_dir = data_dir, quiet = quiet)
+  }
+
+  return(zones_sf)
+}
+
 #' Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
@@ -111,6 +156,9 @@ spod_available_data_v2 <- function(
   # replace 2 digit day with 1 digit day
   files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
 
+  # lowercase GAU to avoid problems with case-sensitive matching
+  files_table$local_path <- gsub("GAU", "gau", files_table$local_path)
+
   # now check if any of local files exist
   if( check_local_files == TRUE){
     files_table$downloaded <- fs::file_exists(files_table$local_path)
@@ -156,7 +204,6 @@ spod_get_data_dir <- function(quiet = FALSE) {
 #'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
 #'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 #' }
-#' @export
 #' @examples
 #' if (FALSE) {
 #'   zones <- spod_get_zones_v2()
@@ -190,7 +237,7 @@ spod_get_zones_v2 <- function(
   # if no existing gpkg found above, contunue here with download and data cleanup
   metadata <- spod_available_data_v2(data_dir, check_local_files = TRUE)
   zones_regex <- glue::glue("(zonificacion_{zones}\\.*)|(poblacion\\.csv)|(relacion_ine_zonificacionMitma\\.csv)")
-  sel_zones <- stringr::str_detect(metadata$target_url, zones_regex)
+  sel_zones <- stringr::str_detect(metadata$local_path, zones_regex)
   metadata_zones <- metadata[sel_zones, ]
   metadata_zones_for_download <- metadata_zones[metadata_zones$downloaded == FALSE, ]
   if (nrow(metadata_zones_for_download) > 0){

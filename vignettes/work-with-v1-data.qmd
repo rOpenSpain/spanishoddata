@@ -54,7 +54,7 @@ spod_get_data_dir() # you may want to check that it is set correctly
 Load the spatial data for districts.
 
 ```{r}
-districts <- spod_get_zones_v1(zones = "dist", quiet = TRUE)
+districts <- spod_get_zones(zones = "dist", ver = 1, quiet = TRUE)
 ```
 
 ```{r}
@@ -65,7 +65,7 @@ plot(st_geometry(districts))
 Load the spatial data for municipalities.
 
 ```{r}
-municipalities <- spod_get_zones_v1(zones = "muni", quiet = TRUE)
+municipalities <- spod_get_zones(zones = "muni", ver = 1, quiet = TRUE)
 ```
 
 ```{r}

@@ -125,7 +125,7 @@ metadata
 Zones can be downloaded as follows:
 
 ``` r
-distritos = spod_get_zones_v2("distritos")
+distritos = spod_get_zones("distritos", ver = 2)
 distritos_wgs84 = sf::st_transform(distritos, 4326)
 plot(distritos_wgs84)
 ```

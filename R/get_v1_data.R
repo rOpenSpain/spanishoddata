@@ -147,7 +147,6 @@ spod_available_data_v1 <- function(
 #'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
 #'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 #' }
-#' @export
 #' @examples
 #' if (FALSE) {
 #'   zones <- spod_get_zones_v1()

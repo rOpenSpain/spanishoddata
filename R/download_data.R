@@ -2,7 +2,7 @@
 #'
 #' This function downloads the data files of the specified type, zones, dates and data version.
 #' @param type The type of data to download. Can be `"origin-destination"` (or ust `"od"`), or `"trips_per_person"` (or just `"tpp"`) for v1 data. For v2 data `"overnight_stays"` (or just `"os"`) is also available. More data types to be supported in the future. See respective codebooks for more information. **ADD CODEBOOKS! to the package**
-#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`). Additionaly, these can be `"large_urban_areas"` (or `"lau"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data.
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`) for both data versions. Additionaly, these can be `"large_urban_areas"` (or `"lau"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data (2022 onwards).
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set.
 #' @param return_output Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.

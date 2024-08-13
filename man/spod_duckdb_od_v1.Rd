@@ -14,7 +14,7 @@ spod_duckdb_od_v1(
 \arguments{
 \item{con}{A duckdb connection object. If not specified, a new in-memory connection will be created.}
 
-\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}). Additionaly, these can be \code{"large_urban_areas"} (or \code{"lau"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data.}
+\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}) for both data versions. Additionaly, these can be \code{"large_urban_areas"} (or \code{"lau"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data (2022 onwards).}
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 }
