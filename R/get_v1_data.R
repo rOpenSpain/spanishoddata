@@ -141,11 +141,16 @@ spod_available_data_v1 <- function(
 #' @param data_dir The directory where the data is stored.
 #' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
 #' @param quiet Whether to suppress messages. Defaults to `FALSE`.
-#' @return A spatial object containing the zones data.
+#' @return An `sf` object (Simple Feature collection) with 2 fields:
+#' \describe{
+#'   \item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
+#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
+#'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
+#' }
 #' @export
 #' @examples
 #' if (FALSE) {
-#'   zones <- spod_get_zones()
+#'   zones <- spod_get_zones_v1()
 #' }
 spod_get_zones_v1 <- function(
     zones = c(
@@ -161,7 +166,9 @@ spod_get_zones_v1 <- function(
   # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
     data_dir,
-    glue::glue(spod_subfolder_clean_data_cache(), "/zones/{zones}_mitma.gpkg")
+    glue::glue(spod_subfolder_clean_data_cache(ver = 1),
+      "/zones/{zones}_mitma.gpkg"
+    )
   )
   if (fs::file_exists(expected_gpkg_path)) {
     if (isFALSE(quiet)) {
@@ -198,12 +205,21 @@ spod_get_zones_v1 <- function(
   junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
   if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
 
-  zones_path <- fs::dir_ls(data_dir, glob = glue::glue("*v1**{zones}/*.shp"), recurse = TRUE)
-  zones <- spod_clean_zones_v1(zones_path)
+  zones_path <- fs::dir_ls(
+    data_dir,
+    glob = glue::glue("*v1**{zones}/*.shp"),
+    recurse = TRUE
+  )
+  zones_sf <- spod_clean_zones_v1(zones_path)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
-  sf::st_write(zones, expected_gpkg_path, delete_dsn = TRUE, delete_layer = TRUE)
+  sf::st_write(
+    zones_sf,
+    expected_gpkg_path,
+    delete_dsn = TRUE,
+    delete_layer = TRUE
+  )
 
-  return(zones)
+  return(zones_sf)
 }
 
 #' Fixes common issues in the zones data and cleans up variable names
@@ -211,7 +227,7 @@ spod_get_zones_v1 <- function(
 #' This function fixes any invalid geometries in the zones data and renames the "ID" column to "id".
 #'
 #' @param zones_path The path to the zones spatial data file.
-#' @return A spatial object of class `sf`.
+#' @return A spatial object containing the cleaned zones data. 
 #' @keywords internal
 #'
 spod_clean_zones_v1 <- function(zones_path) {
