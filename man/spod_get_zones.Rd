@@ -7,7 +7,7 @@
 spod_get_zones(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
     "municip", "municipios", "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
-  ver = 2,
+  ver = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE
 )

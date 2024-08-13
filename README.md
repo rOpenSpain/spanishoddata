@@ -97,10 +97,10 @@ theme_set(theme_minimal())
 sf::sf_use_s2(FALSE)
 ```
 
-Get metadata for the datasets as follows:
+Get metadata for the datasets as follows (we are using version 2 data covering years 2022 and onwards):
 
 ``` r
-metadata = spod_available_data_v2()
+metadata = spod_available_data(ver = 2) # for version 2 of the data
 metadata
 ```
 

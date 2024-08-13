@@ -146,12 +146,12 @@ spod_expand_dates_from_regex <- function(date_regex) {
 }
 
 #' Get valid dates for the specified data version
-#' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
+#' 
+#' @inheritParams spod_available_data
 #' @return A Dates vector of valid dates for the specified data version.
 #' @keywords internal
-spod_get_valid_dates <- function(ver = c(1, 2)) {
-  ver <- match.arg(ver)
-  ver <- as.integer(ver)
+spod_get_valid_dates <- function(ver = NULL) {
+  ver <- as.integer(ver) # todo: add type safety check
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
   }
@@ -192,7 +192,7 @@ spod_zone_names_en2es <- function(
 
 #' Match data types to folders
 #' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
-#' @param ver The version of the data to use. Defaults to 1. Can be 1 or 2.
+#' @inheritParams spod_available_data
 #' @keywords internal
 spod_match_data_type <- function(
     type = c(

@@ -4,7 +4,7 @@
 #' Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 #' 
 #' @inheritParams spod_download_data
-#' @inheritParams spod_get_valid_dates
+#' @inheritParams spod_available_data
 #' @return An `sf` object (Simple Feature collection).
 #' 
 #' The columns include (for both v1 (2020-2021) and v2 (2022 onwards) data:
@@ -25,11 +25,14 @@ spod_get_zones <- function(
     "municipalities", "muni", "municip", "municipios",
     "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
   ),
-  ver = 2,
+  ver = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE
 ) {
-  ver <- as.integer(ver)
+  ver <- as.integer(ver) # todo: add type safety check
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 or 2.")
+  }
 
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
@@ -41,6 +44,41 @@ spod_get_zones <- function(
   }
 
   return(zones_sf)
+}
+
+#' Get available data list
+#' 
+#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable or a custom path specified with `data_dir` argument.
+#' 
+#' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
+#' @inheritParams spod_available_data_v1
+#' @inheritParams global_quiet_param
+#' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
+#' \describe{
+#'   \item{target_url}{\code{character}. The URL link to the data file.}
+#'   \item{pub_ts}{\code{POSIXct}. The timestamp of when the file was published.}
+#'   \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
+#'   \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
+#'   \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
+#'   \item{local_path}{\code{character}. The local file path where the data is stored.}
+#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
+#' }
+spod_available_data <- function(
+  ver = 2,
+  check_local_files = FALSE,
+  quiet = FALSE,
+  data_dir = spod_get_data_dir()
+) {
+  ver <- as.integer(ver) # todo: add type safety check
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 or 2.")
+  }
+
+  if (ver == 1) {
+    return(spod_available_data_v1(data_dir = data_dir, check_local_files = check_local_files, quiet = quiet))
+  } else if (ver == 2) {
+    return(spod_available_data_v2(data_dir = data_dir, check_local_files = check_local_files, quiet = quiet))
+  }
 }
 
 #' Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)
@@ -77,7 +115,7 @@ spod_get_latest_v2_file_list <- function(
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
-#' @return The data dictionary.
+#' @inherit spod_available_data return
 #' @export
 #' @examples
 #' # Get the data dictionary for the default data directory

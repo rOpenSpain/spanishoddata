@@ -36,17 +36,7 @@ spod_get_latest_v1_file_list <- function(
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param check_local_files Whether to check if the local files exist. Defaults to `FALSE`.
 #' @inheritParams global_quiet_param
-#' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
-#' \describe{
-#'   \item{target_url}{\code{character}. The URL link to the data file.}
-#'   \item{pub_ts}{\code{POSIXct}. The timestamp of when the file was published.}
-#'   \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
-#'   \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
-#'   \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
-#'   \item{local_path}{\code{character}. The local file path where the data is stored.}
-#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
-#' }
-#' @export
+#' @inherit spod_available_data return
 #' @examples
 #' # Get the available v1 data list for the default data directory
 #' if (FALSE) {
