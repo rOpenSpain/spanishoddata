@@ -158,7 +158,7 @@ spod_get_zones_v1 <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
-  # check if shp files are already extracted
+  # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
     data_dir,
     glue::glue(spod_subfolder_clean_data_cache(), "/zones/{zones}_mitma.gpkg")
