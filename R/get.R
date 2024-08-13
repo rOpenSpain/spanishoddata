@@ -11,13 +11,14 @@
 #' }
 spod_get_latest_v2_file_list <- function(
     data_dir = spod_get_data_dir(),
-    xml_url = "https://movilidad-opendata.mitma.es/RSS.xml") {
+    xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
+) {
   if (!fs::dir_exists(data_dir)) {
     fs::dir_create(data_dir)
   }
 
-  current_timestamp <- format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE, tz = "UTC")
-  current_filename <- glue::glue("{data_dir}/data_links_v2_{current_timestamp}.xml")
+  current_date <- format(Sys.Date(), format = "%Y-%m-%d")
+  current_filename <- glue::glue("{data_dir}/data_links_v2_{current_date}.xml")
 
   message("Saving the file to: ", current_filename)
   xml_requested <- curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
@@ -42,43 +43,79 @@ spod_get_latest_v2_file_list <- function(
 spod_available_data_v2 <- function(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
-  quiet = FALSE) {
+  quiet = FALSE
+) {
   xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
-  latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
+  if (length(xml_files_list) == 0) {
+    if (isFALSE(quiet)) {
+      message("No data links xml files found, getting latest v2 data links xml.")
+    }
+    latest_data_links_xml_path <- spod_get_latest_v2_file_list(data_dir = data_dir)
+  } else {
+    latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
+  }
+
+  # Check if the XML file is 1 day old or older from its name
+  file_date <- stringr::str_extract(latest_data_links_xml_path, "[0-9]{4}-[0-9]{2}-[0-9]{2}")
+  
+  if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
+    if (isFALSE(quiet)) {
+      message("File list xml is 1 day old or older, getting latest data links xml")
+    }
+    latest_data_links_xml_path <- spod_get_latest_v2_file_list(data_dir = data_dir)
+  } else {
+    if (isFALSE(quiet)) {
+      message("Using existing data links xml: ", latest_data_links_xml_path)
+    }
+  }
+
   if (length(latest_data_links_xml_path) == 0) {
     if (isFALSE(quiet)) {
       message("Getting latest data links xml")
     }
     latest_data_links_xml_path <- spod_get_latest_v2_file_list(data_dir = data_dir)
-  } else {
-    if (isFALSE(quiet)){
-      message("Using existing data links xml: ", latest_data_links_xml_path)
-    }
   }
-
+  
+  
   x_xml <- xml2::read_xml(latest_data_links_xml_path)
 
-  download_dt <- tibble::tibble(
+  files_table <- tibble::tibble(
     target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |> xml2::xml_text(),
     pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |> xml2::xml_text()
   )
 
-  download_dt$pub_ts <- lubridate::dmy_hms(download_dt$pub_date)
-  download_dt$file_extension <- tools::file_ext(download_dt$target_url)
-  download_dt <- download_dt[download_dt$file_extension != "", ]
-  download_dt$pub_date <- NULL
+  files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
+  files_table$file_extension <- tools::file_ext(files_table$target_url)
+  files_table <- files_table[files_table$file_extension != "", ]
+  files_table$pub_date <- NULL
 
-  download_dt$data_ym <- lubridate::ym(stringr::str_extract(download_dt$target_url, "[0-9]{4}-[0-9]{2}"))
-  download_dt$data_ymd <- lubridate::ymd(stringr::str_extract(download_dt$target_url, "[0-9]{8}"))
+  files_table$data_ym <- lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{4}-[0-9]{2}"))
+  files_table$data_ymd <- lubridate::ymd(stringr::str_extract(files_table$target_url, "[0-9]{8}"))
   # order by pub_ts
-  download_dt <- download_dt[order(download_dt$pub_ts, decreasing = TRUE), ]
-  download_dt$local_path <- file.path(
+  files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
+  files_table$local_path <- file.path(
     data_dir,
-    stringr::str_replace(download_dt$target_url, "https://movilidad-opendata.mitma.es/", "")
+    stringr::str_replace(files_table$target_url, ".*mitma.es/",
+      spod_subfolder_raw_data_cache(ver = 2))
   )
-  download_dt$local_path <- stringr::str_replace_all(download_dt$local_path, "\\/\\/\\/|\\/\\/", "/")
+  files_table$local_path <- stringr::str_replace_all(files_table$local_path, "\\/\\/\\/|\\/\\/", "/")
 
-  return(download_dt)
+  # change path for daily data files to be in hive-style format
+  # TODO: check if this is needed for estudios completo and rutas
+  files_table$local_path <- gsub("([0-9]{4})-([0-9]{2})\\/[0-9]{6}([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
+
+  # replace 2 digit month with 1 digit month
+  files_table$local_path <- gsub("month=0([1-9])", "month=\\1", files_table$local_path)
+
+  # replace 2 digit day with 1 digit day
+  files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
+
+  # now check if any of local files exist
+  if( check_local_files == TRUE){
+    files_table$downloaded <- fs::file_exists(files_table$local_path)
+  }
+
+  return(files_table)
 }
 
 #' Get the data directory
