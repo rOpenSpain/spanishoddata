@@ -17,3 +17,9 @@ inst/doc
 .Renviron
 /doc/
 /Meta/
+
+# macOS artifacts
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
