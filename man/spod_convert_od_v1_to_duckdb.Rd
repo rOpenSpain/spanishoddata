@@ -22,7 +22,7 @@ spod_convert_od_v1_to_duckdb(
 
 \item{save_dir}{The path to the directory where the duckdb files will be saved. If \code{NULL}, uses the default location in \code{data_dir} (set by the \code{SPANISH_OD_DATA_DIR} environment variable). Therefore, the default relative path is \verb{<data_dir>/clean_data/v1/tabular/duckdb/od_<zones>.duckdb}.}
 
-\item{quiet}{Whether to suppress messages. Defaults to \code{FALSE}.}
+\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
 
 \item{duck_max_mem}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
 

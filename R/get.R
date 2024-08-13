@@ -30,7 +30,8 @@ spod_get_latest_v2_file_list <- function(
 #' This function retrieves the data dictionary for the specified data directory.
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
-#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
+#' @inheritParams spod_available_data_v1
+#' @inheritParams global_quiet_param
 #' @return The data dictionary.
 #' @export
 #' @examples
@@ -122,7 +123,7 @@ spod_available_data_v2 <- function(
 #'
 #' This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
 #' If the environment variable is not set, it returns the temporary directory.
-#' @param quiet Logical. If `TRUE`, the function does not print messages to the console. Defaults to `FALSE`.
+#' @inheritParams global_quiet_param
 #' @return The data directory.
 #' @export
 #' @keywords internal
@@ -145,12 +146,20 @@ spod_get_data_dir <- function(quiet = FALSE) {
 #' It can retrieve either "distritos" or "municipios" zones data.
 #'
 #' @param data_dir The directory where the data is stored.
-#' @param type The type of zones data to retrieve ("distritos" or "municipios").
-#' @return A spatial object containing the zones data.
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
+#' @inheritParams global_quiet_param
+#' @return An `sf` object (Simple Feature collection) with 4 fields:
+#' \describe{
+#'   \item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
+#'   \item{name}{A character vector with the name of the zone.}
+#'   \item{population}{A numeric vector representing the population of each zone (as of 2022).}
+#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
+#'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
+#' }
 #' @export
 #' @examples
 #' if (FALSE) {
-#'   zones <- spod_get_zones()
+#'   zones <- spod_get_zones_v2()
 #' }
 spod_get_zones_v2 <- function(
   zones = c(
@@ -165,38 +174,121 @@ spod_get_zones_v2 <- function(
   zones <- spod_zone_names_en2es(zones)
 
   # check if gpkg files are already saved and load them if available
-  # expected_gpkg_path
-  # TODO after done with the download part
+  expected_gpkg_path <- fs::path(
+    data_dir,
+    glue::glue(spod_subfolder_clean_data_cache(ver = 2),
+      "/zones/{zones}_mitma.gpkg"
+    )
+  )
+  if (fs::file_exists(expected_gpkg_path)) {
+    if (isFALSE(quiet)) {
+      message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
+    }
+    return(sf::read_sf(expected_gpkg_path))
+  }
   
   # if no existing gpkg found above, contunue here with download and data cleanup
   metadata <- spod_available_data_v2(data_dir, check_local_files = TRUE)
   zones_regex <- glue::glue("(zonificacion_{zones}\\.*)|(poblacion\\.csv)|(relacion_ine_zonificacionMitma\\.csv)")
   sel_zones <- stringr::str_detect(metadata$target_url, zones_regex)
-  metadata_zones <- metadata[sel_distritos, ]
-  metadata_zones <- metadata_zones[metadata_zones$downloaded == FALSE, ]
-  dir_names <- unique(fs::path_dir(metadata_zones$local_path))
-  if (any(!fs::dir_exists(dir_names))) {
-    fs::dir_create(dir_names, recurse = TRUE)
-  }
-  if (isFALSE(quiet)) {
-    message("Downloading missing zones data...")
-    curl::multi_download(
-      urls = metadata_zones$target_url,
-      destfiles = metadata_zones$local_path,
-      resume = TRUE,
-      progress = TRUE
-    )
+  metadata_zones <- metadata[sel_zones, ]
+  metadata_zones_for_download <- metadata_zones[metadata_zones$downloaded == FALSE, ]
+  if (nrow(metadata_zones_for_download) > 0){
+    dir_names <- unique(fs::path_dir(metadata_zones_for_download$local_path))
+    if (any(!fs::dir_exists(dir_names))) {
+      fs::dir_create(dir_names, recurse = TRUE)
+    }
+    if (isFALSE(quiet)) {
+      message("Downloading missing zones data...")
+      curl::multi_download(
+        urls = metadata_zones_for_download$target_url,
+        destfiles = metadata_zones_for_download$local_path,
+        resume = TRUE,
+        progress = TRUE
+      )
+    }
   }
   
-  sel_shp <- stringr::str_detect(
-    metadata_zones$local_path,
-    glue::glue("zonificacion_{zones}\\.shp$")
+  zones_path <- fs::dir_ls(
+    path = fs::path(data_dir, spod_subfolder_raw_data_cache(ver = 2)),
+    regexp = glue::glue("zonificacion_{tolower(zones)}s?\\.shp$"),
+    recurse = TRUE
   )
-  shp_file <- metadata_zones$local_path[sel_shp]
+
+  zones_sf <- spod_clean_zones_v2(zones_path)
+  fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
+  sf::st_write(
+    zones_sf,
+    expected_gpkg_path,
+    delete_dsn = TRUE,
+    delete_layer = TRUE
+  )
+
+  return(zones_sf)
+  }
+
+#' Fixes common issues in the zones data and cleans up variable names
+#'
+#' This function fixes any invalid geometries in the zones data and renames the "ID" column to "id". It also attacches the population counts and zone names provided in the csv files supplied by the original data provider.
+#'
+#' @param zones_path The path to the zones spatial data file.
+#' @return A spatial object containing the cleaned zones data. 
+#' @keywords internal
+#'
+spod_clean_zones_v2 <- function(zones_path) {
+  # detect what kind of zones find out if it is distritos, municipios or GAU
+  zones <- stringr::str_extract(zones_path, "distritos|municipios|gaus")
+  
   suppressWarnings({
-    return(sf::read_sf(shp_file))
+    zones_sf <- sf::read_sf(zones_path)
   })
+
+  # fix geometry
+  invalid_geometries <- !sf::st_is_valid(zones_sf)
+  if (sum(invalid_geometries) > 0) {
+    fixed_zones_sf <- sf::st_make_valid(zones_sf[invalid_geometries, ])
+    zones_sf <- rbind(zones_sf[!invalid_geometries, ], fixed_zones_sf)
+  }
+
+  # lowercase id column name
+  names(zones_sf)[names(zones_sf) == "ID"] <- "id"
+
+  population <- readr::read_delim(
+    glue::glue(fs::path_dir(zones_path), "/poblacion_{zones}.csv"),
+    delim = "|",
+    col_names = c("id", "population"),
+    col_types = c("c", "i")
+  )
+
+  if (zones %in% c("distritos","gaus")) {
+    zone_names <- readr::read_delim(
+      glue::glue(fs::path_dir(zones_path), "/nombres_{zones}.csv"),
+      skip = 1,
+      delim = "|",
+      col_names = c("id", "name"),
+      col_types = c("c", "i")
+    )
+  } else if (zones == "municipios") {
+    zone_names <- readr::read_delim(
+      glue::glue(fs::path_dir(zones_path), "/nombres_{zones}.csv"),
+      skip = 1,
+      delim = "|",
+      col_names = c("row", "id", "name"),
+      col_types = c("i", "c", "i")
+    ) |> 
+      dplyr::select(-"row")
+  }
+ 
+  # combine zones with population and names
+  zones_sf <- zones_sf |>
+    dplyr::left_join(zone_names, by = "id") |> 
+    dplyr::left_join(population, by = "id") |> 
+    dplyr::select(-"geometry", "geometry")
+  
+  return(zones_sf)
 }
+
+
 
 #' Retrieves the origin-destination data
 #'

@@ -36,7 +36,7 @@ The possible values can be any of the following:
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 
-\item{quiet}{Logical. If \code{TRUE}, the function does not print messages to the console. Defaults to \code{FALSE}.}
+\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
 
 \item{return_output}{Logical. If \code{TRUE}, the function returns a character vector of the paths to the downloaded files. If \code{FALSE}, the function returns \code{NULL}.}
 }
