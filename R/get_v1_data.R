@@ -305,8 +305,8 @@ spod_get_od_v1 <- function(
     dates = NULL,
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
-    duck_max_mem = 2,
-    duck_max_threads = parallelly::availableCores())
+    duck_max_mem = 3,
+    duck_max_threads = parallelly::availableCores() - 1)
   {
   # hardcode od as this is a wrapper to get origin-destiation data
   type <- "od"
@@ -349,17 +349,18 @@ spod_get_od_v1 <- function(
   )
 
   # filter by date
-  if (is.character(dates)) {
-    if (all(dates != "cached")) {
-      con <- spod_duckdb_filter_by_dates(con, "od_csv_clean", "od_csv_clean_filtered", dates)
-    }
+  if (!is.character(dates)) {
+    con <- spod_duckdb_filter_by_dates(
+      con,
+      "od_csv_clean",
+      "od_csv_clean_filtered",
+      dates
+    )
   }
 
   # return either a full view of all available data (dates = "cached") or a view filtered to the specified dates
-  if (is.character(dates)) {
-    if (all(dates != "cached")) {
-      return(dplyr::tbl(con, "od_csv_clean_filtered"))
-    }
+  if (all(!is.character(dates))) {
+    return(dplyr::tbl(con, "od_csv_clean_filtered"))
   } else {
     return(dplyr::tbl(con, "od_csv_clean"))
   }
