@@ -206,7 +206,7 @@ spod_get_zones_v1 <- function(
   if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
 
   zones_path <- fs::dir_ls(
-    data_dir,
+    path = fs::path(data_dir, spod_subfolder_raw_data_cache(ver = 1)),
     glob = glue::glue("*v1**{zones}/*.shp"),
     recurse = TRUE
   )
