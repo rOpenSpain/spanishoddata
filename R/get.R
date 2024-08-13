@@ -152,25 +152,47 @@ spod_get_data_dir <- function(quiet = FALSE) {
 #' if (FALSE) {
 #'   zones <- spod_get_zones()
 #' }
-spod_get_zones <- function(
-    data_dir = spod_get_data_dir(),
-    type = "distritos") {
-  metadata <- spod_available_data_v2(data_dir)
-  regex <- glue::glue("zonificacion_{type}\\.")
-  sel_distritos <- stringr::str_detect(metadata$target_url, regex)
-  metadata_distritos <- metadata[sel_distritos, ]
-  dir_name <- dirname(metadata_distritos$local_path[1])
-  if (!fs::dir_exists(dir_name)) {
-    fs::dir_create(dir_name, recurse = TRUE)
+spod_get_zones_v2 <- function(
+  zones = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ),
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
+) {
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
+
+  # check if gpkg files are already saved and load them if available
+  # expected_gpkg_path
+  # TODO after done with the download part
+  
+  # if no existing gpkg found above, contunue here with download and data cleanup
+  metadata <- spod_available_data_v2(data_dir, check_local_files = TRUE)
+  zones_regex <- glue::glue("(zonificacion_{zones}\\.*)|(poblacion\\.csv)|(relacion_ine_zonificacionMitma\\.csv)")
+  sel_zones <- stringr::str_detect(metadata$target_url, zones_regex)
+  metadata_zones <- metadata[sel_distritos, ]
+  metadata_zones <- metadata_zones[metadata_zones$downloaded == FALSE, ]
+  dir_names <- unique(fs::path_dir(metadata_zones$local_path))
+  if (any(!fs::dir_exists(dir_names))) {
+    fs::dir_create(dir_names, recurse = TRUE)
   }
-  for (i in 1:nrow(metadata_distritos)) {
-    if (!fs::file_exists(metadata_distritos$local_path[i])) {
-      message("Downloading ", metadata_distritos$target_url[i])
-      curl::curl_download(url = metadata_distritos$target_url[i], destfile = metadata_distritos$local_path[i], quiet = FALSE)
-    }
+  if (isFALSE(quiet)) {
+    message("Downloading missing zones data...")
+    curl::multi_download(
+      urls = metadata_zones$target_url,
+      destfiles = metadata_zones$local_path,
+      resume = TRUE,
+      progress = TRUE
+    )
   }
-  sel_shp <- stringr::str_detect(metadata_distritos$local_path, "\\.shp$")
-  shp_file <- metadata_distritos$local_path[sel_shp]
+  
+  sel_shp <- stringr::str_detect(
+    metadata_zones$local_path,
+    glue::glue("zonificacion_{zones}\\.shp$")
+  )
+  shp_file <- metadata_zones$local_path[sel_shp]
   suppressWarnings({
     return(sf::read_sf(shp_file))
   })
