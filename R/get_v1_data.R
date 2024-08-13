@@ -4,7 +4,6 @@
 #' @param xml_url The URL of the XML file to download. Defaults to "https://opendata-movilidad.mitma.es/RSS.xml".
 #'
 #' @return The path to the downloaded XML file.
-#' @export
 #' @examples
 #' if (FALSE) {
 #'   spod_get_latest_v1_file_list()
@@ -350,38 +349,13 @@ spod_get_od_v1 <- function(
   )
 
   # filter by date
-  # actually, it seems like this works even if we do not return the 'con' from the function below, but I guess it is safer to return the 'con' and resave it to the 'con' of the environment/scope of this function
   if (is.character(dates)) {
     if (all(dates != "cached")) {
       con <- spod_duckdb_filter_by_dates(con, "od_csv_clean", "od_csv_clean_filtered", dates)
     }
   }
 
-
-  # DBI::dbListTables(con) # for debugging only
-  # dplyr::tbl(con, "od_csv_clean") |> dplyr::glimpse() # for debugging only
-  # DBI::dbDisconnect(con) # for debugging only
-
-  # speed comparison REMOVE a bit later AFTER TESTING
-  # b1 <- bench::mark(iterations = 5, check = FALSE,
-  #   hive_date = {dplyr::tbl(con, "od_csv_clean") |>
-  #     dplyr::distinct(full_date) |>
-  #     dplyr::collect()}, # this is prefiltered using custom SQL query using only the columns (year, month, day) that we know are constructed from the hive style partitioning
-  #   full_date = {dplyr::tbl(con, "od_csv_clean") |>
-  #     dplyr::filter(full_date %in% dates) |>
-  #     dplyr::distinct(full_date) |>
-  #     dplyr::collect()} # this is causing DuckDB to scan ALL csv.gz files in the folder because it has to match the desired dates with full_date column
-  # )
-  # bench:::plot.bench_mark(b1, type = "violin") + ggpubr::theme_pubclean(base_size = 24)
-
-  # perhaps let's not confuse the user with the duckdb connection, see help for the @return of the spod_duckdb_od_v1() function
-  # return(con)
-
-  # return the tbl conection for user friendly data manipulation
-  # this may have an implication that there is no way for the user to properly disconnect the db connection, should think how this can be addressed
-  # not a problem! can be done with:
-  # DBI::dbDisconnect(od$src$con)
-
+  # return either a full view of all available data (dates = "cached") or a view filtered to the specified dates
   if (is.character(dates)) {
     if (all(dates != "cached")) {
       return(dplyr::tbl(con, "od_csv_clean_filtered"))

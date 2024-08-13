@@ -87,7 +87,6 @@ spod_available_data <- function(
 #' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
 #'
 #' @return The path to the downloaded XML file.
-#' @export
 #' @examples
 #' if (FALSE) {
 #'   spod_get_latest_v2_file_list()
@@ -116,7 +115,6 @@ spod_get_latest_v2_file_list <- function(
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
-#' @export
 #' @examples
 #' # Get the data dictionary for the default data directory
 #' if (FALSE) {
