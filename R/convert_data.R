@@ -4,6 +4,7 @@
 #' @inheritParams spod_get_zones_v1
 #' @inheritParams spod_duckdb_limit_resources
 #' @param overwrite Logical. If `TRUE`, overwrites existing duckdb files. Defaults to `FALSE`.
+#' @inheritParams global_quiet_param
 #' @return Path to saved DuckDB file.
 #' @export
 spod_convert_od_v1_to_duckdb <- function(

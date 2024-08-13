@@ -5,9 +5,9 @@
 #' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`). Additionaly, these can be `"large_urban_areas"` (or `"lau"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data.
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set.
-#' @param quiet Logical. If `TRUE`, the function does not print messages to the console. Defaults to `FALSE`.
 #' @param return_output Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.
-#'
+#' @inheritParams global_quiet_param
+#' 
 #' @return A character vector of the paths to the downloaded files. Unless `return_output = FALSE`, in which case the function returns `NULL`.
 #'
 #' @export

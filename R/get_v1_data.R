@@ -35,7 +35,7 @@ spod_get_latest_v1_file_list <- function(
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param check_local_files Whether to check if the local files exist. Defaults to `FALSE`.
-#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
+#' @inheritParams global_quiet_param
 #' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
 #' \describe{
 #'   \item{target_url}{\code{character}. The URL link to the data file.}
@@ -140,7 +140,7 @@ spod_available_data_v1 <- function(
 #'
 #' @param data_dir The directory where the data is stored.
 #' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
-#' @param quiet Whether to suppress messages. Defaults to `FALSE`.
+#' @inheritParams global_quiet_param
 #' @return An `sf` object (Simple Feature collection) with 2 fields:
 #' \describe{
 #'   \item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
@@ -250,6 +250,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #'
 #' @inheritParams spod_download_data
 #' @inheritParams spod_duckdb_limit_resources
+#' @inheritParams global_quiet_param
 #' @return A DuckDB table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`. The structure of the object is as follows:
 #'
 #' \describe{
