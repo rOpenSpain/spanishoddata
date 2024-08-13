@@ -236,6 +236,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #'
 #' This function retrieves the v1 (2020-2021) origin_destination_data for the specified dates. It checks if the requested data is already cached locally and downloads it if it is not. When all the requested data is cached, it creates a `DuckDB` connection to the cache data folder and provides an table
 #'
+
 #' @inheritParams spod_download_data
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams global_quiet_param
@@ -264,7 +265,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #'
 #'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
 #'
-#' View `od_csv_clean` has the same structure as the filtered view 'od_filtered', which is returned by `spod_get_od_v1()` as a DuckDB table connection object. The view `od_csv_raw` has original Spanish column names and values and has the following structure:
+#' View `od_csv_clean` has the same structure as the filtered view 'od_filtered', which is returned by `spod_get_od()` as a DuckDB table connection object. The view `od_csv_raw` has original Spanish column names and values and has the following structure:
 #' \describe{
 #'   \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}
 #'   \item{origen}{\code{character}. The identifier for the origin location of the trip, formatted as a character string (e.g., '01001_AM').}
@@ -289,7 +290,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #' # create a connection to the v1 data
 #' Sys.setenv(SPANISH_OD_DATA_DIR = "~/home/nosync/cache/mitma")
 #' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
-#' od_dist <- spod_get_od_v1(zones = "distr", dates = dates)
+#' od_dist <- spod_get_od(zones = "distr", dates = dates)
 #'
 #' # od dist is a table view filtered to the specified dates
 #'
@@ -297,7 +298,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #' # list tables
 #' DBI::dbListTables(od_dist$src$con)
 #' }
-spod_get_od_v1 <- function(
+spod_get_od <- function(
     zones = c(
       "districts", "dist", "distr", "distritos",
       "municipalities", "muni", "municip", "municipios"
@@ -310,6 +311,8 @@ spod_get_od_v1 <- function(
   {
   # hardcode od as this is a wrapper to get origin-destiation data
   type <- "od"
+
+  ver <- spod_infer_data_v_from_dates(dates)
 
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
@@ -342,9 +345,10 @@ spod_get_od_v1 <- function(
 
 
   # attach the od folder of csv.gz files with predefined and cleaned up data types
-  con <- spod_duckdb_od_v1(
+  con <- spod_duckdb_od(
     con = con,
     zones = zones,
+    ver = ver,
     data_dir = data_dir
   )
 

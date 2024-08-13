@@ -80,7 +80,7 @@ Load the data for the period from 2020-02-14 to 2020-02-17.
 The data will be cached in the directory set in the SPANISH_OD_DATA_DIR environment variable. If it is already downloaded, it will not be downloaded again.
 
 ```{r}
-od_dist_1 <- spod_get_od_v1(
+od_dist_1 <- spod_get_od(
   zones = "dist",
   dates = c(start = "2020-02-14", end = "2020-02-17"),
   quiet = TRUE
@@ -171,7 +171,7 @@ DBI::dbDisconnect(od_dist_1$src$con)
 This time let's get the data for 2020-02-14, 2020-02-17, 2021-05-07 and 2021-05-09. We will use municipalities as zones.
 
 ```{r}
-od_muni_1 <- spod_get_od_v1(
+od_muni_1 <- spod_get_od(
   zones = "muni",
   dates = c("2020-02-14", "2020-02-17", "2021-05-07", "2021-05-09"),
   quiet = TRUE

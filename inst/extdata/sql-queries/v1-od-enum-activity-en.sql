@@ -1,1 +1,4 @@
-CREATE TYPE ACTIV_ENUM AS ENUM ('home', 'work', 'other');
+CREATE TYPE ACTIV_ENUM AS ENUM (
+    'home',
+    'work_or_study',
+    'other');

@@ -82,7 +82,7 @@ spod_convert_od_v1_to_duckdb <- function(
   )
 
   # connect to folder of CSVs with v1 od data
-  con <- spod_duckdb_od_v1(con = con, zones = zones)
+  con <- spod_duckdb_od(con = con, zones = zones, ver = 1)
   # DBI::dbListTables(con)
 
   # import view of CSV files into duckdb
