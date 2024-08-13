@@ -11,13 +11,14 @@
 #' }
 spod_get_latest_v1_file_list <- function(
     data_dir = spod_get_data_dir(),
-    xml_url = "https://opendata-movilidad.mitma.es/RSS.xml") {
+    xml_url = "https://opendata-movilidad.mitma.es/RSS.xml"
+) {
   if (!fs::dir_exists(data_dir)) {
     fs::dir_create(data_dir)
   }
 
-  current_timestamp <- format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE, tz = "UTC")
-  current_filename <- glue::glue("{data_dir}/data_links_v1_{current_timestamp}.xml")
+  current_date <- format(Sys.Date(), format = "%Y-%m-%d")
+  current_filename <- glue::glue("{data_dir}/data_links_v1_{current_date}.xml")
 
   message("Saving the file to: ", current_filename)
   xml_requested <- curl::curl_download(
@@ -61,7 +62,7 @@ spod_available_data_v1 <- function(
   xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v1") |> sort()
   if (length(xml_files_list) == 0) {
     if (isFALSE(quiet)) {
-      message("No data links xml files found, getting latest data links xml")
+      message("No data links xml files found, getting latest v1 data links xml")
     }
     latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   } else {
@@ -72,14 +73,20 @@ spod_available_data_v1 <- function(
   file_date <- stringr::str_extract(latest_data_links_xml_path, "[0-9]{4}-[0-9]{2}-[0-9]{2}")
 
   if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-    if (isFALSE(quiet)) message("File list xml is 1 day old or older, getting latest data links xml")
+    if (isFALSE(quiet)) {
+      message("File list xml is 1 day old or older, getting latest data links xml")
+    }
     latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   } else {
-    if (isFALSE(quiet)) message("Using existing data links xml: ", latest_data_links_xml_path)
+    if (isFALSE(quiet)) {
+      message("Using existing data links xml: ", latest_data_links_xml_path)
+    }
   }
 
   if (length(latest_data_links_xml_path) == 0) {
-    if (isFALSE(quiet)) message("Getting latest data links xml")
+    if (isFALSE(quiet)) {
+      message("Getting latest data links xml")
+    }
     latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   }
 
@@ -119,7 +126,9 @@ spod_available_data_v1 <- function(
   files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
 
   # now check if any of local files exist
-  files_table$downloaded <- fs::file_exists(files_table$local_path)
+  if( check_local_files == TRUE){
+    files_table$downloaded <- fs::file_exists(files_table$local_path)
+  }
 
   return(files_table)
 }
