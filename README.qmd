@@ -124,8 +124,8 @@ Zones can be downloaded as follows:
 ```{r}
 #| label: distritos
 distritos <- spod_get_zones("distritos", ver = 2)
-distritos_wgs84 <- sf::st_transform(distritos, 4326)
-plot(distritos_wgs84)
+distritos_wgs84 <- distritos |> sf::st_simplify(dTolerance = 200) |> sf::st_transform(4326)
+plot(sf::st_geometry(distritos_wgs84))
 ```
 
 ## Estudios basicos
@@ -167,6 +167,7 @@ See how you could do this manually with the following code, highlighting the ben
 Each day in the `ficheros-diarios` folder contains a file with the following columns:
 
 ```{r}
+#| eval: false
 #| label: ficheros-diarios-example
 # set timeout for downloads
 options(timeout = 600) # 10 minutes
