@@ -112,7 +112,11 @@ spod_duckdb_od <- function(
     quiet = TRUE
   )
   
-  unique_ids <- unique(spatial_data$id)
+  if( ver == 1 ) {
+    unique_ids <- unique(spatial_data$id)
+  } else if( ver == 2 ) {
+    unique_ids <- c("externo", unique(spatial_data$id))
+  }
   
   DBI::dbExecute(
     con,
