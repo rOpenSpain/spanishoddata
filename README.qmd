@@ -360,4 +360,5 @@ usethis::use_github_action("pkgdown")
 usethis::use_github_pages()
 # Auto-style with styler
 styler::style_pkg()
+usethis::use_tidy_description()
 ```
