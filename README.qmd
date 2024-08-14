@@ -55,7 +55,7 @@ code spanishoddata
 then run the following command from the R console:
 
 ```{r}
-#| eval: false
+#| eval: true
 devtools::load_all()
 ```
 
@@ -239,9 +239,12 @@ od_national_sf = od::od_to_sf(
   od_national_interzonal,
   z = distritos_wgs84
 )
-od_national_sf |>
+distritos_wgs84 |>
   ggplot() +
-  geom_sf(aes(size = Trips), colour = "red") +
+  geom_sf(aes(fill = population)) +
+  geom_sf(data = spData::world, fill = NA, colour = "black") +
+  geom_sf(aes(size = Trips), colour = "blue", data = od_national_sf) +
+  coord_sf(xlim = c(-10, 5), ylim = c(35, 45)) +
   theme_void()
 ```
 
@@ -258,18 +261,11 @@ We will use this information to subset the rows, to capture all movement within 
 
 ```{r}
 #| label: salamanca
-ids_salamanca = distritos_salamanca$ID
-od_salamanca = od_multi_list |>
-  map(~ .x |>
-        filter(id_origin %in% ids_salamanca) |>
-        filter(id_destination %in% ids_salamanca) |>
-        collect()
-  ) |>
-  list_rbind() |>
-  group_by(id_origin, id_destination) |>
-  summarise(Trips = sum(n_trips)) |>
+ids_salamanca = distritos_salamanca$id
+od_salamanca = od_national_sf |>
+  filter(id_origin %in% ids_salamanca) |>
+  filter(id_destination %in% ids_salamanca) |>
   arrange(Trips)
-
 ```
 
 Let's plot the results:
@@ -280,13 +276,11 @@ od_salamanca_sf = od::od_to_sf(
   od_salamanca,
   z = distritos_salamanca
 )
-od_salamanca_sf |>
-  filter(id_origin != id_destination) |>
-  ggplot() +
-  geom_sf(aes(colour = Trips), size = 1) +
+ggplot() +
+  geom_sf(fill = "grey", data = distritos_salamanca) +
+  geom_sf(aes(colour = Trips), size = 1, data = od_salamanca_sf) +
   scale_colour_viridis_c() +
   theme_void()
-
 ```
 
 # Disaggregating desire lines
@@ -345,10 +339,9 @@ od_jittered |>
 
 
 ```{r}
-#| label: notes-on-package-development
+#| label: repo-setup
 #| eval: false
 #| echo: false
-#| label: repo-setup
 # Create data-raw and data folders
 usethis::use_data_raw()
 usethis::use_description()
