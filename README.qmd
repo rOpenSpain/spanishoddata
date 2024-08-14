@@ -73,7 +73,11 @@ usethis::edit_r_environ()
 SPANISH_OD_DATA_DIR = "/path/to/data"
 ```
 
-You can also set the data directory in the local folder by editing a local `.Renviron` file in the root of the project:
+You can also set the data directory locally or on a per session basis as described below.
+
+<details>
+
+Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
 
 ```{r}
 #| eval: false
@@ -86,6 +90,8 @@ Finally, you can set the data directory in the current R session as follows:
 #| eval: false
 Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 ```
+
+</details>
 
 # Using the package
 
