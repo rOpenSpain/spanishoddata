@@ -4,6 +4,7 @@
 #' @inheritParams spod_get_zones_v1
 #' @inheritParams spod_duckdb_limit_resources
 #' @param overwrite Logical. If `TRUE`, overwrites existing duckdb files. Defaults to `FALSE`.
+#' @inheritParams global_quiet_param
 #' @return Path to saved DuckDB file.
 #' @export
 spod_convert_od_v1_to_duckdb <- function(
@@ -81,7 +82,7 @@ spod_convert_od_v1_to_duckdb <- function(
   )
 
   # connect to folder of CSVs with v1 od data
-  con <- spod_duckdb_od_v1(con = con, zones = zones)
+  con <- spod_duckdb_od(con = con, zones = zones, ver = 1)
   # DBI::dbListTables(con)
 
   # import view of CSV files into duckdb

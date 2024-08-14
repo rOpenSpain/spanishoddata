@@ -7,7 +7,7 @@
 spod_get_data_dir(quiet = FALSE)
 }
 \arguments{
-\item{quiet}{Logical. If \code{TRUE}, the function does not print messages to the console. Defaults to \code{FALSE}.}
+\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
 The data directory.

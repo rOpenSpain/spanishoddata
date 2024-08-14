@@ -2,12 +2,12 @@
 #'
 #' This function downloads the data files of the specified type, zones, dates and data version.
 #' @param type The type of data to download. Can be `"origin-destination"` (or ust `"od"`), or `"trips_per_person"` (or just `"tpp"`) for v1 data. For v2 data `"overnight_stays"` (or just `"os"`) is also available. More data types to be supported in the future. See respective codebooks for more information. **ADD CODEBOOKS! to the package**
-#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`). Additionaly, these can be `"large_urban_areas"` (or `"lau"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data.
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`) for both data versions. Additionaly, these can be `"large_urban_areas"` (or `"lau"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data (2022 onwards).
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set.
-#' @param quiet Logical. If `TRUE`, the function does not print messages to the console. Defaults to `FALSE`.
 #' @param return_output Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.
-#'
+#' @inheritParams global_quiet_param
+#' 
 #' @return A character vector of the paths to the downloaded files. Unless `return_output = FALSE`, in which case the function returns `NULL`.
 #'
 #' @export
@@ -42,7 +42,7 @@ spod_download_data <- function(
       "districts", "dist", "distr", "distritos",
       "municipalities", "muni", "municip", "municipios",
       "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
-    ), # implement "urban_areas" for v2 data
+    ),
     dates = NULL,
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
@@ -55,8 +55,9 @@ spod_download_data <- function(
 
 
   # check version
-  # replace this argument with automatic version detection based on the dates requested?
-  ver <- spod_infer_data_v_from_dates(dates_to_use) # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1() or spod_get_metadata(). This results in reading thedates_to_use <- spod_dates_argument_to_dates_seq(dates = dates) xml files with metadata for the second time. This is not optimal and should be fixed.
+  ver <- spod_infer_data_v_from_dates(dates_to_use)
+  # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1/2(). This results in reading xml files with metadata for the second time. This is not optimal and should be fixed.
+  
   if (isFALSE(quiet)) {
     message("Data version detected from dates: ", ver)
   }
@@ -69,25 +70,27 @@ spod_download_data <- function(
 
   # get the available  data list while checking for files already cached on disk
   if (ver == 1) {
-    metadata <- spod_available_data_v1(
+    available_data <- spod_available_data_v1(
       data_dir = data_dir,
       check_local_files = TRUE
     )
   } else if (ver == 2) {
-    metadata <- spod_get_metadata(data_dir = data_dir)
-    # replace with spod_available_data_v2() when available, spod_get_metadata can become a wrapper with v1/v2 argument. Potentially we can even automaticaly detect the data version based on the time intervals that user requests, but this is a bit controversial, as the methodology behind v1 and v2 data generation is not the same and Nommon+MITMA do not recommend mixing those together and comparing absoloute numbers of trips.
+    available_data <- spod_available_data_v2(
+      data_dir = data_dir,
+    check_local_files = TRUE
+  )
   }
 
-  # match the metadata to type, zones, version and dates
+  # match the available_data to type, zones, version and dates
   if (ver == 1) {
-    requested_files <- metadata[
-      grepl(glue::glue("v{ver}.*{type}.*{zones}"), metadata$local_path) &
-        metadata$data_ymd %in% dates_to_use,
+    requested_files <- available_data[
+      grepl(glue::glue("v{ver}.*{type}.*{zones}"), available_data$local_path) &
+        available_data$data_ymd %in% dates_to_use,
     ]
   } else if (ver == 2) {
-    requested_files <- metadata[
-      grepl(glue::glue("v{ver}.*{zones}.*{type}"), metadata$local_path) &
-        metadata$data_ymd %in% dates_to_use,
+    requested_files <- available_data[
+      grepl(glue::glue("v{ver}.*{zones}.*{type}"), available_data$local_path) &
+        available_data$data_ymd %in% dates_to_use,
     ]
   }
 

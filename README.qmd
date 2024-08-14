@@ -55,7 +55,7 @@ code spanishoddata
 then run the following command from the R console:
 
 ```{r}
-#| eval: false
+#| eval: true
 devtools::load_all()
 ```
 
@@ -73,7 +73,11 @@ usethis::edit_r_environ()
 SPANISH_OD_DATA_DIR = "/path/to/data"
 ```
 
-You can also set the data directory in the local folder by editing a local `.Renviron` file in the root of the project:
+You can also set the data directory locally or on a per session basis as described below.
+
+<details>
+
+Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
 
 ```{r}
 #| eval: false
@@ -87,13 +91,14 @@ Finally, you can set the data directory in the current R session as follows:
 Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 ```
 
+</details>
+
 # Using the package
 
 To run the code in this README we will use the following setup:
 
 ```{r}
 #| label: pkgs
-library(duckdb)
 library(tidyverse)
 theme_set(theme_minimal())
 sf::sf_use_s2(FALSE)
@@ -104,11 +109,11 @@ sf::sf_use_s2(FALSE)
 remotes::install_github("r-tmap/tmap")
 ```
 
-Get metadata for the datasets as follows:
+Get metadata for the datasets as follows (we are using version 2 data covering years 2022 and onwards):
 
 ```{r}
 #| label: metadata
-metadata = spod_get_metadata()
+metadata <- spod_available_data(ver = 2) # for version 2 of the data
 metadata
 ```
 
@@ -118,12 +123,46 @@ Zones can be downloaded as follows:
 
 ```{r}
 #| label: distritos
-distritos = spod_get_zones(type = "distritos")
-distritos_wgs84 = sf::st_transform(distritos, 4326)
+distritos <- spod_get_zones("distritos", ver = 2)
+distritos_wgs84 <- sf::st_transform(distritos, 4326)
 plot(distritos_wgs84)
 ```
 
 ## Estudios basicos
+
+```{r}
+od_db <- spod_get_od(
+  zones = "distritos",
+  dates = c(start = "2024-03-01", end = "2024-03-07")
+)
+class(od_db)
+colnames(od_db)
+```
+
+
+The result is an R database interface object (`tbl_dbi`) that can be used with dplyr functions and SQL queries 'lazily', meaning that the data is not loaded into memory until it is needed.
+Let's do an aggregation to find the total number trips per hour over the 7 days:
+
+```{r}
+#| label: trips-per-hour
+n_per_hour <- od_db |>
+  group_by(full_date, time_slot) |>
+  summarise(n = n(), Trips = sum(n_trips)) |>
+  collect() |>
+  mutate(Time = lubridate::ymd_h(paste0(full_date, time_slot, sep = " "))) |>
+  mutate(Day = lubridate::wday(Time, label = TRUE))
+n_per_hour |>
+  ggplot(aes(x = Time, y = Trips)) +
+  geom_line(aes(colour = Day)) +
+  labs(title = "Number of trips per hour over 7 days")
+```
+
+The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
+
+
+See how you could do this manually with the following code, highlighting the benefits of the package:
+
+<details>
 
 Each day in the `ficheros-diarios` folder contains a file with the following columns:
 
@@ -131,24 +170,24 @@ Each day in the `ficheros-diarios` folder contains a file with the following col
 #| label: ficheros-diarios-example
 # set timeout for downloads
 options(timeout = 600) # 10 minutes
-u1 = "https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz"
-f1 = basename(u1)
+u1 <- "https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz"
+f1 <- basename(u1)
 if (!file.exists(f1)) {
   download.file(u1, f1)
 }
-drv = duckdb::duckdb("daily.duckdb")
-con = DBI::dbConnect(drv)
-od1 = duckdb::tbl_file(con, f1)
+drv <- duckdb::duckdb("daily.duckdb")
+con <- DBI::dbConnect(drv)
+od1 <- duckdb::tbl_file(con, f1)
 # colnames(od1)
-#  [1] "fecha"                   "periodo"                
-#  [3] "origen"                  "destino"                
-#  [5] "distancia"               "actividad_origen"       
-#  [7] "actividad_destino"       "estudio_origen_posible" 
-#  [9] "estudio_destino_posible" "residencia"             
-# [11] "renta"                   "edad"                   
-# [13] "sexo"                    "viajes"                 
+#  [1] "fecha"                   "periodo"
+#  [3] "origen"                  "destino"
+#  [5] "distancia"               "actividad_origen"
+#  [7] "actividad_destino"       "estudio_origen_posible"
+#  [9] "estudio_destino_posible" "residencia"
+# [11] "renta"                   "edad"
+# [13] "sexo"                    "viajes"
 # [15] "viajes_km"
-od1_head = od1 |>
+od1_head <- od1 |>
   head() |>
   collect()
 od1_head |>
@@ -159,7 +198,7 @@ DBI::dbDisconnect(con)
 You can get the same result, but for multiple files, as follows:
 
 ```{r}
-od_multi_list = spod_get(
+od_multi_list <- spod_get(
   subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
   date_regex = "2024030[1-7]"
 )
@@ -167,66 +206,45 @@ od_multi_list[[1]]
 class(od_multi_list[[1]])
 ```
 
-The result is a list of duckdb tables which load almost instantly, and can be used with dplyr functions.
-Let's do an aggregation to find the total number trips per hour over the 7 days:
 
-```{r}
-#| label: trips-per-hour
-n_per_hour = od_multi_list |>
-  map(~ .x |>
-        group_by(periodo, fecha) |>
-        summarise(n = n(), Trips = sum(viajes)) |>
-        collect()
-  ) |>
-  list_rbind() |>
-  mutate(Time = lubridate::ymd_h(paste0(fecha, periodo))) |>
-  mutate(Day = lubridate::wday(Time, label = TRUE)) 
-n_per_hour |>
-  ggplot(aes(x = Time, y = Trips)) +
-  geom_line(aes(colour = Day)) +
-  labs(title = "Number of trips per hour over 7 days")
-```
-
-The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
+</details>
 
 # Desire lines
 
 We'll use the same input data to pick-out the most important flows in Spain, with a focus on longer trips for visualisation:
 
 ```{r}
-od_large = od_multi_list |>
-  map(~ .x |>
-        group_by(origen, destino) |>
-        summarise(Trips = sum(viajes), .groups = "drop") |>
-        filter(Trips > 500) |>
-        collect()
-  ) |>
-  list_rbind() |>
-  group_by(origen, destino) |>
-  summarise(Trips = sum(Trips)) |>
+od_national_aggregated <- od_db |>
+  group_by(id_origin, id_destination) |>
+  summarise(Trips = sum(n_trips), .groups = "drop") |>
+  filter(Trips > 500) |>
+  collect() |>
   arrange(desc(Trips))
-od_large
+od_national_aggregated
 ```
 
 The results show that the largest flows are intra-zonal.
 Let's keep only the inter-zonal flows:
 
 ```{r}
-od_large_interzonal = od_large |>
-  filter(origen != destino)
+od_national_interzonal <- od_national_aggregated |>
+  filter(id_origin != id_destination)
 ```
 
 We can convert these to geographic data with the {od} package:
 
 ```{r}
 #| label: desire-lines
-od_large_interzonal_sf = od::od_to_sf(
-  od_large_interzonal,
+od_national_sf <- od::od_to_sf(
+  od_national_interzonal,
   z = distritos_wgs84
 )
-od_large_interzonal_sf |>
+distritos_wgs84 |>
   ggplot() +
-  geom_sf(aes(size = Trips), colour = "red") +
+  geom_sf(aes(fill = population)) +
+  geom_sf(data = spData::world, fill = NA, colour = "black") +
+  geom_sf(aes(size = Trips), colour = "blue", data = od_national_sf) +
+  coord_sf(xlim = c(-10, 5), ylim = c(35, 45)) +
   theme_void()
 ```
 
@@ -234,8 +252,8 @@ Let's focus on trips in and around a particular area (Salamanca):
 
 ```{r}
 #| label: salamanca-zones
-salamanca_zones = zonebuilder::zb_zone("Salamanca")
-distritos_salamanca = distritos_wgs84[salamanca_zones, ]
+salamanca_zones <- zonebuilder::zb_zone("Salamanca")
+distritos_salamanca <- distritos_wgs84[salamanca_zones, ]
 plot(distritos_salamanca)
 ```
 
@@ -243,35 +261,26 @@ We will use this information to subset the rows, to capture all movement within 
 
 ```{r}
 #| label: salamanca
-ids_salamanca = distritos_salamanca$ID
-od_salamanca = od_multi_list |>
-  map(~ .x |>
-        filter(origen %in% ids_salamanca) |>
-        filter(destino %in% ids_salamanca) |>
-        collect()
-  ) |>
-  list_rbind() |>
-  group_by(origen, destino) |>
-  summarise(Trips = sum(viajes)) |>
+ids_salamanca <- distritos_salamanca$id
+od_salamanca <- od_national_sf |>
+  filter(id_origin %in% ids_salamanca) |>
+  filter(id_destination %in% ids_salamanca) |>
   arrange(Trips)
-
 ```
 
 Let's plot the results:
 
 ```{r}
 #| label: salamanca-plot
-od_salamanca_sf = od::od_to_sf(
+od_salamanca_sf <- od::od_to_sf(
   od_salamanca,
   z = distritos_salamanca
 )
-od_salamanca_sf |>
-  filter(origen != destino) |>
-  ggplot() +
-  geom_sf(aes(colour = Trips), size = 1) +
+ggplot() +
+  geom_sf(fill = "grey", data = distritos_salamanca) +
+  geom_sf(aes(colour = Trips), size = 1, data = od_salamanca_sf) +
   scale_colour_viridis_c() +
   theme_void()
-
 ```
 
 # Disaggregating desire lines
@@ -287,26 +296,26 @@ We'll get the road network from OSM:
 
 ```{r}
 #| results: hide
-salamanca_boundary = sf::st_union(distritos_salamanca)
-osm_full = osmactive::get_travel_network(salamanca_boundary)
+salamanca_boundary <- sf::st_union(distritos_salamanca)
+osm_full <- osmactive::get_travel_network(salamanca_boundary)
 ```
 
 ```{r}
 #| label: osm
-osm = osm_full[salamanca_boundary, ]
-drive_net = osmactive::get_driving_network(osm)
-drive_net_major = osmactive::get_driving_network_major(osm)
-cycle_net = osmactive::get_cycling_network(osm)
-cycle_net = osmactive::distance_to_road(cycle_net, drive_net_major)
-cycle_net = osmactive::classify_cycle_infrastructure(cycle_net)
-map_net = osmactive::plot_osm_tmap(cycle_net)
+osm <- osm_full[salamanca_boundary, ]
+drive_net <- osmactive::get_driving_network(osm)
+drive_net_major <- osmactive::get_driving_network_major(osm)
+cycle_net <- osmactive::get_cycling_network(osm)
+cycle_net <- osmactive::distance_to_road(cycle_net, drive_net_major)
+cycle_net <- osmactive::classify_cycle_infrastructure(cycle_net)
+map_net <- osmactive::plot_osm_tmap(cycle_net)
 map_net
 ```
 
 We can use the road network to disaggregate the desire lines:
 
 ```{r}
-od_jittered = odjitter::jitter(
+od_jittered <- odjitter::jitter(
   od_salamanca_sf,
   zones = distritos_salamanca,
   subpoints = drive_net,
@@ -330,9 +339,9 @@ od_jittered |>
 
 
 ```{r}
+#| label: repo-setup
 #| eval: false
 #| echo: false
-#| label: repo-setup
 # Create data-raw and data folders
 usethis::use_data_raw()
 usethis::use_description()
@@ -351,37 +360,4 @@ usethis::use_github_action("pkgdown")
 usethis::use_github_pages()
 # Auto-style with styler
 styler::style_pkg()
-```
-
-```{r}
-#| eval: false
-#| include: false
-# Testing other datasets:
-u = "https://movilidad-opendata.mitma.es/estudios_completos/por-distritos/movilidad_obligada/meses-completos/202201_Movilidad_obligada_distritos.csv.gz"
-f = basename(u)
-if (!file.exists(f)) {
-  download.file(u, f)
-}
-drv = duckdb::duckdb("movilidad.duckdb")
-con = DBI::dbConnect(drv)
-od1 = duckdb::tbl_file(con, f)
-od1_head = od1 |>
-  head() |>
-  collect()
-# close connection:
-DBI::dbDisconnect(con)
-# # A tibble: 6 × 8
-#      mes origen destino  edad  sexo   residencia recurrencia personas
-#    <dbl> <chr>  <chr>    <chr> <chr>  <chr>      <chr>          <dbl>
-# 1 202201 01001  01002    NA    NA     01         1-2             4.41
-# 2 202201 01001  01002    0-25  hombre 01         5-7            11   
-# 3 202201 01001  01004_AM NA    NA     01         1-2             4.39
-# 4 202201 01001  01009_AM 0-25  mujer  01         1-2           145.  
-# 5 202201 01001  01009_AM 25-45 mujer  01         1-2           120.  
-# 6 202201 01001  01009_AM 45-65 mujer  01         1-2           119.  
-od1_full = od1 |>
-  collect()
-table(od1_full$recurrencia)
-od1_head |>
-  knitr::kable()
 ```

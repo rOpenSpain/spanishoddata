@@ -13,7 +13,7 @@ spod_match_data_type(
 \arguments{
 \item{type}{The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".}
 
-\item{ver}{The version of the data to use. Defaults to 1. Can be 1 or 2.}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
 }
 \description{
 Match data types to folders

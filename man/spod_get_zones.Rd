@@ -2,24 +2,40 @@
 % Please edit documentation in R/get.R
 \name{spod_get_zones}
 \alias{spod_get_zones}
-\title{Retrieves the zones data}
+\title{Get zones}
 \usage{
-spod_get_zones(data_dir = spod_get_data_dir(), type = "distritos")
+spod_get_zones(
+  zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
+    "municip", "municipios", "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
+  ver = NULL,
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
+)
 }
 \arguments{
-\item{data_dir}{The directory where the data is stored.}
+\item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}) for both data versions. Additionaly, these can be \code{"large_urban_areas"} (or \code{"lau"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data (2022 onwards).}
 
-\item{type}{The type of zones data to retrieve ("distritos" or "municipios").}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
+
+\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
+
+\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
-A spatial object containing the zones data.
+An \code{sf} object (Simple Feature collection).
+
+The columns include (for both v1 (2020-2021) and v2 (2022 onwards) data:
+\describe{
+\item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
+\item{geometry}{A \code{MULTIPOLYGON} column containing the spatial geometry of each zone, stored as an sf object.
+The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
+}
+Additionally, for v2 (2022 onwards) data:
+\describe{
+\item{name}{A character vector with the name of the zone.}
+\item{population}{A numeric vector representing the population of each zone (as of 2022).}
+}
 }
 \description{
-This function retrieves the zones data from the specified data directory.
-It can retrieve either "distritos" or "municipios" zones data.
-}
-\examples{
-if (FALSE) {
-  zones <- spod_get_zones()
-}
+Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 }

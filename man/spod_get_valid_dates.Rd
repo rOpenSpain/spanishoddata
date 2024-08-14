@@ -4,10 +4,10 @@
 \alias{spod_get_valid_dates}
 \title{Get valid dates for the specified data version}
 \usage{
-spod_get_valid_dates(ver = 1)
+spod_get_valid_dates(ver = NULL)
 }
 \arguments{
-\item{ver}{The version of the data to use. Defaults to 1. Can be 1 or 2.}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
 }
 \value{
 A Dates vector of valid dates for the specified data version.
