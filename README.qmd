@@ -73,7 +73,11 @@ usethis::edit_r_environ()
 SPANISH_OD_DATA_DIR = "/path/to/data"
 ```
 
-You can also set the data directory in the local folder by editing a local `.Renviron` file in the root of the project:
+You can also set the data directory locally or on a per session basis as described below.
+
+<details>
+
+Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
 
 ```{r}
 #| eval: false
@@ -87,13 +91,14 @@ Finally, you can set the data directory in the current R session as follows:
 Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 ```
 
+</details>
+
 # Using the package
 
 To run the code in this README we will use the following setup:
 
 ```{r}
 #| label: pkgs
-library(duckdb)
 library(tidyverse)
 theme_set(theme_minimal())
 sf::sf_use_s2(FALSE)
@@ -124,6 +129,44 @@ plot(distritos_wgs84)
 ```
 
 ## Estudios basicos
+
+```{r}
+dates <- seq(as.Date("2024-03-01"), as.Date("2024-03-07"), by = "day")
+od_db <- spod_get_od(zones = "distritos", dates = dates)
+# TODO: debug error message
+# > od_db <- spod_get_od(zones = "distritos", dates = dates)
+# Error: rapi_prepare: Failed to prepare query CREATE VIEW od_csv_raw AS SELECT *
+# /* csv_folder needs to be replaced with a valid path
+# in R use glue::glue() */
+# FROM read_csv_auto('/data/bronze/spanishoddata/raw_data_cache/v2//estudios_basicos/por-distritos/viajes/ficheros-diarios/**/*.csv.gz',
+#     delim='|',
+#     header=TRUE,
+#     hive_partitioning=TRUE,
+#     columns={
+#         'fecha': 'DATE',
+#         'periodo': 'INTEGER',
+#         'origen': 'VARCHAR',
+#         'destino': 'VARCHAR',
+#         'distancia': 'VARCHAR',
+#         'actividad_origen': 'VARCHAR',
+#         'actividad_destino': 'VARCHAR',
+#         'estudio_origen_posible': 'VARCHAR',
+#         'estudio_destino_posible': 'VARCHAR',
+#         'residencia': 'VARCHAR',
+#         'renta': 'VARCHAR',
+#         'edad': 'VARCHAR',
+#         'sexo': 'VARCHAR',
+#         'viajes': 'DOUBLE',
+#         'viajes_km': 'DOUBLE'
+# },
+# dateformat='%Y%m%d');
+# Error: IO Error: No files found that match the pattern "/data/bronze/spanishoddata/raw_data_cache/v2//estudios_basicos/
+```
+
+
+See how you could do this manually with the following code, highlighting the benefits of the package:
+
+<details>
 
 Each day in the `ficheros-diarios` folder contains a file with the following columns:
 
@@ -188,6 +231,8 @@ n_per_hour |>
 ```
 
 The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
+
+</details>
 
 # Desire lines
 
