@@ -99,7 +99,6 @@ To run the code in this README we will use the following setup:
 
 ```{r}
 #| label: pkgs
-library(duckdb)
 library(tidyverse)
 theme_set(theme_minimal())
 sf::sf_use_s2(FALSE)
@@ -130,6 +129,13 @@ plot(distritos_wgs84)
 ```
 
 ## Estudios basicos
+
+
+
+
+See how you could do this manually with the following code, highlighting the benefits of the package:
+
+<details>
 
 Each day in the `ficheros-diarios` folder contains a file with the following columns:
 
@@ -194,6 +200,8 @@ n_per_hour |>
 ```
 
 The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
+
+</details>
 
 # Desire lines
 
