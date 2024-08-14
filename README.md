@@ -133,7 +133,9 @@ Zones can be downloaded as follows:
 
 ``` r
 distritos <- spod_get_zones("distritos", ver = 2)
-distritos_wgs84 <- distritos |> sf::st_simplify(dTolerance = 200) |> sf::st_transform(4326)
+distritos_wgs84 <- distritos |>
+  sf::st_simplify(dTolerance = 200) |>
+  sf::st_transform(4326)
 plot(sf::st_geometry(distritos_wgs84))
 ```
 
@@ -249,7 +251,7 @@ od_multi_list[[1]]
 ```
 
     # Source:   SQL [?? x 18]
-    # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
+    # Database: DuckDB v1.0.0 [robin@Linux 6.5.0-45-generic:R 4.4.1/:memory:]
           fecha periodo origen  destino distancia actividad_origen actividad_destino
           <dbl> <chr>   <chr>   <chr>   <chr>     <chr>            <chr>            
      1 20240307 00      01009_… 01001   0.5-2     frecuente        casa             
@@ -370,57 +372,16 @@ ggplot() +
 
 ![](man/figures/README-salamanca-plot-1.png)
 
-# Disaggregating desire lines
+# Further information
 
-For this you’ll need some additional dependencies:
+For more information on the package, see:
 
-``` r
-library(sf)
-library(tmap)
-```
-
-We’ll get the road network from OSM:
-
-``` r
-salamanca_boundary <- sf::st_union(distritos_salamanca)
-osm_full <- osmactive::get_travel_network(salamanca_boundary)
-```
-
-``` r
-osm <- osm_full[salamanca_boundary, ]
-drive_net <- osmactive::get_driving_network(osm)
-drive_net_major <- osmactive::get_driving_network_major(osm)
-cycle_net <- osmactive::get_cycling_network(osm)
-cycle_net <- osmactive::distance_to_road(cycle_net, drive_net_major)
-cycle_net <- osmactive::classify_cycle_infrastructure(cycle_net)
-map_net <- osmactive::plot_osm_tmap(cycle_net)
-map_net
-```
-
-![](man/figures/README-osm-1.png)
-
-We can use the road network to disaggregate the desire lines:
-
-``` r
-od_jittered <- odjitter::jitter(
-  od_salamanca_sf,
-  zones = distritos_salamanca,
-  subpoints = drive_net,
-  disaggregation_threshold = 1000,
-  disaggregation_key = "Trips"
-)
-```
-
-Let’s plot the disaggregated desire lines:
-
-``` r
-od_jittered |>
-  arrange(Trips) |>
-  ggplot() +
-  geom_sf(aes(colour = Trips), size = 1) +
-  scale_colour_viridis_c() +
-  geom_sf(data = drive_net_major, colour = "black") +
-  theme_void()
-```
-
-![](man/figures/README-disaggregated-1.png)
+- The [pkgdown site](https://robinlovelace.github.io/spanishoddata/)
+  - Information on the
+    [functions](https://robinlovelace.github.io/spanishoddata/reference/index.html)
+  - The [v1 vs v2
+    vignette](https://robinlovelace.github.io/spanishoddata/articles/work-with-v1-data.html)
+    which explains the differences between the two versions of the data
+  - The [uses
+    vignette](https://robinlovelace.github.io/spanishoddata/articles/uses.html)
+    which documents use cases

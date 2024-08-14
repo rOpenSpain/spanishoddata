@@ -124,7 +124,9 @@ Zones can be downloaded as follows:
 ```{r}
 #| label: distritos
 distritos <- spod_get_zones("distritos", ver = 2)
-distritos_wgs84 <- distritos |> sf::st_simplify(dTolerance = 200) |> sf::st_transform(4326)
+distritos_wgs84 <- distritos |>
+  sf::st_simplify(dTolerance = 200) |>
+  sf::st_transform(4326)
 plot(sf::st_geometry(distritos_wgs84))
 ```
 
@@ -283,59 +285,15 @@ ggplot() +
   theme_void()
 ```
 
-# Disaggregating desire lines
+# Further information
 
-For this you'll need some additional dependencies:
+For more information on the package, see:
 
-```{r}
-library(sf)
-library(tmap)
-```
+- The [pkgdown site](https://robinlovelace.github.io/spanishoddata/)
+  - Information on the [functions](https://robinlovelace.github.io/spanishoddata/reference/index.html)
+  - The [v1 vs v2 vignette](https://robinlovelace.github.io/spanishoddata/articles/work-with-v1-data.html) which explains the differences between the two versions of the data
+  - The [uses vignette](https://robinlovelace.github.io/spanishoddata/articles/uses.html) which documents use cases
 
-We'll get the road network from OSM:
-
-```{r}
-#| results: hide
-salamanca_boundary <- sf::st_union(distritos_salamanca)
-osm_full <- osmactive::get_travel_network(salamanca_boundary)
-```
-
-```{r}
-#| label: osm
-osm <- osm_full[salamanca_boundary, ]
-drive_net <- osmactive::get_driving_network(osm)
-drive_net_major <- osmactive::get_driving_network_major(osm)
-cycle_net <- osmactive::get_cycling_network(osm)
-cycle_net <- osmactive::distance_to_road(cycle_net, drive_net_major)
-cycle_net <- osmactive::classify_cycle_infrastructure(cycle_net)
-map_net <- osmactive::plot_osm_tmap(cycle_net)
-map_net
-```
-
-We can use the road network to disaggregate the desire lines:
-
-```{r}
-od_jittered <- odjitter::jitter(
-  od_salamanca_sf,
-  zones = distritos_salamanca,
-  subpoints = drive_net,
-  disaggregation_threshold = 1000,
-  disaggregation_key = "Trips"
-)
-```
-
-Let's plot the disaggregated desire lines:
-
-```{r}
-#| label: disaggregated
-od_jittered |>
-  arrange(Trips) |>
-  ggplot() +
-  geom_sf(aes(colour = Trips), size = 1) +
-  scale_colour_viridis_c() +
-  geom_sf(data = drive_net_major, colour = "black") +
-  theme_void()
-```
 
 
 ```{r}
@@ -361,4 +319,6 @@ usethis::use_github_pages()
 # Auto-style with styler
 styler::style_pkg()
 usethis::use_tidy_description()
+# Create new vignette called 'uses' with the title "Use cases":
+usethis::use_vignette("uses", title = "Use cases")
 ```
