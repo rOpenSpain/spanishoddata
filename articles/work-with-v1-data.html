@@ -92,22 +92,22 @@
 <p>Load the spatial data for districts.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">districts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones_v1.html">spod_get_zones_v1</a></span><span class="op">(</span>zones <span class="op">=</span> <span class="st">"dist"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">districts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span>zones <span class="op">=</span> <span class="st">"dist"</span>, ver <span class="op">=</span> <span class="fl">1</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">glimpse</span><span class="op">(</span><span class="va">districts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">districts</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">st_geometry</span><span class="op">(</span><span class="va">districts</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Load the spatial data for municipalities.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">municipalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones_v1.html">spod_get_zones_v1</a></span><span class="op">(</span>zones <span class="op">=</span> <span class="st">"muni"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">municipalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span>zones <span class="op">=</span> <span class="st">"muni"</span>, ver <span class="op">=</span> <span class="fl">1</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">glimpse</span><span class="op">(</span><span class="va">municipalities</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">municipalities</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">st_geometry</span><span class="op">(</span><span class="va">municipalities</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="section level2"><h2 id="get-the-origin-destination-data-for-an-inteval-of-dates">Get the origin-destination data for an inteval of dates<a class="anchor" aria-label="anchor" href="#get-the-origin-destination-data-for-an-inteval-of-dates"></a>
 </h2>
@@ -115,7 +115,7 @@
 <p>The data will be cached in the directory set in the SPANISH_OD_DATA_DIR environment variable. If it is already downloaded, it will not be downloaded again.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">od_dist_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_od_v1.html">spod_get_od_v1</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">od_dist_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_od.html">spod_get_od</a></span><span class="op">(</span></span>
 <span>  zones <span class="op">=</span> <span class="st">"dist"</span>,</span>
 <span>  dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2020-02-14"</span>, end <span class="op">=</span> <span class="st">"2020-02-17"</span><span class="op">)</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -193,7 +193,7 @@
 <p>This time let’s get the data for 2020-02-14, 2020-02-17, 2021-05-07 and 2021-05-09. We will use municipalities as zones.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">od_muni_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_od_v1.html">spod_get_od_v1</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">od_muni_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_od.html">spod_get_od</a></span><span class="op">(</span></span>
 <span>  zones <span class="op">=</span> <span class="st">"muni"</span>,</span>
 <span>  dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-02-14"</span>, <span class="st">"2020-02-17"</span>, <span class="st">"2021-05-07"</span>, <span class="st">"2021-05-09"</span><span class="op">)</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
