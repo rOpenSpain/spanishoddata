@@ -35,7 +35,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/work-with-v1-data.html">Working with v1 MITMA data</a></li>
+<li><a class="dropdown-item" href="articles/uses.html">Use cases</a></li>
+    <li><a class="dropdown-item" href="articles/work-with-v1-data.html">Working with v1 MITMA data</a></li>
   </ul>
 </li>
       </ul>
@@ -141,7 +142,9 @@
 <p>Zones can be downloaded as follows:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distritos</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"distritos"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">distritos_wgs84</span> <span class="op">&lt;-</span> <span class="va">distritos</span> <span class="op">|&gt;</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_simplify</a></span><span class="op">(</span>dTolerance <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span></span>
+<span><span class="va">distritos_wgs84</span> <span class="op">&lt;-</span> <span class="va">distritos</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_simplify</a></span><span class="op">(</span>dTolerance <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">distritos_wgs84</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-distritos-1.png"></p>
 </div>
@@ -359,7 +362,7 @@
 <span><span class="op">)</span></span>
 <span><span class="va">od_multi_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># Source:   SQL [?? x 18]</span></span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co"># Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co"># Database: DuckDB v1.0.0 [robin@Linux 6.5.0-45-generic:R 4.4.1/:memory:]</span></span>
 <span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>      fecha periodo origen  destino distancia actividad_origen actividad_destino</span>
 <span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>      <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>            <span class="er">&lt;</span>chr<span class="sc">&gt;</span>            </span>
 <span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a> <span class="dv">1</span> <span class="dv">20240307</span> <span class="dv">00</span>      <span class="dv">01009</span>_… <span class="dv">01001</span>   <span class="fl">0.5</span><span class="dv">-2</span>     frecuente        casa             </span>
@@ -455,45 +458,19 @@
 <p><img src="reference/figures/README-salamanca-plot-1.png"></p>
 </div>
 <div class="section level1">
-<h1 id="disaggregating-desire-lines">Disaggregating desire lines<a class="anchor" aria-label="anchor" href="#disaggregating-desire-lines"></a>
+<h1 id="further-information">Further information<a class="anchor" aria-label="anchor" href="#further-information"></a>
 </h1>
-<p>For this you’ll need some additional dependencies:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-tmap.github.io/tmap/" class="external-link">tmap</a></span><span class="op">)</span></span></code></pre></div>
-<p>We’ll get the road network from OSM:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">salamanca_boundary</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html" class="external-link">st_union</a></span><span class="op">(</span><span class="va">distritos_salamanca</span><span class="op">)</span></span>
-<span><span class="va">osm_full</span> <span class="op">&lt;-</span> <span class="fu">osmactive</span><span class="fu">::</span><span class="fu">get_travel_network</span><span class="op">(</span><span class="va">salamanca_boundary</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">osm</span> <span class="op">&lt;-</span> <span class="va">osm_full</span><span class="op">[</span><span class="va">salamanca_boundary</span>, <span class="op">]</span></span>
-<span><span class="va">drive_net</span> <span class="op">&lt;-</span> <span class="fu">osmactive</span><span class="fu">::</span><span class="fu">get_driving_network</span><span class="op">(</span><span class="va">osm</span><span class="op">)</span></span>
-<span><span class="va">drive_net_major</span> <span class="op">&lt;-</span> <span class="fu">osmactive</span><span class="fu">::</span><span class="fu">get_driving_network_major</span><span class="op">(</span><span class="va">osm</span><span class="op">)</span></span>
-<span><span class="va">cycle_net</span> <span class="op">&lt;-</span> <span class="fu">osmactive</span><span class="fu">::</span><span class="fu">get_cycling_network</span><span class="op">(</span><span class="va">osm</span><span class="op">)</span></span>
-<span><span class="va">cycle_net</span> <span class="op">&lt;-</span> <span class="fu">osmactive</span><span class="fu">::</span><span class="fu">distance_to_road</span><span class="op">(</span><span class="va">cycle_net</span>, <span class="va">drive_net_major</span><span class="op">)</span></span>
-<span><span class="va">cycle_net</span> <span class="op">&lt;-</span> <span class="fu">osmactive</span><span class="fu">::</span><span class="fu">classify_cycle_infrastructure</span><span class="op">(</span><span class="va">cycle_net</span><span class="op">)</span></span>
-<span><span class="va">map_net</span> <span class="op">&lt;-</span> <span class="fu">osmactive</span><span class="fu">::</span><span class="fu">plot_osm_tmap</span><span class="op">(</span><span class="va">cycle_net</span><span class="op">)</span></span>
-<span><span class="va">map_net</span></span></code></pre></div>
-<p><img src="reference/figures/README-osm-1.png"></p>
-<p>We can use the road network to disaggregate the desire lines:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">od_jittered</span> <span class="op">&lt;-</span> <span class="fu">odjitter</span><span class="fu">::</span><span class="fu">jitter</span><span class="op">(</span></span>
-<span>  <span class="va">od_salamanca_sf</span>,</span>
-<span>  zones <span class="op">=</span> <span class="va">distritos_salamanca</span>,</span>
-<span>  subpoints <span class="op">=</span> <span class="va">drive_net</span>,</span>
-<span>  disaggregation_threshold <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  disaggregation_key <span class="op">=</span> <span class="st">"Trips"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Let’s plot the disaggregated desire lines:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">od_jittered</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">Trips</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_sf</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>colour <span class="op">=</span> <span class="va">Trips</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">scale_colour_viridis_c</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">drive_net_major</span>, colour <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme_void</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-disaggregated-1.png"></p>
+<p>For more information on the package, see:</p>
+<ul>
+<li>The <a href="https://robinlovelace.github.io/spanishoddata/" class="external-link">pkgdown site</a>
+<ul>
+<li>Information on the <a href="https://robinlovelace.github.io/spanishoddata/reference/index.html" class="external-link">functions</a>
+</li>
+<li>The <a href="https://robinlovelace.github.io/spanishoddata/articles/work-with-v1-data.html" class="external-link">v1 vs v2 vignette</a> which explains the differences between the two versions of the data</li>
+<li>The <a href="https://robinlovelace.github.io/spanishoddata/articles/uses.html" class="external-link">uses vignette</a> which documents use cases</li>
+</ul>
+</li>
+</ul>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
