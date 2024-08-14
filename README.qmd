@@ -214,42 +214,32 @@ class(od_multi_list[[1]])
 We'll use the same input data to pick-out the most important flows in Spain, with a focus on longer trips for visualisation:
 
 ```{r}
-od_large = od_db |>
+od_national_aggregated = od_db |>
   group_by(id_origin, id_destination) |>
   summarise(Trips = sum(n_trips), .groups = "drop") |>
   filter(Trips > 500) |>
   collect() |>
-  |>
   arrange(desc(Trips))
-# TODO: debug this:
-# Error in `collect()`:
-# ! Failed to collect lazy table.
-# Caused by error:
-# ! rapi_execute: Failed to run query
-# Error: Conversion Error: Could not convert string 'externo' to UINT16
-# LINE 3: GROUP BY id_origin, id_destination
-#               ^
-# Run `rlang::last_trace()` to see where the error occurred.
-od_large
+od_national_aggregated
 ```
 
 The results show that the largest flows are intra-zonal.
 Let's keep only the inter-zonal flows:
 
 ```{r}
-od_large_interzonal = od_large |>
-  filter(origen != id_destination)
+od_national_interzonal = od_national_aggregated |>
+  filter(id_origin != id_destination)
 ```
 
 We can convert these to geographic data with the {od} package:
 
 ```{r}
 #| label: desire-lines
-od_large_interzonal_sf = od::od_to_sf(
-  od_large_interzonal,
+od_national_sf = od::od_to_sf(
+  od_national_interzonal,
   z = distritos_wgs84
 )
-od_large_interzonal_sf |>
+od_national_sf |>
   ggplot() +
   geom_sf(aes(size = Trips), colour = "red") +
   theme_void()
@@ -271,12 +261,12 @@ We will use this information to subset the rows, to capture all movement within 
 ids_salamanca = distritos_salamanca$ID
 od_salamanca = od_multi_list |>
   map(~ .x |>
-        filter(origen %in% ids_salamanca) |>
+        filter(id_origin %in% ids_salamanca) |>
         filter(id_destination %in% ids_salamanca) |>
         collect()
   ) |>
   list_rbind() |>
-  group_by(origen, id_destination) |>
+  group_by(id_origin, id_destination) |>
   summarise(Trips = sum(n_trips)) |>
   arrange(Trips)
 
@@ -291,7 +281,7 @@ od_salamanca_sf = od::od_to_sf(
   z = distritos_salamanca
 )
 od_salamanca_sf |>
-  filter(origen != id_destination) |>
+  filter(id_origin != id_destination) |>
   ggplot() +
   geom_sf(aes(colour = Trips), size = 1) +
   scale_colour_viridis_c() +
@@ -355,6 +345,7 @@ od_jittered |>
 
 
 ```{r}
+#| label: notes-on-package-development
 #| eval: false
 #| echo: false
 #| label: repo-setup
@@ -376,37 +367,4 @@ usethis::use_github_action("pkgdown")
 usethis::use_github_pages()
 # Auto-style with styler
 styler::style_pkg()
-```
-
-```{r}
-#| eval: false
-#| include: false
-# Testing other datasets:
-u = "https://movilidad-opendata.mitma.es/estudios_completos/por-distritos/movilidad_obligada/meses-completos/202201_Movilidad_obligada_distritos.csv.gz"
-f = basename(u)
-if (!file.exists(f)) {
-  download.file(u, f)
-}
-drv = duckdb::duckdb("movilidad.duckdb")
-con = DBI::dbConnect(drv)
-od1 = duckdb::tbl_file(con, f)
-od1_head = od1 |>
-  head() |>
-  collect()
-# close connection:
-DBI::dbDisconnect(con)
-# # A tibble: 6 × 8
-#      mes origen id_destination  edad  sexo   residencia recurrencia personas
-#    <dbl> <chr>  <chr>    <chr> <chr>  <chr>      <chr>          <dbl>
-# 1 202201 01001  01002    NA    NA     01         1-2             4.41
-# 2 202201 01001  01002    0-25  hombre 01         5-7            11   
-# 3 202201 01001  01004_AM NA    NA     01         1-2             4.39
-# 4 202201 01001  01009_AM 0-25  mujer  01         1-2           145.  
-# 5 202201 01001  01009_AM 25-45 mujer  01         1-2           120.  
-# 6 202201 01001  01009_AM 45-65 mujer  01         1-2           119.  
-od1_full = od1 |>
-  collect()
-table(od1_full$recurrencia)
-od1_head |>
-  knitr::kable()
 ```
