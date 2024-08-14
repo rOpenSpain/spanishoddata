@@ -3,16 +3,11 @@ title: "Use cases"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Use cases}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+execute: 
+  eval: false
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  eval = FALSE
-)
-```
 
 ```{r setup}
 remotes::install_dev("tmap")
@@ -119,3 +114,6 @@ od_jittered |>
 
 The results show that you can add value to the OD data by disaggregating the desire lines with the `odjitter` package.
 This can be useful for understanding the spatial distribution of trips within a zone for transport planning.
+
+We have plotted the disaggregated desire lines on top of the major road network in Salamanca.
+A next step could be routing to help prioritise infrastructure improvements.
