@@ -232,11 +232,10 @@ spod_clean_zones_v1 <- function(zones_path) {
 }
 
 
-#' Load the origin-destination v1 data (2020-2021) for specified dates
+#' Load the origin-destination data for specified dates
 #'
-#' This function retrieves the v1 (2020-2021) origin_destination_data for the specified dates. It checks if the requested data is already cached locally and downloads it if it is not. When all the requested data is cached, it creates a `DuckDB` connection to the cache data folder and provides an table
+#' This function retrieves the v1 (2020-2021) or v2 (2022 and onwards) origin-destination data for the specified dates. It checks if the requested data is already cached locally and downloads only missing files. When all the requested data is cached, it creates a `DuckDB` connection to the cache data folder and provides an table
 #'
-
 #' @inheritParams spod_download_data
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams global_quiet_param
@@ -307,12 +306,55 @@ spod_get_od <- function(
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
     duck_max_mem = 3,
-    duck_max_threads = parallelly::availableCores() - 1)
-  {
-  # hardcode od as this is a wrapper to get origin-destiation data
+    duck_max_threads = parallelly::availableCores() - 1
+) {
+  # hardcode od as this is a wrapper to get origin-destiation data using spod_get() function
   type <- "od"
+  
+  duck_tbl_con <- spod_get(
+    type = type,
+    zones = zones,
+    dates = dates,
+    data_dir = data_dir,
+    quiet = quiet,
+    duck_max_mem = duck_max_mem,
+    duck_max_threads = duck_max_threads
+  )
 
+  return(duck_tbl_con)
+}
+
+#' Get tabular data
+#' 
+#' @description This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary.
+#' 
+#' 
+#' @inheritParams spod_download_data
+#' @inheritParams spod_duckdb_limit_resources
+#' @inheritParams global_quiet_param
+#' @return A DuckDB lazy table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`.
+#' @keywords internal
+spod_get <- function(
+  type = c(
+    "od", "origin-destination",
+    "os", "overnight_stays",
+    "tpp", "trips_per_person"
+  ),
+  zones = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios"
+  ),
+  dates = NULL,
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE,
+  duck_max_mem = 3,
+  duck_max_threads = parallelly::availableCores() - 1
+) {
+  
   ver <- spod_infer_data_v_from_dates(dates)
+  
+  type <- match.arg(type)
+  type <- spod_match_data_type(type = type)
 
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
@@ -343,29 +385,51 @@ spod_get_od <- function(
     duck_max_threads = duck_max_threads
   )
 
-
-  # attach the od folder of csv.gz files with predefined and cleaned up data types
-  con <- spod_duckdb_od(
-    con = con,
-    zones = zones,
-    ver = ver,
-    data_dir = data_dir
-  )
+  # attach the folder with csv.gz files with predefined and cleaned up data types
+  if (type == "od") {
+    con <- spod_duckdb_od(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
+    )
+  } else if (type == "tpp") {
+    message("trips per person data retrieval is not yet implemented")
+    invisible(return(NULL))
+    # con <- spod_duckdb_trips_per_person(
+    #   con = con,
+    #   zones = zones,
+    #   ver = ver,
+    #   data_dir = data_dir
+    # )
+  } else if (type == "os") {
+    message("overnight stays data retrieval is not yet implemented")
+    invisible(return(NULL))
+    # con <- spod_duckdb_overnight_stays(
+    #   con = con,
+    #   zones = zones,
+    #   ver = ver,
+    #   data_dir = data_dir
+    # )
+  }
+  
+  clean_csv_view_name <- glue::glue("{type}_csv_clean")
+  clean_filtered_csv_view_name <- glue::glue("{type}_csv_clean_filtered")
 
   # filter by date
   if (!is.character(dates)) {
     con <- spod_duckdb_filter_by_dates(
       con,
-      "od_csv_clean",
-      "od_csv_clean_filtered",
+      clean_csv_view_name,
+      clean_filtered_csv_view_name,
       dates
     )
   }
 
   # return either a full view of all available data (dates = "cached") or a view filtered to the specified dates
   if (all(!is.character(dates))) {
-    return(dplyr::tbl(con, "od_csv_clean_filtered"))
+    return(dplyr::tbl(con, clean_filtered_csv_view_name))
   } else {
-    return(dplyr::tbl(con, "od_csv_clean"))
+    return(dplyr::tbl(con, clean_csv_view_name))
   }
 }
