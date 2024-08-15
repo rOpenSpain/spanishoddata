@@ -191,7 +191,6 @@ spod_zone_names_en2es <- function(
 }
 
 #' Match data types to folders
-#' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
 #' @inheritParams spod_available_data
 #' @keywords internal
 spod_match_data_type_for_local_folders <- function(
@@ -233,7 +232,7 @@ spod_match_data_type_for_local_folders <- function(
 
 #' Match data types for normalisation
 #' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
-#' @inheritParams spod_available_data
+
 #' @keywords internal
 spod_match_data_type <- function(
     type = c(
