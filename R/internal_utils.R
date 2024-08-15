@@ -194,7 +194,7 @@ spod_zone_names_en2es <- function(
 #' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
 #' @inheritParams spod_available_data
 #' @keywords internal
-spod_match_data_type <- function(
+spod_match_data_type_for_local_folders <- function(
     type = c(
       "od", "origin-destination",
       "os", "overnight_stays",
@@ -224,6 +224,34 @@ spod_match_data_type <- function(
     } else if (type %in% c("tpp", "trips_per_person")) {
       return("personas")
     }
+  }
+
+  # need to add a warning here that the type is not recognized
+  return(NULL)
+}
+
+
+#' Match data types for normalisation
+#' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
+#' @inheritParams spod_available_data
+#' @keywords internal
+spod_match_data_type <- function(
+    type = c(
+      "od", "origin-destination", "viajes",
+      "os", "overnight_stays", "pernoctaciones",
+      "tpp", "trips_per_person", "personas"
+    )
+) {
+  
+  type <- tolower(type)
+  type <- match.arg(type)
+
+  if (type %in% c("od", "origin-destination", "viajes")) {
+    return("od")
+  } else if (type %in% c("os", "overnight_stays", "pernoctaciones")) {
+    return("os")
+  } else if (type %in% c("tpp", "trips_per_person", "personas")) {
+    return("tpp")
   }
 
   # need to add a warning here that the type is not recognized
