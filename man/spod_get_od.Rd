@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_v1_data.R
 \name{spod_get_od}
 \alias{spod_get_od}
-\title{Load the origin-destination v1 data (2020-2021) for specified dates}
+\title{Load the origin-destination data for specified dates}
 \usage{
 spod_get_od(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
@@ -83,7 +83,7 @@ View \code{od_csv_clean} has the same structure as the filtered view 'od_filtere
 }
 }
 \description{
-This function retrieves the v1 (2020-2021) origin_destination_data for the specified dates. It checks if the requested data is already cached locally and downloads it if it is not. When all the requested data is cached, it creates a \code{DuckDB} connection to the cache data folder and provides an table
+This function retrieves the v1 (2020-2021) or v2 (2022 and onwards) origin-destination data for the specified dates. It checks if the requested data is already cached locally and downloads only missing files. When all the requested data is cached, it creates a \code{DuckDB} connection to the cache data folder and provides an table
 }
 \examples{
 \dontrun{
