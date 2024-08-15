@@ -63,6 +63,7 @@ spod_get_zones <- function(
 #'   \item{local_path}{\code{character}. The local file path where the data is stored.}
 #'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
 #' }
+#' @export
 spod_available_data <- function(
   ver = 2,
   check_local_files = FALSE,
