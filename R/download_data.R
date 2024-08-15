@@ -64,7 +64,7 @@ spod_download_data <- function(
 
   # convert english data type names to spanish words used in the default data paths
   type <- match.arg(type)
-  type <- spod_match_data_type(type = type, ver = ver)
+  type <- spod_match_data_type_for_local_folders(type = type, ver = ver)
 
 
 
