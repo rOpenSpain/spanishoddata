@@ -1,6 +1,6 @@
-#' Creates a duckdb connection to v1 OD data
+#' Creates a duckdb connection to origin-destination data
 #'
-#' This function creates a duckdb connection to the v1 OD data.
+#' This function creates a duckdb connection to the origin-destination data stored in CSV.gz files.
 #'
 #' @param con A duckdb connection object. If not specified, a new in-memory connection will be created.
 #' @inheritParams spod_available_data
@@ -89,19 +89,11 @@ spod_duckdb_od <- function(
     )
   }
 
-  # create view of csv files and preset variable types
-  raw_csv_view_sql_file <- glue::glue("extdata/sql-queries/v{ver}-od-{zones}-raw-csv-view.sql")
-
-  # Load SQL statement
-  sql_connect_csv <- readLines(
-    system.file(raw_csv_view_sql_file, package = "spanishoddata")
-  ) |> 
-    glue::glue_collapse(sep = "\n") |> 
-    glue::glue() |> 
-    dplyr::sql()
-
-  # Execute SQL statement
-  DBI::dbExecute(con, sql_connect_csv)
+  # create view to the raw TXT/CSV.gz files
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-{zones}-raw-csv-view.sql"))
+  )
 
   # create ENUMs
 
@@ -131,88 +123,109 @@ spod_duckdb_od <- function(
 
   # create ACTIV_ENUM (for all except for municipalities in v1 data)
   if ( !( zones == "municipios" & ver == 1) ) {
-    # LOAD SQL STATEMENT
-    sql_create_activ_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-activity-en.sql"),
-        package = "spanishoddata"
-      )
-    ) |> 
-      glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    # EXECUTE SQL STATEMENT
-    DBI::dbExecute(con, sql_create_activ_enum)
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-od-enum-activity-en.sql"))
+    )
   }
 
   # create DISTANCE_ENUM
-  sql_create_distance_enum <- readLines(
-    system.file(
-      glue::glue("extdata/sql-queries/v{ver}-od-enum-distance.sql"),
-      package = "spanishoddata"
-    )
-  ) |> 
-    glue::glue_collapse(sep = "\n") |> 
-    dplyr::sql()
-  
-  DBI::dbExecute(con, sql_create_distance_enum)
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-enum-distance.sql"))
+  )
 
   if ( !( zones == "municipios" & ver == 1) ) {
-    # create named INE province ENUM (for all except for municipalities in v1 data)
+    # create named INE province ENUM
+    # (for all except for municipalities in v1 data)
     spod_duckdb_create_province_enum(con)
   }
   
   # v2 only enums
   if (ver == 2) {
     # income ENUM
-    sql_create_income_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-income.sql"),
-        package = "spanishoddata"
-      )
-    ) |> glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    DBI::dbExecute(con, sql_create_income_enum)
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-od-enum-income.sql"))
+    )
     
     # age ENUM
-    sql_create_age_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-age.sql"),
-        package = "spanishoddata"
-      )
-    ) |>
-      glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    DBI::dbExecute(con, sql_create_age_enum)
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-od-enum-age.sql"))
+    )
     
     # sex ENUM
-    sql_create_sex_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-sex-en.sql"),
-        package = "spanishoddata"
-      )
-    ) |>
-      glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    DBI::dbExecute(con, sql_create_sex_enum)
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-od-enum-sex-en.sql"))
+    )
   }
 
-  # load sql statement to create od_csv_clean view
-  od_csv_clean_sql <- readLines(
-    system.file(
-      glue::glue("extdata/sql-queries/v{ver}-od-{zones}-clean-od_csv-en.sql"),
-      package = "spanishoddata"
-    )
-  ) |> 
-    glue::glue_collapse(sep = "\n") |> 
-    dplyr::sql()
-
-  DBI::dbExecute(con, od_csv_clean_sql)
-
+  # create od_csv_clean view
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-od_csv-en.sql"))
+  )
 
   # return the connection as duckdb object
   return(con)
 }
 
+#' Create a duckdb trips per person table
+#' 
+#' @description
+#' This function creates a duckdb connection to the trips per person data stored in a folder of CSV.gz files.
+#' @inheritParams spod_duckdb_od
+#' @inheritParams spod_available_data
+#' @inheritParams spod_download_data
+#' 
+#' @return A duckdb connection with 2 views.
+#' 
+#' @keywords internal
+spod_duckdb_trips_per_person <- function(
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
+  zones = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ),
+  ver = NULL,
+  data_dir = spod_get_data_dir()
+) {
+  
+  ver <- as.integer(ver)
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 or 2.")
+  }
+  
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
+
+  # check that gau is not selected with ver = 1
+  if (ver == 1 && zones == "gau") {
+    stop("The 'gau' zones are not available in v1 data.")
+  }
+
+  if (ver == 1) {
+    csv_folder <- paste0(
+      data_dir, "/",
+      spod_subfolder_raw_data_cache(ver = ver),
+      "/maestra1-mitma-", spod_zone_names_en2es(zones),
+      "/ficheros-diarios/"
+    )
+  } else if (ver == 2) {
+    csv_folder <- paste0(
+      data_dir, "/",
+      spod_subfolder_raw_data_cache(ver = ver),
+      "/estudios_basicos/por-", spod_zone_names_en2es(zones),
+      "/viajes/ficheros-diarios/"
+    )
+  }
+
+  # create view of csv files and preset variable types
+  
+}
 
 #' Filter a duckdb conenction by dates
 #' @param con A duckdb connection
@@ -328,4 +341,22 @@ spod_duckdb_limit_resources <- function(
   )
 
   return(con)
+}
+
+#' Load an SQL query, glue it, dplyr::sql it
+#' @description
+#' Load an SQL query from a specified file in package installation directory, glue::collapse it, glue::glue it in case of any variables that need to be replaced, and dplyr::sql it for additional safety.
+#' 
+#' @return Text of the SQL query of class `sql`/`character`.
+#' 
+#' @keywords internal
+spod_read_sql <- function(sql_file_name){
+  sql_file_path <- glue::glue("extdata/sql-queries/{sql_file_name}")
+  readLines(
+    system.file(sql_file_path,
+      package = "spanishoddata")
+  ) |> 
+    glue::glue_collapse(sep = "\n") |> 
+    glue::glue() |> 
+    dplyr::sql()
 }
