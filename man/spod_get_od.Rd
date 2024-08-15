@@ -89,7 +89,7 @@ This function retrieves the v1 (2020-2021) or v2 (2022 and onwards) origin-desti
 \dontrun{
 
 # create a connection to the v1 data
-Sys.setenv(SPANISH_OD_DATA_DIR = "~/home/nosync/cache/mitma")
+Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
 dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
 od_dist <- spod_get_od(zones = "distr", dates = dates)
 

@@ -78,5 +78,19 @@ This function creates a DuckDB lazy table connection object from the specified t
 if (FALSE) {
   od_20240301_20240302 <- spod_get(date_regex = "2024-03-0[1-2]")
 }
+\dontrun{
+
+# create a connection to the v1 data
+Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
+dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
+od_dist <- spod_get_od(zones = "distr", dates = dates)
+
+# od dist is a table view filtered to the specified dates
+
+# access the source connection with all dates
+# list tables
+DBI::dbListTables(od_dist$src$con)
+}
+
 }
 \keyword{internal}

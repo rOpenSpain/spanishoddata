@@ -287,7 +287,7 @@ spod_clean_zones_v1 <- function(zones_path) {
 #' \dontrun{
 #'
 #' # create a connection to the v1 data
-#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/home/nosync/cache/mitma")
+#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
 #' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
 #' od_dist <- spod_get_od(zones = "distr", dates = dates)
 #'
@@ -334,6 +334,21 @@ spod_get_od <- function(
 #' @inheritParams global_quiet_param
 #' @return A DuckDB lazy table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`.
 #' @keywords internal
+#' @examples
+#' \dontrun{
+#' 
+#' # create a connection to the v1 data
+#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
+#' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
+#' od_dist <- spod_get_od(zones = "distr", dates = dates)
+#'
+#' # od dist is a table view filtered to the specified dates
+#'
+#' # access the source connection with all dates
+#' # list tables
+#' DBI::dbListTables(od_dist$src$con)
+#' }
+#' 
 spod_get <- function(
   type = c(
     "od", "origin-destination",
