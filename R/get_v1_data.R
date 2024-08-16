@@ -228,6 +228,16 @@ spod_clean_zones_v1 <- function(zones_path) {
     zones <- rbind(zones[!invalid_geometries, ], fixed_zones)
   }
   names(zones)[names(zones) == "ID"] <- "id"
+
+  # bug fix for municipalities
+  # if (grepl("municipios", zones_path)){
+  #   zones[zones$id == "0490201",]$id <- "04902"
+  #   zones[zones$id == "2800601",]$id <- "28006"
+  #   zones[zones$id == "2810601",]$id <- "28106"
+  #   zones[zones$id == "2812301",]$id <- "28123"
+  #   zones[zones$id == "2812701",]$id <- "28127"
+  # }
+
   return(zones)
 }
 
@@ -409,14 +419,12 @@ spod_get <- function(
       data_dir = data_dir
     )
   } else if (type == "tpp") {
-    message("trips per person data retrieval is not yet implemented")
-    invisible(return(NULL))
-    # con <- spod_duckdb_trips_per_person(
-    #   con = con,
-    #   zones = zones,
-    #   ver = ver,
-    #   data_dir = data_dir
-    # )
+    con <- spod_duckdb_trips_per_person(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
+    )
   } else if (type == "os") {
     message("overnight stays data retrieval is not yet implemented")
     invisible(return(NULL))

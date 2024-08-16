@@ -1,5 +1,5 @@
 CREATE VIEW od_csv_clean AS SELECT
-    fecha AS full_date,
+    fecha AS date,
     CAST(origen AS ZONES_ENUM) AS id_origin,
     CAST(destino AS ZONES_ENUM) AS id_destination,
     CAST(CASE actividad_origen

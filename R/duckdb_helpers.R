@@ -165,7 +165,7 @@ spod_duckdb_od <- function(
   # create od_csv_clean view
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-od_csv-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-csv-view-en.sql"))
   )
 
   # return the connection as duckdb object
@@ -211,7 +211,7 @@ spod_duckdb_trips_per_person <- function(
     csv_folder <- paste0(
       data_dir, "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/maestra1-mitma-", spod_zone_names_en2es(zones),
+      "/maestra2-mitma-", spod_zone_names_en2es(zones),
       "/ficheros-diarios/"
     )
   } else if (ver == 2) {
@@ -224,7 +224,58 @@ spod_duckdb_trips_per_person <- function(
   }
 
   # create view of csv files and preset variable types
+
+  # create view to the raw TXT/CSV.gz files
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-raw-csv-view.sql"))
+  )
+
+  # create ENUMs
+
+  # zones ENUMs from uniqe ids of relevant zones
+  spatial_data <- spod_get_zones(zones,
+    ver = ver,
+    data_dir = data_dir,
+    quiet = TRUE
+  )
   
+  if( ver == 1 ) {
+    unique_ids <- unique(spatial_data$id)
+  } else if( ver == 2 ) {
+    # unique_ids <- c("externo", unique(spatial_data$id)) TODO ???
+  }
+  
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      paste0(
+        "CREATE TYPE ZONES_ENUM AS ENUM ('",
+        paste0(unique_ids, collapse = "','"),
+        "');"
+      )
+    )
+  )
+
+  # create N_TRIPS_ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-tpp-enum-ntrips.sql"))
+  )
+
+  
+  # v2 only enums
+  if (ver == 2) {
+    ### TODO - check if any v2 specific ones
+  }
+
+  # create od_csv_clean view
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-clean-csv-view-en.sql"))
+  )
+
+  return(con)
 }
 
 #' Filter a duckdb conenction by dates
@@ -348,15 +399,17 @@ spod_duckdb_limit_resources <- function(
 #' Load an SQL query from a specified file in package installation directory, glue::collapse it, glue::glue it in case of any variables that need to be replaced, and dplyr::sql it for additional safety.
 #' 
 #' @return Text of the SQL query of class `sql`/`character`.
-#' 
+#' @param sql_file_name The name of the SQL file to load from the package installation directory.
+#' @param ... Additional variables to pass to `glue::glue()` that will be evaluated in the SQL query.
 #' @keywords internal
-spod_read_sql <- function(sql_file_name){
+spod_read_sql <- function(sql_file_name) {
   sql_file_path <- glue::glue("extdata/sql-queries/{sql_file_name}")
-  readLines(
-    system.file(sql_file_path,
-      package = "spanishoddata")
-  ) |> 
+  
+  sql_query <- readLines(
+    system.file(sql_file_path, package = "spanishoddata")) |> 
     glue::glue_collapse(sep = "\n") |> 
-    glue::glue() |> 
+    glue::glue(.envir = parent.frame()) |> 
     dplyr::sql()
+  
+  return(sql_query)
 }
