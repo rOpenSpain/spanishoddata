@@ -101,7 +101,7 @@ For example, this code below will not execute the query, but will only create an
 
 ```{r}
 od_dist_1_lazy <- od_dist_1 |>
-  group_by(id_origin, id_destination, full_date) |>
+  group_by(id_origin, id_destination, date) |>
   summarise(
     total_day_trips = sum(n_trips, na.rm = TRUE),
     .groups = "drop"
@@ -133,7 +133,7 @@ It can be added either at the end of the original pipeline, like so:
 ```{r}
 #| eval=FALSE
 od_dist_1_data <- od_dist_1 |>
-  group_by(id_origin, id_destination, full_date) |>
+  group_by(id_origin, id_destination, date) |>
   summarise(
     total_day_trips = sum(n_trips, na.rm = TRUE),
     .groups = "drop"

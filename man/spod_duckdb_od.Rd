@@ -31,7 +31,7 @@ A duckdb connection object with 2 views:
 The structure of the cleaned-up views \code{od_csv_clean} is as follows:
 
 \describe{
-\item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
+\item{date}{\code{Date}. The full date of the trip, including year, month, and day.}
 \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
 \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
 \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work'). \strong{Note:} Only available for district level data.}
