@@ -2,7 +2,7 @@
 % Please edit documentation in R/duckdb_helpers.R
 \name{spod_duckdb_od}
 \alias{spod_duckdb_od}
-\title{Creates a duckdb connection to v1 OD data}
+\title{Creates a duckdb connection to origin-destination data}
 \usage{
 spod_duckdb_od(
   con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
@@ -67,6 +67,6 @@ The structure of the original data in \code{od_csv_raw} is as follows:
 }
 }
 \description{
-This function creates a duckdb connection to the v1 OD data.
+This function creates a duckdb connection to the origin-destination data stored in CSV.gz files.
 }
 \keyword{internal}
