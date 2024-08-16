@@ -2,9 +2,6 @@
 
 extdata_path <- system.file("extdata", package = "spanishoddata")
 gz_files <- list.files(extdata_path, pattern = "(data_links_.*\\.xml\\.gz)|(url_file_sizes_v[1-2]\\.csv\\.gz)", full.names = TRUE)
-gz_files
-list.files(extdata_path, pattern = "url_file_sizes_v.*", full.names = TRUE)
-list.files(extdata_path, full.names = TRUE)
 
 if (length(gz_files) == 0) stop("No gzipped XML files found.")
 
