@@ -419,12 +419,14 @@ spod_get <- function(
       data_dir = data_dir
     )
   } else if (type == "tpp") {
-    con <- spod_duckdb_trips_per_person(
-      con = con,
-      zones = zones,
-      ver = ver,
-      data_dir = data_dir
-    )
+    message("trips per person data retrieval is not yet implemented")
+    invisible(return(NULL))
+    # con <- spod_duckdb_trips_per_person(
+    #   con = con,
+    #   zones = zones,
+    #   ver = ver,
+    #   data_dir = data_dir
+    # )
   } else if (type == "os") {
     message("overnight stays data retrieval is not yet implemented")
     invisible(return(NULL))
