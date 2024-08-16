@@ -115,13 +115,16 @@ spod_available_data_v1 <- function(
   # replace 2 digit day with 1 digit day
   files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
 
+  # change txt.gz to csv.gz
+  files_table$local_path <- gsub("\\.txt\\.gz", "\\.csv\\.gz", files_table$local_path)
+
   # now check if any of local files exist
   if( check_local_files == TRUE){
     files_table$downloaded <- fs::file_exists(files_table$local_path)
   }
 
   # add known file sizes from cached data
-  file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v1.csv.gz", package = "spanishoddata"), show_col_types = FALSE)
+  file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v1.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
   files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
 
   # if there are files with missing sizes, impute them

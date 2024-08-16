@@ -23,7 +23,7 @@ spod_files_sizes <- function(ver = 2) {
     v1_url_file_sizes <- v1[, c("target_url", "remote_file_size_mb")]
     readr::write_csv(
       x = v1_url_file_sizes,
-      file = "inst/extdata/url_file_sizes_v1.csv.gz"
+      file = "inst/extdata/url_file_sizes_v1.txt.gz"
     )
   }
 
@@ -42,7 +42,7 @@ spod_files_sizes <- function(ver = 2) {
     v2_url_file_sizes <- v2[, c("target_url", "remote_file_size_mb")]
     readr::write_csv(
       x = v2_url_file_sizes,
-      file = "inst/extdata/url_file_sizes_v2.csv.gz"
+      file = "inst/extdata/url_file_sizes_v2.txt.gz"
     )
   }
   

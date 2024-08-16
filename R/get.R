@@ -203,7 +203,7 @@ spod_available_data_v2 <- function(
   }
 
   # add known file sizes from cached data
-  file_sizes <- file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v2.csv.gz", package = "spanishoddata"), show_col_types = FALSE)
+  file_sizes <- file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v2.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
   files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
 
   # if there are files with missing sizes, impute them
