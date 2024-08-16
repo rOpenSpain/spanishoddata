@@ -116,6 +116,7 @@ spod_get_latest_v2_file_list <- function(
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
+#' @importFrom rlang .data
 #' @examples
 #' # Get the data dictionary for the default data directory
 #' if (FALSE) {
@@ -199,6 +200,54 @@ spod_available_data_v2 <- function(
   # now check if any of local files exist
   if( check_local_files == TRUE){
     files_table$downloaded <- fs::file_exists(files_table$local_path)
+  }
+
+  # add known file sizes from cached data
+  file_sizes <- file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v2.csv.gz", package = "spanishoddata"), show_col_types = FALSE)
+  files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
+
+  # if there are files with missing sizes, impute them
+  if (any(is.na(files_table$remote_file_size_mb))) {
+    # impute uknown file sizes
+    # primitive file categorisation 
+    files_table <- files_table |>
+      dplyr::mutate(
+        cleaned_url = stringr::str_remove_all(.data$target_url, "/[0-9]{4}[-_][0-9]{2}[-_][0-9]{2}|/[0-9]{6,8}") |> 
+                      stringr::str_remove("/[^/]+$"),
+        file_category = dplyr::case_when(
+          stringr::str_detect(.data$cleaned_url, "calidad") ~ "quality",
+          stringr::str_detect(.data$cleaned_url, "rutas") ~ "routes",
+          stringr::str_detect(.data$cleaned_url, "estudios_basicos") ~ paste0(
+            "basic_studies_",
+            dplyr::case_when(
+              stringr::str_detect(.data$cleaned_url, "por-distritos") ~ "district_",
+              stringr::str_detect(.data$cleaned_url, "por-municipios") ~ "municipal_",
+              stringr::str_detect(.data$cleaned_url, "por-GAU") ~ "GAU_",
+              TRUE ~ "unknown_"
+            ),
+            dplyr::case_when(
+              stringr::str_detect(.data$cleaned_url, "viajes") ~ "trips_",
+              stringr::str_detect(.data$cleaned_url, "personas") ~ "people_",
+              stringr::str_detect(.data$cleaned_url, "pernoctaciones") ~ "overnight_",
+              TRUE ~ "unknown_"
+            ),
+            ifelse(stringr::str_detect(.data$cleaned_url, "ficheros-diarios"), "daily", "monthly")
+          ),
+          TRUE ~ "other"
+        )
+      ) |>
+      dplyr::select(-.data$cleaned_url)
+
+    # Calculate mean file sizes by category
+    size_by_file_category <- files_table |>
+      dplyr::group_by(.data$file_category) |>
+      dplyr::summarise(mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE))
+
+    # Impute missing file sizes
+    files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
+    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- files_table$mean_file_size_mb
+    files_table$mean_file_size_mb <- NULL
+    files_table$file_category <- NULL
   }
 
   return(files_table)

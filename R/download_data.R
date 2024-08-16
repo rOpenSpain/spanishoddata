@@ -5,6 +5,7 @@
 #' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`) for both data versions. Additionaly, these can be `"large_urban_areas"` (or `"lau"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data (2022 onwards).
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set.
+#' @param max_download_size_gb The maximum download size in gigabytes. Defaults to 1.
 #' @param return_output Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.
 #' @inheritParams global_quiet_param
 #' 
@@ -16,20 +17,20 @@
 #' # Download the origin-destination on district level for the a date range in March 2020
 #' spod_download_data(
 #'   type = "od", zones = "districts",
-#'   date_range = c("2020-03-20", "2020-03-24")
+#'   dates = c(start = "2020-03-20", end = "2020-03-24")
 #' )
 #'
 #' # Download the origin-destination on district level for select dates in 2020 and 2021
 #' spod_download_data(
 #'   type = "od", zones = "dist",
-#'   dates_list = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24")
+#'   dates = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24")
 #' )
 #'
 #' # Download the origin-destination on municipality level using regex for a date range in March 2020
 #' # (the regex will capture the dates 2020-03-20 to 2020-03-24)
 #' spod_download_data(
 #'   type = "od", zones = "municip",
-#'   date_regex = "2020032[0-4]"
+#'   dates = "2020032[0-4]"
 #' )
 #' }
 spod_download_data <- function(
@@ -44,6 +45,7 @@ spod_download_data <- function(
       "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
     ),
     dates = NULL,
+    max_download_size_gb = 1, # 1GB
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
     return_output = TRUE) {
@@ -78,7 +80,7 @@ spod_download_data <- function(
     available_data <- spod_available_data_v2(
       data_dir = data_dir,
     check_local_files = TRUE
-  )
+    )
   }
 
   # match the available_data to type, zones, version and dates
@@ -98,6 +100,23 @@ spod_download_data <- function(
 
   # only download files if some are missing
   if (nrow(files_to_download) > 0) {
+    total_size_to_download_gb <- round(sum(files_to_download$remote_file_size_mb / 1024, na.rm = TRUE), 2)
+    # warn if more than 1 GB is to be downloaded
+    if( total_size_to_download_gb > max_download_size_gb) {
+      message(glue::glue("Approximately {total_size_to_download_gb} GB of data will be downloaded."))
+      # ask for confirmation
+      response <- readline(prompt = "Are you sure you would like to continue with this download? (yes/no) ")
+      response <- tolower(response) %in% c("y", "yes", "Yes")
+      if (!response) {
+        message(glue::glue("Exiting without downloading missing files by user request."))
+        return()
+      }
+    }
+
+    if (isFALSE(quiet)) {
+      message(glue::glue("Downloading approximately {total_size_to_download_gb} GB of data."))
+    }
+    
     # pre-generate target paths for the files to download
     fs::dir_create(
       unique(fs::path_dir(files_to_download$local_path)),

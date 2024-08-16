@@ -22,7 +22,7 @@ for (gz_file in gz_files) {
 
 # Set the environment variable to the test directory
 Sys.setenv(SPANISH_OD_DATA_DIR = test_data_dir)
-
+# Sys.getenv("SPANISH_OD_DATA_DIR")
 
 test_that("single ISO date input", {
   dates <- "2023-07-01"

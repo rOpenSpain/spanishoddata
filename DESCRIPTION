@@ -29,8 +29,8 @@ Imports:
     glue,
     lubridate,
     parallelly,
-    purrr,
     readr,
+    rlang,
     sf,
     stats,
     stringr,
@@ -40,6 +40,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
+    furrr,
+    future,
     quarto,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

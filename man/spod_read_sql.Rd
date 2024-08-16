@@ -8,8 +8,6 @@ spod_read_sql(sql_file_name)
 }
 \arguments{
 \item{sql_file_name}{The name of the SQL file to load from the package installation directory.}
-
-\item{...}{Additional variables to pass to \code{glue::glue()} that will be evaluated in the SQL query.}
 }
 \value{
 Text of the SQL query of class \code{sql}/\code{character}.

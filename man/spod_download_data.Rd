@@ -10,6 +10,7 @@ spod_download_data(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
     "municip", "municipios", "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"),
   dates = NULL,
+  max_download_size_gb = 1,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
   return_output = TRUE
@@ -34,6 +35,8 @@ The possible values can be any of the following:
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 
+\item{max_download_size_gb}{The maximum download size in gigabytes. Defaults to 1.}
+
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 
 \item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
@@ -51,20 +54,20 @@ This function downloads the data files of the specified type, zones, dates and d
 # Download the origin-destination on district level for the a date range in March 2020
 spod_download_data(
   type = "od", zones = "districts",
-  date_range = c("2020-03-20", "2020-03-24")
+  dates = c(start = "2020-03-20", end = "2020-03-24")
 )
 
 # Download the origin-destination on district level for select dates in 2020 and 2021
 spod_download_data(
   type = "od", zones = "dist",
-  dates_list = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24")
+  dates = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24")
 )
 
 # Download the origin-destination on municipality level using regex for a date range in March 2020
 # (the regex will capture the dates 2020-03-20 to 2020-03-24)
 spod_download_data(
   type = "od", zones = "municip",
-  date_regex = "2020032[0-4]"
+  dates = "2020032[0-4]"
 )
 }
 }

@@ -400,7 +400,6 @@ spod_duckdb_limit_resources <- function(
 #' 
 #' @return Text of the SQL query of class `sql`/`character`.
 #' @param sql_file_name The name of the SQL file to load from the package installation directory.
-#' @param ... Additional variables to pass to `glue::glue()` that will be evaluated in the SQL query.
 #' @keywords internal
 spod_read_sql <- function(sql_file_name) {
   sql_file_path <- glue::glue("extdata/sql-queries/{sql_file_name}")

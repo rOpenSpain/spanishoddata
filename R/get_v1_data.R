@@ -36,6 +36,7 @@ spod_get_latest_v1_file_list <- function(
 #' @param check_local_files Whether to check if the local files exist. Defaults to `FALSE`.
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
+#' @importFrom rlang .data
 #' @examples
 #' # Get the available v1 data list for the default data directory
 #' if (FALSE) {
@@ -117,6 +118,37 @@ spod_available_data_v1 <- function(
   # now check if any of local files exist
   if( check_local_files == TRUE){
     files_table$downloaded <- fs::file_exists(files_table$local_path)
+  }
+
+  # add known file sizes from cached data
+  file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v1.csv.gz", package = "spanishoddata"), show_col_types = FALSE)
+  files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
+
+  # if there are files with missing sizes, impute them
+  if (any(is.na(files_table$remote_file_size_mb))) {
+    # impute uknown file sizes
+    # primitive file categorisation
+    # Extract file category from the target URL
+    files_table <- files_table |>
+      dplyr::mutate(
+        file_category = stringr::str_extract(.data$target_url, "\\/maestra(\\d)-mitma-(distritos|municipios)\\/(ficheros-diarios|meses-completos)\\/")
+      )
+
+    # Set other category for non-categorized files
+    files_table$file_category[is.na(files_table$file_category)] <- "other"
+
+    # Calculate mean file sizes by category
+    size_by_file_category <- files_table |>
+      dplyr::group_by(.data$file_category) |>
+      dplyr::summarise(mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE))
+
+    # Impute missing file sizes
+    files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
+    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- files_table$mean_file_size_mb
+
+    # Clean up temporary columns
+    files_table <- files_table |>
+      dplyr::select(-.data$mean_file_size_mb, -.data$file_category)
   }
 
   return(files_table)
@@ -373,7 +405,8 @@ spod_get <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
   duck_max_mem = 3,
-  duck_max_threads = parallelly::availableCores() - 1
+  duck_max_threads = parallelly::availableCores() - 1,
+  max_download_size_gb = 1
 ) {
   
   ver <- spod_infer_data_v_from_dates(dates)
@@ -393,6 +426,7 @@ spod_get <- function(
         type = type,
         zones = zones,
         dates = dates,
+        max_download_size_gb = max_download_size_gb,
         data_dir = data_dir,
         return_output = FALSE
       )
