@@ -125,11 +125,6 @@ spod_download_data <- function(
       resume = TRUE
     )
 
-    if (ver == 1){
-      # for v1 data due to a bug, check if re-aggregation is required
-      spod_special_reaggregate_v1_trigger(data_dir = data_dir)
-    }
-
     # set download status for downloaded files as TRUE in requested_files
     requested_files$downloaded[requested_files$local_path %in% downloaded_files$destfile] <- TRUE
 
