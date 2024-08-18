@@ -71,17 +71,11 @@ spod_download_data <- function(
 
 
   # get the available  data list while checking for files already cached on disk
-  if (ver == 1) {
-    available_data <- spod_available_data_v1(
-      data_dir = data_dir,
-      check_local_files = TRUE
-    )
-  } else if (ver == 2) {
-    available_data <- spod_available_data_v2(
-      data_dir = data_dir,
-    check_local_files = TRUE
-    )
-  }
+  available_data <- spod_available_data(
+    ver = ver,
+    check_local_files = TRUE,
+    data_dir = data_dir
+  )
 
   # match the available_data to type, zones, version and dates
   if (ver == 1) {
