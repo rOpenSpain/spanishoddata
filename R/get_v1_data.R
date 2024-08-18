@@ -149,8 +149,9 @@ spod_available_data_v1 <- function(
       dplyr::summarise(mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE))
 
     # Impute missing file sizes
-    files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
-    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- files_table$mean_file_size_mb
+    files_table <- files_table |>
+      dplyr::left_join(size_by_file_category, by = "file_category")
+    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- mean(files_table$mean_file_size_mb)
 
     # Clean up temporary columns
     files_table <- files_table |>
