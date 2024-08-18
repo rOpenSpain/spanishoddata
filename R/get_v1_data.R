@@ -118,11 +118,6 @@ spod_available_data_v1 <- function(
   # change txt.gz to csv.gz
   files_table$local_path <- gsub("\\.txt\\.gz", "\\.csv\\.gz", files_table$local_path)
 
-  # now check if any of local files exist
-  if( check_local_files == TRUE){
-    files_table$downloaded <- fs::file_exists(files_table$local_path)
-  }
-
   # add known file sizes from cached data
   file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v1.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
   files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
@@ -155,11 +150,61 @@ spod_available_data_v1 <- function(
   }
 
   # bug fix, remove district files that are placed in municipality folders and vice versa. fixes but documented in:
-  # - http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+  # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
   # we are hardcoding these issues because there are only 2 of them and we want ot be very spefici about them, unless this is perhaps addressed at the source
   files_table <- files_table |>
-    dplyr::filter(!grepl("municipios.*20210205_maestra_2_mitma_distrito", target_url)) |> 
-    dplyr::filter(!grepl("municipios.*20200712_maestra_2_mitma_municipio", target_url))
+    dplyr::filter(!grepl("maestra2-mitma-municipios.*20210205_maestra_2_mitma_distrito", target_url))
+
+
+  # to address the same bug, but with missing 20200712_maestra_1_mitma_municipio.txt.gz, we substitute 
+  # replace download url to a larger ditricts file that has more rows of data
+  files_table <- files_table |>
+    dplyr::mutate(
+      local_path = dplyr::if_else(
+        .data$target_url == "https://opendata-movilidad.mitma.es/maestra1-mitma-municipios/ficheros-diarios/2020-07/20200712_maestra_1_mitma_distrito.txt.gz",
+        true = gsub(
+          "maestra_1_mitma_distrito\\.csv\\.gz",
+          "maestra_1_mitma_municipio\\.csv\\.gz",
+          .data$local_path),
+        false = .data$local_path
+      ),
+      target_url = dplyr::if_else(
+        .data$target_url == "https://opendata-movilidad.mitma.es/maestra1-mitma-municipios/ficheros-diarios/2020-07/20200712_maestra_1_mitma_distrito.txt.gz",
+        true = "https://opendata-movilidad.mitma.es/maestra1-mitma-distritos/ficheros-diarios/2020-07/20200712_maestra_1_mitma_distrito.txt.gz",
+        false = .data$target_url
+      )
+    )
+  # also save the meta information that this file needs to be aggregated
+  meta_reaggregation_file <- paste0(data_dir, "/", spod_subfolder_raw_data_cache(1), "meta_reaggregation.csv")
+  if( !fs::file_exists(meta_reaggregation_file) ){
+    meta_reaggregate <- tibble::tibble(
+      file_path = files_table |> 
+        dplyr::filter(.data$target_url == "https://opendata-movilidad.mitma.es/maestra1-mitma-distritos/ficheros-diarios/2020-07/20200712_maestra_1_mitma_distrito.txt.gz" &
+          grepl("municipios", .data$local_path)) |> 
+        dplyr::pull(.data$local_path) |> 
+        stringr::str_extract(paste0(spod_subfolder_raw_data_cache(1), ".*")),
+      requires_reaggreagation = TRUE)
+      
+      full_path <- paste0(data_dir, "/", meta_reaggregate$file_path)
+      if (fs::file_exists(full_path)) {
+        if (fs::file_size(full_path) > 30e6) {
+          meta_reaggregate$reaggregated <- FALSE
+        } else if (fs::file_size(full_path) < 30e6) {
+          meta_reaggregate$reaggregated <- TRUE
+        }
+      }
+      
+      readr::write_delim(
+        meta_reaggregate,
+        meta_reaggregation_file,
+        delim = "|")
+  }
+  # later this metadata will be used in the download function to check if reaggregation is required
+  
+  # now check if any of local files exist
+  if( check_local_files == TRUE){
+    files_table$downloaded <- fs::file_exists(files_table$local_path)
+  }
 
   return(files_table)
 }
@@ -450,6 +495,11 @@ spod_get <- function(
     }
   }
 
+  if (ver == 1){
+    # for v1 data due to a bug, check if re-aggregation is required
+    spod_special_reaggregate_v1_trigger(data_dir = data_dir)
+  }
+
   # create in memory duckdb connection
   drv <- duckdb::duckdb()
   con <- DBI::dbConnect(drv, dbdir = ":memory:", read_only = FALSE)
@@ -506,4 +556,141 @@ spod_get <- function(
   } else {
     return(dplyr::tbl(con, clean_csv_view_name))
   }
+}
+
+#' Aggregate district od data to municipalities when required
+#' 
+#' @description
+#' This is to fix but described in detail here:
+#' http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+#' Briefly, 20200712_maestra_1_mitma_municipio.txt.gz is missing, while 0200712_maestra_1_mitma_distrito.txt.gz is available. Until this is addressed upstream, we need to download this file and re-aggregate if municipal data for 2020-07-12 is requested by the user.
+#' 
+#' The function converts 20200712_maestra_1_mitma_distrito.txt.gz to 20200712_maestra_1_mitma_municipio.txt.gz and saves it in the location expected by all the data import functions.
+#' 
+#' @return NULL
+spod_special_reaggregate_v1_trigger <- function(data_dir){
+  meta_reaggregation_file <- paste0(data_dir, "/", spod_subfolder_raw_data_cache(1), "meta_reaggregation.csv")
+  if( !fs::file_exists(meta_reaggregation_file) ){
+    return(NULL)
+  }
+
+  meta_reaaggregate <- readr::read_delim(meta_reaggregation_file, delim = "|", show_col_types = FALSE)
+
+  files_to_reaggregate <- meta_reaaggregate[meta_reaaggregate$reaggregated == FALSE,]$file_path
+  if( nrow(meta_reaaggregate[meta_reaaggregate$reaggregated == FALSE,]) > 0 ){
+    for(file in files_to_reaggregate) {
+      reaggregated_file <- spod_special_reaggregate_od_v1(file = file)
+      if( fs::file_exists(reaggregated_file) ){
+        fs::file_delete(here::here(data_dir, file))
+      }
+      meta_reaaggregate[meta_reaaggregate$file_path == file,]$reaggregated <- TRUE
+    }
+    readr::write_delim(meta_reaaggregate, meta_reaggregation_file, delim = "|")
+  }
+
+}
+
+#' Re-aggregate district od data to municipalities
+#' @param file_path Path to file to re-aggregate
+#' @inheritParams spod_download_data
+#' @importFrom rlang .data
+#' @return path to re-aggregated file
+#' @keywords internal
+spod_special_reaggregate_od_v1 <- function(
+  file,
+  data_dir = spod_get_data_dir()
+) {
+  # Define paths
+  file_path <- here::here(data_dir, file)
+  relaciones_path <- paste0(data_dir, "/", spod_subfolder_raw_data_cache(1), "relaciones_distrito_mitma.csv")
+  
+  # Initialize DuckDB connection
+  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:")
+  
+  # Load the districts data
+  DBI::dbExecute(con,
+    dplyr::sql(
+      glue::glue(
+        "CREATE VIEW districts_od AS SELECT * FROM
+        read_csv_auto('{file_path}',
+          delim = '|',
+          columns={{
+            'fecha': 'INTEGER',
+            'origen': 'VARCHAR',
+            'destino': 'VARCHAR',
+            'actividad_origen': 'VARCHAR',
+            'actividad_destino': 'VARCHAR',
+            'residencia': 'VARCHAR',
+            'edad': 'VARCHAR',
+            'periodo': 'INTEGER',
+            'distancia': 'VARCHAR',
+            'viajes': 'DOUBLE',
+            'viajes_km': 'DOUBLE'
+            }}
+          ) ;"
+      )
+    )
+  )
+  
+  
+  # Import the relationships
+  DBI::dbExecute(con,
+    dplyr::sql(
+      glue::glue(
+        "CREATE VIEW relationships
+        AS SELECT distrito_mitma, municipio_mitma FROM
+        read_csv_auto('{relaciones_path}',
+          delim = '|',
+          columns={{
+            'distrito': 'VARCHAR',
+            'distrito_mitma': 'VARCHAR',
+            'municipio_mitma': 'VARCHAR'
+            }},
+          dateformat='%Y%m%d') ;"
+      )
+    )
+  )
+
+  
+  # re-aggregate
+  DBI::dbExecute(con,
+    dplyr::sql(
+      "CREATE VIEW municipalities_od AS 
+    SELECT 
+      d.fecha, 
+      m1.municipio_mitma AS origen,
+      m2.municipio_mitma AS destino,
+      d.periodo,
+      d.distancia,
+      SUM(d.viajes) AS viajes,
+      SUM(d.viajes_km) AS viajes_km
+    FROM districts_od d
+    LEFT JOIN relationships m1 ON d.origen = m1.distrito_mitma
+    LEFT JOIN relationships m2 ON d.destino = m2.distrito_mitma
+    GROUP BY 
+      d.fecha, 
+      m1.municipio_mitma,
+      m2.municipio_mitma,
+      d.periodo,
+      d.distancia; "
+    )
+  )
+  
+  DBI::dbGetQuery(con, "SELECT * FROM municipalities_od LIMIT 10")
+  
+  new_file_path <- gsub("maestra_1_mitma_distrito", "maestra_1_mitma_municipio", file_path)
+  
+  # dump to CSV
+  DBI::dbExecute(con,
+    dplyr::sql(
+      glue::glue("
+        COPY municipalities_od TO '{new_file_path}' "
+      )
+    )
+  )
+
+  # Close the DuckDB connection
+  DBI::dbDisconnect(con, shutdown = TRUE)
+  
+  return(new_file_path)
 }
