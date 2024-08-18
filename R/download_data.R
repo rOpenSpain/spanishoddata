@@ -58,7 +58,7 @@ spod_download_data <- function(
 
   # check version
   ver <- spod_infer_data_v_from_dates(dates_to_use)
-  # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data_v1/2(). This results in reading xml files with metadata for the second time. This is not optimal and should be fixed.
+  # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data(). This results in reading xml files with metadata for the second time. This is not optimal and should be fixed.
   
   if (isFALSE(quiet)) {
     message("Data version detected from dates: ", ver)
