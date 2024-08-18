@@ -154,6 +154,13 @@ spod_available_data_v1 <- function(
       dplyr::select(-.data$mean_file_size_mb, -.data$file_category)
   }
 
+  # bug fix, remove district files that are placed in municipality folders and vice versa. fixes but documented in:
+  # - http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+  # we are hardcoding these issues because there are only 2 of them and we want ot be very spefici about them, unless this is perhaps addressed at the source
+  files_table <- files_table |>
+    dplyr::filter(!grepl("municipios.*20210205_maestra_2_mitma_distrito", target_url)) |> 
+    dplyr::filter(!grepl("municipios.*20200712_maestra_2_mitma_municipio", target_url))
+
   return(files_table)
 }
 
@@ -456,14 +463,12 @@ spod_get <- function(
       data_dir = data_dir
     )
   } else if (type == "tpp") {
-    message("trips per person data retrieval is not yet implemented")
-    invisible(return(NULL))
-    # con <- spod_duckdb_trips_per_person(
-    #   con = con,
-    #   zones = zones,
-    #   ver = ver,
-    #   data_dir = data_dir
-    # )
+    con <- spod_duckdb_trips_per_person(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
+    )
   } else if (type == "os") {
     message("overnight stays data retrieval is not yet implemented")
     invisible(return(NULL))
