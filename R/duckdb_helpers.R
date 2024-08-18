@@ -74,10 +74,14 @@ spod_duckdb_od <- function(
   }
 
   if (ver == 1) {
+    # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
+    # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+    # the decision was to use distrcit data and aggregate it to replicate municipal data
     csv_folder <- paste0(
       data_dir, "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/maestra1-mitma-", spod_zone_names_en2es(zones),
+      "/maestra1-mitma-distritos",
       "/ficheros-diarios/"
     )
   } else if (ver == 2) {
@@ -122,12 +126,10 @@ spod_duckdb_od <- function(
   )
 
   # create ACTIV_ENUM (for all except for municipalities in v1 data)
-  if ( !( zones == "municipios" & ver == 1) ) {
-    DBI::dbExecute(
-      con,
-      spod_read_sql(glue::glue("v{ver}-od-enum-activity-en.sql"))
-    )
-  }
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-enum-activity-en.sql"))
+  )
 
   # create DISTANCE_ENUM
   DBI::dbExecute(
@@ -135,11 +137,8 @@ spod_duckdb_od <- function(
     spod_read_sql(glue::glue("v{ver}-od-enum-distance.sql"))
   )
 
-  if ( !( zones == "municipios" & ver == 1) ) {
-    # create named INE province ENUM
-    # (for all except for municipalities in v1 data)
-    spod_duckdb_create_province_enum(con)
-  }
+  con <- spod_duckdb_create_province_enum(con)
+  
   
   # v2 only enums
   if (ver == 2) {
@@ -163,6 +162,14 @@ spod_duckdb_od <- function(
   }
 
   # create od_csv_clean view
+  if (ver == 1 && zones == "municipios") {
+    # this will be picked up by the sql loaded below if neccessary
+    relations_districts_municipalities <- here::here(
+        data_dir,
+        spod_subfolder_raw_data_cache(1),
+        "relaciones_distrito_mitma.csv"
+    )
+  }
   DBI::dbExecute(
     con,
     spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-csv-view-en.sql"))
@@ -208,13 +215,13 @@ spod_duckdb_trips_per_person <- function(
   }
 
   if (ver == 1) {
+    # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
+    # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+    # the decision was to use distrcit data and aggregate it to replicate municipal data
     csv_folder <- paste0(
       data_dir, "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
-      # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-      # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
-      # the decision was to use distrcit data and aggregate it to replicate municipal data
       "/maestra2-mitma-distritos",
       "/ficheros-diarios/"
     )
