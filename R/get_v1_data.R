@@ -118,6 +118,14 @@ spod_available_data_v1 <- function(
   # change txt.gz to csv.gz
   files_table$local_path <- gsub("\\.txt\\.gz", "\\.csv\\.gz", files_table$local_path)
 
+  # replace all municipal data download links with districts links
+  # this is to address the bugs described in detail in:
+  # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+  # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+  # the decision was to use distrcit data and aggregate it to replicate municipal data
+  files_table$target_url <- gsub("mitma-municipios", "mitma-distritos", files_table$target_url)
+  files_table$target_url <- gsub("mitma_municipio", "mitma_distrito", files_table$target_url)
+
   # add known file sizes from cached data
   file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v1.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
   files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
