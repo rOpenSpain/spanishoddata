@@ -211,7 +211,11 @@ spod_duckdb_trips_per_person <- function(
     csv_folder <- paste0(
       data_dir, "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/maestra2-mitma-", spod_zone_names_en2es(zones),
+      # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
+      # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+      # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+      # the decision was to use distrcit data and aggregate it to replicate municipal data
+      "/maestra2-mitma-distritos",
       "/ficheros-diarios/"
     )
   } else if (ver == 2) {
@@ -243,7 +247,7 @@ spod_duckdb_trips_per_person <- function(
   if( ver == 1 ) {
     unique_ids <- unique(spatial_data$id)
   } else if( ver == 2 ) {
-    # unique_ids <- c("externo", unique(spatial_data$id)) TODO ???
+    # unique_ids <- c("externo", unique(spatial_data$id)) # double check
   }
   
   DBI::dbExecute(
@@ -270,6 +274,14 @@ spod_duckdb_trips_per_person <- function(
   }
 
   # create od_csv_clean view
+  if (ver == 1 && zones == "municipios") {
+    # this will be picked up by the sql loaded below if neccessary
+    relations_districts_municipalities <- here::here(
+        data_dir,
+        spod_subfolder_raw_data_cache(1),
+        "relaciones_distrito_mitma.csv"
+    )
+  }
   DBI::dbExecute(
     con,
     spod_read_sql(glue::glue("v{ver}-tpp-{zones}-clean-csv-view-en.sql"))

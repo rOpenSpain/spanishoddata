@@ -80,7 +80,11 @@ spod_download_data <- function(
   # match the available_data to type, zones, version and dates
   if (ver == 1) {
     requested_files <- available_data[
-      grepl(glue::glue("v{ver}.*{type}.*{zones}"), available_data$local_path) &
+      # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
+      # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+      # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+      # the decision was to use distrcit data and aggregate it to replicate municipal data
+      grepl(glue::glue("v{ver}.*{type}.*distritos"), available_data$local_path) &
         available_data$data_ymd %in% dates_to_use,
     ]
   } else if (ver == 2) {
@@ -128,7 +132,9 @@ spod_download_data <- function(
     # set download status for downloaded files as TRUE in requested_files
     requested_files$downloaded[requested_files$local_path %in% downloaded_files$destfile] <- TRUE
 
-    message("Retrieved data for requested dates: ", paste(dates_to_use, collapse = ", ")) # this may output too many dates, shoudl be fixed when we create a flexible date argument processing function. Keeping for now.
+    if (isFALSE(quiet)) {
+      message("Retrieved data for requested dates.")
+    }
   }
 
   if (return_output) {
