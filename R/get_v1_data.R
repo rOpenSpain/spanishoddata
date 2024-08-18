@@ -193,6 +193,16 @@ spod_get_zones_v1 <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
+  metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
+
+
+  # download id relation files if missing
+  relation_files <- metadata[grepl("relaciones_(distrito|municipio)_mitma.csv", metadata$target_url),]
+  if (nrow(relation_files) > 0) {
+    fs::dir_create(unique(basename(relation_files$local_path)))
+    invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
+  }
+
   # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
     data_dir,
@@ -207,9 +217,6 @@ spod_get_zones_v1 <- function(
     return(sf::read_sf(expected_gpkg_path))
   }
 
-  # if data is not available, download, extract, clean and save it to gpkg
-
-  metadata <- spod_available_data_v1(data_dir, check_local_files = FALSE)
   regex <- glue::glue("zonificacion_{zones}\\.")
   sel_zones <- stringr::str_detect(metadata$target_url, regex)
   metadata_zones <- metadata[sel_zones, ]
