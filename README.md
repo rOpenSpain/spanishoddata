@@ -5,30 +5,37 @@
 [![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-This repo demonstrates how to download and use OD data from Spain,
-published by
-[transportes.gob.es](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
+**spanishoddata** provides functions for downloading and formatting
+Spanish origin-destination (OD) data from the Ministry of Transport and
+Sustainable Mobility of Spain.
 
-The data is provided as follows:
+The Spanish OD data is primarily sourced from mobile phone positioning
+data and includes matrices for overnight stays, individual movements,
+and trips of Spanish residents at different geographical levels.
 
-- Estudios basicos
-  - Por disitritos
-    - Personas (population)
-    - Pernoctaciones (overnight stays)
-    - Viajes
-      - ficheros-diarios
-      - meses-completos
+This data is part of the basic studies of the ‘Open Data Mobility’
+project and it is released monthly on the
+[website](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
+of the Ministry of Transport and Sustainable Mobility of Spain from
+January 2022.
 
-The package is designed to save people time by providing the data in
-analyis-ready formats. Automating the process of downloading, cleaning
-and importing the data can also reduce the risk of errors in the
-laborious process of data preparation.
+The data is provided in the ‘estudios_basicos’ folder (at the end of the
+website) which has three levels of nested subfolders: the first for
+geographic area levels (districts, large urban agglomerations,
+municipalities); the second for the OD matrix type (overnight stays,
+individuals, trips); and the third for temporal aggregation (daily and
+full month).
 
-The datasets are large, so the package aims to reduce computational
-resources, by using computationally efficient packages behind the
-scenes. If you want to use many of the data files, it’s recommended you
-set a data directory where the package will look for the data, only
-downloading the files that are not already present.
+**spanishoddata** is designed to save people time by providing the data
+in analysis-ready formats. Automating the process of downloading,
+cleaning and importing the data can also reduce the risk of errors in
+the laborious process of data preparation.
+
+**spanishoddata** also reduces computational resources by using
+computationally efficient packages behind the scenes. To effectively
+work with multiple data files, it’s recommended you set up a data
+directory where the package can search for the data, and download only
+the files that are not already present.
 
 # Installation
 
@@ -53,7 +60,7 @@ gh repo clone Robinlovelace/spanishoddata
 code spanishoddata
 ```
 
-then run the following command from the R console:
+Then run the following command from the R console:
 
 ``` r
 devtools::load_all()
@@ -95,7 +102,7 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 
 # Using the package
 
-To run the code in this README we will use the following setup:
+To run the code in this README, we will use the following setup:
 
 ``` r
 library(tidyverse)
@@ -141,7 +148,7 @@ plot(sf::st_geometry(distritos_wgs84))
 
 ![](man/figures/README-distritos-1.png)
 
-## Estudios basicos
+## Estudios básicos
 
 ``` r
 od_db <- spod_get_od(
@@ -227,14 +234,14 @@ od1_head |>
   knitr::kable()
 ```
 
-| fecha | periodo | origen | destino | distancia | actividad_origen | actividad_destino | estudio_origen_posible | estudio_destino_posible | residencia | renta | edad | sexo | viajes | viajes_km |
-|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|
-| 20240301 | 19 | 01009_AM | 01001 | 0.5-2 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 6.120 |
-| 20240301 | 15 | 01002 | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.360 | 100.036 |
-| 20240301 | 00 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 1.743 | 22.293 |
-| 20240301 | 05 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.404 | 24.659 |
-| 20240301 | 06 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 80.118 |
-| 20240301 | 09 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 7.019 | 93.938 |
+|    fecha | periodo | origen   | destino | distancia | actividad_origen | actividad_destino | estudio_origen_posible | estudio_destino_posible | residencia | renta | edad | sexo | viajes | viajes_km |
+|---------:|:--------|:---------|:--------|:----------|:-----------------|:------------------|:-----------------------|:------------------------|:-----------|:------|:-----|:-----|-------:|----------:|
+| 20240301 | 19      | 01009_AM | 01001   | 0.5-2     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  5.124 |     6.120 |
+| 20240301 | 15      | 01002    | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  2.360 |   100.036 |
+| 20240301 | 00      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  1.743 |    22.293 |
+| 20240301 | 05      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  2.404 |    24.659 |
+| 20240301 | 06      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  5.124 |    80.118 |
+| 20240301 | 09      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  7.019 |    93.938 |
 
 ``` r
 DBI::dbDisconnect(con)
@@ -251,7 +258,7 @@ od_multi_list[[1]]
 ```
 
     # Source:   SQL [?? x 18]
-    # Database: DuckDB v1.0.0 [robin@Linux 6.5.0-45-generic:R 4.4.1/:memory:]
+    # Database: DuckDB v1.0.0 [eugeni@Linux 5.15.0-118-generic:R 4.4.1/:memory:]
           fecha periodo origen  destino distancia actividad_origen actividad_destino
           <dbl> <chr>   <chr>   <chr>   <chr>     <chr>            <chr>            
      1 20240307 00      01009_… 01001   0.5-2     frecuente        casa             
