@@ -15,7 +15,7 @@ spod_available_data_v1(
 
 \item{check_local_files}{Whether to check if the local files exist. Defaults to \code{FALSE}.}
 
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
 A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.

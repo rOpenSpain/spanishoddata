@@ -5,6 +5,8 @@
 #' @param dates A `character` or `Date` vector of dates to process. Kindly keep in mind that v1 and v2 data follow different data collection methodologies and may not be directly comparable. Therefore, do not try to request data from both versions for the same date range. If you need to compare data from both versions, please refer to the respective codebooks and methodology documents. The v1 data covers the period from 2020-02-14 to 2021-05-09, and the v2 data covers the period from 2022-01-01 to the present until further notice. The true dates range is checked against the available data for each version on every function run.
 #'
 #' The possible values can be any of the following:
+#' 
+#'  * For the `spod_get()` function, the `dates` can be set to "cached". In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to `spod_download_data()`.
 #'
 #'  * A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. `character` or `Date` object.
 #'

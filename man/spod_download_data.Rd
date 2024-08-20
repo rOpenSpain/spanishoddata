@@ -25,6 +25,7 @@ spod_download_data(
 
 The possible values can be any of the following:
 \itemize{
+\item For the \code{spod_get()} function, the \code{dates} can be set to "cached". In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to \code{spod_download_data()}.
 \item A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object.
 \item A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object. Can be any non-consecutive sequence of dates.
 \item A date range
@@ -39,7 +40,7 @@ The possible values can be any of the following:
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
 \item{return_output}{Logical. If \code{TRUE}, the function returns a character vector of the paths to the downloaded files. If \code{FALSE}, the function returns \code{NULL}.}
 }

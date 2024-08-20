@@ -16,7 +16,7 @@ spod_available_data(
 
 \item{check_local_files}{Whether to check if the local files exist. Defaults to \code{FALSE}.}
 
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
 }

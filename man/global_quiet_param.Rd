@@ -7,7 +7,7 @@
 global_quiet_param(quiet = FALSE)
 }
 \arguments{
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \description{
 Documentation for the \code{quiet} parameter, used globally.

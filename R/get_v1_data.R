@@ -436,21 +436,23 @@ spod_get <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
-
-  if (is.character(dates)) {
-    if (all(dates != "cached")) {
-      dates <- spod_dates_argument_to_dates_seq(dates = dates)
-      # use the spot_download_data() function to download any missing data
-      spod_download_data(
-        type = type,
-        zones = zones,
-        dates = dates,
-        max_download_size_gb = max_download_size_gb,
-        data_dir = data_dir,
-        return_output = FALSE
-      )
-    }
+  # check that user is not requesting to just get all cached data
+  cached_data_requested <- length(dates) == 1 &&
+    all(as.character(dates) == "cached")
+  
+  if (isFALSE(cached_data_requested)) {
+    dates <- spod_dates_argument_to_dates_seq(dates = dates)
+    # use the spot_download_data() function to download any missing data
+    spod_download_data(
+      type = type,
+      zones = zones,
+      dates = dates,
+      max_download_size_gb = max_download_size_gb,
+      data_dir = data_dir,
+      return_output = FALSE
+    )
   }
+
 
   # create in memory duckdb connection
   drv <- duckdb::duckdb()
@@ -492,8 +494,8 @@ spod_get <- function(
   clean_csv_view_name <- glue::glue("{type}_csv_clean")
   clean_filtered_csv_view_name <- glue::glue("{type}_csv_clean_filtered")
 
-  # filter by date
-  if (!is.character(dates)) {
+  # filter by date, unless cached data requested
+  if (isFALSE(cached_data_requested)) {
     con <- spod_duckdb_filter_by_dates(
       con,
       clean_csv_view_name,
@@ -503,9 +505,9 @@ spod_get <- function(
   }
 
   # return either a full view of all available data (dates = "cached") or a view filtered to the specified dates
-  if (all(!is.character(dates))) {
+  if (isFALSE(cached_data_requested)) {
     return(dplyr::tbl(con, clean_filtered_csv_view_name))
-  } else {
+  } else if (isTRUE(cached_data_requested)) {
     return(dplyr::tbl(con, clean_csv_view_name))
   }
 }
