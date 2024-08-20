@@ -1,0 +1,128 @@
+---
+title: "Codebook for v1 (2020-2021) Spanish mobility data"
+vignette: >
+  %\VignetteIndexEntry{Working with v1 MITMA data}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+execute: 
+  eval: false
+---
+
+Key sources for this codebook include: (1) [original data collection methodology](https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf){target="_blank"}, (2) [original data codebook in Spanish](https://opendata-movilidad.mitma.es/README%20-%20formato%20ficheros%20movilidad%20MITMA%2020201228.pdf){target="_blank"}, (3) [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad){target="_blank"}, (4) [original data license](https://opendata-movilidad.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf){target="_blank"}, and the (5) [homepage of the open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
+
+**Note: Kindly consult the documents above for any specific detail on the methodology. The codebook here is only a simplified summary.**
+
+To access any data in this codebook, please do the following:
+
+Install `spanishoddata` R package:
+
+```{r}
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("Robinlovelace/spanishoddata")
+```
+
+Set the cache folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a `DuckDB` database file, or a folder of `parquet` files).
+
+```{r}
+library(spanishoddata)
+Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/your/cache/directory")
+```
+
+# 1. Spatial data with zoning boundaries
+
+There are levels of spatial detail available:
+
+1. `Districts` (2850 zones). In urban areas you get some level of detail within cities. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset.
+
+To access as:
+
+```{r}
+districts_v1 <- spod_get_zones("dist", ver = 1)
+```
+
+2. `Municipalities` (2205 zones). Same as above, but without any spatial detalisation in the cities.
+
+To access:
+
+```{r}
+municipalities_v1 <- spod_get_zones("muni", ver = 1)
+```
+
+
+The spatial data you get via `spanishoddata` package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in `id` column. Apart from that `id` column, the the zones data does not have any metadata. TODO: add metadata from reference tables.
+
+
+# 2. Mobility data
+
+All mobility data is referenced via origin, destination, or other location identifiers with the zones described above.
+
+## 3. Origin-destination data
+
+The original data is stored in the [`maestra-1`](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad){target="_blank"} folder with suffixes `distritos` (for district zoning) and `municipios` (for municipality zoning). We only use the `district` level data because of several data issues with the `municipality` data documented [here](http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html){target="_blank"} and [here](http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html){target="_blank"}, but also because the distric level data contains more columns with useful origin-destination flow characteristics. As a result, you get both the `district` level data and the `municipality` level data with the same columns. `Municipality` level data is simply a re-aggregation of `district` level data using the official relations file where `district` identifiers are mapped to `municipality` identifiers (orginal file is [`relaciones_distrito_mitma.csv`](https://opendata-movilidad.mitma.es/relaciones_distrito_mitma.csv){target="_blank"}).
+
+To access the data, use the `spod_get_od()` function. In this example we will use a short interval of dates:
+
+```{r}
+dates <- c(start = "2020-02-14", end = "2020-02-17")
+od_dist <- spod_get(type = "od", zones = "dist", dates = dates)
+od_muni <- spod_get(type = "od", zones = "muni", dates = dates)
+```
+
+The data for the specified dates will be automatically downloaded and cached in the `SPANISH_OD_DATA_DIR` directory. Existing files will not be re-downloaded. The resulting objects `od_dist` and `od_muni` are  `tbl_duckdb_connection`, `tbl_dbi`, `tbl_sql`, `tbl_lazy`, and `tbl`. That means that the data is not loaded into memory (as if you request more dates, e.g. a whole year, it would likely not fit into your computer's memory), but rather you have a table that is mapped to the donwloaded CSV files. You can manipulate it using `dplyr` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. When you are done, you can `collect()` the table to get it in the R memory like so:
+
+```{r}
+library(dplyr)
+od_mean_hourly_trips_over_the_4_days <- od_dist |>
+  group_by(time_slot) |>
+  summarise(
+    mean_hourly_trips = mean(n_trips, na.rm = TRUE),
+    .groups = "drop") |> 
+  collect()
+od_mean_hourly_trips_over_the_4_days
+```
+
+```
+# A tibble: 24 × 2
+   time_slot mean_hourly_trips
+       <int>             <dbl>
+ 1        18              21.4
+ 2        10              19.3
+ 3         2              14.8
+ 4        15              19.8
+ 5        11              19.9
+ 6        16              19.6
+ 7        22              20.9
+ 8         0              18.6
+ 9        13              21.1
+10        19              22.5
+# ℹ 14 more rows
+# ℹ Use `print(n = ...)` to see more rows
+```
+
+
+Here are the variables you can find in both the `district` and `municipality` level origin-destination data:
+
+| **English Variable Name**       | **Original Variable Name** | **Description**                                                                                                                                         |
+|---------------------------------|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `date`                          | `fecha`                    | The date of the recorded data, formatted as `YYYY-MM-DD`.                                                                                                |
+| `id_origin`                     | `origen`                   | The origin zone identifier, recoded from original zone codes.                                                                                            |
+| `id_destination`                | `destino`                  | The destination zone identifier, recoded from original zone codes.                                                                                       |
+| `activity_origin`               | `actividad_origen`         | The type of activity at the origin zone, recoded from `casa`, `otros`, `trabajo_estudio` to `home`, `other`, `work_or_study` respectively.               |
+| `activity_destination`          | `actividad_destino`        | The type of activity at the destination zone, similarly recoded as for `activity_origin`.                                                                 |
+| `residence_province_ine_code`   | `residencia`               | The province code of residence, converted to INE standardized codes.                                                                                     |
+| `residence_province_name`       | Derived from `residencia`  | The full name of the residence province, derived from the province code.                                                                                 |
+| `time_slot`                     | `periodo`                  | The time slot during which the trips occurred, represented as an integer.                                                                                 |
+| `distance`                      | `distancia`                | The distance range of the trip, categorized into specific intervals such as `002-005` (2 to 5 km), `100+` (more than 100 km), etc.                        |
+| `n_trips`                       | `viajes`                   | The number of trips recorded for that specific origin-destination pair and time slot.                                                                     |
+| `trips_total_length_km`         | `viajes_km`                | The total length of trips in kilometers, summing up all trips between the origin and destination zones.                                                   |
+| `year`                          | `year`                     | The year of the recorded data, extracted from the date.                                                                                                  |
+| `month`                         | `month`                    | The month of the recorded data, extracted from the date.                                                                                                 |
+| `day`                           | `day`                      | The day of the recorded data, extracted from the date.                                                                                                   |
+| `n_persons`                     | `personas`                 | The number of persons making the trips, used in the context of trip distribution by person.                                                              |
+| `n_trips_by_person`             | `numero_viajes`            | The number of trips per person, categorized into `0`, `1`, `2`, or `2+` trips.                                                                            |
+| `id`                            | `distrito`                 | The identifier for the district or zone, used in some views to connect the trip data with geographical areas.                                             |
+| `municipality_id`               | `municipio_mitma`          | The identifier for municipalities, used for aggregating data to the municipal level, typically derived from district data.                               |
+
+
+
+# Methodology notes
