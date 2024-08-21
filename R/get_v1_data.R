@@ -197,7 +197,6 @@ spod_get_zones_v1 <- function(
 
   metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
 
-
   # download id relation files if missing
   relation_files <- metadata[grepl("relaciones_(distrito|municipio)_mitma.csv", metadata$target_url),]
   if (any(!fs::file_exists(relation_files$local_path))) {
@@ -249,7 +248,7 @@ spod_get_zones_v1 <- function(
     glob = glue::glue("*v1**{zones}/*.shp"),
     recurse = TRUE
   )
-  zones_sf <- spod_clean_zones_v1(zones_path)
+  zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
   sf::st_write(
     zones_sf,
@@ -266,30 +265,43 @@ spod_get_zones_v1 <- function(
 #' This function fixes any invalid geometries in the zones data and renames the "ID" column to "id".
 #'
 #' @param zones_path The path to the zones spatial data file.
+#' @inheritParams spod_get_zones
 #' @return A spatial object containing the cleaned zones data. 
 #' @keywords internal
+#' @importFrom rlang .data
 #'
-spod_clean_zones_v1 <- function(zones_path) {
+spod_clean_zones_v1 <- function(zones_path, zones) {
   suppressWarnings({
-    zones <- sf::read_sf(zones_path)
+    zones_sf <- sf::read_sf(zones_path)
   })
-  invalid_geometries <- !sf::st_is_valid(zones)
+  invalid_geometries <- !sf::st_is_valid(zones_sf)
   if (sum(invalid_geometries) > 0) {
-    fixed_zones <- sf::st_make_valid(zones[invalid_geometries, ])
-    zones <- rbind(zones[!invalid_geometries, ], fixed_zones)
+    fixed_zones_sf <- sf::st_make_valid(zones_sf[invalid_geometries, ])
+    zones_sf <- rbind(zones_sf[!invalid_geometries, ], fixed_zones_sf)
   }
-  names(zones)[names(zones) == "ID"] <- "id"
+  names(zones_sf)[names(zones_sf) == "ID"] <- "id"
 
-  # bug fix for municipalities
-  # if (grepl("municipios", zones_path)){
-  #   zones[zones$id == "0490201",]$id <- "04902"
-  #   zones[zones$id == "2800601",]$id <- "28006"
-  #   zones[zones$id == "2810601",]$id <- "28106"
-  #   zones[zones$id == "2812301",]$id <- "28123"
-  #   zones[zones$id == "2812701",]$id <- "28127"
-  # }
+  # add metadata from v2 zones
+  zones_v2_sf <- spod_get_zones_v2(zones = zones)
+  zones_v2_sf <- zones_v2_sf[,c("id", "name")]
+  names(zones_v2_sf)[names(zones_v2_sf) == "id"] <- "id_in_v2"
+  names(zones_v2_sf)[names(zones_v2_sf) == "name"] <- "name_in_v2"
+  suppressWarnings(
+    zones_v2_sf_centroids <- zones_v2_sf |> sf::st_centroid()
+  )
+  v2_to_v1 <- sf::st_join(zones_sf, zones_v2_sf_centroids, left = TRUE) |> 
+    sf::st_drop_geometry() 
+  v2_v_1ref <- v2_to_v1 |>
+    dplyr::group_by(id) |> 
+      dplyr::summarize(
+      names_in_v2_data = paste(.data$name_in_v2, collapse = "; "),
+      ids_in_v2_data = paste(.data$id_in_v2, collapse = "; ")
+    )
+  zones_sf <- zones_sf |> 
+    dplyr::left_join(v2_v_1ref, by = "id") |> 
+    dplyr::relocate(geometry, .after = dplyr::last_col())
 
-  return(zones)
+  return(zones_sf)
 }
 
 
