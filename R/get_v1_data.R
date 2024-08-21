@@ -537,6 +537,9 @@ spod_get <- function(
   max_download_size_gb = 1,
   duckdb_target = ":memory:"
 ) {
+  if (is.null(dates)) {
+    message("No period specified in the `dates` argument. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion.")
+  }
   
   ver <- spod_infer_data_v_from_dates(dates)
   
