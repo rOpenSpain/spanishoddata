@@ -534,7 +534,8 @@ spod_get <- function(
   quiet = FALSE,
   duck_max_mem = 3,
   duck_max_threads = parallelly::availableCores() - 1,
-  max_download_size_gb = 1
+  max_download_size_gb = 1,
+  duckdb_target = ":memory:"
 ) {
   
   ver <- spod_infer_data_v_from_dates(dates)
@@ -545,9 +546,9 @@ spod_get <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
-  # check that user is not requesting to just get all cached data
+  # check if user is requesting to just get all cached data
   cached_data_requested <- length(dates) == 1 &&
-    all(as.character(dates) == "cached")
+    all(as.character(dates) %in% c("cached_v1", "cached_v2"))
   
   if (isFALSE(cached_data_requested)) {
     dates <- spod_dates_argument_to_dates_seq(dates = dates)
@@ -565,7 +566,7 @@ spod_get <- function(
 
   # create in memory duckdb connection
   drv <- duckdb::duckdb()
-  con <- DBI::dbConnect(drv, dbdir = ":memory:", read_only = FALSE)
+  con <- DBI::dbConnect(drv, dbdir = duckdb_target, read_only = FALSE)
 
   # define memory and threads limits
   con <- spod_duckdb_limit_resources(

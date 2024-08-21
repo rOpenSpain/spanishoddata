@@ -6,7 +6,7 @@
 #'
 #' The possible values can be any of the following:
 #' 
-#'  * For the `spod_get()` function, the `dates` can be set to "cached". In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to `spod_download_data()`.
+#'  * For the `spod_get()` function, the `dates` can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to `spod_download_data()`.
 #'
 #'  * A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. `character` or `Date` object.
 #'
@@ -97,6 +97,17 @@ spod_is_data_version_overlaps <- function(dates) {
 }
 
 spod_infer_data_v_from_dates <- function(dates) {
+  # check if user is requesting to just get all cached data
+  if (length(dates) == 1){
+    if (as.character(dates) %in% c("cached_v1", "cached_v2")) {
+      return(
+        as.integer(stringr::str_extract(as.character(dates), "[0-9]$"))
+      )
+    }
+  }
+  cached_data_requested <- length(dates) == 1 &&
+    all(as.character(dates) %in% c("cached_v1", "cached_v2"))
+  
   # in case of overlap
   # will throw an error from the spod_is_data_version_overlaps
   if (spod_is_data_version_overlaps(dates)) {
