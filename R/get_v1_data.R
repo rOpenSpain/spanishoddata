@@ -281,6 +281,97 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   }
   names(zones_sf)[names(zones_sf) == "ID"] <- "id"
 
+  # load and prepare id relations for districts
+  relations_districts <- readr::read_delim(
+    file = paste0(spod_get_data_dir(), "/",
+      spod_subfolder_raw_data_cache(1),
+      "relaciones_distrito_mitma.csv"),
+    delim = "|", show_col_types = FALSE
+  )
+  relations_districts_col_names <- names(relations_districts)
+  relations_districts_col_names <- gsub("distrito", "district", relations_districts_col_names)
+  relations_districts_col_names <- gsub("municipio", "municipality", relations_districts_col_names)
+  relations_districts_col_names <- gsub("^district$", "census_district", relations_districts_col_names)
+  names(relations_districts) <- relations_districts_col_names
+  
+  # load and prepare id relations for municipalities
+  relations_municipalities <- readr::read_delim(
+    file = paste0(spod_get_data_dir(), "/",
+      spod_subfolder_raw_data_cache(1),
+      "relaciones_municipio_mitma.csv"),
+    delim = "|", show_col_types = FALSE
+  )
+  relations_municipalities_col_names <- names(relations_municipalities)
+  relations_municipalities_col_names <- gsub("municipio", "municipality", relations_municipalities_col_names)
+  names(relations_municipalities) <- relations_municipalities_col_names
+
+  # summarise districts relations including municipality data
+  relations_districts_aggregated <- relations_districts |>
+    dplyr::left_join(
+      relations_municipalities |>
+        dplyr::group_by(.data$municipality_mitma) |>
+        dplyr::summarize(
+          municipalities = paste(.data$municipality, collapse = "; ")
+        ),
+      by = "municipality_mitma") |> 
+    dplyr::group_by(.data$district_mitma) |> 
+    dplyr::summarize(
+      census_districts = paste(.data$census_district, collapse = "; "),
+      municipalities_mitma = paste(.data$municipality_mitma, collapse = "; "),
+      municipalities = paste(.data$municipalities, collapse = "; ")
+    )
+
+  # summarise municipalities relations
+  relations_municipalities_aggregated <- relations_municipalities |>
+    dplyr::left_join(
+      relations_districts |> 
+        dplyr::group_by(.data$municipality_mitma) |>
+        dplyr::summarize(
+          census_districts = paste(.data$census_district, collapse = "; "),
+          districts_mitma = paste(.data$district_mitma, collapse = "; ")
+        )
+      , by = "municipality_mitma") |>
+    dplyr::group_by(.data$municipality_mitma) |> 
+    dplyr::summarize(
+      municipalities = paste(.data$municipality, collapse = "; "),
+      districts_mitma = paste(.data$districts_mitma, collapse = "; "),
+      census_districts = paste(.data$census_districts, collapse = "; ")
+    )
+  
+  # now we have some duplicate ids, we need to remove them
+  # here's a function for that
+  unique_separated_ids <- function(column) {
+    # Split the string by semicolon, remove duplicates, and join them back with semicolons
+    sapply(column, function(x) {
+      unique_ids <- unique(stringr::str_split(x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
+      paste(unique_ids, collapse = "; ")  # Join them back with semicolons
+    })
+  }
+
+  # cleanup duplacate ids in municipalities
+  relations_municipalities_aggregated <- relations_municipalities_aggregated |> 
+    dplyr::mutate(
+      dplyr::across(c(municipalities, districts_mitma, census_districts), unique_separated_ids)
+    )
+  names(relations_municipalities_aggregated)[names(relations_municipalities_aggregated) == "municipality_mitma"] <- "id"
+  
+  # cleanup duplicate ids in districts
+  relations_districts_aggregated <- relations_districts_aggregated |> 
+    dplyr::mutate(
+      dplyr::across(c(census_districts, municipalities_mitma), unique_separated_ids)
+    )
+  names(relations_districts_aggregated)[names(relations_districts_aggregated) == "district_mitma"] <- "id"
+
+  if (zones == "distritos") {
+    zones_sf <- zones_sf |> 
+      dplyr::left_join(relations_districts_aggregated, by = "id") |>
+      dplyr::relocate(geometry, .after = dplyr::last_col())
+  } else if (zones == "municipios") {
+    zones_sf <- zones_sf |> 
+      dplyr::left_join(relations_municipalities_aggregated, by = "id") |>
+      dplyr::relocate(geometry, .after = dplyr::last_col())
+  }
+
   # add metadata from v2 zones
   zones_v2_sf <- spod_get_zones_v2(zones = zones)
   zones_v2_sf <- zones_v2_sf[,c("id", "name")]
@@ -292,14 +383,20 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   v2_to_v1 <- sf::st_join(zones_sf, zones_v2_sf_centroids, left = TRUE) |> 
     sf::st_drop_geometry() 
   v2_v_1ref <- v2_to_v1 |>
-    dplyr::group_by(id) |> 
+    dplyr::group_by(.data$id) |> 
       dplyr::summarize(
       names_in_v2_data = paste(.data$name_in_v2, collapse = "; "),
       ids_in_v2_data = paste(.data$id_in_v2, collapse = "; ")
     )
+  eng_zones <- dplyr::if_else(zones == "distritos", true = "district", false = "municipality")
+  names(v2_v_1ref)[names(v2_v_1ref) == "names_in_v2_data"] <- glue::glue("{eng_zones}_names_in_v2")
+  names(v2_v_1ref)[names(v2_v_1ref) == "ids_in_v2_data"] <- glue::glue("{eng_zones}_ids_in_v2")
+  
+
   zones_sf <- zones_sf |> 
     dplyr::left_join(v2_v_1ref, by = "id") |> 
     dplyr::relocate(geometry, .after = dplyr::last_col())
+
 
   return(zones_sf)
 }

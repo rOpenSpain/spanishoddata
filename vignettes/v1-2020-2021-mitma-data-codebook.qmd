@@ -44,6 +44,10 @@ To access it:
 districts_v1 <- spod_get_zones("dist", ver = 1)
 ```
 
+Data structure:
+
+
+
 2.  `Municipalities` (2205 zones). Same as above, but without any spatial detalisation in the cities.
 
 To access it:
