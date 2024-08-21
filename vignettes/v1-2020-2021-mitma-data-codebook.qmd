@@ -46,7 +46,14 @@ districts_v1 <- spod_get_zones("dist", ver = 1)
 
 Data structure:
 
-
+| Variable Name | **Description** |
+|------------------------------------|------------------------------------|
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [trips per person data](#tpp-data). |
+| `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
+| `municipalities_mitma` | A list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` . |
+| `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
+| `district_names_in_v2` | A list of names of district polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with `id` above. **TODO: insert link to v2 codebook.** |
+| `district_ids_in_v2` | A list of identifiers of district polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with `id` above. **TODO: insert link to v2 codebook.** |
 
 2.  `Municipalities` (2205 zones). Same as above, but without any spatial detalisation in the cities.
 
@@ -56,13 +63,24 @@ To access it:
 municipalities_v1 <- spod_get_zones("muni", ver = 1)
 ```
 
-The spatial data you get via `spanishoddata` package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in `id` column. Apart from that `id` column, the the zones data does not have any metadata. TODO: add metadata from reference tables.
+Data structure:
+
+| Variable Name | **Description** |
+|------------------------------------|------------------------------------|
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in municipality level [origin-destination data](#od-data) and [trips per person data](#tpp-data). |
+| `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
+| `districts_mitma` | A list of district identifiers as assigned by the data provider in districts zones spatial dataset that correspond to a given municipality `id` . |
+| `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
+| `municipality_names_in_v2` | A list of names of municipality polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with `id` above. **TODO: insert link to v2 codebook.** |
+| `municipality_ids_in_v2` | A list of identifiers of municipality polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with `id` above. **TODO: insert link to v2 codebook.** |
+
+: The spatial data you get via `spanishoddata` package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in `id` column. Apart from that `id` column, the the zones data does not have any metadata. TODO: add metadata from reference tables.
 
 # 2. Mobility data
 
 All mobility data is referenced via origin, destination, or other location identifiers with the zones described above.
 
-## 3. Origin-destination data
+## 2.1. Origin-destination data {#od-data}
 
 The original data is stored in the [`maestra-1`](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad){target="_blank"} folder with suffixes `distritos` (for district zoning) and `municipios` (for municipality zoning). We only use the `district` level data because of several data issues with the `municipality` data documented [here](http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html){target="_blank"} and [here](http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html){target="_blank"}, but also because the distric level data contains more columns with useful origin-destination flow characteristics. As a result, you get both the `district` level data and the `municipality` level data with the same columns. `Municipality` level data is simply a re-aggregation of `district` level data using the official relations file where `district` identifiers are mapped to `municipality` identifiers (orginal file is [`relaciones_distrito_mitma.csv`](https://opendata-movilidad.mitma.es/relaciones_distrito_mitma.csv){target="_blank"}).
 
@@ -112,7 +130,7 @@ In this example above, we calculated a mean hourly flows over the 4 days of the 
 Here are the variables you can find in both the `district` and `municipality` level origin-destination data:
 
 | **English Variable Name** | **Original Variable Name** | **Description** |
-|-----------------|-----------------|--------------------------------------|
+|------------------|------------------|-----------------------------------|
 | `date` | `fecha` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
 | `id_origin` | `origen` | The origin zone identifier, recoded from original zone codes. |
 | `id_destination` | `destino` | The destination zone identifier, recoded from original zone codes. |
@@ -131,5 +149,7 @@ Here are the variables you can find in both the `district` and `municipality` le
 | `n_trips_by_person` | `numero_viajes` | The number of trips per person, categorized into `0`, `1`, `2`, or `2+` trips. |
 | `id` | `distrito` | The identifier for the district or zone, used in some views to connect the trip data with geographical areas. |
 | `municipality_id` | `municipio_mitma` | The identifier for municipalities, used for aggregating data to the municipal level, typically derived from district data. |
+
+## 2.2. Trips per person data {#tpp-data}
 
 # Converting the data for faster analysis {#convert-data}
