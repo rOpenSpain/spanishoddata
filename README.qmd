@@ -1,6 +1,6 @@
 ---
 format: gfm
-bibliography: references.bib
+bibliography: vignettes/references.bib
 execute: 
   message: false
   warning: false
