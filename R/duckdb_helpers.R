@@ -298,6 +298,11 @@ spod_duckdb_trips_per_person <- function(
 }
 
 #' Filter a duckdb conenction by dates
+#' 
+#' @description
+#' IMPORTANT: This function assumes that the table or view that is being filtered has separate `year`, `month` and `day` columns with integer values. This is done so that the filtering is faster on CSV files that are stored in a folder structure with hive-style `/year=2020/month=2/day=14/`.
+#' 
+#' 
 #' @param con A duckdb connection
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
 #' @param new_view_name The name of the new duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
