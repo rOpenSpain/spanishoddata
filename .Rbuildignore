@@ -15,3 +15,5 @@ README.qmd
 ^doc$
 ^Meta$
 ^vignettes/*_files$
+^CITATION\.cff$
+^codemeta\.json$

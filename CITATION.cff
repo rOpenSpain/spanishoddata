@@ -1,0 +1,439 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "spanishoddata" in publications use:'
+type: software
+license: MIT
+title: 'spanishoddata: Get Spanish Origin-Destination Data'
+version: 0.0.1
+abstract: Enables access to origin-destination (OD) provided by the Spanish Minstry
+  of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
+  It contains functions for downloading zone boundaries and associated origin-destination
+  data. The OD datasets are large. The package eases working with them by using the
+  database interface package 'duckdb', using an optional environment variable 'SPANISH_OD_DATA_DIR'
+  to avoid repeated downloads, and by providing documentation demonstrating how to
+  collect subsets of the resulting databases into memory.
+authors:
+- family-names: Kotov
+  given-names: Egor
+  email: kotov.egor@gmail.com
+  orcid: https://orcid.org/0000-0001-6690-5345
+- family-names: Lovelace
+  given-names: Robin
+  email: rob00x@gmail.com
+  orcid: https://orcid.org/0000-0001-5679-6536
+repository-code: https://github.com/Robinlovelace/spanishoddata
+url: https://robinlovelace.github.io/spanishoddata/
+contact:
+- family-names: Kotov
+  given-names: Egor
+  email: kotov.egor@gmail.com
+  orcid: https://orcid.org/0000-0001-6690-5345
+keywords:
+- cdr
+- data
+- data-package
+- mobile-telephone-data
+- mobility
+- origin-destination
+- rstats
+references:
+- type: software
+  title: 'R: A Language and Environment for Statistical Computing'
+  notes: Depends
+  url: https://www.R-project.org/
+  authors:
+  - name: R Core Team
+  institution:
+    name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2024'
+  version: '>= 3.5.0'
+- type: software
+  title: curl
+  abstract: 'curl: A Modern and Flexible Web Client for R'
+  notes: Imports
+  url: https://jeroen.r-universe.dev/curl
+  repository: https://CRAN.R-project.org/package=curl
+  authors:
+  - family-names: Ooms
+    given-names: Jeroen
+    email: jeroen@berkeley.edu
+    orcid: https://orcid.org/0000-0002-4035-0289
+  year: '2024'
+- type: software
+  title: DBI
+  abstract: 'DBI: R Database Interface'
+  notes: Imports
+  url: https://dbi.r-dbi.org
+  repository: https://CRAN.R-project.org/package=DBI
+  authors:
+  - name: R Special Interest Group on Databases (R-SIG-DB)
+  - family-names: Wickham
+    given-names: Hadley
+  - family-names: Müller
+    given-names: Kirill
+    email: kirill@cynkra.com
+    orcid: https://orcid.org/0000-0002-1416-3412
+  year: '2024'
+- type: software
+  title: dplyr
+  abstract: 'dplyr: A Grammar of Data Manipulation'
+  notes: Imports
+  url: https://dplyr.tidyverse.org
+  repository: https://CRAN.R-project.org/package=dplyr
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+    orcid: https://orcid.org/0000-0003-4757-117X
+  - family-names: François
+    given-names: Romain
+    orcid: https://orcid.org/0000-0002-2444-4226
+  - family-names: Henry
+    given-names: Lionel
+  - family-names: Müller
+    given-names: Kirill
+    orcid: https://orcid.org/0000-0002-1416-3412
+  - family-names: Vaughan
+    given-names: Davis
+    email: davis@posit.co
+    orcid: https://orcid.org/0000-0003-4777-038X
+  year: '2024'
+- type: software
+  title: duckdb
+  abstract: 'duckdb: DBI Package for the DuckDB Database Management System'
+  notes: Imports
+  url: https://r.duckdb.org/
+  repository: https://CRAN.R-project.org/package=duckdb
+  authors:
+  - family-names: Mühleisen
+    given-names: Hannes
+    email: hannes@cwi.nl
+    orcid: https://orcid.org/0000-0001-8552-0029
+  - family-names: Raasveldt
+    given-names: Mark
+    email: mark.raasveldt@cwi.nl
+    orcid: https://orcid.org/0000-0001-5005-6844
+  year: '2024'
+- type: software
+  title: fs
+  abstract: 'fs: Cross-Platform File System Operations Based on ''libuv'''
+  notes: Imports
+  url: https://fs.r-lib.org
+  repository: https://CRAN.R-project.org/package=fs
+  authors:
+  - family-names: Hester
+    given-names: Jim
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  - family-names: Csárdi
+    given-names: Gábor
+    email: csardi.gabor@gmail.com
+  year: '2024'
+- type: software
+  title: glue
+  abstract: 'glue: Interpreted String Literals'
+  notes: Imports
+  url: https://glue.tidyverse.org/
+  repository: https://CRAN.R-project.org/package=glue
+  authors:
+  - family-names: Hester
+    given-names: Jim
+    orcid: https://orcid.org/0000-0002-2739-7082
+  - family-names: Bryan
+    given-names: Jennifer
+    email: jenny@posit.co
+    orcid: https://orcid.org/0000-0002-6983-2759
+  year: '2024'
+- type: software
+  title: here
+  abstract: 'here: A Simpler Way to Find Your Files'
+  notes: Imports
+  url: https://here.r-lib.org/
+  repository: https://CRAN.R-project.org/package=here
+  authors:
+  - family-names: Müller
+    given-names: Kirill
+    email: krlmlr+r@mailbox.org
+    orcid: https://orcid.org/0000-0002-1416-3412
+  year: '2024'
+- type: software
+  title: lubridate
+  abstract: 'lubridate: Make Dealing with Dates a Little Easier'
+  notes: Imports
+  url: https://lubridate.tidyverse.org
+  repository: https://CRAN.R-project.org/package=lubridate
+  authors:
+  - family-names: Spinu
+    given-names: Vitalie
+    email: spinuvit@gmail.com
+  - family-names: Grolemund
+    given-names: Garrett
+  - family-names: Wickham
+    given-names: Hadley
+  year: '2024'
+- type: software
+  title: parallelly
+  abstract: 'parallelly: Enhancing the ''parallel'' Package'
+  notes: Imports
+  url: https://parallelly.futureverse.org
+  repository: https://CRAN.R-project.org/package=parallelly
+  authors:
+  - family-names: Bengtsson
+    given-names: Henrik
+    email: henrikb@braju.com
+    orcid: https://orcid.org/0000-0002-7579-5165
+  year: '2024'
+- type: software
+  title: readr
+  abstract: 'readr: Read Rectangular Text Data'
+  notes: Imports
+  url: https://readr.tidyverse.org
+  repository: https://CRAN.R-project.org/package=readr
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  - family-names: Hester
+    given-names: Jim
+  - family-names: Bryan
+    given-names: Jennifer
+    email: jenny@posit.co
+    orcid: https://orcid.org/0000-0002-6983-2759
+  year: '2024'
+- type: software
+  title: rlang
+  abstract: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
+  notes: Imports
+  url: https://rlang.r-lib.org
+  repository: https://CRAN.R-project.org/package=rlang
+  authors:
+  - family-names: Henry
+    given-names: Lionel
+    email: lionel@posit.co
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  year: '2024'
+- type: software
+  title: sf
+  abstract: 'sf: Simple Features for R'
+  notes: Imports
+  url: https://r-spatial.github.io/sf/
+  repository: https://CRAN.R-project.org/package=sf
+  authors:
+  - family-names: Pebesma
+    given-names: Edzer
+    email: edzer.pebesma@uni-muenster.de
+    orcid: https://orcid.org/0000-0001-8049-7069
+  year: '2024'
+- type: software
+  title: stats
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  institution:
+    name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2024'
+- type: software
+  title: stringr
+  abstract: 'stringr: Simple, Consistent Wrappers for Common String Operations'
+  notes: Imports
+  url: https://stringr.tidyverse.org
+  repository: https://CRAN.R-project.org/package=stringr
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  year: '2024'
+- type: software
+  title: tibble
+  abstract: 'tibble: Simple Data Frames'
+  notes: Imports
+  url: https://tibble.tidyverse.org/
+  repository: https://CRAN.R-project.org/package=tibble
+  authors:
+  - family-names: Müller
+    given-names: Kirill
+    email: kirill@cynkra.com
+    orcid: https://orcid.org/0000-0002-1416-3412
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2024'
+- type: software
+  title: xml2
+  abstract: 'xml2: Parse XML'
+  notes: Imports
+  url: https://xml2.r-lib.org/
+  repository: https://CRAN.R-project.org/package=xml2
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  - family-names: Hester
+    given-names: Jim
+  - family-names: Ooms
+    given-names: Jeroen
+  year: '2024'
+- type: software
+  title: furrr
+  abstract: 'furrr: Apply Mapping Functions in Parallel using Futures'
+  notes: Suggests
+  url: https://furrr.futureverse.org/
+  repository: https://CRAN.R-project.org/package=furrr
+  authors:
+  - family-names: Vaughan
+    given-names: Davis
+    email: davis@rstudio.com
+  - family-names: Dancho
+    given-names: Matt
+    email: mdancho@business-science.io
+  year: '2024'
+- type: software
+  title: future
+  abstract: 'future: Unified Parallel and Distributed Processing in R for Everyone'
+  notes: Suggests
+  url: https://future.futureverse.org
+  repository: https://CRAN.R-project.org/package=future
+  authors:
+  - family-names: Bengtsson
+    given-names: Henrik
+    email: henrikb@braju.com
+    orcid: https://orcid.org/0000-0002-7579-5165
+  year: '2024'
+- type: software
+  title: knitr
+  abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
+  notes: Suggests
+  url: https://yihui.org/knitr/
+  repository: https://CRAN.R-project.org/package=knitr
+  authors:
+  - family-names: Xie
+    given-names: Yihui
+    email: xie@yihui.name
+    orcid: https://orcid.org/0000-0003-0645-5666
+  year: '2024'
+- type: software
+  title: od
+  abstract: 'od: Manipulate and Map Origin-Destination Data'
+  notes: Suggests
+  url: https://itsleeds.github.io/od/
+  repository: https://CRAN.R-project.org/package=od
+  authors:
+  - family-names: Lovelace
+    given-names: Robin
+    email: rob00x@gmail.com
+    orcid: https://orcid.org/0000-0001-5679-6536
+  year: '2024'
+- type: software
+  title: odjitter
+  abstract: 'odjitter: Conversion of OD Data Geographic Desire Lines with Distributed
+    Start and End Points'
+  notes: Suggests
+  authors:
+  - family-names: Lovelace
+    given-names: Robin
+    email: rob00x@gmail.com
+    orcid: https://orcid.org/0000-0001-5679-6536
+  - family-names: Carlino
+    given-names: Dustin
+  year: '2024'
+- type: software
+  title: osmactive
+  abstract: 'osmactive: Extract Active Travel Infrastructure from OpenStreetMap'
+  notes: Suggests
+  url: https://nptscot.github.io/osmactive/
+  authors:
+  - family-names: Lovelace
+    given-names: Robin
+    email: rob00x@gmail.com
+    orcid: https://orcid.org/0000-0001-5679-6536
+  - family-names: Talbot
+    given-names: Joey
+    email: j.d.talbot@leeds.ac.uk
+    orcid: https://orcid.org/0000-0002-6520-4560
+  year: '2024'
+- type: software
+  title: quarto
+  abstract: 'quarto: R Interface to ''Quarto'' Markdown Publishing System'
+  notes: Suggests
+  url: https://quarto-dev.github.io/quarto-r/
+  repository: https://CRAN.R-project.org/package=quarto
+  authors:
+  - family-names: Allaire
+    given-names: JJ
+    email: jj@posit.co
+    orcid: https://orcid.org/0000-0003-0174-9868
+  - family-names: Dervieux
+    given-names: Christophe
+    email: cderv@posit.co
+    orcid: https://orcid.org/0000-0003-4474-2498
+  year: '2024'
+- type: software
+  title: remotes
+  abstract: 'remotes: R Package Installation from Remote Repositories, Including ''GitHub'''
+  notes: Suggests
+  url: https://remotes.r-lib.org
+  repository: https://CRAN.R-project.org/package=remotes
+  authors:
+  - family-names: Csárdi
+    given-names: Gábor
+    email: csardi.gabor@gmail.com
+  - family-names: Hester
+    given-names: Jim
+  - family-names: Wickham
+    given-names: Hadley
+  - family-names: Chang
+    given-names: Winston
+  - family-names: Morgan
+    given-names: Martin
+  - family-names: Tenenbaum
+    given-names: Dan
+  year: '2024'
+- type: software
+  title: testthat
+  abstract: 'testthat: Unit Testing for R'
+  notes: Suggests
+  url: https://testthat.r-lib.org
+  repository: https://CRAN.R-project.org/package=testthat
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  year: '2024'
+  version: '>= 3.0.0'
+- type: software
+  title: tmap
+  abstract: 'tmap: Thematic Maps'
+  notes: Suggests
+  url: https://r-tmap.github.io/tmap/
+  repository: https://CRAN.R-project.org/package=tmap
+  authors:
+  - family-names: Tennekes
+    given-names: Martijn
+    email: mtennekes@gmail.com
+  year: '2024'
+- type: software
+  title: zonebuilder
+  abstract: 'zonebuilder: Create and Explore Geographic Zoning Systems'
+  notes: Suggests
+  url: https://zonebuilders.github.io/zonebuilder/
+  repository: https://CRAN.R-project.org/package=zonebuilder
+  authors:
+  - family-names: Lovelace
+    given-names: Robin
+    email: rob00x@gmail.com
+    orcid: https://orcid.org/0000-0001-5679-6536
+  - family-names: Tennekes
+    given-names: Martijn
+    email: mtennekes@gmail.com
+  year: '2024'
+

@@ -6,7 +6,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-6690-5345")),
     person("Robin", "Lovelace", , "rob00x@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0001-5679-6536")),
-    person("Eugeni", "Vidal-Tortosa", , , role = "ctb",
+    person("Eugeni", "Vidal-Tortosa", role = "ctb",
            comment = c(ORCID = "0000-0001-5199-4103"))
   )
 Description: Enables access to origin-destination (OD) provided by the

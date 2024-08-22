@@ -29,6 +29,61 @@ To effectively work with multiple data files, it’s recommended you set
 up a data directory where the package can search for the data and
 download only the files that are not already present.
 
+<!-- # metadata for better search engine indexing -->
+<!-- update metadata before release with  -->
+<!-- cffr::cff_write() -->
+<!-- codemetar::write_codemeta(write_minimeta = T) -->
+
+``` r
+is_html <- knitr::is_html_output()
+```
+
+``` r
+glue::glue('<script type="application/ld+json">
+      {glue::glue_collapse(readLines("inst/schemaorg.json"), sep = "\n")}
+    </script>')
+```
+
+<script type="application/ld+json">
+      {
+  "@context": "https://schema.org",
+  "type": "SoftwareSourceCode",
+  "author": [
+    {
+      "id": "https://orcid.org/0000-0001-6690-5345",
+      "type": "Person",
+      "email": "kotov.egor@gmail.com",
+      "familyName": "Kotov",
+      "givenName": "Egor"
+    },
+    {
+      "id": "https://orcid.org/0000-0001-5679-6536",
+      "type": "Person",
+      "email": "rob00x@gmail.com",
+      "familyName": "Lovelace",
+      "givenName": "Robin"
+    }
+  ],
+  "codeRepository": "https://github.com/Robinlovelace/spanishoddata",
+  "contributor": {
+    "id": "https://orcid.org/0000-0001-5199-4103",
+    "type": "Person",
+    "familyName": "Vidal-Tortosa",
+    "givenName": "Eugeni"
+  },
+  "description": "Enables access to origin-destination (OD) provided by the Spanish Minstry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. It contains functions for downloading zone boundaries and associated origin-destination data. The OD datasets are large. The package eases working with them by using the database interface package 'duckdb', using an optional environment variable 'SPANISH_OD_DATA_DIR' to avoid repeated downloads, and by providing documentation demonstrating how to collect subsets of the resulting databases into memory.",
+  "license": "https://spdx.org/licenses/MIT",
+  "name": "spanishoddata: Get Spanish Origin-Destination Data",
+  "programmingLanguage": {
+    "type": "ComputerLanguage",
+    "name": "R",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 4.4.1 (2024-06-14)",
+  "version": "0.0.1"
+}
+    </script>
+
 # Installation
 
 Install the package as follows:
@@ -105,7 +160,7 @@ data
 
 </div>
 
-To run the code in this README, we will use the following setup:
+To run the code in this README we will use the following setup:
 
 ``` r
 library(tidyverse)
