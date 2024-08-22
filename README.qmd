@@ -19,22 +19,6 @@ It supports the two versions of the Spanish OD data. [The first version](https:/
 
 **spanishoddata** is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
-<!-- # metadata for better search engine indexing -->
-<!-- update metadata before release with  -->
-<!-- cffr::cff_write() -->
-<!-- codemetar::write_codemeta(write_minimeta = T) -->
-
-```{r}
-is_html <- knitr::is_html_output()
-```
-
-```{r results="asis", eval = !is_html, include = !is_html}
-glue::glue('<script type="application/ld+json">
-      {glue::glue_collapse(readLines("inst/schemaorg.json"), sep = "\n")}
-    </script>')
-```
-
-
 
 # Installation
 
@@ -303,3 +287,24 @@ usethis::use_vignette("uses", title = "Use cases")
 ```
 
 # References
+
+
+
+
+
+<!-- metadata for better search engine indexing -->
+<!-- should be picked up by pkgdown -->
+<!-- update metadata before release with  -->
+<!-- cffr::cff_write() -->
+<!-- codemetar::write_codemeta(write_minimeta = T) -->
+
+```{r include = FALSE}
+is_html <- knitr::is_html_output()
+```
+
+
+```{r results="asis", eval = !is_html, include = !is_html, include = FALSE}
+glue::glue('<script type="application/ld+json">
+      {glue::glue_collapse(readLines("inst/schemaorg.json"), sep = "\n")}
+    </script>')
+```
