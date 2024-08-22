@@ -5,37 +5,29 @@
 [![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**spanishoddata** provides functions for downloading and formatting
-Spanish origin-destination (OD) data from the Ministry of Transport and
-Sustainable Mobility of Spain.
+**spanishoddata** is an R package that provides functions for
+downloading and formatting Spanish origin-destination (OD) data from the
+Ministry of Transport and Sustainable Mobility of Spain.
 
-The Spanish OD data is primarily sourced from mobile phone positioning
-data and includes matrices for overnight stays, individual movements,
-and trips of Spanish residents at different geographical levels.
-
-This data is part of the basic studies of the ‘Open Data Mobility’
-project and it is released monthly on the
-[website](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
-of the Ministry of Transport and Sustainable Mobility of Spain from
-January 2022.
-
-The data is provided in the ‘estudios_basicos’ folder (at the end of the
-website) which has three levels of nested subfolders: the first for
-geographic area levels (districts, large urban agglomerations,
-municipalities); the second for the OD matrix type (overnight stays,
-individuals, trips); and the third for temporal aggregation (daily and
-full month).
+It supports the two versions of the Spanish OD data. [The first
+version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad)
+covers data from 2020 and 2021, including the period of the COVID-19
+pandemic. [The second
+version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
+contains data from January 2022 onwards and is updated monthly on the
+fifteenth of each month. Both versions of the data primarily consist of
+mobile phone positioning data, and include matrices for overnight stays,
+individual movements, and trips of Spanish residents at different
+geographical levels.
 
 **spanishoddata** is designed to save people time by providing the data
 in analysis-ready formats. Automating the process of downloading,
-cleaning and importing the data can also reduce the risk of errors in
-the laborious process of data preparation.
-
-**spanishoddata** also reduces computational resources by using
-computationally efficient packages behind the scenes. To effectively
-work with multiple data files, it’s recommended you set up a data
-directory where the package can search for the data, and download only
-the files that are not already present.
+cleaning, and importing the data can also reduce the risk of errors in
+the laborious process of data preparation. It also reduces computational
+resources by using computationally efficient packages behind the scenes.
+To effectively work with multiple data files, it’s recommended you set
+up a data directory where the package can search for the data and
+download only the files that are not already present.
 
 # Installation
 
@@ -45,16 +37,6 @@ Install the package as follows:
 if (!require("remotes")) install.packages("remotes")
 remotes::install_github("Robinlovelace/spanishoddata")
 ```
-
-    parallelly (1.37.1 -> 1.38.0 ) [CRAN]
-    duckdb     (0.10.2 -> 1.0.0-2) [CRAN]
-    ── R CMD build ─────────────────────────────────────────────────────────────────
-    * checking for file ‘/tmp/RtmpIfAw5i/remotes5ff8143b636a6/Robinlovelace-spanishoddata-b5ca4d9/DESCRIPTION’ ... OK
-    * preparing ‘spanishoddata’:
-    * checking DESCRIPTION meta-information ... OK
-    * checking for LF line-endings in source and make files and shell scripts
-    * checking for empty or unneeded directories
-    * building ‘spanishoddata_0.0.0.9000.tar.gz’
 
 Load it as follows:
 
@@ -150,14 +132,6 @@ Zones can be downloaded as follows:
 
 ``` r
 distritos <- spod_get_zones("distritos", ver = 2)
-```
-
-    Deleting source `/tmp/RtmpIfAw5i/clean_data/v2/zones/distritos_mitma.gpkg' failed
-    Writing layer `distritos_mitma' to data source 
-      `/tmp/RtmpIfAw5i/clean_data/v2/zones/distritos_mitma.gpkg' using driver `GPKG'
-    Writing 3909 features with 3 fields and geometry type Unknown (any).
-
-``` r
 distritos_wgs84 <- distritos |>
   sf::st_simplify(dTolerance = 200) |>
   sf::st_transform(4326)
@@ -166,7 +140,7 @@ plot(sf::st_geometry(distritos_wgs84))
 
 ![](man/figures/README-distritos-1.png)
 
-## Estudios básicos
+## OD data
 
 ``` r
 od_db <- spod_get_od(
@@ -252,14 +226,14 @@ od1_head |>
   knitr::kable()
 ```
 
-| fecha | periodo | origen | destino | distancia | actividad_origen | actividad_destino | estudio_origen_posible | estudio_destino_posible | residencia | renta | edad | sexo | viajes | viajes_km |
-|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|
-| 20240301 | 19 | 01009_AM | 01001 | 0.5-2 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 6.120 |
-| 20240301 | 15 | 01002 | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.360 | 100.036 |
-| 20240301 | 00 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 1.743 | 22.293 |
-| 20240301 | 05 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.404 | 24.659 |
-| 20240301 | 06 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 80.118 |
-| 20240301 | 09 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 7.019 | 93.938 |
+|    fecha | periodo | origen   | destino | distancia | actividad_origen | actividad_destino | estudio_origen_posible | estudio_destino_posible | residencia | renta | edad | sexo | viajes | viajes_km |
+|---------:|:--------|:---------|:--------|:----------|:-----------------|:------------------|:-----------------------|:------------------------|:-----------|:------|:-----|:-----|-------:|----------:|
+| 20240301 | 19      | 01009_AM | 01001   | 0.5-2     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  5.124 |     6.120 |
+| 20240301 | 15      | 01002    | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  2.360 |   100.036 |
+| 20240301 | 00      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  1.743 |    22.293 |
+| 20240301 | 05      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  2.404 |    24.659 |
+| 20240301 | 06      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  5.124 |    80.118 |
+| 20240301 | 09      | 01009_AM | 01001   | 10-50     | frecuente        | casa              | no                     | no                      | 01         | 10-15 | NA   | NA   |  7.019 |    93.938 |
 
 ``` r
 DBI::dbDisconnect(con)
@@ -276,7 +250,7 @@ od_multi_list[[1]]
 ```
 
     # Source:   SQL [?? x 18]
-    # Database: DuckDB v1.0.0 [robin@Linux 6.8.0-40-generic:R 4.4.1/:memory:]
+    # Database: DuckDB v1.0.0 [eugeni@Linux 5.15.0-118-generic:R 4.4.1/:memory:]
           fecha periodo origen  destino distancia actividad_origen actividad_destino
           <dbl> <chr>   <chr>   <chr>   <chr>     <chr>            <chr>            
      1 20240307 00      01009_… 01001   0.5-2     frecuente        casa             
@@ -342,7 +316,8 @@ od_national_interzonal <- od_national_aggregated |>
   filter(id_origin != id_destination)
 ```
 
-We can convert these to geographic data with the {od} package:
+We can convert these to geographic data with the {od} package (Lovelace
+and Morgan 2024):
 
 ``` r
 od_national_sf <- od::od_to_sf(
@@ -410,3 +385,18 @@ For more information on the package, see:
   - The [uses
     vignette](https://robinlovelace.github.io/spanishoddata/articles/uses.html)
     which documents use cases
+
+# References
+
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
+
+<div id="ref-lovelace_od_2024" class="csl-entry">
+
+Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
+Origin-Destination Data,” August.
+<https://cran.r-project.org/web/packages/od/od.pdf>.
+
+</div>
+
+</div>
