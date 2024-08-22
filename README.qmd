@@ -1,5 +1,6 @@
 ---
 format: gfm
+bibliography: references.bib
 execute: 
   message: false
   warning: false
@@ -12,19 +13,11 @@ knitr:
 [![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**spanishoddata** provides functions for downloading and formatting Spanish origin-destination (OD) data from the Ministry of Transport and Sustainable Mobility of Spain.
+**spanishoddata** is an R package that provides functions for downloading and formatting Spanish origin-destination (OD) data from the Ministry of Transport and Sustainable Mobility of Spain.
 
-The Spanish OD data is primarily sourced from mobile phone positioning data and includes matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels.
+It supports the two versions of the Spanish OD data. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels.
 
-This data is part of the basic studies of the 'Open Data Mobility' project and it is released monthly on the [website](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) of the Ministry of Transport and Sustainable Mobility of Spain from January 2022. 
-
-The data is provided in the ‘estudios_basicos’ folder (at the end of the website) which has three levels of nested subfolders: the first for geographic area levels (districts, large urban agglomerations, municipalities); the second for the OD matrix type (overnight stays, individuals, trips); and the third for temporal aggregation (daily and full month).
-
-**spanishoddata** is designed to save people time by providing the data in analysis-ready formats.
-Automating the process of downloading, cleaning and importing the data can also reduce the risk of errors in the laborious process of data preparation.
-
-**spanishoddata** also reduces computational resources by using computationally efficient packages behind the scenes.
-To effectively work with multiple data files, it's recommended you set up a data directory where the package can search for the data, and download only the files that are not already present.
+**spanishoddata** is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
 # Installation
 
@@ -126,7 +119,7 @@ distritos_wgs84 <- distritos |>
 plot(sf::st_geometry(distritos_wgs84))
 ```
 
-## Estudios básicos
+## OD data
 
 ```{r}
 od_db <- spod_get_od(
@@ -229,7 +222,7 @@ od_national_interzonal <- od_national_aggregated |>
   filter(id_origin != id_destination)
 ```
 
-We can convert these to geographic data with the {od} package:
+We can convert these to geographic data with the {od} package [@lovelace_od_2024]:
 
 ```{r}
 #| label: desire-lines
@@ -317,3 +310,5 @@ usethis::use_tidy_description()
 # Create new vignette called 'uses' with the title "Use cases":
 usethis::use_vignette("uses", title = "Use cases")
 ```
+
+# References
