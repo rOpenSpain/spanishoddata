@@ -40,7 +40,7 @@ The @fig-overall-flow presents the overall approach to accessing the data in the
 
 ![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.png){#fig-overall-flow width=120% height=120%}
 
-
+<!-- the svg version breaks the whole vignette, nothing renders after the image, to sort out later -->
 
 
 # 1. Spatial data with zoning boundaries
