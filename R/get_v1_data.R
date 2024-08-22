@@ -351,25 +351,30 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   # cleanup duplacate ids in municipalities
   relations_municipalities_aggregated <- relations_municipalities_aggregated |> 
     dplyr::mutate(
-      dplyr::across(c(municipalities, districts_mitma, census_districts), unique_separated_ids)
+      dplyr::across(
+        c(.data$municipalities, .data$districts_mitma, .data$census_districts),
+        unique_separated_ids
+      )
     )
   names(relations_municipalities_aggregated)[names(relations_municipalities_aggregated) == "municipality_mitma"] <- "id"
   
   # cleanup duplicate ids in districts
   relations_districts_aggregated <- relations_districts_aggregated |> 
     dplyr::mutate(
-      dplyr::across(c(census_districts, municipalities_mitma), unique_separated_ids)
+      dplyr::across(
+        c(.data$census_districts, .data$municipalities_mitma), unique_separated_ids
+      )
     )
   names(relations_districts_aggregated)[names(relations_districts_aggregated) == "district_mitma"] <- "id"
 
   if (zones == "distritos") {
     zones_sf <- zones_sf |> 
       dplyr::left_join(relations_districts_aggregated, by = "id") |>
-      dplyr::relocate(geometry, .after = dplyr::last_col())
+      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
   } else if (zones == "municipios") {
     zones_sf <- zones_sf |> 
       dplyr::left_join(relations_municipalities_aggregated, by = "id") |>
-      dplyr::relocate(geometry, .after = dplyr::last_col())
+      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
   }
 
   # add metadata from v2 zones
@@ -395,7 +400,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 
   zones_sf <- zones_sf |> 
     dplyr::left_join(v2_v_1ref, by = "id") |> 
-    dplyr::relocate(geometry, .after = dplyr::last_col())
+    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
 
 
   return(zones_sf)

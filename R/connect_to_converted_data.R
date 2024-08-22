@@ -6,6 +6,7 @@
 #' @param data_path a path to the `DuckDB` database file with '.duckdb' extension, or a path to the folder with `parquet` files. Eigher one should have been created with the `spod_convert_for_analysis()` function.
 #' @param target_table_name table name inside the database.
 #' @inheritParams spod_duckdb_limit_resources
+#' @inheritParams global_quiet_param
 #' @export
 #' @return a DuckDB table connection object.
 spod_connect_to_converted_data <- function(

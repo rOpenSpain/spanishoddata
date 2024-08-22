@@ -40,6 +40,10 @@ The possible values can be any of the following:
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 
+\item{save_format}{A \code{character} vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')}). So for v1 data that path would be \verb{<data_dir>/clean_data/v1/tabular/duckdb/} or \verb{<data_dir>/clean_data/v1/tabular/parquet/}.
+
+You can also set \code{save_path}. If it ends with ".duckdb", will save to \code{DuckDB} database format, if \code{save_path} does not end with ".duckdb", will save to \code{parquet} format and will treat the \code{save_path} as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like \code{year=2020/month=2/day=14} and inside each such directory there will be a \code{data_0.parquet} file that contains the data for that day.}
+
 \item{save_path}{A \code{character} vector of length 1. The path save a \code{DuckDB} database file or the path to a folder to save the \code{parquet} files.
 \itemize{
 \item If \code{save_path} ends with \code{.duckdb}, it will be saved as a DuckDB database file. The format argument will be automatically set to \code{save_format='duckdb'}.
@@ -64,8 +68,4 @@ Path to saved DuckDB file.
 }
 \description{
 Converts data for faster analysis into either \code{DuckDB} file or into \code{parquet} files in a hive-style directory structure. Running analysis on these files is sometimes 100x times faster than working with raw CSV files, espetially when these are in gzip archives. To connect to converted data, please use \code{mydata <- spod_connect_to_converted_data()} passing the path to where the data was saved. The connected \code{mydata} can be analysed using \code{dplyr} functions such as \code{select()}, \code{filter()}, \code{mutate()}, \code{group_by()}, \code{summarise()}, etc. In the end of any sequence of commands you will need to add \code{collect()} to execute the whole chain of data manipulations and load the results into memory in an R \code{data.frame}/\code{tibble}. For more in-depth usage of such data, please refer to DuckDB documentation and examples at \url{https://duckdb.org/docs/api/r#dbplyr} . Some more useful examples can be found here \url{https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb} . You may also use \code{arrow} package to work with parquet files \url{https://arrow.apache.org/docs/r/}.
-
-#' @param save_format A \code{character} vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')}). So for v1 data that path would be \verb{<data_dir>/clean_data/v1/tabular/duckdb/} or \verb{<data_dir>/clean_data/v1/tabular/parquet/}.
-
-You can also set \code{save_path}. If it ends with ".duckdb", will save to \code{DuckDB} database format, if \code{save_path} does not end with ".duckdb", will save to \code{parquet} format and will treat the \code{save_path} as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like \code{year=2020/month=2/day=14} and inside each such directory there will be a \code{data_0.parquet} file that contains the data for that day.
 }
