@@ -5,7 +5,9 @@ Authors@R: c(
     person("Egor", "Kotov", , "kotov.egor@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6690-5345")),
     person("Robin", "Lovelace", , "rob00x@gmail.com", role = "aut",
-           comment = c(ORCID = "0000-0001-5679-6536"))
+           comment = c(ORCID = "0000-0001-5679-6536")),
+    person("Eugeni", "Vidal-Tortosa", , , role = "ctb",
+           comment = c(ORCID = "0000-0001-5199-4103"))
   )
 Description: Enables access to origin-destination (OD) provided by the
     Spanish Minstry of Transport, hosted at
