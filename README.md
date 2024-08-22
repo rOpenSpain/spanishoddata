@@ -5,30 +5,29 @@
 [![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-This repo demonstrates how to download and use OD data from Spain,
-published by
-[transportes.gob.es](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
+**spanishoddata** is an R package that provides functions for
+downloading and formatting Spanish origin-destination (OD) data from the
+Ministry of Transport and Sustainable Mobility of Spain.
 
-The data is provided as follows:
+It supports the two versions of the Spanish OD data. [The first
+version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad)
+covers data from 2020 and 2021, including the period of the COVID-19
+pandemic. [The second
+version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
+contains data from January 2022 onwards and is updated monthly on the
+fifteenth of each month. Both versions of the data primarily consist of
+mobile phone positioning data, and include matrices for overnight stays,
+individual movements, and trips of Spanish residents at different
+geographical levels.
 
-- Estudios basicos
-  - Por disitritos
-    - Personas (population)
-    - Pernoctaciones (overnight stays)
-    - Viajes
-      - ficheros-diarios
-      - meses-completos
-
-The package is designed to save people time by providing the data in
-analyis-ready formats. Automating the process of downloading, cleaning
-and importing the data can also reduce the risk of errors in the
-laborious process of data preparation.
-
-The datasets are large, so the package aims to reduce computational
-resources, by using computationally efficient packages behind the
-scenes. If you want to use many of the data files, it’s recommended you
-set a data directory where the package will look for the data, only
-downloading the files that are not already present.
+**spanishoddata** is designed to save people time by providing the data
+in analysis-ready formats. Automating the process of downloading,
+cleaning, and importing the data can also reduce the risk of errors in
+the laborious process of data preparation. It also reduces computational
+resources by using computationally efficient packages behind the scenes.
+To effectively work with multiple data files, it’s recommended you set
+up a data directory where the package can search for the data and
+download only the files that are not already present.
 
 # Installation
 
@@ -53,7 +52,7 @@ gh repo clone Robinlovelace/spanishoddata
 code spanishoddata
 ```
 
-then run the following command from the R console:
+Then run the following command from the R console:
 
 ``` r
 devtools::load_all()
@@ -106,7 +105,7 @@ data
 
 </div>
 
-To run the code in this README we will use the following setup:
+To run the code in this README, we will use the following setup:
 
 ``` r
 library(tidyverse)
@@ -144,13 +143,15 @@ Zones can be downloaded as follows:
 
 ``` r
 distritos <- spod_get_zones("distritos", ver = 2)
-distritos_wgs84 <- distritos |> sf::st_simplify(dTolerance = 200) |> sf::st_transform(4326)
+distritos_wgs84 <- distritos |>
+  sf::st_simplify(dTolerance = 200) |>
+  sf::st_transform(4326)
 plot(sf::st_geometry(distritos_wgs84))
 ```
 
 ![](man/figures/README-distritos-1.png)
 
-## Estudios basicos
+## OD data
 
 ``` r
 od_db <- spod_get(
@@ -266,7 +267,8 @@ od_national_interzonal <- od_national_aggregated |>
   filter(id_origin != id_destination)
 ```
 
-We can convert these to geographic data with the {od} package:
+We can convert these to geographic data with the {od} package (Lovelace
+and Morgan 2024):
 
 ``` r
 od_national_sf <- od::od_to_sf(
@@ -321,57 +323,31 @@ ggplot() +
 
 ![](man/figures/README-salamanca-plot-1.png)
 
-# Disaggregating desire lines
+# Further information
 
-For this you’ll need some additional dependencies:
+For more information on the package, see:
 
-``` r
-library(sf)
-library(tmap)
-```
+- The [pkgdown site](https://robinlovelace.github.io/spanishoddata/)
+  - Information on the
+    [functions](https://robinlovelace.github.io/spanishoddata/reference/index.html)
+  - The [v1 vs v2
+    vignette](https://robinlovelace.github.io/spanishoddata/articles/work-with-v1-data.html)
+    which explains the differences between the two versions of the data
+  - The [uses
+    vignette](https://robinlovelace.github.io/spanishoddata/articles/uses.html)
+    which documents use cases
 
-We’ll get the road network from OSM:
+# References
 
-``` r
-salamanca_boundary <- sf::st_union(distritos_salamanca)
-osm_full <- osmactive::get_travel_network(salamanca_boundary)
-```
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
 
-``` r
-osm <- osm_full[salamanca_boundary, ]
-drive_net <- osmactive::get_driving_network(osm)
-drive_net_major <- osmactive::get_driving_network_major(osm)
-cycle_net <- osmactive::get_cycling_network(osm)
-cycle_net <- osmactive::distance_to_road(cycle_net, drive_net_major)
-cycle_net <- osmactive::classify_cycle_infrastructure(cycle_net)
-map_net <- osmactive::plot_osm_tmap(cycle_net)
-map_net
-```
+<div id="ref-lovelace_od_2024" class="csl-entry">
 
-![](man/figures/README-osm-1.png)
+Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
+Origin-Destination Data,” August.
+<https://cran.r-project.org/web/packages/od/od.pdf>.
 
-We can use the road network to disaggregate the desire lines:
+</div>
 
-``` r
-od_jittered <- odjitter::jitter(
-  od_salamanca_sf,
-  zones = distritos_salamanca,
-  subpoints = drive_net,
-  disaggregation_threshold = 1000,
-  disaggregation_key = "Trips"
-)
-```
-
-Let’s plot the disaggregated desire lines:
-
-``` r
-od_jittered |>
-  arrange(Trips) |>
-  ggplot() +
-  geom_sf(aes(colour = Trips), size = 1) +
-  scale_colour_viridis_c() +
-  geom_sf(data = drive_net_major, colour = "black") +
-  theme_void()
-```
-
-![](man/figures/README-disaggregated-1.png)
+</div>
