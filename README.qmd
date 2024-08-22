@@ -95,6 +95,8 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 
 # Using the package
 
+![The overview of how to use the pacakge functions to get the data](vignettes/media/package-functions-overview.png){#fig-overall-flow width=120% height=120%}
+
 To run the code in this README we will use the following setup:
 
 ```{r}
@@ -106,6 +108,7 @@ sf::sf_use_s2(FALSE)
 
 ```{r}
 #| include: false
+#| eval: false
 remotes::install_github("r-tmap/tmap")
 ```
 
@@ -131,8 +134,9 @@ plot(sf::st_geometry(distritos_wgs84))
 ## Estudios basicos
 
 ```{r}
-od_db <- spod_get_od(
-  zones = "distritos",
+od_db <- spod_get(
+  type = "origin-destination",
+  zones = "districts",
   dates = c(start = "2024-03-01", end = "2024-03-07")
 )
 class(od_db)
@@ -160,54 +164,24 @@ n_per_hour |>
 The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
 
 
-See how you could do this manually with the following code, highlighting the benefits of the package:
+To highlight the benefits of the package, here is how you would do this manually:
 
-<details>
+- download the [xml](https://movilidad-opendata.mitma.es/RSS.xml) file with the download links
 
-Each day in the `ficheros-diarios` folder contains a file with the following columns:
+- parse this xml to extract the download links
 
-```{r}
-#| label: ficheros-diarios-example
-# set timeout for downloads
-options(timeout = 600) # 10 minutes
-u1 <- "https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz"
-f1 <- basename(u1)
-if (!file.exists(f1)) {
-  download.file(u1, f1)
-}
-drv <- duckdb::duckdb("daily.duckdb")
-con <- DBI::dbConnect(drv)
-od1 <- duckdb::tbl_file(con, f1)
-# colnames(od1)
-#  [1] "fecha"                   "periodo"
-#  [3] "origen"                  "destino"
-#  [5] "distancia"               "actividad_origen"
-#  [7] "actividad_destino"       "estudio_origen_posible"
-#  [9] "estudio_destino_posible" "residencia"
-# [11] "renta"                   "edad"
-# [13] "sexo"                    "viajes"
-# [15] "viajes_km"
-od1_head <- od1 |>
-  head() |>
-  collect()
-od1_head |>
-  knitr::kable()
-DBI::dbDisconnect(con)
-```
+- write a script to download the files and locate them on disk in a logical manner
 
-You can get the same result, but for multiple files, as follows:
+- figure out the data structure of the downloaded files, read the codebook
 
-```{r}
-od_multi_list <- spod_get(
-  subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-  date_regex = "2024030[1-7]"
-)
-od_multi_list[[1]]
-class(od_multi_list[[1]])
-```
+- translate the data (columns and values) into English, if you are not familiar with Spanish
 
+- write a script to load the data into the database or figure out a way to claculate summaries on multiple files
 
-</details>
+- and much more...
+
+We did all of that for you and present you with a few simple functions that get you straight to the data in one line of code, and you are ready to run any analysis on it.
+
 
 # Desire lines
 

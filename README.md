@@ -95,6 +95,17 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 
 # Using the package
 
+<div id="fig-overall-flow">
+
+<img src="vignettes/media/package-functions-overview.png"
+style="width:120.0%;height:120.0%" />
+
+
+Figure 1: The overview of how to use the pacakge functions to get the
+data
+
+</div>
+
 To run the code in this README we will use the following setup:
 
 ``` r
@@ -111,7 +122,7 @@ metadata <- spod_available_data(ver = 2) # for version 2 of the data
 metadata
 ```
 
-    # A tibble: 9,442 × 6
+    # A tibble: 9,442 × 7
        target_url           pub_ts              file_extension data_ym data_ymd  
        <chr>                <dttm>              <chr>          <date>  <date>    
      1 https://movilidad-o… 2024-07-30 10:54:08 gz             NA      2022-10-23
@@ -125,7 +136,7 @@ metadata
      9 https://movilidad-o… 2024-07-30 09:58:34 gz             NA      2022-08-06
     10 https://movilidad-o… 2024-07-30 09:54:30 gz             NA      2022-08-05
     # ℹ 9,432 more rows
-    # ℹ 1 more variable: local_path <chr>
+    # ℹ 2 more variables: local_path <chr>, remote_file_size_mb <dbl>
 
 ## Zones
 
@@ -142,8 +153,9 @@ plot(sf::st_geometry(distritos_wgs84))
 ## Estudios basicos
 
 ``` r
-od_db <- spod_get_od(
-  zones = "distritos",
+od_db <- spod_get(
+  type = "origin-destination",
+  zones = "districts",
   dates = c(start = "2024-03-01", end = "2024-03-07")
 )
 class(od_db)
@@ -156,7 +168,7 @@ class(od_db)
 colnames(od_db)
 ```
 
-     [1] "date"                   "time_slot"                  
+     [1] "date"                        "time_slot"                  
      [3] "id_origin"                   "id_destination"             
      [5] "distance"                    "activity_origin"            
      [7] "activity_destination"        "study_possible_origin"      
@@ -190,92 +202,31 @@ n_per_hour |>
 The figure above summarises 925,874,012 trips over the 7 days associated
 with 135,866,524 records.
 
-See how you could do this manually with the following code, highlighting
-the benefits of the package:
+To highlight the benefits of the package, here is how you would do this
+manually:
 
-<details>
+- download the [xml](https://movilidad-opendata.mitma.es/RSS.xml) file
+  with the download links
 
-Each day in the `ficheros-diarios` folder contains a file with the
-following columns:
+- parse this xml to extract the download links
 
-``` r
-# set timeout for downloads
-options(timeout = 600) # 10 minutes
-u1 <- "https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz"
-f1 <- basename(u1)
-if (!file.exists(f1)) {
-  download.file(u1, f1)
-}
-drv <- duckdb::duckdb("daily.duckdb")
-con <- DBI::dbConnect(drv)
-od1 <- duckdb::tbl_file(con, f1)
-# colnames(od1)
-#  [1] "fecha"                   "periodo"
-#  [3] "origen"                  "destino"
-#  [5] "distancia"               "actividad_origen"
-#  [7] "actividad_destino"       "estudio_origen_posible"
-#  [9] "estudio_destino_posible" "residencia"
-# [11] "renta"                   "edad"
-# [13] "sexo"                    "viajes"
-# [15] "viajes_km"
-od1_head <- od1 |>
-  head() |>
-  collect()
-od1_head |>
-  knitr::kable()
-```
+- write a script to download the files and locate them on disk in a
+  logical manner
 
-| fecha | periodo | origen | destino | distancia | actividad_origen | actividad_destino | estudio_origen_posible | estudio_destino_posible | residencia | renta | edad | sexo | viajes | viajes_km |
-|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|
-| 20240301 | 19 | 01009_AM | 01001 | 0.5-2 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 6.120 |
-| 20240301 | 15 | 01002 | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.360 | 100.036 |
-| 20240301 | 00 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 1.743 | 22.293 |
-| 20240301 | 05 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 2.404 | 24.659 |
-| 20240301 | 06 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 5.124 | 80.118 |
-| 20240301 | 09 | 01009_AM | 01001 | 10-50 | frecuente | casa | no | no | 01 | 10-15 | NA | NA | 7.019 | 93.938 |
+- figure out the data structure of the downloaded files, read the
+  codebook
 
-``` r
-DBI::dbDisconnect(con)
-```
+- translate the data (columns and values) into English, if you are not
+  familiar with Spanish
 
-You can get the same result, but for multiple files, as follows:
+- write a script to load the data into the database or figure out a way
+  to claculate summaries on multiple files
 
-``` r
-od_multi_list <- spod_get(
-  subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-  date_regex = "2024030[1-7]"
-)
-od_multi_list[[1]]
-```
+- and much more…
 
-    # Source:   SQL [?? x 18]
-    # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
-          fecha periodo origen  destino distancia actividad_origen actividad_destino
-          <dbl> <chr>   <chr>   <chr>   <chr>     <chr>            <chr>            
-     1 20240307 00      01009_… 01001   0.5-2     frecuente        casa             
-     2 20240307 09      01009_… 01001   0.5-2     frecuente        casa             
-     3 20240307 18      01009_… 01001   0.5-2     frecuente        casa             
-     4 20240307 19      01009_… 01001   0.5-2     frecuente        casa             
-     5 20240307 20      01009_… 01001   0.5-2     frecuente        casa             
-     6 20240307 14      01002   01001   10-50     frecuente        casa             
-     7 20240307 22      01002   01001   10-50     frecuente        casa             
-     8 20240307 06      01009_… 01001   10-50     frecuente        casa             
-     9 20240307 09      01009_… 01001   10-50     frecuente        casa             
-    10 20240307 11      01009_… 01001   10-50     frecuente        casa             
-    # ℹ more rows
-    # ℹ 11 more variables: estudio_origen_posible <chr>,
-    #   estudio_destino_posible <chr>, residencia <chr>, renta <chr>, edad <chr>,
-    #   sexo <chr>, viajes <dbl>, viajes_km <dbl>, day <dbl>, month <dbl>,
-    #   year <dbl>
-
-``` r
-class(od_multi_list[[1]])
-```
-
-    [1] "tbl_duckdb_connection" "tbl_dbi"               "tbl_sql"              
-    [4] "tbl_lazy"              "tbl"                  
-
-</details>
+We did all of that for you and present you with a few simple functions
+that get you straight to the data in one line of code, and you are ready
+to run any analysis on it.
 
 # Desire lines
 
