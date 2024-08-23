@@ -4,9 +4,10 @@ bibliography: vignettes/references.bib
 execute: 
   message: false
   warning: false
-knitr:
-  opts_chunk:
-    fig.path: "man/figures/README-"
+# knitr:
+#   opts_chunk:
+#     fig.path: "man/figures/README-"
+eval: false
 ---
 
 <!-- badges: start -->
@@ -34,6 +35,8 @@ Load it as follows:
 ```{r}
 library(spanishoddata)
 ```
+
+
 
 Local development: to load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
 
@@ -85,7 +88,7 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 
 # Using the package
 
-![The overview of how to use the pacakge functions to get the data](vignettes/media/package-functions-overview.png){#fig-overall-flow width=120% height=120%}
+![The overview of how to use the pacakge functions to get the data](vignettes/media/package-functions-overview.svg){ width=120% height=120%}
 
 To run the code in this README we will use the following setup:
 
@@ -98,7 +101,6 @@ sf::sf_use_s2(FALSE)
 
 ```{r}
 #| include: false
-#| eval: true
 remotes::install_github("r-tmap/tmap")
 ```
 
@@ -122,6 +124,8 @@ distritos_wgs84 <- distritos |>
   sf::st_transform(4326)
 plot(sf::st_geometry(distritos_wgs84))
 ```
+
+![](man/figures/README-distritos-1.png)
 
 ## OD data
 
@@ -153,7 +157,10 @@ n_per_hour |>
   labs(title = "Number of trips per hour over 7 days")
 ```
 
-The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
+![](man/figures/README-trips-per-hour-1.png)
+
+
+The figure above summarises 925,874,012 trips over the 7 days associated with 135,866,524 records.
 
 
 To highlight the benefits of the package, here is how you would do this manually:
@@ -214,6 +221,8 @@ distritos_wgs84 |>
   theme_void()
 ```
 
+![](man/figures/README-desire-lines-1.png)
+
 Let's focus on trips in and around a particular area (Salamanca):
 
 ```{r}
@@ -222,6 +231,8 @@ salamanca_zones <- zonebuilder::zb_zone("Salamanca")
 distritos_salamanca <- distritos_wgs84[salamanca_zones, ]
 plot(distritos_salamanca)
 ```
+
+![](man/figures/README-salamanca-zones-1.png)
 
 We will use this information to subset the rows, to capture all movement within the study area:
 
@@ -248,6 +259,8 @@ ggplot() +
   scale_colour_viridis_c() +
   theme_void()
 ```
+
+![](man/figures/README-salamanca-plot-1.png)
 
 # Further information
 
@@ -298,7 +311,9 @@ usethis::use_vignette("uses", title = "Use cases")
 <!-- cffr::cff_write() -->
 <!-- codemetar::write_codemeta(write_minimeta = T) -->
 
-```{r include = FALSE}
+```{r}
+#| eval: true
+#| include: false
 is_html <- knitr::is_html_output()
 ```
 

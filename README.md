@@ -94,16 +94,9 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 
 # Using the package
 
-<div id="fig-overall-flow">
-
-<img src="vignettes/media/package-functions-overview.png"
-style="width:120.0%;height:120.0%" />
-
-
-Figure 1: The overview of how to use the pacakge functions to get the
-data
-
-</div>
+<img src="vignettes/media/package-functions-overview.svg"
+style="width:120.0%;height:120.0%"
+alt="The overview of how to use the pacakge functions to get the data" />
 
 To run the code in this README we will use the following setup:
 
@@ -120,22 +113,6 @@ covering years 2022 and onwards):
 metadata <- spod_available_data(ver = 2) # for version 2 of the data
 metadata
 ```
-
-    # A tibble: 9,442 × 7
-       target_url           pub_ts              file_extension data_ym data_ymd  
-       <chr>                <dttm>              <chr>          <date>  <date>    
-     1 https://movilidad-o… 2024-07-30 10:54:08 gz             NA      2022-10-23
-     2 https://movilidad-o… 2024-07-30 10:51:07 gz             NA      2022-10-22
-     3 https://movilidad-o… 2024-07-30 10:47:52 gz             NA      2022-10-20
-     4 https://movilidad-o… 2024-07-30 10:14:55 gz             NA      2022-10-18
-     5 https://movilidad-o… 2024-07-30 10:11:58 gz             NA      2022-10-17
-     6 https://movilidad-o… 2024-07-30 10:09:03 gz             NA      2022-10-12
-     7 https://movilidad-o… 2024-07-30 10:05:57 gz             NA      2022-10-07
-     8 https://movilidad-o… 2024-07-30 10:02:12 gz             NA      2022-08-07
-     9 https://movilidad-o… 2024-07-30 09:58:34 gz             NA      2022-08-06
-    10 https://movilidad-o… 2024-07-30 09:54:30 gz             NA      2022-08-05
-    # ℹ 9,432 more rows
-    # ℹ 2 more variables: local_path <chr>, remote_file_size_mb <dbl>
 
 ## Zones
 
@@ -160,25 +137,8 @@ od_db <- spod_get(
   dates = c(start = "2024-03-01", end = "2024-03-07")
 )
 class(od_db)
-```
-
-    [1] "tbl_duckdb_connection" "tbl_dbi"               "tbl_sql"              
-    [4] "tbl_lazy"              "tbl"                  
-
-``` r
 colnames(od_db)
 ```
-
-     [1] "date"                        "time_slot"                  
-     [3] "id_origin"                   "id_destination"             
-     [5] "distance"                    "activity_origin"            
-     [7] "activity_destination"        "study_possible_origin"      
-     [9] "study_possible_destination"  "residence_province_ine_code"
-    [11] "residence_province"          "income"                     
-    [13] "age"                         "sex"                        
-    [15] "n_trips"                     "trips_total_length_km"      
-    [17] "year"                        "month"                      
-    [19] "day"                        
 
 The result is an R database interface object (`tbl_dbi`) that can be
 used with dplyr functions and SQL queries ‘lazily’, meaning that the
@@ -243,21 +203,6 @@ od_national_aggregated <- od_db |>
   arrange(desc(Trips))
 od_national_aggregated
 ```
-
-    # A tibble: 96,404 × 3
-       id_origin id_destination    Trips
-       <fct>     <fct>             <dbl>
-     1 2807908   2807908        2441404.
-     2 0801910   0801910        2112188.
-     3 0801902   0801902        2013618.
-     4 2807916   2807916        1821504.
-     5 2807911   2807911        1785981.
-     6 04902     04902          1690606.
-     7 2807913   2807913        1504484.
-     8 2807910   2807910        1299586.
-     9 0704004   0704004        1287122.
-    10 28106     28106          1286058.
-    # ℹ 96,394 more rows
 
 The results show that the largest flows are intra-zonal. Let’s keep only
 the inter-zonal flows:
