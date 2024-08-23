@@ -75,40 +75,6 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "knitr",
-      "name": "knitr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=knitr"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "od",
-      "name": "od",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=od"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "odjitter",
-      "name": "odjitter"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "osmactive",
-      "name": "osmactive"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "quarto",
       "name": "quarto",
       "provider": {
@@ -118,18 +84,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=quarto"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "remotes",
-      "name": "remotes",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=remotes"
     },
     {
       "@type": "SoftwareApplication",
@@ -143,30 +97,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=testthat"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "tmap",
-      "name": "tmap",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=tmap"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "zonebuilder",
-      "name": "zonebuilder",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=zonebuilder"
     }
   ],
   "softwareRequirements": {
@@ -363,7 +293,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2054.81KB",
+  "fileSize": "2060.978KB",
   "readme": "https://github.com/Robinlovelace/spanishoddata/blob/main/README.md",
   "contIntegration": "https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml",
   "keywords": ["cdr", "data", "data-package", "mobility", "origin-destination", "rstats", "mobile-telephone-data"]

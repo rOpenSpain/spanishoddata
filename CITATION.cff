@@ -310,58 +310,6 @@ references:
     orcid: https://orcid.org/0000-0002-7579-5165
   year: '2024'
 - type: software
-  title: knitr
-  abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
-  notes: Suggests
-  url: https://yihui.org/knitr/
-  repository: https://CRAN.R-project.org/package=knitr
-  authors:
-  - family-names: Xie
-    given-names: Yihui
-    email: xie@yihui.name
-    orcid: https://orcid.org/0000-0003-0645-5666
-  year: '2024'
-- type: software
-  title: od
-  abstract: 'od: Manipulate and Map Origin-Destination Data'
-  notes: Suggests
-  url: https://itsleeds.github.io/od/
-  repository: https://CRAN.R-project.org/package=od
-  authors:
-  - family-names: Lovelace
-    given-names: Robin
-    email: rob00x@gmail.com
-    orcid: https://orcid.org/0000-0001-5679-6536
-  year: '2024'
-- type: software
-  title: odjitter
-  abstract: 'odjitter: Conversion of OD Data Geographic Desire Lines with Distributed
-    Start and End Points'
-  notes: Suggests
-  authors:
-  - family-names: Lovelace
-    given-names: Robin
-    email: rob00x@gmail.com
-    orcid: https://orcid.org/0000-0001-5679-6536
-  - family-names: Carlino
-    given-names: Dustin
-  year: '2024'
-- type: software
-  title: osmactive
-  abstract: 'osmactive: Extract Active Travel Infrastructure from OpenStreetMap'
-  notes: Suggests
-  url: https://nptscot.github.io/osmactive/
-  authors:
-  - family-names: Lovelace
-    given-names: Robin
-    email: rob00x@gmail.com
-    orcid: https://orcid.org/0000-0001-5679-6536
-  - family-names: Talbot
-    given-names: Joey
-    email: j.d.talbot@leeds.ac.uk
-    orcid: https://orcid.org/0000-0002-6520-4560
-  year: '2024'
-- type: software
   title: quarto
   abstract: 'quarto: R Interface to ''Quarto'' Markdown Publishing System'
   notes: Suggests
@@ -378,27 +326,6 @@ references:
     orcid: https://orcid.org/0000-0003-4474-2498
   year: '2024'
 - type: software
-  title: remotes
-  abstract: 'remotes: R Package Installation from Remote Repositories, Including ''GitHub'''
-  notes: Suggests
-  url: https://remotes.r-lib.org
-  repository: https://CRAN.R-project.org/package=remotes
-  authors:
-  - family-names: Csárdi
-    given-names: Gábor
-    email: csardi.gabor@gmail.com
-  - family-names: Hester
-    given-names: Jim
-  - family-names: Wickham
-    given-names: Hadley
-  - family-names: Chang
-    given-names: Winston
-  - family-names: Morgan
-    given-names: Martin
-  - family-names: Tenenbaum
-    given-names: Dan
-  year: '2024'
-- type: software
   title: testthat
   abstract: 'testthat: Unit Testing for R'
   notes: Suggests
@@ -410,30 +337,4 @@ references:
     email: hadley@posit.co
   year: '2024'
   version: '>= 3.0.0'
-- type: software
-  title: tmap
-  abstract: 'tmap: Thematic Maps'
-  notes: Suggests
-  url: https://r-tmap.github.io/tmap/
-  repository: https://CRAN.R-project.org/package=tmap
-  authors:
-  - family-names: Tennekes
-    given-names: Martijn
-    email: mtennekes@gmail.com
-  year: '2024'
-- type: software
-  title: zonebuilder
-  abstract: 'zonebuilder: Create and Explore Geographic Zoning Systems'
-  notes: Suggests
-  url: https://zonebuilders.github.io/zonebuilder/
-  repository: https://CRAN.R-project.org/package=zonebuilder
-  authors:
-  - family-names: Lovelace
-    given-names: Robin
-    email: rob00x@gmail.com
-    orcid: https://orcid.org/0000-0001-5679-6536
-  - family-names: Tennekes
-    given-names: Martijn
-    email: mtennekes@gmail.com
-  year: '2024'
 
