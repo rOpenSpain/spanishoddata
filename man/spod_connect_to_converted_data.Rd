@@ -8,7 +8,7 @@ spod_connect_to_converted_data(
   data_path,
   target_table_name = NULL,
   quiet = FALSE,
-  duck_max_mem = 3,
+  duck_max_mem = 4,
   duck_max_threads = parallelly::availableCores() - 1
 )
 }

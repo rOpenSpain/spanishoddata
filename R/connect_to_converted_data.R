@@ -13,7 +13,7 @@ spod_connect_to_converted_data <- function(
   data_path,
   target_table_name = NULL,
   quiet = FALSE,
-  duck_max_mem = 3,
+  duck_max_mem = 4, # later increase that to be 4GB or perhaps 60% of available RAM, as for analysis the amount of memory that can be used can significanly affect the speed of aggregations.
   duck_max_threads = parallelly::availableCores() - 1
 ){
   # determine if data_path is a folder or a duckdb file

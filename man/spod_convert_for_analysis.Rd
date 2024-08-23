@@ -15,7 +15,7 @@ spod_convert_for_analysis(
   overwrite = FALSE,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  duck_max_mem = 3,
+  duck_max_mem = 4,
   duck_max_threads = parallelly::availableCores() - 1,
   max_download_size_gb = 1
 )

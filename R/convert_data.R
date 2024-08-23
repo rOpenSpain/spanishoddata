@@ -39,11 +39,11 @@ spod_convert_for_analysis <- function(
   overwrite = FALSE,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  duck_max_mem = 3,
-  duck_max_threads = parallelly::availableCores() - 1,
+  duck_max_mem = 4, # fails on full v1 data with less than 4 GB. 4GB is reasonable.  Eventually I would set this to be either 4 as minumum, or about 60% of available RAM autodetected with `as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])` or `unclass(benchmarkme::get_ram())`, whichever is bigger. 
+  duck_max_threads = parallelly::availableCores() - 1, # Overall, the conversion is not so much memory-bounded, but rather the speed depends on available cores. E.g. with 6 cores it is almost exactly twice as fast as with 3 cores. So using as many cores as possible is very beneficial.
   max_download_size_gb = 1
 ) {
-
+  
   if (is.null(dates)) {
     message("No period specified in the `dates` argument. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion.")
   }
