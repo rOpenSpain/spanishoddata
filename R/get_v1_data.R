@@ -200,7 +200,7 @@ spod_get_zones_v1 <- function(
   # download id relation files if missing
   relation_files <- metadata[grepl("relaciones_(distrito|municipio)_mitma.csv", metadata$target_url),]
   if (any(!fs::file_exists(relation_files$local_path))) {
-    fs::dir_create(unique(basename(relation_files$local_path)))
+    fs::dir_create(unique(fs::path_dir(relation_files$local_path)), recurse = TRUE)
     invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
   }
 
