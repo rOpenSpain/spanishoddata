@@ -1,0 +1,103 @@
+---
+title: "Download and convert all data into analysis ready format"
+vignette: >
+  %\VignetteIndexEntry{Download and convert all data into analysis ready format}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-overflow: wrap
+execute: 
+  eval: false
+---
+
+In this vignette we show how to donwload a complete v1 or v2 dataset and convert it into analysis ready format.
+
+See the detailed codebook for this data in [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in TODO_CODEBOOK_V2.
+
+```{r}
+library(spanishoddata)
+```
+
+To prepare all origin-destination data v1 (2020-2021) for analysis over the whole period of data availability, please follow the steps below:
+
+## 1. Find all possible dates from available data
+
+```{r}
+dates_v1 <- spod_get_valid_dates(ver = 1)
+dates_v2 <- spod_get_valid_dates(ver = 2)
+```
+
+Due to mobile network outages, some dates are missing, so do not assume that a simple interval between two dates will just work. Currently [known outages](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"} are: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. This is why it is adviseable to use `spod_get_valid_dates()` function to get all possible dates from available data.
+
+## 2. Download all data
+
+Here the example is for origin-destination on district level for v1 data. You can change the `type` to "trips_per_person" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the v2 data codebook, as it has many more datasets in addition to "origin-destination" and "trips_per_person". **TODO: insert link to v2 codebook when it is done**.
+
+```{r}
+type <- "origin-destination"
+zones <- "districts"
+spod_download_data(
+  type = type,
+  zones = zones,
+  dates = dates_v1,
+  return_output = FALSE # to avoid getting all downloaded files printed to console
+  max_download_size_gb = 50 # in Gb, this should be well over the actual download size for v1 data
+)
+```
+
+
+## 3. Convert all data into analysis ready format
+
+```{r}
+save_format <- "duckdb"
+
+analysis_data_storage <- spod_convert_data(
+  type = type,
+  zones = zones,
+  dates = "cached_v1", # to just convert all data that was previously downloaded, no need to specify dates here
+  save_format = save_format
+  overwrite = TRUE
+)
+```
+
+This will convert all downloaded data to `DuckDB` format for lightning fast analysis. You can change the `save_format` to `parquet` if you want to save the data in `Parquet` format. For comparison overview of the two formats please see the [Converting the data to DuckDB/Parquet for faster analysis](converting-the-data-for-faster-analysis.qmd).
+
+By default, `spod_convert_data()` will save the converted data in the `SPANISH_OD_DATA_DIR` directory. You can change the `save_path` argument of `spod_convert_data()` if you want to save the data in a different location.
+
+For this conversion, 4 GB or operating memory should be enough, the speed of the process depends on the number of processor cores and the speed of your disk storage. SSD is preferred. By default, the `spod_convert_data()` will use all except one processor cores on your computer. You can adjust this with the `max_n_cpu` argument of `spod_convert_data()`. You can also increase the maximum amount of memory used with the `max_mem_gb` argument, but this makes more difference during the analysis stage.
+
+Finally, `analysis_data_storage` will simply store the path to the converted data. Either a path to the `DuckDB` database file or a path to the folder with `Parquet` files.
+
+### Conversion speed
+
+For reference, converting the whole v1 origin-destination data to `DuckDB` takes about 20 minutes with 4 GB of memory and 3 processor cores. The final size of the `DuckDB` database is about 18 GB, in `Parquet` format - 26 GB. The raw CSV files in gzip archives are about 20GB.
+
+## 4. Connect to the converted data and start the analysis
+
+You can pass the `analysis_data_storage` path to `spod_connect_to_converted_data()` function, whether it is `DuckDB` or `Parquet`. The function will determine the data type automatically and give you back a `tbl_duckdb_connection`[^1].
+
+[^1]: For reference: this object also has classes: `tbl_dbi` ,`tbl_sql`, `tbl_lazy` ,and `tbl` .
+
+```{r}
+my_data <- spod_connect_to_converted_data(
+  data_path = analysis_data_storage, 
+  max_mem_gb = 16 # in GB, set more if you have more, the more, the better.
+)
+```
+
+Compared to conversion process, you might want to increase the available memory for the analysis step. The more, the better. You can control that with the `max_mem_gb` argument.
+
+You can manipulate `my_data` using `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`.
+
+
+After finishing working with `my_data` we advise that you "disconnect" this data using:
+
+```{r}
+spod_disconnect_data(my_data)
+```
+
+This is usefyl to free up memory. This is espetially neccessary if you convert the data with `spod_convert_for_analysis()` and then load it with `spod_connect_to_converted_data()` again, and then would like to run `spod_convert_for_analysis()` again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.

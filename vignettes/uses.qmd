@@ -5,6 +5,11 @@ vignette: >
   %\VignetteIndexEntry{Use cases}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-overflow: wrap
 execute: 
   eval: false
 ---
