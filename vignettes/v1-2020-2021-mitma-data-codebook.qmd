@@ -9,7 +9,7 @@ execute:
   eval: false
 ---
 
-You can cal this vignette any time by running `spanishoddata::spod_codebook(ver = 1)`.
+You can view this vignette any time by running `spanishoddata::spod_codebook(ver = 1)`.
 
 The mobility data v1 (2020-2021) was originally released by the [Ministry of Transport and Sustainable Mobility (MITMA)](https://www.transportes.gob.es/). The mobility dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain. The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09) and the number of trips per person made. This document will introduce you to the available data and provide brief code snippets on how to access it using the `spanishoddata` R package.
 
