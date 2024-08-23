@@ -1,21 +1,31 @@
 ---
 title: "Codebook and cookbook for v1 (2020-2021) Spanish mobility data"
-
 vignette: >
   %\VignetteIndexEntry{Codebook and cookbook for v1 (2020-2021) Spanish mobility data}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 execute: 
   eval: false
 ---
 
-You can view this vignette any time by running `spanishoddata::spod_codebook(ver = 1)`.
+You can view this vignette any time by running:
 
-The mobility data v1 (2020-2021) was originally released by the [Ministry of Transport and Sustainable Mobility (MITMA)](https://www.transportes.gob.es/). The mobility dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain. The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09) and the number of trips per person made. This document will introduce you to the available data and provide brief code snippets on how to access it using the `spanishoddata` R package.
+```{r}
+spanishoddata::spod_codebook(ver = 1)
+```
 
-Key sources for this codebook include: (1) [original data collection methodology](https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf){target="_blank"}, (2) [original data codebook in Spanish](https://opendata-movilidad.mitma.es/README%20-%20formato%20ficheros%20movilidad%20MITMA%2020201228.pdf){target="_blank"}, (3) [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad){target="_blank"}, (4) [original data license](https://opendata-movilidad.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf){target="_blank"}, and the (5) [homepage of the open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}.
+The mobility data v1 (2020-2021) was originally released by the [Ministry of Transport and Sustainable Mobility (MITMA)](https://www.transportes.gob.es/) [@mitma_data_v1]. The dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain. The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09) and the number of trips per person made. This document will introduce you to the available data and provide brief code snippets on how to access it using the `spanishoddata` R package.
 
-*Comment: will also add links to these PDFs auto-translated to English in DeepL*
+Key sources for this codebook/cookbook include:
+
+-   [original data collection methodology in Spanish](https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf){target="_blank"} + [automatically translated English version of methodology](https://robinlovelace.github.io/spanishoddata/assets/codebooks/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3_en.pdf){target="_blank"}
+
+-   [original data codebook in Spanish](https://opendata-movilidad.mitma.es/README%20-%20formato%20ficheros%20movilidad%20MITMA%2020201228.pdf){target="_blank"} + [automatically translated English version of codebook](https://robinlovelace.github.io/spanishoddata/assets/codebooks/README_-_formato_ficheros_movilidad_MITMA_20201228_en.pdf){target="_blank"}
+
+-   [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad){target="_blank"}
+
+-   [original data license](https://opendata-movilidad.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf){target="_blank"}, and the (5) [homepage of the open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}.
 
 **Note: Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.**
 
@@ -35,15 +45,13 @@ library(spanishoddata)
 Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/your/cache/directory")
 ```
 
-
 # Overall approach to working with data
 
 The @fig-overall-flow presents the overall approach to accessing the data in the `spanishoddata` package.
 
-![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.png){#fig-overall-flow width=120% height=120%}
+![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.png){#fig-overall-flow width="120%" height="120%"}
 
 <!-- the svg version breaks the whole vignette, nothing renders after the image, to sort out later -->
-
 
 # 1. Spatial data with zoning boundaries
 
@@ -110,7 +118,7 @@ The origin-destination data contain the number of trips between `districts` or `
 Here are the variables you can find in both the `district` and `municipality` level origin-destination data:
 
 | **English Variable Name** | **Original Variable Name** | Type | **Description** |
-|---------------|---------------|---------------|---------------------------|
+|----------------|----------------|----------------|------------------------|
 | `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
 | `id_origin` | `origen` | `factor` | The origin zone `id` of `district` or `municipalitity`. |
 | `id_destination` | `destino` | `factor` | The destination zone `id` of `district` or `municipalitity`. |
@@ -188,7 +196,7 @@ The same summary operation as provided in the example above can be done with the
 The "trips per person" data shows the number of persons by the number of trips they made from each district or municipality.
 
 |  |  |  |  |
-|---------------|---------------|---------------|---------------------------|
+|----------------|----------------|----------------|------------------------|
 | `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
 | `id` | `distrito` | `factor` | The identifier of the `district` or `municipality` zone. |
 | `n_trips` | `numero_viajes` | `factor` | The number of trips per person, categorized into `0`, `1`, `2`, or `2+` trips. |
@@ -196,7 +204,6 @@ The "trips per person" data shows the number of persons by the number of trips t
 | `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
 | `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
 | `day` | `day` | `integer` | The day of the recorded data, extracted from the date. |
-
 
 To access it use `spod_get()` with `type` set to "trips_per_persons", or just "tpp". We can also set `dates` to the maximum possible date range `2020-02-14` to `2021-05-09` to get all the data, as this data is relatively small (under 200 Mb).
 
@@ -210,8 +217,6 @@ Because this data is small, we can actually load it completely into memory:
 ```{r}
 tpp_dist_tbl <- tpp_dist |> dplyr::collect()
 ```
-
-
 
 # Converting the data for faster analysis {#convert-data}
 
@@ -280,7 +285,6 @@ spod_disconnect_data(my_od_data_2)
 
 This is usefyl to free up memory. This is espetially neccessary if you convert the data with `spod_convert_for_analysis()` and then load it with `spod_connect_to_converted_data()` again, and then would like to run `spod_convert_for_analysis()` again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.
 
-
 ## 2. `Parquet` {#arrow-parquet}
 
 The process is exactly the same as for `DuckDB` above. The only difference is that the data is converted to `parquet` format and stored in `SPANISH_OD_DATA_DIR` under `v1/clean_data/tabular/parquet/` directory (by default, customizesable by the `save_path` argument), and the subfolders are in hive-style format like `year=2020/month=2/day=14` and inside each of these folders a single `parquet` file will be placed containing the data for that day.
@@ -297,7 +301,6 @@ zones <- "distr"
 dates <- c(start = "2020-02-14", end = "2020-02-17")
 od_distr_feb14_feb16_2020 <- spod_convert_for_analysis(type = type, zones = zones, dates = dates, save_format = "parquet")
 ```
-
 
 If we now request additional dates that overlap with the already converted data like so and specifiy argument `overwrite = 'update'` we will update the existing `parquet` files with the new data:
 
