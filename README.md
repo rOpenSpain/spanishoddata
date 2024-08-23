@@ -29,6 +29,15 @@ To effectively work with multiple data files, it’s recommended you set
 up a data directory where the package can search for the data and
 download only the files that are not already present.
 
+<div id="fig-barcelona-flows">
+
+![](vignettes/media/flows_plot.svg)
+
+
+Figure 1: Example of the data available through the package
+
+</div>
+
 # Installation
 
 The package is not yet available on CRAN.

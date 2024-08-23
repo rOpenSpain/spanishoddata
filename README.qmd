@@ -20,6 +20,8 @@ It supports the two versions of the Spanish OD data. [The first version](https:/
 
 **spanishoddata** is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
+![Example of the data available through the package](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
+
 
 # Installation
 
