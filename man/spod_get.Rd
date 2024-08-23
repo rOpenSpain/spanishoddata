@@ -52,7 +52,7 @@ The possible values can be any of the following:
 A DuckDB lazy table connection object. It can be manupulated using \code{dplyr} verbs, or can be loaded into memory using \code{dplyr::collect()}.
 }
 \description{
-This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary.
+This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary. The connnection is made to the raw CSV files in gzip archives, so analysing the data through this connection may be
 }
 \examples{
 \dontrun{
@@ -70,4 +70,3 @@ DBI::dbListTables(od_dist$src$con)
 }
 
 }
-\keyword{internal}

@@ -501,14 +501,14 @@ spod_get_od <- function(
 
 #' Get tabular data
 #' 
-#' @description This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary.
+#' @description This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary. The connnection is made to the raw CSV files in gzip archives, so analysing the data through this connection may be 
 #' 
 #' 
 #' @inheritParams spod_download_data
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams global_quiet_param
 #' @return A DuckDB lazy table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`.
-#' @keywords internal
+#' @export
 #' @examples
 #' \dontrun{
 #' 
