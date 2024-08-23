@@ -161,8 +161,8 @@ spod_expand_dates_from_regex <- function(date_regex) {
 #' Get valid dates for the specified data version
 #' 
 #' @inheritParams spod_available_data
-#' @return A Dates vector of valid dates for the specified data version.
-#' @keywords internal
+#' @return A vector of type `Date` with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
+#' @export
 spod_get_valid_dates <- function(ver = NULL) {
   ver <- as.integer(ver) # todo: add type safety check
   if (!ver %in% c(1, 2)) {
