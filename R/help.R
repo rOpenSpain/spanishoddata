@@ -6,7 +6,9 @@
 #' 
 #' @param ver An `integer` or `numeric` value. The version of the data. Defaults to 1. Can be 1 for v1 (2020-2021) data and 2 for v2 (2022 onwards) data.
 #' @return Nothing, calls relevant vignette.
+#' @importFrom utils vignette
 #' @export
+#' 
 spod_codebook = function(ver = 1) {
   if (ver == 1){
     vignette(
