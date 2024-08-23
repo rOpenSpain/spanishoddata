@@ -480,8 +480,8 @@ spod_get_od <- function(
     dates = NULL,
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
-    duck_max_mem = 3,
-    duck_max_threads = parallelly::availableCores() - 1
+    max_mem_gb = 3,
+    max_n_cpu = parallelly::availableCores() - 1
 ) {
   # hardcode od as this is a wrapper to get origin-destiation data using spod_get() function
   type <- "od"
@@ -492,8 +492,8 @@ spod_get_od <- function(
     dates = dates,
     data_dir = data_dir,
     quiet = quiet,
-    duck_max_mem = duck_max_mem,
-    duck_max_threads = duck_max_threads
+    max_mem_gb = max_mem_gb,
+    max_n_cpu = max_n_cpu
   )
 
   return(duck_tbl_con)
@@ -539,8 +539,8 @@ spod_get <- function(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  duck_max_mem = 3,
-  duck_max_threads = parallelly::availableCores() - 1,
+  max_mem_gb = 3,
+  max_n_cpu = parallelly::availableCores() - 1,
   max_download_size_gb = 1,
   duckdb_target = ":memory:"
 ) {
@@ -581,8 +581,8 @@ spod_get <- function(
   # define memory and threads limits
   con <- spod_duckdb_limit_resources(
     con = con,
-    duck_max_mem = duck_max_mem,
-    duck_max_threads = duck_max_threads
+    max_mem_gb = max_mem_gb,
+    max_n_cpu = max_n_cpu
   )
 
   # attach the folder with csv.gz files with predefined and cleaned up data types

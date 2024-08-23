@@ -13,8 +13,8 @@ spod_connect_to_converted_data <- function(
   data_path,
   target_table_name = NULL,
   quiet = FALSE,
-  duck_max_mem = 4, # later increase that to be 4GB or perhaps 60% of available RAM, as for analysis the amount of memory that can be used can significanly affect the speed of aggregations.
-  duck_max_threads = parallelly::availableCores() - 1
+  max_mem_gb = 4, # later increase that to be 4GB or perhaps 60% of available RAM, as for analysis the amount of memory that can be used can significanly affect the speed of aggregations.
+  max_n_cpu = parallelly::availableCores() - 1
 ){
   # determine if data_path is a folder or a duckdb file
   if (grepl("\\.duckdb$", data_path)) {
@@ -33,8 +33,8 @@ spod_connect_to_converted_data <- function(
 
   con <- spod_duckdb_limit_resources(
     con = con,
-    duck_max_mem = duck_max_mem,
-    duck_max_threads = duck_max_threads
+    max_mem_gb = max_mem_gb,
+    max_n_cpu = max_n_cpu
   )
 
   if (target_format == "duckdb") {

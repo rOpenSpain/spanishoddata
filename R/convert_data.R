@@ -39,8 +39,8 @@ spod_convert_for_analysis <- function(
   overwrite = FALSE,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  duck_max_mem = 4, # fails on full v1 data with less than 4 GB. 4GB is reasonable.  Eventually I would set this to be either 4 as minumum, or about 60% of available RAM autodetected with `as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])` or `unclass(benchmarkme::get_ram())`, whichever is bigger. 
-  duck_max_threads = parallelly::availableCores() - 1, # Overall, the conversion is not so much memory-bounded, but rather the speed depends on available cores. E.g. with 6 cores it is almost exactly twice as fast as with 3 cores. So using as many cores as possible is very beneficial.
+  max_mem_gb = 4, # fails on full v1 data with less than 4 GB. 4GB is reasonable.  Eventually I would set this to be either 4 as minumum, or about 60% of available RAM autodetected with `as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])` or `unclass(benchmarkme::get_ram())`, whichever is bigger. 
+  max_n_cpu = parallelly::availableCores() - 1, # Overall, the conversion is not so much memory-bounded, but rather the speed depends on available cores. E.g. with 6 cores it is almost exactly twice as fast as with 3 cores. So using as many cores as possible is very beneficial.
   max_download_size_gb = 1
 ) {
   
@@ -166,8 +166,8 @@ spod_convert_for_analysis <- function(
     dates = dates,
     data_dir = data_dir,
     quiet = quiet,
-    duck_max_mem = duck_max_mem,
-    duck_max_threads = duck_max_threads,
+    max_mem_gb = max_mem_gb,
+    max_n_cpu = max_n_cpu,
     max_download_size_gb = max_download_size_gb,
     duckdb_target = duckdb_target
   )
@@ -182,7 +182,7 @@ spod_convert_for_analysis <- function(
   }
 
   if (isFALSE(quiet)){
-    message(glue::glue("Using {duck_max_mem} GB of memory and {duck_max_threads} threads. You may adjust this using the function arguments `duck_max_mem` and `duck_max_threads`."))
+    message(glue::glue("Using {max_mem_gb} GB of memory and {max_n_cpu} threads. You may adjust this using the function arguments `max_mem_gb` and `max_n_cpu`."))
     
     message(glue::glue("Converting v{ver} {type} data for {zones} to {save_format}: {save_path} \n... This may take some time. You can see if the process is still running by going to the {save_dir} folder and refreshing the folder content and checking if the file/folder size of {basename(save_path)} is increasing after each refresh. The conversion speed depends on your processor speed, number of cores and the speed of your disk storage."))
   }

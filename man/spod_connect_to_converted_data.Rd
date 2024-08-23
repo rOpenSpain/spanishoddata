@@ -8,8 +8,8 @@ spod_connect_to_converted_data(
   data_path,
   target_table_name = NULL,
   quiet = FALSE,
-  duck_max_mem = 4,
-  duck_max_threads = parallelly::availableCores() - 1
+  max_mem_gb = 4,
+  max_n_cpu = parallelly::availableCores() - 1
 )
 }
 \arguments{
@@ -19,9 +19,9 @@ spod_connect_to_converted_data(
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
-\item{duck_max_mem}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
+\item{max_mem_gb}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
 
-\item{duck_max_threads}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
+\item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 }
 \value{
 a DuckDB table connection object.
