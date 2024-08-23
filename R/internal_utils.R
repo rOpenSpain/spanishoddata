@@ -179,7 +179,7 @@ spod_get_valid_dates <- function(ver = NULL) {
     available_data <- spod_available_data_v2(quiet = TRUE)
     all_dates <- unique(available_data[grepl("viajes.*diarios", available_data$target_url), ]$data_ymd, na.rm = TRUE)
   }
-
+  all_dates <- sort(all_dates)
   return(all_dates)
 }
 # currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
