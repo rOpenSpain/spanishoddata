@@ -47,6 +47,8 @@ The possible values can be any of the following:
 \item{duck_max_threads}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 
 \item{max_download_size_gb}{The maximum download size in gigabytes. Defaults to 1.}
+
+\item{duckdb_target}{(Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the \code{spod_convert_for_analysis} function. If not specified, it will be set to ":memory:" and the data will be stored in memory.}
 }
 \value{
 A DuckDB lazy table connection object of class \code{tbl_duckdb_connection}.

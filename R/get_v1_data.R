@@ -505,7 +505,7 @@ spod_get_od <- function(
 #' 
 #' If you want to analyse longer periods of time (especiially several months or even the whole data over several years), consider using the \link{spod_convert_for_analysis} and then \link{spod_connect_to_converted_data}.
 #' 
-#' 
+#' @param duckdb_target (Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the `spod_convert_for_analysis` function. If not specified, it will be set to ":memory:" and the data will be stored in memory.
 #' @inheritParams spod_download_data
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams global_quiet_param
