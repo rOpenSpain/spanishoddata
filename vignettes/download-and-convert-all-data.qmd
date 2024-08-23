@@ -44,7 +44,7 @@ spod_download_data(
   type = type,
   zones = zones,
   dates = dates_v1,
-  return_output = FALSE # to avoid getting all downloaded files printed to console
+  return_output = FALSE, # to avoid getting all downloaded files printed to console
   max_download_size_gb = 50 # in Gb, this should be well over the actual download size for v1 data
 )
 ```
@@ -59,7 +59,7 @@ analysis_data_storage <- spod_convert_data(
   type = type,
   zones = zones,
   dates = "cached_v1", # to just convert all data that was previously downloaded, no need to specify dates here
-  save_format = save_format
+  save_format = save_format,
   overwrite = TRUE
 )
 ```
