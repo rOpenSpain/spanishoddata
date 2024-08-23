@@ -31,7 +31,9 @@ download only the files that are not already present.
 
 # Installation
 
-Install the package as follows:
+The package is not yet available on CRAN.
+
+Install the development version of the package as follows:
 
 ``` r
 if (!require("remotes")) install.packages("remotes")
@@ -43,6 +45,11 @@ Load it as follows:
 ``` r
 library(spanishoddata)
 ```
+
+<details>
+<summary>
+Installation for developers only
+</summary>
 
 Local development: to load the package locally, clone it and navigate to
 the root of the package in the terminal, e.g. with the following:
@@ -58,7 +65,25 @@ Then run the following command from the R console:
 devtools::load_all()
 ```
 
+</details>
+
 # Setting the data directory
+
+Choose where `{spanishoddata}` should download (and convert) the data by
+setting the `SPANISH_OD_DATA_DIR` environment variable with the
+following command:
+
+``` r
+Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
+```
+
+The package will create this directory if it does not exist on the first
+run of any function that downloads the data.
+
+<details>
+<summary>
+Setting data directory for advanced users
+</summary>
 
 You can specify the data directory globally by setting the
 `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following
@@ -73,8 +98,6 @@ usethis::edit_r_environ()
 
 You can also set the data directory locally or on a per session basis as
 described below.
-
-<details>
 
 Set the ‘envar’ in the working directory by editing `.Renviron` file in
 the root of the project:
@@ -94,9 +117,28 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 
 # Using the package
 
+You can find the overview of the key package functions in the following
+figure.
+
 <img src="vignettes/media/package-functions-overview.svg"
 style="width:120.0%;height:120.0%"
 alt="The overview of how to use the pacakge functions to get the data" />
+
+If you only want to analyse the data for a few days, you can use the
+`spod_get()` function. It will download the raw data in CSV format and
+let you analyse it in-memory. If you need longer periods (several months
+or years), you should use the `spod_convert_for_analysis()` and
+`spod_connect_to_converted_data()` functions, which will convert the
+data into special format which is much faster for analysis.
+`spod_get_zones()` will give you spatial data with zones that can be
+matched with the origin-destination flows from the functions above using
+zones ’id’s. Please see a simple example below, and also consult the
+vignettes with detailed data description and instructions in the package
+vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or
+simply visit the package website at
+<https://robinlovelace.github.io/spanishoddata/>.
+
+# Showcase
 
 To run the code in this README we will use the following setup:
 
@@ -162,6 +204,11 @@ n_per_hour |>
 
 The figure above summarises 925,874,012 trips over the 7 days associated
 with 135,866,524 records.
+
+## `spanishoddata` advantage over accessing the data yourself
+
+As we demonstrated above, you can perform very quick analysis using just
+a few lines of code.
 
 To highlight the benefits of the package, here is how you would do this
 manually:
