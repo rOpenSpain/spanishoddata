@@ -9,6 +9,8 @@ execute:
   eval: false
 ---
 
+You can cal this vignette any time by running `spanishoddata::spod_codebook(ver = 1)`.
+
 The mobility data v1 (2020-2021) was originally released by the [Ministry of Transport and Sustainable Mobility (MITMA)](https://www.transportes.gob.es/). The mobility dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain. The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09) and the number of trips per person made. This document will introduce you to the available data and provide brief code snippets on how to access it using the `spanishoddata` R package.
 
 Key sources for this codebook include: (1) [original data collection methodology](https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf){target="_blank"}, (2) [original data codebook in Spanish](https://opendata-movilidad.mitma.es/README%20-%20formato%20ficheros%20movilidad%20MITMA%2020201228.pdf){target="_blank"}, (3) [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad){target="_blank"}, (4) [original data license](https://opendata-movilidad.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf){target="_blank"}, and the (5) [homepage of the open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}.
@@ -183,7 +185,7 @@ The same summary operation as provided in the example above can be done with the
 
 ## 2.2. Trips per person data {#tpp-data}
 
-The trips per person data
+The "trips per person" data shows the number of persons by the number of trips they made from each district or municipality.
 
 |  |  |  |  |
 |---------------|---------------|---------------|---------------------------|
@@ -194,6 +196,22 @@ The trips per person data
 | `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
 | `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
 | `day` | `day` | `integer` | The day of the recorded data, extracted from the date. |
+
+
+To access it use `spod_get()` with `type` set to "trips_per_persons", or just "tpp". We can also set `dates` to the maximum possible date range `2020-02-14` to `2021-05-09` to get all the data, as this data is relatively small (under 200 Mb).
+
+```{r}
+dates <- c(start = "2020-02-14", end = "2021-05-09")
+tpp_dist <- spod_get(type = "trips_per_person", zones = "dist", dates = dates)
+```
+
+Because this data is small, we can actually load it completely into memory:
+
+```{r}
+tpp_dist_tbl <- tpp_dist |> dplyr::collect()
+```
+
+
 
 # Converting the data for faster analysis {#convert-data}
 
