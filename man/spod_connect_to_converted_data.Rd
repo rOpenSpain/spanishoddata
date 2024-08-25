@@ -9,7 +9,8 @@ spod_connect_to_converted_data(
   target_table_name = NULL,
   quiet = FALSE,
   max_mem_gb = 4,
-  max_n_cpu = parallelly::availableCores() - 1
+  max_n_cpu = parallelly::availableCores() - 1,
+  temp_path = spod_get_temp_dir()
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ spod_connect_to_converted_data(
 \item{max_mem_gb}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
 
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
+
+\item{temp_path}{The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling} in case the set memory limit and/or physical memory of the computer is too low to perform the query. By default this is set to the \code{temp} directory in the data folder defined by SPANISH_OD_DATA_DIR environment variable. Otherwise, for queries on folders of CSV files or parquet files, the temporary path would be set to the current R working directory, which probably is undesirable, as the current working directory can be on a slow storage, or storage that may have limited space, compared to the data folder.}
 }
 \value{
 a DuckDB table connection object.

@@ -6,6 +6,7 @@
 #' @param data_path a path to the `DuckDB` database file with '.duckdb' extension, or a path to the folder with `parquet` files. Eigher one should have been created with the `spod_convert_for_analysis()` function.
 #' @param target_table_name table name inside the database.
 #' @inheritParams spod_duckdb_limit_resources
+#' @inheritParams spod_duckdb_set_temp
 #' @inheritParams global_quiet_param
 #' @export
 #' @return a DuckDB table connection object.
@@ -14,7 +15,8 @@ spod_connect_to_converted_data <- function(
   target_table_name = NULL,
   quiet = FALSE,
   max_mem_gb = 4, # later increase that to be 4GB or perhaps 60% of available RAM, as for analysis the amount of memory that can be used can significanly affect the speed of aggregations.
-  max_n_cpu = parallelly::availableCores() - 1
+  max_n_cpu = parallelly::availableCores() - 1,
+  temp_path = spod_get_temp_dir()
 ){
   # determine if data_path is a folder or a duckdb file
   if (grepl("\\.duckdb$", data_path)) {
@@ -72,6 +74,12 @@ spod_connect_to_converted_data <- function(
         ")
       )
     )
+    
+    # set temp path for intermediate spilling
+    # https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling
+    # we do not do the same for duckdb above, as there the temp is automatically created in the same folder as the database
+    # however, when the target is parquet files, temp is created in the root of R working directory, which may be undesirable
+    con <- spod_duckdb_set_temp(con, temp_path = temp_path)
 
     tbl_con <- dplyr::tbl(con, view_name)
   }

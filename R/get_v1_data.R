@@ -508,6 +508,7 @@ spod_get_od <- function(
 #' @param duckdb_target (Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the `spod_convert_for_analysis` function. If not specified, it will be set to ":memory:" and the data will be stored in memory.
 #' @inheritParams spod_download_data
 #' @inheritParams spod_duckdb_limit_resources
+#' @inheritParams spod_duckdb_set_temp
 #' @inheritParams global_quiet_param
 #' @return A DuckDB lazy table connection object of class `tbl_duckdb_connection`.
 #' @export
@@ -542,7 +543,8 @@ spod_get <- function(
   max_mem_gb = 3,
   max_n_cpu = parallelly::availableCores() - 1,
   max_download_size_gb = 1,
-  duckdb_target = ":memory:"
+  duckdb_target = ":memory:",
+  temp_path = spod_get_temp_dir()
 ) {
   if (is.null(dates)) {
     message("No period specified in the `dates` argument. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion.")
@@ -622,6 +624,15 @@ spod_get <- function(
       clean_filtered_csv_view_name,
       dates
     )
+  }
+
+  # if working with in-memory database
+  # set temp path for intermediate spilling
+  # https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling
+  # if target were set as a database file, temp would be created at the same path
+  # however, when the working in-memory on folder of CSV files, temp is created in the root of R working directory, which may be undesirable
+  if ( duckdb_target == ":memory:" ) {
+    con <- spod_duckdb_set_temp(con, temp_path = temp_path)
   }
 
   # return either a full view of all available data (dates = "cached") or a view filtered to the specified dates
