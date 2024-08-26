@@ -7,7 +7,7 @@
 #' 
 #' You can also set `save_path`. If it ends with ".duckdb", will save to `DuckDB` database format, if `save_path` does not end with ".duckdb", will save to `parquet` format and will treat the `save_path` as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like `year=2020/month=2/day=14` and inside each such directory there will be a `data_0.parquet` file that contains the data for that day.
 #' 
-#' @param save_path A `character` vector of length 1. The path save a `DuckDB` database file or the path to a folder to save the `parquet` files.
+#' @param save_path A `character` vector of length 1. The full (not relative) path to a `DuckDB` database file or `parquet` folder.
 #' 
 #' * If `save_path` ends with `.duckdb`, it will be saved as a DuckDB database file. The format argument will be automatically set to `save_format='duckdb'`.
 #' 
