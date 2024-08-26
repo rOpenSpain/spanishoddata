@@ -18,9 +18,9 @@ execute:
 
 `spod_get()` returns objects that are only appropriate for small datasets representing a few days of the national OD datasets. We recommend converting the data into analysis-ready formats (`DuckDB` or `Parquet`), allowing you to work with large datasets on a consumer laptop (with 8-16 GB of memory).
 
-**Converting the data to either `DuckDB` or `Parquet` will improve the computation time up to 100x compared to continuing working with the tables that you get from `spod_get()` function that reads CSV files every time you do anything.**
+**Converting the data to either `DuckDB` or `Parquet` will improve the computation time up to 100x compared with using data frames returned with `spod_get()`, which reads CSV files every time you call it.**
 
-`DuckDB` and `Parquet` are cutting edge tools to work with larger than memory datasets such as the mobility data described here. For an introduction to these easy to use tools, we highly recommend the materials by Danielle Navarro, Jonathan Keane, Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}.
+`DuckDB` and `Parquet` are systems for efficiently processing larger-than-memory datasets. For an introduction to them, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}.
 
 Learning to use `DuckDB` and `Parquet` is easy for anyone who have ever worked with `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from `DuckDB` and `Parquet`. Please read on. We first show how to convert the data, and then how to use it.
 
