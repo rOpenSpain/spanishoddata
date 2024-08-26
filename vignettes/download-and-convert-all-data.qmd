@@ -92,7 +92,6 @@ Compared to conversion process, you might want to increase the available memory 
 
 You can manipulate `my_data` using `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`.
 
-
 After finishing working with `my_data` we advise that you "disconnect" this data using:
 
 ```{r}

@@ -54,6 +54,18 @@ db_1 <- spod_convert_for_analysis(type = "od", zones = "distr", dates = "cached_
 db_1 # check the path to the saved `DuckDB` database
 ```
 
+```{r}
+#| echo: false
+# Test adding another day:
+fs::file_size(db_1)
+dates_1 <- c(start = "2020-02-14", end = "2020-02-20")
+spod_download_data(type = "od", zones = "distr", dates = dates_1)
+db_1 <- spod_convert_for_analysis(type = "od", zones = "distr", dates = "cached_v1", save_format = "duckdb") # no overwrite, failed
+db_1 <- spod_convert_for_analysis(type = "od", zones = "distr", dates = "cached_v1", save_format = "duckdb", overwrite = TRUE)
+db_1 <- spod_convert_for_analysis(type = "od", zones = "distr", dates = "cached_v1", save_format = "duckdb", overwrite = 'update')
+db_1 # check the path to the saved `DuckDB` database
+```
+
 The `dates = "cached_v1"` argument instructs the functon to only work with already downloaded files. By default this resulting `DuckDB` database for v1 origin-destination data for districts will be saved in the `SPANISH_OD_DATA_DIR` directory under `v1/clean_data/tabular/duckdb/` with filename `od_distritos.duckdb`. The function outputs the full path to the database file, which we save into `db_1` variable.
 
 You can also any desired save location with the `save_path` argument of `spod_convert_for_analysis()`.
