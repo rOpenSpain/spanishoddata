@@ -2,7 +2,7 @@
 % Please edit documentation in R/convert_data.R
 \name{spod_convert_for_analysis}
 \alias{spod_convert_for_analysis}
-\title{Convert data for faster analysis}
+\title{Convert data from plain text to duckdb or parquet format}
 \usage{
 spod_convert_for_analysis(
   type = c("od", "origin-destination", "os", "overnight_stays", "tpp",
