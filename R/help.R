@@ -11,10 +11,15 @@
 #' 
 spod_codebook = function(ver = 1) {
   if (ver == 1){
-    vignette(
-      topic = "v1-2020-2021-mitma-data-codebook",
+    help <- vignette(
+      topic = "v1-2020-2021-mitma-data-codeboo",
       package = "spanishoddata"
     )
+    if( class(help) == "vignette" ){
+      return(help)
+    } else {
+      message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://robinlovelace.github.io/spanishoddata/articles/codebook-v1.html")
+    }
   } else if (ver == 2) {
     stop("Not implemented yet")
   }
