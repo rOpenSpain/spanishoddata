@@ -40,19 +40,21 @@ Load it as follows:
 library(spanishoddata)
 ```
 
-<details><summary>Installation for developers only</summary>
+<details><summary>Developer documentation</summary>
 
-Local development: to load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
+To load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
 
 ```bash
 gh repo clone Robinlovelace/spanishoddata
 code spanishoddata
+# with rstudio:
+rstudio spanishoddata/spanishoddata.Rproj
 ```
 
 Then run the following command from the R console:
 
 ```{r}
-#| eval: true
+#| eval: false
 devtools::load_all()
 ```
 
