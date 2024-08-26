@@ -12,7 +12,7 @@
 spod_codebook = function(ver = 1) {
   if (ver == 1){
     help <- vignette(
-      topic = "v1-2020-2021-mitma-data-codeboo",
+      topic = "v1-2020-2021-mitma-data-codebook",
       package = "spanishoddata"
     )
     if( class(help) == "vignette" ){
