@@ -384,10 +384,6 @@ usethis::use_vignette("uses", title = "Use cases")
 
 # References
 
-
-
-
-
 <!-- metadata for better search engine indexing -->
 <!-- should be picked up by pkgdown -->
 <!-- update metadata before release with  -->

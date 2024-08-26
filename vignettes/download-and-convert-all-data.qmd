@@ -14,7 +14,7 @@ execute:
   eval: false
 ---
 
-In this vignette we show how to donwload a complete v1 or v2 dataset and convert it into analysis ready format.
+This vignette shows how to donwload OD datasets (v1 and v2) and convert them into analysis-ready formats.
 
 See the detailed codebook for this data in [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in TODO_CODEBOOK_V2.
 
@@ -48,7 +48,6 @@ spod_download_data(
   max_download_size_gb = 50 # in Gb, this should be well over the actual download size for v1 data
 )
 ```
-
 
 ## 3. Convert all data into analysis ready format
 
