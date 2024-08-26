@@ -16,7 +16,7 @@ execute:
 
 # Converting the data for faster analysis {#convert-data}
 
-You can continue working with the tables that you get from `spod_get()` function, but this is slow and only appropriate if you are interested in just a few days of data. To speed up the analysis and to blaze throuth the whole dataset even on a laptop with 8-16 GB of memory, we recommend converting the data into analysis ready formats such as `DuckDB` and `Parquet`.
+`spod_get()` returns objects that are only appropriate for small datasets representing a few days of the national OD datasets. We recommend converting the data into analysis-ready formats (`DuckDB` or `Parquet`), allowing you to work with large datasets on a consumer laptop (with 8-16 GB of memory).
 
 **Converting the data to either `DuckDB` or `Parquet` will improve the computation time up to 100x compared to continuing working with the tables that you get from `spod_get()` function that reads CSV files every time you do anything.**
 
