@@ -317,7 +317,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1081.1KB",
+  "fileSize": "1214.094KB",
   "readme": "https://github.com/Robinlovelace/spanishoddata/blob/main/README.md",
   "contIntegration": "https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml",
   "developmentStatus": "https://www.repostatus.org/#wip",
