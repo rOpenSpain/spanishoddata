@@ -34,7 +34,7 @@ Key sources for this codebook/cookbook include:
 
 - [homepage of the v1 study](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19){target="_blank"}
 
-- [homepage of the open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/
+- [homepage of the open mobility data project of the Ministry of Transport and Sustainable mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/
 estudio-de-movilidad-con-big-data){target="_blank"}
 
 
@@ -119,7 +119,7 @@ Data structure:
 
 The spatial data you get via `spanishoddata` package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in `id` column. Apart from that `id` column, the original zones files do not have any metadata. However, as seen above, using the `spanishoddata` package you get many additional columns that provide a semantic connection between official statistical zones used by the Spanish government and the zones you can get for the v2 data (for 2022 onward).
 
-# 2. Mobility data
+# 2. mobility data
 
 All mobility data is referenced via `id_origin`, `id_destination`, or other location identifiers (mostly labelled as `id`) with the two sets of zones described above.
 

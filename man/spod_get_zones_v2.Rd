@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{spod_get_zones_v2}
 \alias{spod_get_zones_v2}
-\title{Retrieves the zones data}
+\title{retrieves the zones data}
 \usage{
 spod_get_zones_v2(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",

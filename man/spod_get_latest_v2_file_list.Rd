@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{spod_get_latest_v2_file_list}
 \alias{spod_get_latest_v2_file_list}
-\title{Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)}
+\title{Get latest file list from the XML for MITMA open mobility data v2 (2022 onwards)}
 \usage{
 spod_get_latest_v2_file_list(
   data_dir = spod_get_data_dir(),
@@ -18,7 +18,7 @@ spod_get_latest_v2_file_list(
 The path to the downloaded XML file.
 }
 \description{
-Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)
+Get latest file list from the XML for MITMA open mobility data v2 (2022 onwards)
 }
 \examples{
 if (FALSE) {

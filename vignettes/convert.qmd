@@ -15,7 +15,7 @@ execute:
   eval: false
 ---
 
-This vignette shows how to donwload OD datasets (v1 and v2) and convert them into analysis-ready formats.
+This vignette shows how to download OD datasets (v1 and v2) and convert them into analysis-ready formats.
 It does not cover the contents of the datasets.
 For that, see the codebooks in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in TODO_CODEBOOK_V2 vignettes.
 
