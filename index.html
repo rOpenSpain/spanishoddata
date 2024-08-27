@@ -54,7 +54,12 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="spanishoddata-get-spanish-origin-destination-data-">spanishoddata: Get Spanish Origin-Destination Data <a href="https://robinlovelace.github.io/spanishoddata/"><img src="reference/figures/spanishoddata_biglogo.png" align="right" height="260" alt="spanishoddata website"></a>
+<a class="anchor" aria-label="anchor" href="#spanishoddata-get-spanish-origin-destination-data-"></a>
+</h1></div>
+<!-- badges: start -->
+
 <p><strong>spanishoddata</strong> is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable mobility of Spain (Secretary of State for Transport, mobility and Urban Agenda (Secretaría de Estado de Transportes, Movilidad y Agenda Urbana) 2024).</p>
 <p>It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" class="external-link">The first version</a> covers data from 2020 and 2021, including the period of the COVID-19 pandemic. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" class="external-link">The second version</a> contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the <a href="https://robinlovelace.github.io/spanishoddata/">package website</a> and vignettes for <a href="https://robinlovelace.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook">v1</a> and <a href="https://robinlovelace.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook">v2</a> data for more details.</p>
 <p><strong>spanishoddata</strong> is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.</p>
@@ -62,9 +67,10 @@
 <p><img src="articles/media/flows_plot.svg"></p>
 <p>Figure 1: Example of the data available through the package</p>
 </div>
+</div>
 <div class="section level1">
-<div class="page-header"><h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h1></div>
+<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h1>
 <p>The package is not yet available on CRAN.</p>
 <p>Install the development version of the package as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -351,8 +357,9 @@ Secretary of State for Transport, mobility and Urban Agenda (Secretaría de Esta
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.repostatus.org/#wip" class="external-link"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public."></a></li>
-<li><a href="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://www.repostatus.org/#wip" target="_blank" class="external-link"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public."></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" target="_blank" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-red.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml" target="_blank" class="external-link"><img src="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
