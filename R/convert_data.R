@@ -23,7 +23,7 @@
 #' @inheritParams global_quiet_param
 #' @return Path to saved DuckDB file.
 #' @export
-spod_convert_for_analysis <- function(
+spod_convert <- function(
   type = c(
     "od", "origin-destination",
     "os", "overnight_stays",
