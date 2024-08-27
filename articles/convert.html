@@ -35,10 +35,10 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/convert.html">Download and convert OD datasets</a></li>
-    <li><a class="dropdown-item" href="../articles/uses.html">Use cases</a></li>
-    <li><a class="dropdown-item" href="../articles/v1-2020-2021-mitma-data-codebook.html">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a></li>
+<li><a class="dropdown-item" href="../articles/v1-2020-2021-mitma-data-codebook.html">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a></li>
     <li><a class="dropdown-item" href="../articles/v2-2022-onwards-mitma-data-codebook.html">Codebook and cookbook for v2 (2022 onwards) Spanish mobility data</a></li>
+    <li><a class="dropdown-item" href="../articles/convert.html">Download and convert OD datasets</a></li>
+    <li><a class="dropdown-item" href="../articles/uses.html">Use cases</a></li>
   </ul>
 </li>
       </ul>
@@ -70,7 +70,7 @@
 
 
 
-    <p>This vignette shows how to donwload OD datasets (v1 and v2) and convert them into analysis-ready formats. It does not cover the contents of the datasets. For that, see the codebooks in the <a href="v1-2020-2021-mitma-data-codebook.qmd">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a> and in TODO_CODEBOOK_V2 vignettes.</p>
+    <p>This vignette shows how to download OD datasets (v1 and v2) and convert them into analysis-ready formats. It does not cover the contents of the datasets. For that, see the codebooks in the <a href="v1-2020-2021-mitma-data-codebook.qmd">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a> and in TODO_CODEBOOK_V2 vignettes.</p>
 <p>There are two main ways to import the datasets: as in-memory object with <code><a href="../reference/spod_get.html">spod_get()</a></code> or as a connection to DuckDB or Parquet files on disc with <code><a href="../reference/spod_convert.html">spod_convert()</a></code>. The latter is recommended for large datasets, as it is much faster and more memory efficient.</p>
 <p>Load the package as follows:</p>
 <div class="cell">
