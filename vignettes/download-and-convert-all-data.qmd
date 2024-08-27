@@ -5,6 +5,7 @@ vignette: >
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
+number-sections: true
 format:
   html:
     toc: true
@@ -15,7 +16,23 @@ execute:
 ---
 
 This vignette shows how to donwload OD datasets (v1 and v2) and convert them into analysis-ready formats.
+It does not cover the contents of the datasets.
+For that, see the codebooks in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in TODO_CODEBOOK_V2 vignettes.
+
 There are two main ways to import the datasets: as in-memory object with `spod_get()` or as a connection to DuckDB or Parquet files on disc with `spod_convert_for_analysis()`. The latter is recommended for large datasets, as it is much faster and more memory efficient.
+
+Load the package as follows:
+
+```{r}
+library(spanishoddata)
+```
+
+Set the working directory if you haven't done so already, e.g. to a folder called `spanish_od_data` in your home directory:
+
+```{r}
+usethis::edit_r_environ()
+# Add: SPANISH_OD_DATA_DIR="~/spanish_od_data"
+```
 
 # Converting to efficient on-disc formats {#convert-data}
 
@@ -35,9 +52,9 @@ The choice between converting to `DuckDB` and `Parquet` should be made based on 
 
 In our testing, using `DuckDB` has a slight speed advantage. The approaches to working with both formats are exactly the same, just use `{dplyr}` package and its functions for selecting, grouping, filtering and summarizing the data.
 
-## 1. `DuckDB` {#duckdb}
+## `DuckDB` {#duckdb}
 
-### 1.1 Convert to `DuckDB` {#convert-to-duckdb}
+### Convert to `DuckDB` {#convert-to-duckdb}
 
 You can convert the already downloaded data into `DuckDB` like. For example, you select a few dates, and download the data manually:
 
@@ -84,7 +101,7 @@ db_2 <- spod_convert_for_analysis(type = "od", zones = "distr", dates = dates_2,
 
 In this case, any missing data that has now yet been downloaded will be automatically downloaded, while 2020-02-17 will not be redownloaded, as we already requsted it when creating `db_1`. Then the requested dates will be converted into `DuckDB`, overwriting the file with `db_1`. Once again, we save the path to the output `DuckDB` database file into `db_2` variable.
 
-### 1.2 Load the converted `DuckDB` {#load-converted-duckdb}
+### Load the converted `DuckDB` {#load-converted-duckdb}
 
 You can read the introductory information on how to connect to `DuckDB` files [here](https://duckdb.org/docs/api/r){target="_blank"}, however to simplify things for you we created a helper function. So to connect to the data stored in at path `db_1` and `db_2` you can do the following:
 
@@ -102,13 +119,13 @@ spod_disconnect_data(my_od_data_2)
 
 This is useful to free-up memory and is neccessary if you would like to run `spod_convert_for_analysis()` again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.
 
-## 2. `Parquet` {#arrow-parquet}
+## `Parquet` {#arrow-parquet}
 
 The process is exactly the same as for `DuckDB` above. The only difference is that the data is converted to `parquet` format and stored in `SPANISH_OD_DATA_DIR` under `v1/clean_data/tabular/parquet/` directory (by default, customizesable by the `save_path` argument), and the subfolders are in hive-style format like `year=2020/month=2/day=14` and inside each of these folders a single `parquet` file will be placed containing the data for that day.
 
 The advantage of this format is that you can "update" it quickly. For example, if you first downloaded the data for March and April 2020, converted this period into `parquet` format, and then downloaded the data for May and June 2020, when you run the convertion function again, it will only convert the data for May and June 2020 and add it to the existing `parquet` files. So you will save time and will not have to wait for March and April 2020 to be converted again.
 
-### 2.1 Convert to `Parquet` {#convert-to-parquet}
+### Convert to `Parquet` {#convert-to-parquet}
 
 Let us convert a few dates to `parquet` format:
 
@@ -128,7 +145,7 @@ od_distr_feb16_feb19_2020 <- spod_convert_for_analysis(type = type, zones = zone
 
 That is, 16 and 17 Feboruary will not be converted again. Only the new data, that was not converted (18 and 19 February) will be converted, and these will be added to the existing folder structure of`parquet` files stored at the default `save_path` location, which is `<data_dir>/clean_data/v1/tabular/parquet/od_distritos`. Alternatively, you can set any other save location by setting the `save_path` argument.
 
-### 2.2 Load the converted `Parquet` {#load-converted-parquet}
+### Load the converted `Parquet` {#load-converted-parquet}
 
 Working with these `parquet` files is exactly the same as with `DuckDB` and `Arrow` files. Just like before, you can use the same helper function `spod_connect_to_converted_data()` to connect to the `parquet` files:
 
@@ -146,16 +163,9 @@ my_od_data_3 |>
   dplyr::arrange(date)
 ```
 
-
-See the detailed codebook for this data in [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in TODO_CODEBOOK_V2.
-
-```{r}
-library(spanishoddata)
-```
-
 To prepare all origin-destination data v1 (2020-2021) for analysis over the whole period of data availability, please follow the steps below:
 
-## 1. Find all possible dates from available data
+# Download all available data {#all-dates}
 
 ```{r}
 dates_v1 <- spod_get_valid_dates(ver = 1)
@@ -164,7 +174,7 @@ dates_v2 <- spod_get_valid_dates(ver = 2)
 
 Due to mobile network outages, some dates are missing, so do not assume that a simple interval between two dates will just work. Currently [known outages](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"} are: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. This is why it is adviseable to use `spod_get_valid_dates()` function to get all possible dates from available data.
 
-## 2. Download all data
+## Download all data
 
 Here the example is for origin-destination on district level for v1 data. You can change the `type` to "trips_per_person" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the v2 data codebook, as it has many more datasets in addition to "origin-destination" and "trips_per_person". **TODO: insert link to v2 codebook when it is done**.
 
@@ -180,7 +190,7 @@ spod_download_data(
 )
 ```
 
-## 3. Convert all data into analysis ready format
+## Convert all data into analysis ready format
 
 ```{r}
 save_format <- "duckdb"
@@ -202,11 +212,11 @@ For this conversion, 4 GB or operating memory should be enough, the speed of the
 
 Finally, `analysis_data_storage` will simply store the path to the converted data. Either a path to the `DuckDB` database file or a path to the folder with `Parquet` files.
 
-### Conversion speed
+## Conversion speed
 
 For reference, converting the whole v1 origin-destination data to `DuckDB` takes about 20 minutes with 4 GB of memory and 3 processor cores. The final size of the `DuckDB` database is about 18 GB, in `Parquet` format - 26 GB. The raw CSV files in gzip archives are about 20GB.
 
-## 4. Connect to the converted data and start the analysis
+## Connecting to and analysing converted datasets
 
 You can pass the `analysis_data_storage` path to `spod_connect_to_converted_data()` function, whether it is `DuckDB` or `Parquet`. The function will determine the data type automatically and give you back a `tbl_duckdb_connection`[^1].
 
@@ -223,10 +233,8 @@ Compared to conversion process, you might want to increase the available memory 
 
 You can manipulate `my_data` using `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`.
 
-After finishing working with `my_data` we advise that you "disconnect" this data using:
+After finishing working with `my_data` we advise that you "disconnect" to free up memory:
 
 ```{r}
 spod_disconnect_data(my_data)
 ```
-
-This is usefyl to free up memory. This is espetially neccessary if you convert the data with `spod_convert_for_analysis()` and then load it with `spod_connect_to_converted_data()` again, and then would like to run `spod_convert_for_analysis()` again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.
