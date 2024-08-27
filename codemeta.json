@@ -204,6 +204,18 @@
     },
     "10": {
       "@type": "SoftwareApplication",
+      "identifier": "memuse",
+      "name": "memuse",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=memuse"
+    },
+    "11": {
+      "@type": "SoftwareApplication",
       "identifier": "parallelly",
       "name": "parallelly",
       "provider": {
@@ -214,7 +226,19 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=parallelly"
     },
-    "11": {
+    "12": {
+      "@type": "SoftwareApplication",
+      "identifier": "purrr",
+      "name": "purrr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=purrr"
+    },
+    "13": {
       "@type": "SoftwareApplication",
       "identifier": "readr",
       "name": "readr",
@@ -226,7 +250,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=readr"
     },
-    "12": {
+    "14": {
       "@type": "SoftwareApplication",
       "identifier": "rlang",
       "name": "rlang",
@@ -238,7 +262,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rlang"
     },
-    "13": {
+    "15": {
       "@type": "SoftwareApplication",
       "identifier": "sf",
       "name": "sf",
@@ -250,12 +274,12 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sf"
     },
-    "14": {
+    "16": {
       "@type": "SoftwareApplication",
       "identifier": "stats",
       "name": "stats"
     },
-    "15": {
+    "17": {
       "@type": "SoftwareApplication",
       "identifier": "stringr",
       "name": "stringr",
@@ -267,7 +291,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=stringr"
     },
-    "16": {
+    "18": {
       "@type": "SoftwareApplication",
       "identifier": "tibble",
       "name": "tibble",
@@ -279,7 +303,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=tibble"
     },
-    "17": {
+    "19": {
       "@type": "SoftwareApplication",
       "identifier": "xml2",
       "name": "xml2",
@@ -293,8 +317,9 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2068.081KB",
+  "fileSize": "1081.1KB",
   "readme": "https://github.com/Robinlovelace/spanishoddata/blob/main/README.md",
   "contIntegration": "https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml",
+  "developmentStatus": "https://www.repostatus.org/#wip",
   "keywords": ["cdr", "data", "data-package", "mobility", "origin-destination", "rstats", "mobile-telephone-data"]
 }

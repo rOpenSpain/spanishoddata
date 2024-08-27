@@ -178,6 +178,17 @@ references:
     given-names: Hadley
   year: '2024'
 - type: software
+  title: memuse
+  abstract: 'memuse: Memory Estimation Utilities'
+  notes: Imports
+  url: https://github.com/shinra-dev/memuse
+  repository: https://CRAN.R-project.org/package=memuse
+  authors:
+  - family-names: Schmidt
+    given-names: Drew
+    email: wrathematics@gmail.com
+  year: '2024'
+- type: software
   title: parallelly
   abstract: 'parallelly: Enhancing the ''parallel'' Package'
   notes: Imports
@@ -188,6 +199,21 @@ references:
     given-names: Henrik
     email: henrikb@braju.com
     orcid: https://orcid.org/0000-0002-7579-5165
+  year: '2024'
+- type: software
+  title: purrr
+  abstract: 'purrr: Functional Programming Tools'
+  notes: Imports
+  url: https://purrr.tidyverse.org/
+  repository: https://CRAN.R-project.org/package=purrr
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+    orcid: https://orcid.org/0000-0003-4757-117X
+  - family-names: Henry
+    given-names: Lionel
+    email: lionel@rstudio.com
   year: '2024'
 - type: software
   title: readr
