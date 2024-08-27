@@ -16,21 +16,6 @@ execute:
 
 # Converting the data for faster analysis {#convert-data}
 
-`spod_get()` returns objects that are only appropriate for small datasets representing a few days of the national OD datasets. We recommend converting the data into analysis-ready formats (`DuckDB` or `Parquet`), allowing you to work with large datasets on a consumer laptop (with 8-16 GB of memory).
-
-**Converting the data to either `DuckDB` or `Parquet` will improve the computation time up to 100x compared with using data frames returned with `spod_get()`, which reads CSV files every time you call it.**
-
-`DuckDB` and `Parquet` are systems for efficiently processing larger-than-memory datasets. For an introduction to them, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}.
-
-Learning to use `DuckDB` and `Parquet` is easy for anyone who have ever worked with `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from `DuckDB` and `Parquet`. Please read on. We first show how to convert the data, and then how to use it.
-
-The choice between converting to `DuckDB` and `Parquet` should be made based on your needs:
-
--   If you plan to download the data for all dates at once and then convert it for analysis, we recommend `DuckDB`, as it is one big file and it is easier to update it completely if for example you were to first use only dates for 2020, and then later decided to add more dates from 2021. In this case it would be better to delete the database and create it from scratch.
-
--   If you don't plan to download the whole dataset at once and only want certain dates, do analysis on them and then add more dates later, it is better to choose `Parquet` format, as in this case, each day is saved in a separate files, just like the original CSV files. Therefore updating a folder of `Parquet` files is as easy as just creating a new file only for the missing date.
-
-In our testing, using `DuckDB` has a slight speed advantage. The approaches to working with both formats are exactly the same, just use `{dplyr}` package and its functions for selecting, grouping, filtering and summarizing the data.
 
 ```{r}
 library(spanishoddata)

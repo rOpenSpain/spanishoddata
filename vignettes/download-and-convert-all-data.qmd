@@ -1,7 +1,7 @@
 ---
-title: "Download and convert all data into analysis ready format"
+title: "Download and convert datasets efficiently"
 vignette: >
-  %\VignetteIndexEntry{Download and convert all data into analysis ready format}
+  %\VignetteIndexEntry{Download and convert datasets efficiently}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -15,6 +15,26 @@ execute:
 ---
 
 This vignette shows how to donwload OD datasets (v1 and v2) and convert them into analysis-ready formats.
+There are two main ways to import the datasets: as in-memory object with `spod_get()` or as a connection to DuckDB or Parquet files on disc with `spod_convert_for_analysis()`. The latter is recommended for large datasets, as it is much faster and more memory efficient.
+
+# Converting to efficient on-disc formats {#convert-data}
+
+`spod_get()` returns objects that are only appropriate for small datasets representing a few days of the national OD datasets. We recommend converting the data into analysis-ready formats (`DuckDB` or `Parquet`), allowing you to work with large datasets on a consumer laptop (with 8-16 GB of memory).
+
+**Converting the data to either `DuckDB` or `Parquet` will improve the computation time up to 100x compared with using data frames returned with `spod_get()`, which reads CSV files every time you call it.**
+
+`DuckDB` and `Parquet` are systems for efficiently processing larger-than-memory datasets. For an introduction to them, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}.
+
+Learning to use `DuckDB` and `Parquet` is easy for anyone who have ever worked with `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from `DuckDB` and `Parquet`. Please read on. We first show how to convert the data, and then how to use it.
+
+The choice between converting to `DuckDB` and `Parquet` should be made based on your needs:
+
+-   If you plan to download the data for all dates at once and then convert it for analysis, we recommend `DuckDB`, as it is one big file and it is easier to update it completely if for example you were to first use only dates for 2020, and then later decided to add more dates from 2021. In this case it would be better to delete the database and create it from scratch.
+
+-   If you don't plan to download the whole dataset at once and only want certain dates, do analysis on them and then add more dates later, it is better to choose `Parquet` format, as in this case, each day is saved in a separate files, just like the original CSV files. Therefore updating a folder of `Parquet` files is as easy as just creating a new file only for the missing date.
+
+In our testing, using `DuckDB` has a slight speed advantage. The approaches to working with both formats are exactly the same, just use `{dplyr}` package and its functions for selecting, grouping, filtering and summarizing the data.
+
 
 See the detailed codebook for this data in [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in TODO_CODEBOOK_V2.
 
