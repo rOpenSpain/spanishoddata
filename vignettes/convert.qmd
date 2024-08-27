@@ -82,7 +82,27 @@ The choice between converting to `DuckDB` and `Parquet` should be made based on 
 
 -   If you only want certain dates, do analysis on them and then add more dates later, `Parquet` may be better, as each day is saved in a separate file, just like the original CSV files. Therefore updating a folder of `Parquet` files is as easy as just creating a new file only for the missing date.
 
-In our testing, using `DuckDB` has a slight speed advantage. The approaches to working with both formats are exactly the same, just use `{dplyr}` package and its functions for selecting, grouping, filtering and summarizing the data.
+
+In our testing (see @fig-csv-duckdb-parquet-speed), using `DuckDB` database has a significant speed advantage over running the analysis on raw CSV.gz files (`DuckDB` up to 8 times faster), or even on `Parquet` files (`DuckDB` up to 5 times faster). The approaches to working with both formats are exactly the same, just use `{dplyr}` package and its functions for selecting, grouping, filtering and summarizing the data.
+
+![Data processing speed comparison: DuckDB engine running on CSV.gz files vs DuckDB database vs a folder of Parquet files](media/duckdb-parquet-csv-speed-mean-hourly-v1.svg){#fig-csv-duckdb-parquet-speed}
+
+<details><summary>Testing query</summary>
+
+For reference, here is a simple query we used for speed comparison in @fig-csv-duckdb-parquet-speed:
+
+```r
+data |>
+  group_by(id_origin, id_destination, time_slot) |> 
+  summarise(mean_hourly_trips = mean(n_trips, na.rm = TRUE),
+    .groups = "drop")
+```
+
+</details>
+
+
+@fig-csv-duckdb-parquet-speed also shows that `DuckDB` format will also give you the best performance even on low-end systems with limited memory and number of processor cores, conditional on a fast SSD storage.
+
 
 # Getting a single day with `spod_get()` {#spod-get}
 
