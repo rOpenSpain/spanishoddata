@@ -7,7 +7,7 @@
 spod_codebook(ver = 1)
 }
 \arguments{
-\item{ver}{An \code{integer} or \code{numeric} value. The version of the data. Defaults to 1. Can be 1 for v1 (2020-2021) data and 2 for v2 (2022 onwards) data.}
+\item{ver}{An \code{integer} or \code{numeric} value. The version of the data. Defaults to 1. Can be \code{1} for v1 (2020-2021) data and 2 for v2 (2022 onwards) data.}
 }
 \value{
 Nothing, calls relevant vignette.

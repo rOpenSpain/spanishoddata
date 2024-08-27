@@ -1,0 +1,24 @@
+---
+title: "Codebook and cookbook for v2 (2022 onwards) Spanish mobility data"
+vignette: >
+  %\VignetteIndexEntry{Codebook and cookbook for v2 (2022 onwards) Spanish mobility data}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-overflow: wrap
+execute: 
+  eval: false
+---
+
+You can view this vignette any time by running:
+
+```{r}
+spanishoddata::spod_codebook(ver = 2)
+```
+
+
+Work-in-progress.
