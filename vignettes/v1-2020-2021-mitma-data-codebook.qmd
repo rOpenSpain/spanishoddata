@@ -225,4 +225,4 @@ tpp_dist_tbl <- tpp_dist |> dplyr::collect()
 
 # Advanced use
 
-For more advanced use, please see [Converting the data to DuckDB/Parquet for faster analysis](converting-the-data-for-faster-analysis.qmd) and [Downloading and converting all data into analysis ready format](download-and-convert-all-data.qmd).
+For more advanced use, please see [Converting the data to DuckDB/Parquet for faster analysis](converting-the-data-for-faster-analysis.qmd) and [Downloading and converting all data into analysis ready format](convert.qmd).
