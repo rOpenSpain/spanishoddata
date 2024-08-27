@@ -1,6 +1,9 @@
 url: https://robinlovelace.github.io/spanishoddata/
 template:
   bootstrap: 5
+  opengraph:
+    image:
+      src: man/figures/card.png
 
 articles:
 - title: Documentation
