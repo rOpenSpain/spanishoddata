@@ -1,7 +1,7 @@
 ---
-title: "Download and convert datasets efficiently"
+title: "Download and convert OD datasets"
 vignette: >
-  %\VignetteIndexEntry{Download and convert datasets efficiently}
+  %\VignetteIndexEntry{Download and convert OD datasets}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
