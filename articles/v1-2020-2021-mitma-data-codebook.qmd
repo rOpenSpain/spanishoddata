@@ -230,7 +230,7 @@ The original data is stored in the [`maestra-2`](https://www.transportes.gob.es/
 
 **Getting the data**
 
-To access it use `spod_get()` with `type` set to "number_of_tripss", or just "nt". We can also set `dates` to the maximum possible date range `2020-02-14` to `2021-05-09` to get all the data, as this data is relatively small (under 200 Mb).
+To access it use `spod_get()` with `type` set to "number_of_trips", or just "nt". We can also set `dates` to the maximum possible date range `2020-02-14` to `2021-05-09` to get all the data, as this data is relatively small (under 200 Mb).
 
 ```{r}
 dates <- c(start = "2020-02-14", end = "2021-05-09")
