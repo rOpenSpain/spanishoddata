@@ -54,7 +54,9 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/your/cache/directory")
 
 The @fig-overall-flow presents the overall approach to accessing the data in the `spanishoddata` package.
 
-![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.png){#fig-overall-flow width="120%" height="120%"}
+![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.svg){#fig-overall-flow width="78%"}
+
+
 
 <!-- the svg version breaks the whole vignette, nothing renders after the image, to sort out later -->
 
