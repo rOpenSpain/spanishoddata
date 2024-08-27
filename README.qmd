@@ -1,31 +1,40 @@
 ---
 format: gfm
-bibliography: references.bib
+bibliography: vignettes/references.bib
 execute: 
   message: false
   warning: false
-knitr:
-  opts_chunk:
-    fig.path: "man/figures/README-"
+# knitr:
+#   opts_chunk:
+#     fig.path: "man/figures/README-"
+eval: false
 ---
 
 <!-- badges: start -->
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-red.svg)
 [![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**spanishoddata** is an R package that provides functions for downloading and formatting Spanish origin-destination (OD) data from the Ministry of Transport and Sustainable Mobility of Spain.
+**spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable Mobility of Spain [@mitma-mobility-2024-v6].
 
-It supports the two versions of the Spanish OD data. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels.
+It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the [package website](https://robinlovelace.github.io/spanishoddata/) and vignettes for [v1](https://robinlovelace.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook) and [v2](https://robinlovelace.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook) data for more details.
 
 **spanishoddata** is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
+![Example of the data available through the package](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
+
+
 # Installation
 
-Install the package as follows:
+The package is not yet available on CRAN.
+
+Install the development version of the package as follows:
 
 ```{r}
 if (!require("remotes")) install.packages("remotes")
-remotes::install_github("Robinlovelace/spanishoddata")
+remotes::install_github("Robinlovelace/spanishoddata",
+  force = TRUE, dependencies = TRUE)
 ```
 
 Load it as follows:
@@ -34,21 +43,38 @@ Load it as follows:
 library(spanishoddata)
 ```
 
-Local development: to load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
+<details><summary>Developer documentation</summary>
+
+To load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
 
 ```bash
 gh repo clone Robinlovelace/spanishoddata
 code spanishoddata
+# with rstudio:
+rstudio spanishoddata/spanishoddata.Rproj
 ```
 
 Then run the following command from the R console:
 
 ```{r}
-#| eval: true
+#| eval: false
 devtools::load_all()
 ```
 
+</details>
+
 # Setting the data directory
+
+Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command:
+
+```{r}
+Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
+```
+
+
+The package will create this directory if it does not exist on the first run of any function that downloads the data.
+
+<details><summary>Setting data directory for advanced users</summary>
 
 You can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
 
@@ -64,7 +90,6 @@ SPANISH_OD_DATA_DIR = "/path/to/data"
 
 You can also set the data directory locally or on a per session basis as described below.
 
-<details>
 
 Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
 
@@ -84,7 +109,15 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 
 # Using the package
 
-To run the code in this README, we will use the following setup:
+You can find the overview of the key package functions in the following figure.
+
+![The overview of how to use the pacakge functions to get the data](vignettes/media/package-functions-overview.svg){ width=120% height=120%}
+
+If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://robinlovelace.github.io/spanishoddata/](https://robinlovelace.github.io/spanishoddata/).
+
+# Showcase
+
+To run the code in this README we will use the following setup:
 
 ```{r}
 #| label: pkgs
@@ -106,6 +139,25 @@ metadata <- spod_available_data(ver = 2) # for version 2 of the data
 metadata
 ```
 
+```
+# A tibble: 9,442 × 6
+   target_url           pub_ts              file_extension data_ym data_ymd  
+   <chr>                <dttm>              <chr>          <date>  <date>    
+ 1 https://movilidad-o… 2024-07-30 10:54:08 gz             NA      2022-10-23
+ 2 https://movilidad-o… 2024-07-30 10:51:07 gz             NA      2022-10-22
+ 3 https://movilidad-o… 2024-07-30 10:47:52 gz             NA      2022-10-20
+ 4 https://movilidad-o… 2024-07-30 10:14:55 gz             NA      2022-10-18
+ 5 https://movilidad-o… 2024-07-30 10:11:58 gz             NA      2022-10-17
+ 6 https://movilidad-o… 2024-07-30 10:09:03 gz             NA      2022-10-12
+ 7 https://movilidad-o… 2024-07-30 10:05:57 gz             NA      2022-10-07
+ 8 https://movilidad-o… 2024-07-30 10:02:12 gz             NA      2022-08-07
+ 9 https://movilidad-o… 2024-07-30 09:58:34 gz             NA      2022-08-06
+10 https://movilidad-o… 2024-07-30 09:54:30 gz             NA      2022-08-05
+# ℹ 9,432 more rows
+# ℹ 1 more variable: local_path <chr>
+```
+
+
 ## Zones
 
 Zones can be downloaded as follows:
@@ -119,17 +171,40 @@ distritos_wgs84 <- distritos |>
 plot(sf::st_geometry(distritos_wgs84))
 ```
 
+![](man/figures/README-distritos-1.png)
+
 ## OD data
 
 ```{r}
-od_db <- spod_get_od(
-  zones = "distritos",
+od_db <- spod_get(
+  type = "origin-destination",
+  zones = "districts",
   dates = c(start = "2024-03-01", end = "2024-03-07")
 )
 class(od_db)
+```
+
+```
+[1] "tbl_duckdb_connection" "tbl_dbi"               "tbl_sql"              
+[4] "tbl_lazy"              "tbl"                  
+```
+
+```{r}
 colnames(od_db)
 ```
 
+```
+ [1] "full_date"                   "time_slot"                  
+ [3] "id_origin"                   "id_destination"             
+ [5] "distance"                    "activity_origin"            
+ [7] "activity_destination"        "study_possible_origin"      
+ [9] "study_possible_destination"  "residence_province_ine_code"
+[11] "residence_province"          "income"                     
+[13] "age"                         "sex"                        
+[15] "n_trips"                     "trips_total_length_km"      
+[17] "year"                        "month"                      
+[19] "day"                        
+```
 
 The result is an R database interface object (`tbl_dbi`) that can be used with dplyr functions and SQL queries 'lazily', meaning that the data is not loaded into memory until it is needed.
 Let's do an aggregation to find the total number trips per hour over the 7 days:
@@ -137,10 +212,10 @@ Let's do an aggregation to find the total number trips per hour over the 7 days:
 ```{r}
 #| label: trips-per-hour
 n_per_hour <- od_db |>
-  group_by(full_date, time_slot) |>
+  group_by(date, time_slot) |>
   summarise(n = n(), Trips = sum(n_trips)) |>
   collect() |>
-  mutate(Time = lubridate::ymd_h(paste0(full_date, time_slot, sep = " "))) |>
+  mutate(Time = lubridate::ymd_h(paste0(date, time_slot, sep = " "))) |>
   mutate(Day = lubridate::wday(Time, label = TRUE))
 n_per_hour |>
   ggplot(aes(x = Time, y = Trips)) +
@@ -148,57 +223,33 @@ n_per_hour |>
   labs(title = "Number of trips per hour over 7 days")
 ```
 
-The figure above summarises `r format(sum(n_per_hour$Trips), big.mark = ",")` trips over the 7 days associated with `r format(sum(n_per_hour$n), big.mark = ",")` records.
+![](man/figures/README-trips-per-hour-1.png)
 
 
-See how you could do this manually with the following code, highlighting the benefits of the package:
+The figure above summarises 925,874,012 trips over the 7 days associated with 135,866,524 records.
 
-<details>
+## `spanishoddata` advantage over accessing the data yourself
 
-Each day in the `ficheros-diarios` folder contains a file with the following columns:
+As we demonstrated above, you can perform very quick analysis using just a few lines of code.
 
-```{r}
-#| label: ficheros-diarios-example
-# set timeout for downloads
-options(timeout = 600) # 10 minutes
-u1 <- "https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz"
-f1 <- basename(u1)
-if (!file.exists(f1)) {
-  download.file(u1, f1)
-}
-drv <- duckdb::duckdb("daily.duckdb")
-con <- DBI::dbConnect(drv)
-od1 <- duckdb::tbl_file(con, f1)
-# colnames(od1)
-#  [1] "fecha"                   "periodo"
-#  [3] "origen"                  "destino"
-#  [5] "distancia"               "actividad_origen"
-#  [7] "actividad_destino"       "estudio_origen_posible"
-#  [9] "estudio_destino_posible" "residencia"
-# [11] "renta"                   "edad"
-# [13] "sexo"                    "viajes"
-# [15] "viajes_km"
-od1_head <- od1 |>
-  head() |>
-  collect()
-od1_head |>
-  knitr::kable()
-DBI::dbDisconnect(con)
-```
+To highlight the benefits of the package, here is how you would do this manually:
 
-You can get the same result, but for multiple files, as follows:
+- download the [xml](https://movilidad-opendata.mitma.es/RSS.xml) file with the download links
 
-```{r}
-od_multi_list <- spod_get(
-  subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-  date_regex = "2024030[1-7]"
-)
-od_multi_list[[1]]
-class(od_multi_list[[1]])
-```
+- parse this xml to extract the download links
 
+- write a script to download the files and locate them on disk in a logical manner
 
-</details>
+- figure out the data structure of the downloaded files, read the codebook
+
+- translate the data (columns and values) into English, if you are not familiar with Spanish
+
+- write a script to load the data into the database or figure out a way to claculate summaries on multiple files
+
+- and much more...
+
+We did all of that for you and present you with a few simple functions that get you straight to the data in one line of code, and you are ready to run any analysis on it.
+
 
 # Desire lines
 
@@ -212,6 +263,23 @@ od_national_aggregated <- od_db |>
   collect() |>
   arrange(desc(Trips))
 od_national_aggregated
+```
+
+```
+# A tibble: 96,404 × 3
+   id_origin id_destination    Trips
+   <fct>     <fct>             <dbl>
+ 1 2807908   2807908        2441404.
+ 2 0801910   0801910        2112188.
+ 3 0801902   0801902        2013618.
+ 4 2807916   2807916        1821504.
+ 5 2807911   2807911        1785981.
+ 6 04902     04902          1690606.
+ 7 2807913   2807913        1504484.
+ 8 2807910   2807910        1299586.
+ 9 0704004   0704004        1287122.
+10 28106     28106          1286058.
+# ℹ 96,394 more rows
 ```
 
 The results show that the largest flows are intra-zonal.
@@ -239,6 +307,8 @@ distritos_wgs84 |>
   theme_void()
 ```
 
+![](man/figures/README-desire-lines-1.png)
+
 Let's focus on trips in and around a particular area (Salamanca):
 
 ```{r}
@@ -247,6 +317,8 @@ salamanca_zones <- zonebuilder::zb_zone("Salamanca")
 distritos_salamanca <- distritos_wgs84[salamanca_zones, ]
 plot(distritos_salamanca)
 ```
+
+![](man/figures/README-salamanca-zones-1.png)
 
 We will use this information to subset the rows, to capture all movement within the study area:
 
@@ -273,6 +345,8 @@ ggplot() +
   scale_colour_viridis_c() +
   theme_void()
 ```
+
+![](man/figures/README-salamanca-plot-1.png)
 
 # Further information
 
@@ -312,3 +386,22 @@ usethis::use_vignette("uses", title = "Use cases")
 ```
 
 # References
+
+<!-- metadata for better search engine indexing -->
+<!-- should be picked up by pkgdown -->
+<!-- update metadata before release with  -->
+<!-- cffr::cff_write() -->
+<!-- codemetar::write_codemeta(write_minimeta = T) -->
+
+```{r}
+#| eval: true
+#| include: false
+is_html <- knitr::is_html_output()
+```
+
+
+```{r results="asis", eval = !is_html, include = !is_html, include = FALSE}
+glue::glue('<script type="application/ld+json">
+      {glue::glue_collapse(readLines("inst/schemaorg.json"), sep = "\n")}
+    </script>')
+```

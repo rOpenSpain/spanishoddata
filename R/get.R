@@ -63,6 +63,7 @@ spod_get_zones <- function(
 #'   \item{local_path}{\code{character}. The local file path where the data is stored.}
 #'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
 #' }
+#' @export
 spod_available_data <- function(
   ver = 2,
   check_local_files = FALSE,
@@ -115,6 +116,7 @@ spod_get_latest_v2_file_list <- function(
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
+#' @importFrom rlang .data
 #' @examples
 #' # Get the data dictionary for the default data directory
 #' if (FALSE) {
@@ -198,6 +200,54 @@ spod_available_data_v2 <- function(
   # now check if any of local files exist
   if( check_local_files == TRUE){
     files_table$downloaded <- fs::file_exists(files_table$local_path)
+  }
+
+  # add known file sizes from cached data
+  file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v2.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
+  files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
+
+  # if there are files with missing sizes, impute them
+  if (any(is.na(files_table$remote_file_size_mb))) {
+    # impute uknown file sizes
+    # primitive file categorisation 
+    files_table <- files_table |>
+      dplyr::mutate(
+        cleaned_url = stringr::str_remove_all(.data$target_url, "/[0-9]{4}[-_][0-9]{2}[-_][0-9]{2}|/[0-9]{6,8}") |> 
+                      stringr::str_remove("/[^/]+$"),
+        file_category = dplyr::case_when(
+          stringr::str_detect(.data$cleaned_url, "calidad") ~ "quality",
+          stringr::str_detect(.data$cleaned_url, "rutas") ~ "routes",
+          stringr::str_detect(.data$cleaned_url, "estudios_basicos") ~ paste0(
+            "basic_studies_",
+            dplyr::case_when(
+              stringr::str_detect(.data$cleaned_url, "por-distritos") ~ "district_",
+              stringr::str_detect(.data$cleaned_url, "por-municipios") ~ "municipal_",
+              stringr::str_detect(.data$cleaned_url, "por-GAU") ~ "GAU_",
+              TRUE ~ "unknown_"
+            ),
+            dplyr::case_when(
+              stringr::str_detect(.data$cleaned_url, "viajes") ~ "trips_",
+              stringr::str_detect(.data$cleaned_url, "personas") ~ "people_",
+              stringr::str_detect(.data$cleaned_url, "pernoctaciones") ~ "overnight_",
+              TRUE ~ "unknown_"
+            ),
+            ifelse(stringr::str_detect(.data$cleaned_url, "ficheros-diarios"), "daily", "monthly")
+          ),
+          TRUE ~ "other"
+        )
+      ) |>
+      dplyr::select(-.data$cleaned_url)
+
+    # Calculate mean file sizes by category
+    size_by_file_category <- files_table |>
+      dplyr::group_by(.data$file_category) |>
+      dplyr::summarise(mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE))
+
+    # Impute missing file sizes
+    files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
+    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- files_table$mean_file_size_mb
+    files_table$mean_file_size_mb <- NULL
+    files_table$file_category <- NULL
   }
 
   return(files_table)
@@ -369,60 +419,4 @@ spod_clean_zones_v2 <- function(zones_path) {
     dplyr::select(-"geometry", "geometry")
   
   return(zones_sf)
-}
-
-
-
-#' Retrieves the origin-destination data
-#'
-#' This function downloads data from URLs such as
-#' https://movilidad-opendata.mitma.es/estudios_basicos/por-distritos/viajes/ficheros-diarios/2024-03/20240301_Viajes_distritos.csv.gz
-#' if the file does not exist in the data directory.
-#'
-#' @param data_dir The directory where the data is stored.
-#' @param subdir The subdirectory where the data is stored.
-#' @param date_regex The regular expression to match the date of the data to download.
-#' @param read_fun The function to read the data. Defaults to `duckdb::tbl_file`.
-#' @return The local path of the downloaded file (`download_od`), or a data frame with the origin-destination data (`spod_get`).
-#' @export
-#' @examples
-#' # Download the origin-destination data for the first two days of March 2024
-#' if (FALSE) {
-#'   od_20240301_20240302 <- spod_get(date_regex = "2024-03-0[1-2]")
-#' }
-spod_get <- function(
-    data_dir = spod_get_data_dir(),
-    subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-    date_regex = "2024030[1-2]",
-    read_fun = duckdb::tbl_file) {
-  file_paths <- download_od(data_dir = data_dir, subdir = subdir, date_regex = date_regex)
-  if (identical(read_fun, readr::read_csv)) {
-    return(purrr::map_dfr(file_paths, read_fun))
-  }
-  drv <- duckdb::duckdb()
-  con <- DBI::dbConnect(drv)
-  # file.exists(file_paths[1])
-  # od1 = duckdb::tbl_file(con, file_paths[2])
-  od_list <- purrr::map(file_paths, ~ duckdb::tbl_file(con, .))
-}
-download_od <- function(
-    data_dir = spod_get_data_dir(),
-    subdir = "estudios_basicos/por-distritos/viajes/ficheros-diarios",
-    date_regex = "2024030[1-2]") {
-  regex <- glue::glue("{subdir}*.+{date_regex}_Viajes_distritos.csv.gz")
-  metadata <- spod_available_data_v2(data_dir)
-  sel_od <- stringr::str_detect(metadata$target_url, regex)
-  metadata_od <- metadata[sel_od, ]
-  metadata_od[[1]]
-  dir_name <- dirname(metadata_od$local_path[1])
-  if (!fs::dir_exists(dir_name)) {
-    fs::dir_create(dir_name)
-  }
-  for (i in 1:nrow(metadata_od)) {
-    if (!fs::file_exists(metadata_od$local_path[i])) {
-      message("Downloading ", metadata_od$target_url[i])
-      curl::curl_download(url = metadata_od$target_url[i], destfile = metadata_od$local_path[i], quiet = FALSE)
-    }
-  }
-  return(metadata_od$local_path)
 }

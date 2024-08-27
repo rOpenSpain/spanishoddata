@@ -17,6 +17,7 @@ spod_duckdb_filter_by_dates(con, source_view_name, new_view_name, dates)
 
 The possible values can be any of the following:
 \itemize{
+\item For the \code{spod_get()} function, the \code{dates} can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to \code{spod_download_data()}.
 \item A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object.
 \item A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object. Can be any non-consecutive sequence of dates.
 \item A date range
@@ -28,5 +29,5 @@ The possible values can be any of the following:
 }}
 }
 \description{
-Filter a duckdb conenction by dates
+IMPORTANT: This function assumes that the table or view that is being filtered has separate \code{year}, \code{month} and \code{day} columns with integer values. This is done so that the filtering is faster on CSV files that are stored in a folder structure with hive-style \verb{/year=2020/month=2/day=14/}.
 }

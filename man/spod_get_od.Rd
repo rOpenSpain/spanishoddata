@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_v1_data.R
 \name{spod_get_od}
 \alias{spod_get_od}
-\title{Load the origin-destination v1 data (2020-2021) for specified dates}
+\title{Load the origin-destination data for specified dates}
 \usage{
 spod_get_od(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
@@ -10,8 +10,8 @@ spod_get_od(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  duck_max_mem = 3,
-  duck_max_threads = parallelly::availableCores() - 1
+  max_mem_gb = max(4, spod_available_ram() - 4),
+  max_n_cpu = parallelly::availableCores() - 1
 )
 }
 \arguments{
@@ -21,6 +21,7 @@ spod_get_od(
 
 The possible values can be any of the following:
 \itemize{
+\item For the \code{spod_get()} function, the \code{dates} can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to \code{spod_download_data()}.
 \item A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object.
 \item A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object. Can be any non-consecutive sequence of dates.
 \item A date range
@@ -33,17 +34,17 @@ The possible values can be any of the following:
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
-\item{duck_max_mem}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
+\item{max_mem_gb}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
 
-\item{duck_max_threads}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
+\item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 }
 \value{
 A DuckDB table connection object. It can be manupulated using \code{dplyr} verbs, or can be loaded into memory using \code{dplyr::collect()}. The structure of the object is as follows:
 
 \describe{
-\item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
+\item{date}{\code{Date}. The full date of the trip, including year, month, and day.}
 \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
 \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
 \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work').}
@@ -83,13 +84,13 @@ View \code{od_csv_clean} has the same structure as the filtered view 'od_filtere
 }
 }
 \description{
-This function retrieves the v1 (2020-2021) origin_destination_data for the specified dates. It checks if the requested data is already cached locally and downloads it if it is not. When all the requested data is cached, it creates a \code{DuckDB} connection to the cache data folder and provides an table
+This function retrieves the v1 (2020-2021) or v2 (2022 and onwards) origin-destination data for the specified dates. It checks if the requested data is already cached locally and downloads only missing files. When all the requested data is cached, it creates a \code{DuckDB} connection to the cache data folder and provides an table
 }
 \examples{
 \dontrun{
 
 # create a connection to the v1 data
-Sys.setenv(SPANISH_OD_DATA_DIR = "~/home/nosync/cache/mitma")
+Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
 dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
 od_dist <- spod_get_od(zones = "distr", dates = dates)
 

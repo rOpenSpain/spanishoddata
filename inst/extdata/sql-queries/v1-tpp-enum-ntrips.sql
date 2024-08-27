@@ -1,0 +1,1 @@
+CREATE TYPE N_TRIPS_ENUM AS ENUM ('0', '1', '2', '2+');

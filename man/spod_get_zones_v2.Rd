@@ -16,7 +16,7 @@ spod_get_zones_v2(
 
 \item{data_dir}{The directory where the data is stored.}
 
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
 An \code{sf} object (Simple Feature collection) with 4 fields:

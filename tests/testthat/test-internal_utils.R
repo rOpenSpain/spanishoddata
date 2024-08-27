@@ -1,7 +1,7 @@
 # Prepare the testing environment using bundled xml files to avoid downloading data from the internet
 
 extdata_path <- system.file("extdata", package = "spanishoddata")
-gz_files <- list.files(extdata_path, pattern = "data_links_.*\\.xml\\.gz", full.names = TRUE)
+gz_files <- list.files(extdata_path, pattern = "(data_links_.*\\.xml\\.gz)|(url_file_sizes_v[1-2]\\.csv\\.gz)", full.names = TRUE)
 
 if (length(gz_files) == 0) stop("No gzipped XML files found.")
 
@@ -22,7 +22,7 @@ for (gz_file in gz_files) {
 
 # Set the environment variable to the test directory
 Sys.setenv(SPANISH_OD_DATA_DIR = test_data_dir)
-
+# Sys.getenv("SPANISH_OD_DATA_DIR")
 
 test_that("single ISO date input", {
   dates <- "2023-07-01"

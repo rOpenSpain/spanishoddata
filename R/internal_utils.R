@@ -5,6 +5,8 @@
 #' @param dates A `character` or `Date` vector of dates to process. Kindly keep in mind that v1 and v2 data follow different data collection methodologies and may not be directly comparable. Therefore, do not try to request data from both versions for the same date range. If you need to compare data from both versions, please refer to the respective codebooks and methodology documents. The v1 data covers the period from 2020-02-14 to 2021-05-09, and the v2 data covers the period from 2022-01-01 to the present until further notice. The true dates range is checked against the available data for each version on every function run.
 #'
 #' The possible values can be any of the following:
+#' 
+#'  * For the `spod_get()` function, the `dates` can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to `spod_download_data()`.
 #'
 #'  * A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. `character` or `Date` object.
 #'
@@ -95,6 +97,17 @@ spod_is_data_version_overlaps <- function(dates) {
 }
 
 spod_infer_data_v_from_dates <- function(dates) {
+  # check if user is requesting to just get all cached data
+  if (length(dates) == 1){
+    if (as.character(dates) %in% c("cached_v1", "cached_v2")) {
+      return(
+        as.integer(stringr::str_extract(as.character(dates), "[0-9]$"))
+      )
+    }
+  }
+  cached_data_requested <- length(dates) == 1 &&
+    all(as.character(dates) %in% c("cached_v1", "cached_v2"))
+  
   # in case of overlap
   # will throw an error from the spod_is_data_version_overlaps
   if (spod_is_data_version_overlaps(dates)) {
@@ -148,8 +161,8 @@ spod_expand_dates_from_regex <- function(date_regex) {
 #' Get valid dates for the specified data version
 #' 
 #' @inheritParams spod_available_data
-#' @return A Dates vector of valid dates for the specified data version.
-#' @keywords internal
+#' @return A vector of type `Date` with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
+#' @export
 spod_get_valid_dates <- function(ver = NULL) {
   ver <- as.integer(ver) # todo: add type safety check
   if (!ver %in% c(1, 2)) {
@@ -166,7 +179,7 @@ spod_get_valid_dates <- function(ver = NULL) {
     available_data <- spod_available_data_v2(quiet = TRUE)
     all_dates <- unique(available_data[grepl("viajes.*diarios", available_data$target_url), ]$data_ymd, na.rm = TRUE)
   }
-
+  all_dates <- sort(all_dates)
   return(all_dates)
 }
 # currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
@@ -191,14 +204,13 @@ spod_zone_names_en2es <- function(
 }
 
 #' Match data types to folders
-#' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
 #' @inheritParams spod_available_data
 #' @keywords internal
-spod_match_data_type <- function(
+spod_match_data_type_for_local_folders <- function(
     type = c(
       "od", "origin-destination",
       "os", "overnight_stays",
-      "tpp", "trips_per_person"
+      "nt", "number_of_trips"
     ),
     ver = c(1, 2)) {
   if (!ver %in% c(1, 2)) {
@@ -211,7 +223,7 @@ spod_match_data_type <- function(
   if (ver == 1) {
     if (type %in% c("od", "origin-destination")) {
       return("maestra1")
-    } else if (type %in% c("tpp", "trips_per_person")) {
+    } else if (type %in% c("nt", "number_of_trips")) {
       return("maestra2")
     }
   }
@@ -221,11 +233,48 @@ spod_match_data_type <- function(
       return("viajes")
     } else if (type %in% c("os", "overnight_stays")) {
       return("pernoctaciones")
-    } else if (type %in% c("tpp", "trips_per_person")) {
+    } else if (type %in% c("nt", "number_of_trips")) {
       return("personas")
     }
   }
 
   # need to add a warning here that the type is not recognized
   return(NULL)
+}
+
+
+#' Match data types for normalisation
+#' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "nt", "number_of_trips".
+
+#' @keywords internal
+spod_match_data_type <- function(
+    type = c(
+      "od", "origin-destination", "viajes",
+      "os", "overnight_stays", "pernoctaciones",
+      "nt", "number_of_trips", "personas"
+    )
+) {
+  
+  type <- tolower(type)
+  type <- match.arg(type)
+
+  if (type %in% c("od", "origin-destination", "viajes")) {
+    return("od")
+  } else if (type %in% c("os", "overnight_stays", "pernoctaciones")) {
+    return("os")
+  } else if (type %in% c("nt", "number_of_trips", "personas")) {
+    return("nt")
+  }
+
+  # need to add a warning here that the type is not recognized
+  return(NULL)
+}
+
+#' Get available RAM
+#' @keywords internal
+#' @return A `numeric` amount of available RAM in GB.
+spod_available_ram <- function(){
+  return(
+    as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])/1024/1024/1024
+  )
 }

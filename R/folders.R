@@ -27,3 +27,20 @@ spod_subfolder_clean_data_cache <- function(ver = 1) {
   base_subdir_name <- "clean_data"
   return(paste0(base_subdir_name, "/v", ver, "/"))
 }
+
+#' Get temporary directory for DuckDB intermediate spilling
+#' 
+#' @description
+#' Get the The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling} in case the set memory limit and/or physical memory of the computer is too low to perform the query.
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
+#' @return The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling}.
+#' @keywords internal
+spod_get_temp_dir <- function(
+  data_dir = spod_get_data_dir()
+) {
+  temp_dir <- fs::path(data_dir, "temp")
+  if (!fs::dir_exists(temp_dir)) {
+    fs::dir_create(temp_dir)
+  }
+  return(temp_dir)
+}

@@ -1,6 +1,6 @@
-#' Creates a duckdb connection to v1 OD data
+#' Creates a duckdb connection to origin-destination data
 #'
-#' This function creates a duckdb connection to the v1 OD data.
+#' This function creates a duckdb connection to the origin-destination data stored in CSV.gz files.
 #'
 #' @param con A duckdb connection object. If not specified, a new in-memory connection will be created.
 #' @inheritParams spod_available_data
@@ -14,7 +14,7 @@
 #' The structure of the cleaned-up views `od_csv_clean` is as follows:
 #'
 #' \describe{
-#'   \item{full_date}{\code{Date}. The full date of the trip, including year, month, and day.}
+#'   \item{date}{\code{Date}. The full date of the trip, including year, month, and day.}
 #'   \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
 #'   \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
 #'   \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work'). \strong{Note:} Only available for district level data.}
@@ -74,10 +74,14 @@ spod_duckdb_od <- function(
   }
 
   if (ver == 1) {
+    # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
+    # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+    # the decision was to use distrcit data and aggregate it to replicate municipal data
     csv_folder <- paste0(
       data_dir, "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/maestra1-mitma-", spod_zone_names_en2es(zones),
+      "/maestra1-mitma-distritos",
       "/ficheros-diarios/"
     )
   } else if (ver == 2) {
@@ -89,19 +93,11 @@ spod_duckdb_od <- function(
     )
   }
 
-  # create view of csv files and preset variable types
-  raw_csv_view_sql_file <- glue::glue("extdata/sql-queries/v{ver}-od-{zones}-raw-csv-view.sql")
-
-  # Load SQL statement
-  sql_connect_csv <- readLines(
-    system.file(raw_csv_view_sql_file, package = "spanishoddata")
-  ) |> 
-    glue::glue_collapse(sep = "\n") |> 
-    glue::glue() |> 
-    dplyr::sql()
-
-  # Execute SQL statement
-  DBI::dbExecute(con, sql_connect_csv)
+  # create view to the raw TXT/CSV.gz files
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-{zones}-raw-csv-view.sql"))
+  )
 
   # create ENUMs
 
@@ -130,91 +126,183 @@ spod_duckdb_od <- function(
   )
 
   # create ACTIV_ENUM (for all except for municipalities in v1 data)
-  if ( !( zones == "municipios" & ver == 1) ) {
-    # LOAD SQL STATEMENT
-    sql_create_activ_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-activity-en.sql"),
-        package = "spanishoddata"
-      )
-    ) |> 
-      glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    # EXECUTE SQL STATEMENT
-    DBI::dbExecute(con, sql_create_activ_enum)
-  }
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-enum-activity-en.sql"))
+  )
 
   # create DISTANCE_ENUM
-  sql_create_distance_enum <- readLines(
-    system.file(
-      glue::glue("extdata/sql-queries/v{ver}-od-enum-distance.sql"),
-      package = "spanishoddata"
-    )
-  ) |> 
-    glue::glue_collapse(sep = "\n") |> 
-    dplyr::sql()
-  
-  DBI::dbExecute(con, sql_create_distance_enum)
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-enum-distance.sql"))
+  )
 
-  if ( !( zones == "municipios" & ver == 1) ) {
-    # create named INE province ENUM (for all except for municipalities in v1 data)
-    spod_duckdb_create_province_enum(con)
-  }
+  con <- spod_duckdb_create_province_enum(con)
+  
   
   # v2 only enums
   if (ver == 2) {
     # income ENUM
-    sql_create_income_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-income.sql"),
-        package = "spanishoddata"
-      )
-    ) |> glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    DBI::dbExecute(con, sql_create_income_enum)
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-od-enum-income.sql"))
+    )
     
     # age ENUM
-    sql_create_age_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-age.sql"),
-        package = "spanishoddata"
-      )
-    ) |>
-      glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    DBI::dbExecute(con, sql_create_age_enum)
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-od-enum-age.sql"))
+    )
     
     # sex ENUM
-    sql_create_sex_enum <- readLines(
-      system.file(
-        glue::glue("extdata/sql-queries/v{ver}-od-enum-sex-en.sql"),
-        package = "spanishoddata"
-      )
-    ) |>
-      glue::glue_collapse(sep = "\n") |> 
-      dplyr::sql()
-    DBI::dbExecute(con, sql_create_sex_enum)
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-od-enum-sex-en.sql"))
+    )
   }
 
-  # load sql statement to create od_csv_clean view
-  od_csv_clean_sql <- readLines(
-    system.file(
-      glue::glue("extdata/sql-queries/v{ver}-od-{zones}-clean-od_csv-en.sql"),
-      package = "spanishoddata"
+  # create od_csv_clean view
+  if (ver == 1 && zones == "municipios") {
+    # this will be picked up by the sql loaded below if neccessary
+    relations_districts_municipalities <- here::here(
+        data_dir,
+        spod_subfolder_raw_data_cache(1),
+        "relaciones_distrito_mitma.csv"
     )
-  ) |> 
-    glue::glue_collapse(sep = "\n") |> 
-    dplyr::sql()
-
-  DBI::dbExecute(con, od_csv_clean_sql)
-
+  }
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-csv-view-en.sql"))
+  )
 
   # return the connection as duckdb object
   return(con)
 }
 
+#' Create a duckdb number of trips table
+#' 
+#' @description
+#' This function creates a duckdb connection to the number of trips data stored in a folder of CSV.gz files.
+#' @inheritParams spod_duckdb_od
+#' @inheritParams spod_available_data
+#' @inheritParams spod_download_data
+#' 
+#' @return A duckdb connection with 2 views.
+#' 
+#' @keywords internal
+spod_duckdb_number_of_trips <- function(
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
+  zones = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ),
+  ver = NULL,
+  data_dir = spod_get_data_dir()
+) {
+  
+  ver <- as.integer(ver)
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 or 2.")
+  }
+  
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
+
+  # check that gau is not selected with ver = 1
+  if (ver == 1 && zones == "gau") {
+    stop("The 'gau' zones are not available in v1 data.")
+  }
+
+  if (ver == 1) {
+    # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
+    # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+    # the decision was to use distrcit data and aggregate it to replicate municipal data
+    csv_folder <- paste0(
+      data_dir, "/",
+      spod_subfolder_raw_data_cache(ver = ver),
+      "/maestra2-mitma-distritos",
+      "/ficheros-diarios/"
+    )
+  } else if (ver == 2) {
+    csv_folder <- paste0(
+      data_dir, "/",
+      spod_subfolder_raw_data_cache(ver = ver),
+      "/estudios_basicos/por-", spod_zone_names_en2es(zones),
+      "/viajes/ficheros-diarios/"
+    )
+  }
+
+  # create view of csv files and preset variable types
+
+  # create view to the raw TXT/CSV.gz files
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-raw-csv-view.sql"))
+  )
+
+  # create ENUMs
+
+  # zones ENUMs from uniqe ids of relevant zones
+  spatial_data <- spod_get_zones(zones,
+    ver = ver,
+    data_dir = data_dir,
+    quiet = TRUE
+  )
+  
+  if( ver == 1 ) {
+    unique_ids <- unique(spatial_data$id)
+  } else if( ver == 2 ) {
+    # unique_ids <- c("externo", unique(spatial_data$id)) # double check
+  }
+  
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      paste0(
+        "CREATE TYPE ZONES_ENUM AS ENUM ('",
+        paste0(unique_ids, collapse = "','"),
+        "');"
+      )
+    )
+  )
+
+  # create N_TRIPS_ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-tpp-enum-ntrips.sql"))
+  )
+
+  
+  # v2 only enums
+  if (ver == 2) {
+    ### TODO - check if any v2 specific ones
+  }
+
+  # create od_csv_clean view
+  if (ver == 1 && zones == "municipios") {
+    # this will be picked up by the sql loaded below if neccessary
+    relations_districts_municipalities <- here::here(
+        data_dir,
+        spod_subfolder_raw_data_cache(1),
+        "relaciones_distrito_mitma.csv"
+    )
+  }
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-clean-csv-view-en.sql"))
+  )
+
+  return(con)
+}
 
 #' Filter a duckdb conenction by dates
+#' 
+#' @description
+#' IMPORTANT: This function assumes that the table or view that is being filtered has separate `year`, `month` and `day` columns with integer values. This is done so that the filtering is faster on CSV files that are stored in a folder structure with hive-style `/year=2020/month=2/day=14/`.
+#' 
+#' 
 #' @param con A duckdb connection
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
 #' @param new_view_name The name of the new duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
@@ -306,24 +394,62 @@ spod_sql_where_dates <- function(dates) {
 
 #' Set maximum memory and number of threads for a DuckDB connection
 #' @param con A duckdb connection
-#' @param duck_max_mem The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
-#' @param duck_max_threads The maximum number of threads to use. Defaults to the number of available cores minus 1.
+#' @param max_mem_gb The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
+#' @param max_n_cpu The maximum number of threads to use. Defaults to the number of available cores minus 1.
 spod_duckdb_limit_resources <- function(
-    con,
-    duck_max_mem = 3, # in GB, default to 3 GB, should be enough to resave the data and small enough to fit in memory of most even old computers
-    duck_max_threads = parallelly::availableCores() - 1 # leave one core for other tasks by default
-    ) {
+  con,
+  max_mem_gb = max(4, spod_available_ram() - 4),
+  max_n_cpu = parallelly::availableCores() - 1
+) {
   DBI::dbExecute(
     con,
     dplyr::sql(
-      glue::glue("SET max_memory='{duck_max_mem}GB';")
+      glue::glue("SET max_memory='{max_mem_gb}GB';")
     )
   )
 
   DBI::dbExecute(
     con,
     dplyr::sql(
-      glue::glue("SET threads='{duck_max_threads}';")
+      glue::glue("SET threads='{max_n_cpu}';")
+    )
+  )
+
+  return(con)
+}
+
+#' Load an SQL query, glue it, dplyr::sql it
+#' @description
+#' Load an SQL query from a specified file in package installation directory, glue::collapse it, glue::glue it in case of any variables that need to be replaced, and dplyr::sql it for additional safety.
+#' 
+#' @return Text of the SQL query of class `sql`/`character`.
+#' @param sql_file_name The name of the SQL file to load from the package installation directory.
+#' @keywords internal
+spod_read_sql <- function(sql_file_name) {
+  sql_file_path <- glue::glue("extdata/sql-queries/{sql_file_name}")
+  
+  sql_query <- readLines(
+    system.file(sql_file_path, package = "spanishoddata")) |> 
+    glue::glue_collapse(sep = "\n") |> 
+    glue::glue(.envir = parent.frame()) |> 
+    dplyr::sql()
+  
+  return(sql_query)
+}
+
+#' Set temp file for DuckDB connection
+#' @param con A duckdb connection
+#' @param temp_path The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling} in case the set memory limit and/or physical memory of the computer is too low to perform the query. By default this is set to the `temp` directory in the data folder defined by SPANISH_OD_DATA_DIR environment variable. Otherwise, for queries on folders of CSV files or parquet files, the temporary path would be set to the current R working directory, which probably is undesirable, as the current working directory can be on a slow storage, or storage that may have limited space, compared to the data folder.
+#' @return A duckdb connection.
+#' @keywords internal
+spod_duckdb_set_temp <- function(
+  con,
+  temp_path = spod_get_temp_dir()
+) {
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      glue::glue("SET temp_directory='{temp_path}';")
     )
   )
 

@@ -1,0 +1,20 @@
+flowchart TB
+    A["For quick analysis of few dates\nwork with raw CSV.gz data"] -->|"spod_get(
+    type = 'origin-destination',
+    zones = 'districts',
+    dates = c(start = '2020-02-14', end = '2020-03-14') )"
+    | F["'tbl' object with 'id' for origins and destinations"]
+    
+    C["Analyse longer periods (several months)\nor even the whole dataset over several years"]
+    -->|"spod_convert(
+type = 'origin-destination',
+    zones = 'districts',
+    dates = c(start = '2020-02-14', end = '2021-05-09') )"| D["path to converted data"]
+    D -->|"spod_connect()" | F["'tbl' object with 'id' for origins and destinations"]
+    
+    F -->|"dplyr functions: select(), filter(), mutate(), group_by(), summarise(), etc..."| G["dplyr::collect()"]
+    G --> H["Result: data.frame / tibble"] --> R[spatial data matched by 'id' with aggegated mobility flows]
+
+    X["spatial data with zones"] --> |"spod_get_zones(
+    zones = 'districts',
+    ver = 1 )"| Y["polygons with zones in sf object\nwith 'id' that match with origins and destinations"] --> R

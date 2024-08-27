@@ -17,6 +17,7 @@ inst/doc
 .Renviron
 /doc/
 /Meta/
+vignettes/.quarto
 
 # macOS artifacts
 .DS_Store

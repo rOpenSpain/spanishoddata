@@ -7,7 +7,7 @@
 spod_get_data_dir(quiet = FALSE)
 }
 \arguments{
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
 The data directory.

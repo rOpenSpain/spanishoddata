@@ -19,7 +19,7 @@ spod_get_zones(
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
 
-\item{quiet}{A logical value indicating whether to suppress messages. Default is \code{FALSE}.}
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
 An \code{sf} object (Simple Feature collection).
