@@ -1,14 +1,20 @@
 
 
+# spanishoddata: Get Spanish Origin-Destination Data <a href="https://robinlovelace.github.io/spanishoddata/"><img src="man/figures/spanishoddata_biglogo.png" align="right" height="260" alt="spanishoddata website" /></a>
+
 <!-- badges: start -->
 
-[![Project Status: WIP – Initial development is in progress, but there
-has not yet been a stable, usable release suitable for the
-public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-red.svg)
-[![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
-<!-- badges: end -->
+<a href="https://www.repostatus.org/#wip" target="_blank"><img
+src="https://www.repostatus.org/badges/latest/wip.svg"
+alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a>
+<a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"
+target="_blank"><img
+src="https://img.shields.io/badge/lifecycle-experimental-red.svg"
+alt="Lifecycle: experimental" /></a> <a
+href="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml"
+target="_blank"><img
+src="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg"
+alt="R-CMD-check" /></a> <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
