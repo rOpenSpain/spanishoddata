@@ -109,8 +109,8 @@ data |>
 You can get a single day's worth of data as an in-memory object with `spod_get()`:
 
 ```{r}
-dates <- c(start = "2024-03-01", end = "2024-03-01")
-d_1
+dates <- c("2024-03-01")
+d_1 <- spod_get(type = "od", zones = "distr", dates = dates)
 class(d_1)
 ```
 
