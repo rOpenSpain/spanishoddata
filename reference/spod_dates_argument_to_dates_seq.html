@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,8 +18,10 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/uses.html">Use cases</a></li>
-    <li><a class="dropdown-item" href="../articles/work-with-v1-data.html">Working with v1 MITMA data</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/convert.html">Download and convert OD datasets</a></li>
+    <li><a class="dropdown-item" href="../articles/uses.html">Use cases</a></li>
+    <li><a class="dropdown-item" href="../articles/v1-2020-2021-mitma-data-codebook.html">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a></li>
+    <li><a class="dropdown-item" href="../articles/v2-2022-onwards-mitma-data-codebook.html">Codebook and cookbook for v2 (2022 onwards) Spanish mobility data</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -52,7 +54,8 @@
 
 <dl><dt id="arg-dates">dates<a class="anchor" aria-label="anchor" href="#arg-dates"></a></dt>
 <dd><p>A <code>character</code> or <code>Date</code> vector of dates to process. Kindly keep in mind that v1 and v2 data follow different data collection methodologies and may not be directly comparable. Therefore, do not try to request data from both versions for the same date range. If you need to compare data from both versions, please refer to the respective codebooks and methodology documents. The v1 data covers the period from 2020-02-14 to 2021-05-09, and the v2 data covers the period from 2022-01-01 to the present until further notice. The true dates range is checked against the available data for each version on every function run.</p>
-<p>The possible values can be any of the following:</p><ul><li><p>A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. <code>character</code> or <code>Date</code> object.</p></li>
+<p>The possible values can be any of the following:</p><ul><li><p>For the <code><a href="spod_get.html">spod_get()</a></code> function, the <code>dates</code> can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to <code><a href="spod_download_data.html">spod_download_data()</a></code>.</p></li>
+<li><p>A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. <code>character</code> or <code>Date</code> object.</p></li>
 <li><p>A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. <code>character</code> or <code>Date</code> object. Can be any non-consecutive sequence of dates.</p></li>
 <li><p>A date range</p><ul><li><p>eigher a <code>character</code> or <code>Date</code> object of length 2 with clearly named elements <code>start</code> and <code>end</code> in ISO (YYYY-MM-DD) or YYYYMMDD format. E.g. <code>c(start = "2020-02-15", end = "2020-02-17")</code>;</p></li>
 <li><p>or a <code>character</code> object of the form <code>YYYY-MM-DD_YYYY-MM-DD</code> or <code>YYYYMMDD_YYYYMMDD</code>. For example, <code>2020-02-15_2020-02-17</code> or <code>20200215_20200217</code>.</p></li>
