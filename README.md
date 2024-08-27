@@ -137,7 +137,7 @@ If you only want to analyse the data for a few days, you can use the
 `spod_get()` function. It will download the raw data in CSV format and
 let you analyse it in-memory. If you need longer periods (several months
 or years), you should use the `spod_convert()` and
-`spod_connect_to_converted_data()` functions, which will convert the
+`spod_connect()` functions, which will convert the
 data into special format which is much faster for analysis.
 `spod_get_zones()` will give you spatial data with zones that can be
 matched with the origin-destination flows from the functions above using

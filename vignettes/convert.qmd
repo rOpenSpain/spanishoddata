@@ -205,7 +205,7 @@ In this case, any missing data that has now yet been downloaded will be automati
 You can read the introductory information on how to connect to `DuckDB` files [here](https://duckdb.org/docs/api/r){target="_blank"}, however to simplify things for you we created a helper function. So to connect to the data stored in at path `db_1` and `db_2` you can do the following:
 
 ```{r}
-my_od_data_2 <- spod_connect_to_converted_data(db_2)
+my_od_data_2 <- spod_connect(db_2)
 ```
 
 Just like before, with `spod_get()` funciton that we used to download raw CSV.gz files and analyse them without any conversion, the resulting object `my_od_data_2` is also a `tbl_duckdb_connection`. So, you can treat it as regular `data.frame` or `tibble` and use `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc.
@@ -213,7 +213,7 @@ Just like before, with `spod_get()` funciton that we used to download raw CSV.gz
 After finishing working with `my_od_data_2` we advise that you "disconnect" this data using:
 
 ```{r}
-spod_disconnect_data(my_od_data_2)
+spod_disconnect(my_od_data_2)
 ```
 
 This is useful to free-up memory and is neccessary if you would like to run `spod_convert()` again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.
@@ -253,10 +253,10 @@ od_parquet <- spod_convert(type = type, zones = zones, dates = dates, save_forma
 
 ### Load the converted `Parquet` {#load-converted-parquet}
 
-Working with these `parquet` files is exactly the same as with `DuckDB` and `Arrow` files. Just like before, you can use the same helper function `spod_connect_to_converted_data()` to connect to the `parquet` files:
+Working with these `parquet` files is exactly the same as with `DuckDB` and `Arrow` files. Just like before, you can use the same helper function `spod_connect()` to connect to the `parquet` files:
 
 ```{r}
-my_od_data_3 <- spod_connect_to_converted_data(od_parquet)
+my_od_data_3 <- spod_connect(od_parquet)
 ```
 
 Mind you though, because we have first converted the data for a period between 14 and 17 February 2020, and then converted the data for a period between 16 and 19 February 2020 into the save default location, the `od_parquet` contains the path to all this data, and therefore `my_od_data_3` will connect you to all data.
@@ -324,12 +324,12 @@ For reference, converting the whole v1 origin-destination data to `DuckDB` takes
 
 ## Connecting to and analysing converted datasets
 
-You can pass the `analysis_data_storage` path to `spod_connect_to_converted_data()` function, whether it is `DuckDB` or `Parquet`. The function will determine the data type automatically and give you back a `tbl_duckdb_connection`[^1].
+You can pass the `analysis_data_storage` path to `spod_connect()` function, whether it is `DuckDB` or `Parquet`. The function will determine the data type automatically and give you back a `tbl_duckdb_connection`[^1].
 
 [^1]: For reference: this object also has classes: `tbl_dbi` ,`tbl_sql`, `tbl_lazy` ,and `tbl` .
 
 ```{r}
-my_data <- spod_connect_to_converted_data(
+my_data <- spod_connect(
   data_path = analysis_data_storage, 
   max_mem_gb = 16 # in GB, set more if you have more, the more, the better.
 )
@@ -342,5 +342,5 @@ You can manipulate `my_data` using `{dplyr}` functions such as `select()`, `filt
 After finishing working with `my_data` we advise that you "disconnect" to free up memory:
 
 ```{r}
-spod_disconnect_data(my_data)
+spod_disconnect(my_data)
 ```

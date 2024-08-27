@@ -10,7 +10,7 @@ flowchart TB
 type = 'origin-destination',
     zones = 'districts',
     dates = c(start = '2020-02-14', end = '2021-05-09') )"| D["path to converted data"]
-    D -->|"spod_connect_to_converted_data()" | F["'tbl' object with 'id' for origins and destinations"]
+    D -->|"spod_connect()" | F["'tbl' object with 'id' for origins and destinations"]
     
     F -->|"dplyr functions: select(), filter(), mutate(), group_by(), summarise(), etc..."| G["dplyr::collect()"]
     G --> H["Result: data.frame / tibble"] --> R[spatial data matched by 'id' with aggegated mobility flows]

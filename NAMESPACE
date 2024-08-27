@@ -2,9 +2,9 @@
 
 export(spod_available_data)
 export(spod_codebook)
-export(spod_connect_to_converted_data)
+export(spod_connect)
 export(spod_convert)
-export(spod_disconnect_data)
+export(spod_disconnect)
 export(spod_download_data)
 export(spod_get)
 export(spod_get_data_dir)
