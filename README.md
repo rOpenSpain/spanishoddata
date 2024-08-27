@@ -57,15 +57,17 @@ library(spanishoddata)
 
 <details>
 <summary>
-Installation for developers only
+Developer documentation
 </summary>
 
-Local development: to load the package locally, clone it and navigate to
-the root of the package in the terminal, e.g. with the following:
+To load the package locally, clone it and navigate to the root of the
+package in the terminal, e.g. with the following:
 
 ``` bash
 gh repo clone Robinlovelace/spanishoddata
 code spanishoddata
+# with rstudio:
+rstudio spanishoddata/spanishoddata.Rproj
 ```
 
 Then run the following command from the R console:
@@ -136,15 +138,14 @@ alt="The overview of how to use the pacakge functions to get the data" />
 If you only want to analyse the data for a few days, you can use the
 `spod_get()` function. It will download the raw data in CSV format and
 let you analyse it in-memory. If you need longer periods (several months
-or years), you should use the `spod_convert()` and
-`spod_connect()` functions, which will convert the
-data into special format which is much faster for analysis.
-`spod_get_zones()` will give you spatial data with zones that can be
-matched with the origin-destination flows from the functions above using
-zones ’id’s. Please see a simple example below, and also consult the
-vignettes with detailed data description and instructions in the package
-vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or
-simply visit the package website at
+or years), you should use the `spod_convert()` and `spod_connect()`
+functions, which will convert the data into special format which is much
+faster for analysis. `spod_get_zones()` will give you spatial data with
+zones that can be matched with the origin-destination flows from the
+functions above using zones ’id’s. Please see a simple example below,
+and also consult the vignettes with detailed data description and
+instructions in the package vignettes with `spod_codebook(ver = 1)` and
+`spod_codebook(ver = 2)`, or simply visit the package website at
 <https://robinlovelace.github.io/spanishoddata/>.
 
 # Showcase
