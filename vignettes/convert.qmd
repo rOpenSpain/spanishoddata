@@ -131,7 +131,7 @@ Note that this is a lazily-evaluated in-memory object (note the `:memory:` in th
 
 ### Convert to `DuckDB` {#convert-to-duckdb}
 
-You can convert the already downloaded data into `DuckDB` like. For example, you select a few dates, and download the data manually (note: we use `dates_2` to refer to the face that we are using v2 data):
+You can convert the already downloaded data into `DuckDB` database. For example, you select a few dates, and download the data manually (note: we use `dates_2` to refer to the fact that we are using v2 data):
 
 ```{r}
 dates_2 <- c(start = "2023-02-14", end = "2023-02-17")
