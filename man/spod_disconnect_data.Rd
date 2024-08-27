@@ -12,7 +12,7 @@ spod_disconnect_data(tbl_con, free_mem = TRUE)
 \item{free_mem}{A \code{logical}. Whether to free up memory by running \code{gc()}. Defaults to \code{TRUE}.}
 }
 \description{
-This function is to ensure that \code{DuckDB} connections to CSV.gz files (created via \code{spod_get()}), as well as to \code{DuckDB} files or folders of \code{parquet} files (created via \code{spod_convert_for_analysis()}) are closed properly to prevent conflicting connections. Essentially this is just a wrapper around \code{DBI::dbDisconnect()} that reaches out into the \code{.$src$con} object of the \code{tbl_duckdb_connection} connection object that is returned to the user via \code{spod_get()} and \code{spod_connect_to_converted_data()}. After disonnecting the database, it also frees up memory by running \code{gc()}.
+This function is to ensure that \code{DuckDB} connections to CSV.gz files (created via \code{spod_get()}), as well as to \code{DuckDB} files or folders of \code{parquet} files (created via \code{spod_convert()}) are closed properly to prevent conflicting connections. Essentially this is just a wrapper around \code{DBI::dbDisconnect()} that reaches out into the \code{.$src$con} object of the \code{tbl_duckdb_connection} connection object that is returned to the user via \code{spod_get()} and \code{spod_connect_to_converted_data()}. After disonnecting the database, it also frees up memory by running \code{gc()}.
 }
 \examples{
 \dontrun{

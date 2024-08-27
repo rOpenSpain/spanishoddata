@@ -3,7 +3,7 @@
 #' @description
 #' This function allows the user to quickly connect to the data converted to DuckDB with the `spod_convert_to_duckdb()` function. This function is a simplificaiton of the connection process. It uses
 #' 
-#' @param data_path a path to the `DuckDB` database file with '.duckdb' extension, or a path to the folder with `parquet` files. Eigher one should have been created with the `spod_convert_for_analysis()` function.
+#' @param data_path a path to the `DuckDB` database file with '.duckdb' extension, or a path to the folder with `parquet` files. Eigher one should have been created with the `spod_convert()` function.
 #' @param target_table_name table name inside the database.
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams spod_duckdb_set_temp
@@ -91,7 +91,7 @@ spod_connect_to_converted_data <- function(
 #' Safely disconnect from data and free memory
 #' 
 #' @description
-#' This function is to ensure that `DuckDB` connections to CSV.gz files (created via `spod_get()`), as well as to `DuckDB` files or folders of `parquet` files (created via `spod_convert_for_analysis()`) are closed properly to prevent conflicting connections. Essentially this is just a wrapper around `DBI::dbDisconnect()` that reaches out into the `.$src$con` object of the `tbl_duckdb_connection` connection object that is returned to the user via `spod_get()` and `spod_connect_to_converted_data()`. After disonnecting the database, it also frees up memory by running `gc()`.
+#' This function is to ensure that `DuckDB` connections to CSV.gz files (created via `spod_get()`), as well as to `DuckDB` files or folders of `parquet` files (created via `spod_convert()`) are closed properly to prevent conflicting connections. Essentially this is just a wrapper around `DBI::dbDisconnect()` that reaches out into the `.$src$con` object of the `tbl_duckdb_connection` connection object that is returned to the user via `spod_get()` and `spod_connect_to_converted_data()`. After disonnecting the database, it also frees up memory by running `gc()`.
 #' @param tbl_con A `tbl_duckdb_connection` connection object that you get from either `spod_get()` or `spod_connect_to_converted_data()`.
 #' @param free_mem A `logical`. Whether to free up memory by running `gc()`. Defaults to `TRUE`.
 #' @return NULL

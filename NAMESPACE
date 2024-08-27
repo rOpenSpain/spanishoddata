@@ -3,7 +3,7 @@
 export(spod_available_data)
 export(spod_codebook)
 export(spod_connect_to_converted_data)
-export(spod_convert_for_analysis)
+export(spod_convert)
 export(spod_disconnect_data)
 export(spod_download_data)
 export(spod_get)

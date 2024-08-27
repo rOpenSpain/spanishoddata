@@ -6,7 +6,7 @@ flowchart TB
     | F["'tbl' object with 'id' for origins and destinations"]
     
     C["Analyse longer periods (several months)\nor even the whole dataset over several years"]
-    -->|"spod_convert_for_analysis(
+    -->|"spod_convert(
 type = 'origin-destination',
     zones = 'districts',
     dates = c(start = '2020-02-14', end = '2021-05-09') )"| D["path to converted data"]
