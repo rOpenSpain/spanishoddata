@@ -320,7 +320,7 @@ Finally, `analysis_data_storage` will simply store the path to the converted dat
 
 ## Conversion speed
 
-For reference, converting the whole v1 origin-destination data to `DuckDB` takes about 20 minutes with 4 GB of memory and 3 processor cores. The final size of the `DuckDB` database is about 18 GB, in `Parquet` format - 26 GB. The raw CSV files in gzip archives are about 20GB.
+For reference, converting the whole v1 origin-destination data to `DuckDB` takes about 20 minutes with 4 GB of memory and 3 processor cores. The final size of the `DuckDB` database is about 18 GB, in `Parquet` format - 26 GB. The raw CSV files in gzip archives are about 20GB. v2 data is much larger, with origin-destination tables for 2022 - mid-2024 taking up 150+ GB in raw CSV.gz format.
 
 ## Connecting to and analysing converted datasets
 
