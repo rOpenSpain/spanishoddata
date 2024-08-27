@@ -1,4 +1,4 @@
-#' Get latest file list from the XML for MITMA open mobiltiy data v1 (2020-2021)
+#' Get latest file list from the XML for MITMA open mobility data v1 (2020-2021)
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param xml_url The URL of the XML file to download. Defaults to "https://opendata-movilidad.mitma.es/RSS.xml".
@@ -166,7 +166,7 @@ spod_available_data_v1 <- function(
   return(files_table)
 }
 
-#' Retrieves the zones for v1 data
+#' retrieves the zones for v1 data
 #'
 #' This function retrieves the zones data from the specified data directory.
 #' It can retrieve either "distritos" or "municipios" zones data.

@@ -82,7 +82,7 @@ spod_available_data <- function(
   }
 }
 
-#' Get latest file list from the XML for MITMA open mobiltiy data v2 (2022 onwards)
+#' Get latest file list from the XML for MITMA open mobility data v2 (2022 onwards)
 #'
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
@@ -274,7 +274,7 @@ spod_get_data_dir <- function(quiet = FALSE) {
   return(fs::path_real(data_dir_env))
 }
 
-#' Retrieves the zones data
+#' retrieves the zones data
 #'
 #' This function retrieves the zones data from the specified data directory.
 #' It can retrieve either "distritos" or "municipios" zones data.
