@@ -6,7 +6,7 @@
 \usage{
 spod_duckdb_limit_resources(
   con,
-  max_mem_gb = 3,
+  max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1
 )
 }

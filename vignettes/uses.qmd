@@ -28,7 +28,8 @@ This vignette serves as a place to showcase use cases of the package.
 We'll start by loading a week's worth of origin-destination data for the city of Salamanca, building on the example in the README (note: these chunks are not evaluated):
 
 ```{r}
-od_db <- spod_get_od(
+od_db <- spod_get(
+  type = "od",
   zones = "distritos",
   dates = c(start = "2024-03-01", end = "2024-03-07")
 )

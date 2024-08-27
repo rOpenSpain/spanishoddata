@@ -6,11 +6,11 @@
 \usage{
 spod_match_data_type(
   type = c("od", "origin-destination", "viajes", "os", "overnight_stays",
-    "pernoctaciones", "tpp", "trips_per_person", "personas")
+    "pernoctaciones", "nt", "number_of_trips", "personas")
 )
 }
 \arguments{
-\item{type}{The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".}
+\item{type}{The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "nt", "number_of_trips".}
 }
 \description{
 Match data types for normalisation

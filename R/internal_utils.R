@@ -210,7 +210,7 @@ spod_match_data_type_for_local_folders <- function(
     type = c(
       "od", "origin-destination",
       "os", "overnight_stays",
-      "tpp", "trips_per_person"
+      "nt", "number_of_trips"
     ),
     ver = c(1, 2)) {
   if (!ver %in% c(1, 2)) {
@@ -223,7 +223,7 @@ spod_match_data_type_for_local_folders <- function(
   if (ver == 1) {
     if (type %in% c("od", "origin-destination")) {
       return("maestra1")
-    } else if (type %in% c("tpp", "trips_per_person")) {
+    } else if (type %in% c("nt", "number_of_trips")) {
       return("maestra2")
     }
   }
@@ -233,7 +233,7 @@ spod_match_data_type_for_local_folders <- function(
       return("viajes")
     } else if (type %in% c("os", "overnight_stays")) {
       return("pernoctaciones")
-    } else if (type %in% c("tpp", "trips_per_person")) {
+    } else if (type %in% c("nt", "number_of_trips")) {
       return("personas")
     }
   }
@@ -244,14 +244,14 @@ spod_match_data_type_for_local_folders <- function(
 
 
 #' Match data types for normalisation
-#' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "tpp", "trips_per_person".
+#' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "nt", "number_of_trips".
 
 #' @keywords internal
 spod_match_data_type <- function(
     type = c(
       "od", "origin-destination", "viajes",
       "os", "overnight_stays", "pernoctaciones",
-      "tpp", "trips_per_person", "personas"
+      "nt", "number_of_trips", "personas"
     )
 ) {
   
@@ -262,10 +262,19 @@ spod_match_data_type <- function(
     return("od")
   } else if (type %in% c("os", "overnight_stays", "pernoctaciones")) {
     return("os")
-  } else if (type %in% c("tpp", "trips_per_person", "personas")) {
-    return("tpp")
+  } else if (type %in% c("nt", "number_of_trips", "personas")) {
+    return("nt")
   }
 
   # need to add a warning here that the type is not recognized
   return(NULL)
+}
+
+#' Get available RAM
+#' @keywords internal
+#' @return A `numeric` amount of available RAM in GB.
+spod_available_ram <- function(){
+  return(
+    as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])/1024/1024/1024
+  )
 }

@@ -10,7 +10,7 @@ spod_get_od(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  max_mem_gb = 3,
+  max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1
 )
 }

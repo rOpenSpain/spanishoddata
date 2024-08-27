@@ -8,7 +8,7 @@ spod_connect(
   data_path,
   target_table_name = NULL,
   quiet = FALSE,
-  max_mem_gb = 4,
+  max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1,
   temp_path = spod_get_temp_dir()
 )

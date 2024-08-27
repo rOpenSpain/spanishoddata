@@ -179,10 +179,10 @@ spod_duckdb_od <- function(
   return(con)
 }
 
-#' Create a duckdb trips per person table
+#' Create a duckdb number of trips table
 #' 
 #' @description
-#' This function creates a duckdb connection to the trips per person data stored in a folder of CSV.gz files.
+#' This function creates a duckdb connection to the number of trips data stored in a folder of CSV.gz files.
 #' @inheritParams spod_duckdb_od
 #' @inheritParams spod_available_data
 #' @inheritParams spod_download_data
@@ -190,7 +190,7 @@ spod_duckdb_od <- function(
 #' @return A duckdb connection with 2 views.
 #' 
 #' @keywords internal
-spod_duckdb_trips_per_person <- function(
+spod_duckdb_number_of_trips <- function(
   con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
   zones = c(
     "districts", "dist", "distr", "distritos",
@@ -397,10 +397,10 @@ spod_sql_where_dates <- function(dates) {
 #' @param max_mem_gb The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
 #' @param max_n_cpu The maximum number of threads to use. Defaults to the number of available cores minus 1.
 spod_duckdb_limit_resources <- function(
-    con,
-    max_mem_gb = 3, # in GB, default to 3 GB, should be enough to resave the data and small enough to fit in memory of most even old computers
-    max_n_cpu = parallelly::availableCores() - 1 # leave one core for other tasks by default
-    ) {
+  con,
+  max_mem_gb = max(4, spod_available_ram() - 4),
+  max_n_cpu = parallelly::availableCores() - 1
+) {
   DBI::dbExecute(
     con,
     dplyr::sql(

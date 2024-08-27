@@ -5,14 +5,13 @@
 \title{Get tabular data}
 \usage{
 spod_get(
-  type = c("od", "origin-destination", "os", "overnight_stays", "tpp",
-    "trips_per_person"),
+  type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"),
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
     "municip", "municipios"),
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  max_mem_gb = 3,
+  max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1,
   max_download_size_gb = 1,
   duckdb_target = ":memory:",
@@ -20,7 +19,7 @@ spod_get(
 )
 }
 \arguments{
-\item{type}{The type of data to download. Can be \code{"origin-destination"} (or ust \code{"od"}), or \code{"trips_per_person"} (or just \code{"tpp"}) for v1 data. For v2 data \code{"overnight_stays"} (or just \code{"os"}) is also available. More data types to be supported in the future. See respective codebooks for more information. \strong{ADD CODEBOOKS! to the package}}
+\item{type}{The type of data to download. Can be \code{"origin-destination"} (or ust \code{"od"}), or \code{"number_of_trips"} (or just \code{"nt"}) for v1 data. For v2 data \code{"overnight_stays"} (or just \code{"os"}) is also available. More data types to be supported in the future. See respective codebooks for more information. \strong{ADD CODEBOOKS! to the package}}
 
 \item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}) for both data versions. Additionaly, these can be \code{"large_urban_areas"} (or \code{"lau"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data (2022 onwards).}
 

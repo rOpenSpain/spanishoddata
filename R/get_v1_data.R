@@ -341,10 +341,9 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   # now we have some duplicate ids, we need to remove them
   # here's a function for that
   unique_separated_ids <- function(column) {
-    # Split the string by semicolon, remove duplicates, and join them back with semicolons
-    sapply(column, function(x) {
-      unique_ids <- unique(stringr::str_split(x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
-      paste(unique_ids, collapse = "; ")  # Join them back with semicolons
+    purrr::map_chr(column, ~ {
+      unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
+      stringr::str_c(unique_ids, collapse = "; ")  # Join them back with semicolons
     })
   }
 
@@ -480,7 +479,7 @@ spod_get_od <- function(
     dates = NULL,
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
-    max_mem_gb = 3,
+    max_mem_gb = max(4, spod_available_ram() - 4),
     max_n_cpu = parallelly::availableCores() - 1
 ) {
   # hardcode od as this is a wrapper to get origin-destiation data using spod_get() function
@@ -531,7 +530,7 @@ spod_get <- function(
   type = c(
     "od", "origin-destination",
     "os", "overnight_stays",
-    "tpp", "trips_per_person"
+    "nt", "number_of_trips"
   ),
   zones = c(
     "districts", "dist", "distr", "distritos",
@@ -540,7 +539,7 @@ spod_get <- function(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  max_mem_gb = 3,
+  max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1,
   max_download_size_gb = 1,
   duckdb_target = ":memory:",
@@ -595,8 +594,8 @@ spod_get <- function(
       ver = ver,
       data_dir = data_dir
     )
-  } else if (type == "tpp") {
-    con <- spod_duckdb_trips_per_person(
+  } else if (type == "nt") {
+    con <- spod_duckdb_number_of_trips(
       con = con,
       zones = zones,
       ver = ver,

@@ -282,7 +282,7 @@ Due to mobile network outages, some dates are missing, so do not assume that a s
 
 ## Download all data
 
-Here the example is for origin-destination on district level for v1 data. You can change the `type` to "trips_per_person" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the v2 data codebook, as it has many more datasets in addition to "origin-destination" and "trips_per_person". **TODO: insert link to v2 codebook when it is done**.
+Here the example is for origin-destination on district level for v1 data. You can change the `type` to "number_of_trips" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the v2 data codebook, as it has many more datasets in addition to "origin-destination" and "number_of_trips". **TODO: insert link to v2 codebook when it is done**.
 
 ```{r}
 type <- "origin-destination"

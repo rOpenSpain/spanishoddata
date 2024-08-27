@@ -11,10 +11,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-red.svg)
 <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
-downloading and formatting Spanish origin-destination (OD) data from the
-Ministry of Transport and Sustainable Mobility of Spain.
+downloading and formatting Spanish open mobility data released by the
+Ministry of Transport and Sustainable Mobility of Spain (Secretary of
+State for Transport, Mobility and Urban Agenda (Secretaría de Estado de
+Transportes, Movilidad y Agenda Urbana) 2024).
 
-It supports the two versions of the Spanish OD data. [The first
+It supports the two versions of the Spanish mobility data that consists
+of origin-destination matrices and some additional data sets. [The first
 version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad)
 covers data from 2020 and 2021, including the period of the COVID-19
 pandemic. [The second
@@ -23,7 +26,13 @@ contains data from January 2022 onwards and is updated monthly on the
 fifteenth of each month. Both versions of the data primarily consist of
 mobile phone positioning data, and include matrices for overnight stays,
 individual movements, and trips of Spanish residents at different
-geographical levels.
+geographical levels. See the [package
+website](https://robinlovelace.github.io/spanishoddata/) and vignettes
+for
+[v1](https://robinlovelace.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook)
+and
+[v2](https://robinlovelace.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook)
+data for more details.
 
 **spanishoddata** is designed to save people time by providing the data
 in analysis-ready formats. Automating the process of downloading,
@@ -51,7 +60,8 @@ Install the development version of the package as follows:
 
 ``` r
 if (!require("remotes")) install.packages("remotes")
-remotes::install_github("Robinlovelace/spanishoddata")
+remotes::install_github("Robinlovelace/spanishoddata",
+  force = TRUE, dependencies = TRUE)
 ```
 
 Load it as follows:
@@ -408,6 +418,17 @@ entry-spacing="0">
 Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
 Origin-Destination Data,” August.
 <https://cran.r-project.org/web/packages/od/od.pdf>.
+
+</div>
+
+<div id="ref-mitma-mobility-2024-v6" class="csl-entry">
+
+Secretary of State for Transport, Mobility and Urban Agenda (Secretaría
+de Estado de Transportes, Movilidad y Agenda Urbana). 2024. “Estudio de
+movilidad de viajeros de ámbito nacional aplicando la tecnología Big
+Data. Informe metodológico (Study of National Traveler Mobility Using
+Big Data Technology. Methodological Report).”
+<https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 </div>
 

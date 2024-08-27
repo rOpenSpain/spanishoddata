@@ -27,7 +27,7 @@ spod_convert <- function(
   type = c(
     "od", "origin-destination",
     "os", "overnight_stays",
-    "tpp", "trips_per_person"
+    "nt", "number_of_trips"
   ),
   zones = c(
     "districts", "dist", "distr", "distritos",
@@ -39,8 +39,8 @@ spod_convert <- function(
   overwrite = FALSE,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  max_mem_gb = 4, # fails on full v1 data with less than 4 GB. 4GB is reasonable.  Eventually I would set this to be either 4 as minumum, or about 60% of available RAM autodetected with `as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])` or `unclass(benchmarkme::get_ram())`, whichever is bigger. 
-  max_n_cpu = parallelly::availableCores() - 1, # Overall, the conversion is not so much memory-bounded, but rather the speed depends on available cores. E.g. with 6 cores it is almost exactly twice as fast as with 3 cores. So using as many cores as possible is very beneficial.
+  max_mem_gb = max(4, spod_available_ram() - 4),
+  max_n_cpu = parallelly::availableCores() - 1,
   max_download_size_gb = 1
 ) {
   

@@ -16,7 +16,7 @@ spod_codebook = function(ver = 1) {
       topic = "v1-2020-2021-mitma-data-codebook",
       package = "spanishoddata"
     )
-    if( class(help) == "vignette" ){
+    if( inherits(help, what = "vignette") ){
       return(help)
     } else {
       message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://robinlovelace.github.io/spanishoddata/articles/codebook-v1.html")
@@ -26,7 +26,7 @@ spod_codebook = function(ver = 1) {
       topic = "v2-2022-onwards-mitma-data-codebook.qmd",
       package = "spanishoddata"
     ) 
-    if( class(help) == "vignette" ){
+    if( inherits(help, what = "vignette") ){
       return(help)
     } else {
       message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://robinlovelace.github.io/spanishoddata/articles/codebook-v2.html")

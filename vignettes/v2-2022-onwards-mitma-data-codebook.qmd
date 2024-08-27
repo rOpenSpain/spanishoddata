@@ -21,4 +21,4 @@ spanishoddata::spod_codebook(ver = 2)
 ```
 
 
-Work-in-progress.
+Work-in-progress. Coming soong. For now, please consult the official documentation [@mitma-mobility-2024-v6].

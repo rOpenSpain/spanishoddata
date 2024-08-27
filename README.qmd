@@ -16,9 +16,9 @@ eval: false
 [![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**spanishoddata** is an R package that provides functions for downloading and formatting Spanish origin-destination (OD) data from the Ministry of Transport and Sustainable Mobility of Spain.
+**spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable Mobility of Spain [@mitma-mobility-2024-v6].
 
-It supports the two versions of the Spanish OD data. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels.
+It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the [package website](https://robinlovelace.github.io/spanishoddata/) and vignettes for [v1](https://robinlovelace.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook) and [v2](https://robinlovelace.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook) data for more details.
 
 **spanishoddata** is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
@@ -33,7 +33,8 @@ Install the development version of the package as follows:
 
 ```{r}
 if (!require("remotes")) install.packages("remotes")
-remotes::install_github("Robinlovelace/spanishoddata")
+remotes::install_github("Robinlovelace/spanishoddata",
+  force = TRUE, dependencies = TRUE)
 ```
 
 Load it as follows:

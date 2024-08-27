@@ -14,7 +14,7 @@ spod_connect <- function(
   data_path,
   target_table_name = NULL,
   quiet = FALSE,
-  max_mem_gb = 4, # later increase that to be 4GB or perhaps 60% of available RAM, as for analysis the amount of memory that can be used can significanly affect the speed of aggregations.
+  max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1,
   temp_path = spod_get_temp_dir()
 ){
