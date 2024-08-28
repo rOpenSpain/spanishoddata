@@ -17,7 +17,7 @@ execute:
 
 This vignette shows how to download OD datasets (v1 and v2) and convert them into analysis-ready formats.
 It does not cover the contents of the datasets.
-For that, see the codebooks in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in TODO_CODEBOOK_V2 vignettes.
+For that, see the codebooks in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in [Codebook and cookbook for v2 (2022 onwards) Spanish mobility data](v2-2022-onwards-mitma-data-codebook.qmd) vignettes.
 
 There are two main ways to import the datasets: as in-memory object with `spod_get()` or as a connection to DuckDB or Parquet files on disc with `spod_convert()`. The latter is recommended for large datasets, as it is much faster and more memory efficient.
 
@@ -282,7 +282,7 @@ Due to mobile network outages, some dates are missing, so do not assume that a s
 
 ## Download all data
 
-Here the example is for origin-destination on district level for v1 data. You can change the `type` to "number_of_trips" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the v2 data codebook, as it has many more datasets in addition to "origin-destination" and "number_of_trips". **TODO: insert link to v2 codebook when it is done**.
+Here the example is for origin-destination on district level for v1 data. You can change the `type` to "number_of_trips" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the [v2 data codebook](v2-2022-onwards-mitma-data-codebook.qmd), as it has many more datasets in addition to "origin-destination" and "number_of_trips".
 
 ```{r}
 type <- "origin-destination"

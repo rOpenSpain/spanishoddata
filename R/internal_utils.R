@@ -190,7 +190,7 @@ spod_zone_names_en2es <- function(
     zones = c(
       "districts", "dist", "distr", "distritos",
       "municipalities", "muni", "municip", "municipios",
-      "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+      "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
     )) {
   zones <- tolower(zones)
   zones <- match.arg(zones)
@@ -198,7 +198,7 @@ spod_zone_names_en2es <- function(
     return("distritos")
   } else if (zones %in% c("municipalities", "muni", "municip", "municipios")) {
     return("municipios")
-  } else if (zones %in% c("lau", "large_urban_areas", "gau", "grandes_areas_urbanas")) {
+  } else if (zones %in% c("lua", "large_urban_areas", "gau", "grandes_areas_urbanas")) {
     return("gau")
   }
 }
@@ -245,7 +245,6 @@ spod_match_data_type_for_local_folders <- function(
 
 #' Match data types for normalisation
 #' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "nt", "number_of_trips".
-
 #' @keywords internal
 spod_match_data_type <- function(
     type = c(

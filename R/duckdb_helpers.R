@@ -54,7 +54,7 @@ spod_duckdb_od <- function(
     zones = c(
       "districts", "dist", "distr", "distritos",
       "municipalities", "muni", "municip", "municipios",
-      "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+      "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
     ),
     ver = NULL,
     data_dir = spod_get_data_dir()
@@ -195,7 +195,7 @@ spod_duckdb_number_of_trips <- function(
   zones = c(
     "districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios",
-    "lau", "large_urban_areas", "gau", "grandes_areas_urbanas"
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
   ),
   ver = NULL,
   data_dir = spod_get_data_dir()
