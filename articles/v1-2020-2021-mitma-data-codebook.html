@@ -76,7 +76,7 @@
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">spanishoddata</span><span class="fu">::</span><span class="fu"><a href="../reference/spod_codebook.html">spod_codebook</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The mobility data v1 (2020-2021) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now <a href="https://www.transportes.gob.es/" class="external-link">Ministerio de Transportes y Movilidad Sostenible (MITMS)</a> <span class="citation" data-cites="mitma_data_v1">(<a href="#ref-mitma_data_v1" role="doc-biblioref">Secretary of State for Transport, mobility and Urban Agenda (Secretaría de Estado de Transportes, Movilidad y Agenda Urbana) 2021</a>)</span>. The dataset is produced by <a href="https://www.nommon.es/" target="_blank" class="external-link">Nommon</a> using the raw data from <a href="https://www.orange.es/" target="_blank" class="external-link">Orange España</a>. Even though the raw data is only from one mobile phone operator, the resulting flows and and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology). The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09), and the number of individuals making trips for each zone. This document will introduce you to the available data and provide brief code snippets on how to access it using the <code>spanishoddata</code> R package.</p>
+<p>The mobility data v1 (2020-2021) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now <a href="https://www.transportes.gob.es/" class="external-link">Ministerio de Transportes y Movilidad Sostenible (MITMS)</a> <span class="citation" data-cites="mitma_data_v1">(<a href="#ref-mitma_data_v1" role="doc-biblioref">Secretaría de Estado de Transportes, Movilidad y Agenda Urbana 2021</a>)</span>. The dataset is produced by <a href="https://www.nommon.es/" target="_blank" class="external-link">Nommon</a> using the raw data from <a href="https://www.orange.es/" target="_blank" class="external-link">Orange España</a>. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology). The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09), and the number of individuals making trips for each zone. This document will introduce you to the available data and provide brief code snippets on how to access it using the <code>spanishoddata</code> R package.</p>
 <p>Key sources for this codebook/cookbook include:</p>
 <ul>
 <li><p><a href="https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf" target="_blank" class="external-link">original data collection methodology in Spanish</a> + <a href="https://robinlovelace.github.io/spanishoddata/assets/codebooks/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3_en.pdf" target="_blank">automatically translated English version of methodology</a></p></li>
@@ -151,13 +151,11 @@ Figure 1: The overview of how to use the pacakge functions to get the data
 </tr>
 <tr class="odd">
 <td><code>district_names_in_v2</code></td>
-<td>A list of names of district polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above. <strong>TODO: insert link to v2 codebook.</strong>
-</td>
+<td>A list of names of district polygons defined in the <a href="v2-2022-onwards-mitma-data-codebook.qmd">v2 version of this data</a> that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above.</td>
 </tr>
 <tr class="even">
 <td><code>district_ids_in_v2</code></td>
-<td>A list of identifiers of district polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above. <strong>TODO: insert link to v2 codebook.</strong>
-</td>
+<td>A list of identifiers of district polygons defined in the <a href="v2-2022-onwards-mitma-data-codebook.qmd">v2 version of this data</a> that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above.</td>
 </tr>
 </tbody>
 </table></section><section class="level2"><h3 id="municipalities">1.2 <code>Municipalities</code>
@@ -195,13 +193,11 @@ Figure 1: The overview of how to use the pacakge functions to get the data
 </tr>
 <tr class="odd">
 <td><code>municipality_names_in_v2</code></td>
-<td>A list of names of municipality polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above. <strong>TODO: insert link to v2 codebook.</strong>
-</td>
+<td>A list of names of municipality polygons defined in the <a href="v2-2022-onwards-mitma-data-codebook.qmd">v2 version of this data</a> that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above.</td>
 </tr>
 <tr class="even">
 <td><code>municipality_ids_in_v2</code></td>
-<td>A list of identifiers of municipality polygons defined in the v2 version of this data that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above. <strong>TODO: insert link to v2 codebook.</strong>
-</td>
+<td>A list of identifiers of municipality polygons defined in the <a href="v2-2022-onwards-mitma-data-codebook.qmd">v2 version of this data</a> that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above.</td>
 </tr>
 </tbody>
 </table>
@@ -449,7 +445,7 @@ Data transformation note
 Mühleisen, Hannes, and Mark Raasveldt. 2024. <em>Duckdb: DBI Package for the DuckDB Database Management System</em>. <a href="https://doi.org/10.32614/CRAN.package.duckdb" class="external-link">https://doi.org/10.32614/CRAN.package.duckdb</a>.
 </div>
 <div id="ref-mitma_data_v1" class="csl-entry" role="listitem">
-Secretary of State for Transport, mobility and Urban Agenda (Secretaría de Estado de Transportes, Movilidad y Agenda Urbana). 2021. <span>“Analysis of Mobility in <span>Spain</span> with <span>Big Data</span> Technology During the State of Alarm for <span>COVID-19</span> Crisis Management. (<span class="nocase">An<span class="nocase">á</span>lisis</span> de La Movilidad En <span class="nocase">Espa<span class="nocase">ñ</span>a</span> Con Tecnolog<span>í</span>a <span>Big Data</span> Durante El Estado de Alarma Para La Gesti<span>ó</span>n de La Crisis Del <span>COVID-19</span>).”</span> <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" class="external-link">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad</a>.
+Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2021. <span>“Analysis of Mobility in <span>Spain</span> with <span>Big Data</span> Technology During the State of Alarm for <span>COVID-19</span> Crisis Management. (<span class="nocase">An<span class="nocase">á</span>lisis</span> de La Movilidad En <span class="nocase">Espa<span class="nocase">ñ</span>a</span> Con Tecnolog<span>í</span>a <span>Big Data</span> Durante El Estado de Alarma Para La Gesti<span>ó</span>n de La Crisis Del <span>COVID-19</span>).”</span> <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" class="external-link">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad</a>.
 </div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">
