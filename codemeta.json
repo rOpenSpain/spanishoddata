@@ -317,9 +317,34 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1214.094KB",
+  "fileSize": "1401.608KB",
+  "citation": [
+    {
+      "@type": "SoftwareSourceCode",
+      "datePublished": "2024",
+      "author": [
+        {
+          "@type": "Person",
+          "givenName": "Egor",
+          "familyName": "Kotov",
+          "email": "kotov.egor@gmail.com",
+          "@id": "https://orcid.org/0000-0001-6690-5345"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Robin",
+          "familyName": "Lovelace",
+          "email": "rob00x@gmail.com",
+          "@id": "https://orcid.org/0000-0001-5679-6536"
+        }
+      ],
+      "name": "spanishoddata",
+      "identifier": "10.32614/CRAN.package.spanishoddata",
+      "url": "https://github.com/RobinLovelace/spanishoddata",
+      "@id": "https://doi.org/10.32614/CRAN.package.spanishoddata",
+      "sameAs": "https://doi.org/10.32614/CRAN.package.spanishoddata"
+    }
+  ],
   "readme": "https://github.com/Robinlovelace/spanishoddata/blob/main/README.md",
-  "contIntegration": "https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml",
-  "developmentStatus": "https://www.repostatus.org/#wip",
   "keywords": ["cdr", "data", "data-package", "mobility", "origin-destination", "rstats", "mobile-telephone-data"]
 }

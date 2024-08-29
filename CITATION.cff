@@ -9,6 +9,7 @@ type: software
 license: MIT
 title: 'spanishoddata: Get Spanish Origin-Destination Data'
 version: 0.0.1
+doi: 10.32614/CRAN.package.spanishoddata
 abstract: Enables access to origin-destination (OD) provided by the Spanish Minstry
   of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
   It contains functions for downloading zone boundaries and associated origin-destination
@@ -25,6 +26,24 @@ authors:
   given-names: Robin
   email: rob00x@gmail.com
   orcid: https://orcid.org/0000-0001-5679-6536
+preferred-citation:
+  type: manual
+  title: spanishoddata
+  authors:
+  - family-names: Kotov
+    given-names: Egor
+    email: kotov.egor@gmail.com
+    orcid: https://orcid.org/0000-0001-6690-5345
+  - family-names: Lovelace
+    given-names: Robin
+    email: rob00x@gmail.com
+    orcid: https://orcid.org/0000-0001-5679-6536
+  - family-names: Vidal-Tortosa
+    given-names: Eugeni
+    orcid: https://orcid.org/0000-0001-5199-4103
+  year: '2024'
+  url: https://github.com/RobinLovelace/spanishoddata
+  doi: 10.32614/CRAN.package.spanishoddata
 repository-code: https://github.com/Robinlovelace/spanishoddata
 url: https://robinlovelace.github.io/spanishoddata/
 contact:

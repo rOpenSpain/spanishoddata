@@ -1,0 +1,16 @@
+bibentry(
+  key      = "spanishoddata",
+  bibtype  = "Manual",
+  title    = "spanishoddata",
+  author   = c(
+    person("Egor", "Kotov", , "kotov.egor@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6690-5345")),
+    person("Robin", "Lovelace", , "rob00x@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0001-5679-6536")),
+    person("Eugeni", "Vidal-Tortosa", role = "ctb",
+           comment = c(ORCID = "0000-0001-5199-4103"))
+  ),
+  year     = "2024",
+  url      = "https://github.com/RobinLovelace/spanishoddata",
+  doi      = "10.32614/CRAN.package.spanishoddata"
+)
