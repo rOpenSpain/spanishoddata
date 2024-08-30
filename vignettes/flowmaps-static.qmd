@@ -22,7 +22,6 @@ In this tutorial we will show how to make static flow maps with `{spanishodata}`
 
 ```{r}
 library(spanishoddata)
-library(od)
 library(tidyverse)
 library(mapSpain)
 library(sf)

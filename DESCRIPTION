@@ -48,6 +48,8 @@ Suggests:
     flowmapper,
     furrr,
     future,
+    hexSticker,
+    mapSpain,
     quarto,
     testthat (>= 3.0.0)
 VignetteBuilder:
