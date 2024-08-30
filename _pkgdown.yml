@@ -13,3 +13,32 @@ articles:
   - v2-2022-onwards-mitma-data-codebook
   - convert
   - uses
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github, lightswitch]
+
+reference:
+  - title: "Analysing up to 1 week of data"
+    desc: >
+      Quickly download and analyse just a few days of mobility data
+    contents:
+      - spod_get_zones
+      - spod_get
+      - spod_disconnect
+  - title: "Analysing long time periods (months or even years)"
+    desc: >
+      Download data for longer periods, convert them into analysis ready format such as `DuckDB` or `Parquet` for out-of-memory analysis of this large data
+    contents:
+      - spod_get_zones
+      - spod_download_data
+      - spod_convert
+      - spod_connect
+      - spod_disconnect
+  - title: "Helper functions"
+    contents:
+      - spod_codebook
+      - spod_available_data
+      - spod_get_valid_dates
+      - spod_get_data_dir
