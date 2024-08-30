@@ -329,6 +329,18 @@ references:
     given-names: Jeroen
   year: '2024'
 - type: software
+  title: flowmapper
+  abstract: 'flowmapper: Draw Flows (Migration, Goods, Money, Information) on ''ggplot2''
+    Plots'
+  notes: Suggests
+  url: https://github.com/JohMast/flowmapper
+  authors:
+  - family-names: Mast
+    given-names: Johannes
+    email: johannes.mast@dlr.de
+    orcid: https://orcid.org/0000-0001-6595-5834
+  year: '2024'
+- type: software
   title: furrr
   abstract: 'furrr: Apply Mapping Functions in Parallel using Futures'
   notes: Suggests

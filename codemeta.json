@@ -51,6 +51,11 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "flowmapper",
+      "name": "flowmapper"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "furrr",
       "name": "furrr",
       "provider": {
@@ -317,7 +322,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1401.608KB",
+  "fileSize": "1390.489KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
