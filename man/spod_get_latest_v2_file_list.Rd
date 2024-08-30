@@ -25,3 +25,4 @@ if (FALSE) {
   spod_get_latest_v2_file_list()
 }
 }
+\keyword{internal}

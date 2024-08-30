@@ -66,7 +66,7 @@ If you want to analyse longer periods of time (especiially several months or eve
 # create a connection to the v1 data
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
 dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
-od_dist <- spod_get_od(zones = "distr", dates = dates)
+od_dist <- spod_get(type = "od", zones = "distr", dates = dates)
 
 # od dist is a table view filtered to the specified dates
 

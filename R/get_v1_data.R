@@ -8,6 +8,7 @@
 #' if (FALSE) {
 #'   spod_get_latest_v1_file_list()
 #' }
+#' @keywords internal
 spod_get_latest_v1_file_list <- function(
     data_dir = spod_get_data_dir(),
     xml_url = "https://opendata-movilidad.mitma.es/RSS.xml"
@@ -44,6 +45,7 @@ spod_get_latest_v1_file_list <- function(
 #'   names(metadata)
 #'   head(metadata)
 #' }
+#' @keywords internal
 spod_available_data_v1 <- function(
     data_dir = spod_get_data_dir(),
     # check_local_files (below) is FALSE by default to avoid excessive filesystem access, perhaps should be TRUE. Download functions use it to load the xml file, but we probably do not want the script to check all local cache directories every time we run a get data function. Perhaps it is better to offload this check to a separate function and have a csv file or some other way to keep track of the files that were downloaded and cached. An output of curl::multi_download() could be used for this purpose.
@@ -184,6 +186,7 @@ spod_available_data_v1 <- function(
 #' if (FALSE) {
 #'   zones <- spod_get_zones_v1()
 #' }
+#' @keywords internal
 spod_get_zones_v1 <- function(
     zones = c(
       "districts", "dist", "distr", "distritos",
@@ -406,98 +409,6 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 }
 
 
-#' Load the origin-destination data for specified dates
-#'
-#' This function retrieves the v1 (2020-2021) or v2 (2022 and onwards) origin-destination data for the specified dates. It checks if the requested data is already cached locally and downloads only missing files. When all the requested data is cached, it creates a `DuckDB` connection to the cache data folder and provides an table
-#'
-#' @inheritParams spod_download_data
-#' @inheritParams spod_duckdb_limit_resources
-#' @inheritParams global_quiet_param
-#' @return A DuckDB table connection object. It can be manupulated using `dplyr` verbs, or can be loaded into memory using `dplyr::collect()`. The structure of the object is as follows:
-#'
-#' \describe{
-#'   \item{date}{\code{Date}. The full date of the trip, including year, month, and day.}
-#'   \item{id_origin}{\code{factor}. The identifier for the origin location of the trip, formatted as a code (e.g., '01001_AM').}
-#'   \item{id_destination}{\code{factor}. The identifier for the destination location of the trip, formatted as a code (e.g., '01001_AM').}
-#'   \item{activity_origin}{\code{factor}. The type of activity at the origin location (e.g., 'home', 'work').}
-#'   \item{activity_destination}{\code{factor}. The type of activity at the destination location (e.g., 'home', 'other').}
-#'   \item{residence_province}{\code{factor}. The province of residence for the individual making the trip (e.g. 'Cuenca', 'Girona').}
-#'   \item{time_slot}{\code{integer}. The time slot during which the trip started, represented as an integer (e.g., 0, 1, 2).}
-#'   \item{distance}{\code{factor}. The distance category of the trip, represented as a code (e.g., '002-005' for 2-5 km).}
-#'   \item{n_trips}{\code{double}. The number of trips taken within the specified time slot and distance.}
-#'   \item{trips_total_length_km}{\code{double}. The total length of all trips in kilometers for the specified time slot and distance.}
-#'   \item{year}{\code{double}. The year of the trip.}
-#'   \item{month}{\code{double}. The month of the trip.}
-#'   \item{day}{\code{double}. The day of the trip.}
-#' }
-#'
-#' This object also contains the reference to the source DuckDB conneciton with the full view of the cached data. It can be accessed using `od_table$src$con`. See examples below. The connection includes two views:
-#'
-#'
-#'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
-#'
-#'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
-#'
-#' View `od_csv_clean` has the same structure as the filtered view 'od_filtered', which is returned by `spod_get_od()` as a DuckDB table connection object. The view `od_csv_raw` has original Spanish column names and values and has the following structure:
-#' \describe{
-#'   \item{fecha}{\code{Date}. The date of the trip, including year, month, and day.}
-#'   \item{origen}{\code{character}. The identifier for the origin location of the trip, formatted as a character string (e.g., '01001_AM').}
-#'   \item{destino}{\code{character}. The identifier for the destination location of the trip, formatted as a character string (e.g., '01001_AM').}
-#'   \item{actividad_origen}{\code{character}. The type of activity at the origin location (e.g., 'casa', 'trabajo').}
-#'   \item{actividad_destino}{\code{character}. The type of activity at the destination location (e.g., 'otros', 'trabajo').}
-#'   \item{residencia}{\code{character}. The code representing the residence of the individual making the trip (e.g., '01') according to the official INE classification.}
-#'   \item{edad}{\code{character}. The age of the individual making the trip. This data is actaully filled with 'NA' values, which is why this column is removed in the cleaned-up and translated view described above.}
-#'   \item{periodo}{\code{integer}. The time period during which the trip started, represented as an integer (e.g., 0, 1, 2).}
-#'   \item{distancia}{\code{character}. The distance category of the trip, represented as a character string (e.g., '002-005' for 2-5 km).}
-#'   \item{viajes}{\code{double}. The number of trips taken within the specified time period and distance.}
-#'   \item{viajes_km}{\code{double}. The total length of all trips in kilometers for the specified time period and distance.}
-#'   \item{day}{\code{double}. The day of the trip.}
-#'   \item{month}{\code{double}. The month of the trip.}
-#'   \item{year}{\code{double}. The year of the trip.}
-#' }
-#'
-#' @export
-#' @examples
-#' \dontrun{
-#'
-#' # create a connection to the v1 data
-#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
-#' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
-#' od_dist <- spod_get_od(zones = "distr", dates = dates)
-#'
-#' # od dist is a table view filtered to the specified dates
-#'
-#' # access the source connection with all dates
-#' # list tables
-#' DBI::dbListTables(od_dist$src$con)
-#' }
-spod_get_od <- function(
-    zones = c(
-      "districts", "dist", "distr", "distritos",
-      "municipalities", "muni", "municip", "municipios"
-    ),
-    dates = NULL,
-    data_dir = spod_get_data_dir(),
-    quiet = FALSE,
-    max_mem_gb = max(4, spod_available_ram() - 4),
-    max_n_cpu = parallelly::availableCores() - 1
-) {
-  # hardcode od as this is a wrapper to get origin-destiation data using spod_get() function
-  type <- "od"
-  
-  duck_tbl_con <- spod_get(
-    type = type,
-    zones = zones,
-    dates = dates,
-    data_dir = data_dir,
-    quiet = quiet,
-    max_mem_gb = max_mem_gb,
-    max_n_cpu = max_n_cpu
-  )
-
-  return(duck_tbl_con)
-}
-
 #' Get tabular data
 #' 
 #' @description This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary. The connnection is made to the raw CSV files in gzip archives, so analysing the data through this connection may be slow if you select more than a few days. You can manipulate this object using `{dplyr}` functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. See codebooks for v1 and v2 data in vignettes with `spod_codebook(1)` and `spod_codebook(2)` (\link{spod_codebook}).
@@ -517,7 +428,7 @@ spod_get_od <- function(
 #' # create a connection to the v1 data
 #' Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
 #' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
-#' od_dist <- spod_get_od(zones = "distr", dates = dates)
+#' od_dist <- spod_get(type = "od", zones = "distr", dates = dates)
 #'
 #' # od dist is a table view filtered to the specified dates
 #'

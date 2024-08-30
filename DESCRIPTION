@@ -45,6 +45,7 @@ Imports:
     tibble,
     xml2
 Suggests: 
+    flowmapper,
     furrr,
     future,
     quarto,

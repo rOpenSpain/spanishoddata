@@ -17,6 +17,10 @@ spod_duckdb_limit_resources(
 
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 }
+\value{
+The duckdb connection.
+}
 \description{
 Set maximum memory and number of threads for a DuckDB connection
 }
+\keyword{internal}

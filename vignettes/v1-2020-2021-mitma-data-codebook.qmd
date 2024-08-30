@@ -119,7 +119,7 @@ Data structure:
 
 The spatial data you get via `spanishoddata` package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in `id` column. Apart from that `id` column, the original zones files do not have any metadata. However, as seen above, using the `spanishoddata` package you get many additional columns that provide a semantic connection between official statistical zones used by the Spanish government and the zones you can get for the v2 data (for 2022 onward).
 
-# 2. mobility data
+# 2. Mobility data
 
 All mobility data is referenced via `id_origin`, `id_destination`, or other location identifiers (mostly labelled as `id`) with the two sets of zones described above.
 
@@ -156,7 +156,7 @@ The original data is stored in the [`maestra-2`](https://www.transportes.gob.es/
 
 **Getting the data**
 
-To access the data, use the `spod_get_od()` function. In this example we will use a short interval of dates:
+To access the data, use the `spod_get()` function. In this example we will use a short interval of dates:
 
 ```{r}
 dates <- c(start = "2020-02-14", end = "2020-02-17")
@@ -205,7 +205,7 @@ In this example above, we calculated mean hourly flows over the 4 days of the re
 
 The same summary operation as provided in the example above can be done with the entire dataset for the full 18 month on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, we will also demonstrate in the end of the document, how the data can be converted to more efficient formats.
 
-***Note**: As long as you use object `od_dist` created with `spod_get_od()` function, it is much quicker to filter the dates by the `year`, `month` and `day` variables, rather than by the `date` variable.* This is because the data for each day is in a separate CSV file located in folders that look like `year=2020/month=2/day=14`. So when filtering by the `date` field, R will have to scan all CSV files comparing the specified date with what is stored inside the file. However, if you query by *`year`, `month` and `day` variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use `spod_get_od()` . If you convert (see the [relevant section below](#convert-data)) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance as much.*
+***Note**: As long as you use object `od_dist` created with `spod_get()` function, it is much quicker to filter the dates by the `year`, `month` and `day` variables, rather than by the `date` variable.* This is because the data for each day is in a separate CSV file located in folders that look like `year=2020/month=2/day=14`. So when filtering by the `date` field, R will have to scan all CSV files comparing the specified date with what is stored inside the file. However, if you query by *`year`, `month` and `day` variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use `spod_get()` . If you convert (see the [relevant section below](#convert-data)) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance as much.*
 
 ## 2.2. Number of trips data {#tpp-data}
 
