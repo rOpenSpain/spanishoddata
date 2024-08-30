@@ -1,6 +1,6 @@
 
 
-# spanishoddata: Get Spanish Origin-Destination Data <a href="https://robinlovelace.github.io/spanishoddata/"><img src="man/figures/spanishoddata_biglogo.png" align="right" width="200" alt="spanishoddata website" /></a>
+# spanishoddata: Get Spanish Origin-Destination Data <a href="https://robinlovelace.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
 
 <!-- badges: start -->
 

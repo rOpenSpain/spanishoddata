@@ -348,7 +348,7 @@ base_plot <- ggplot() +
 flows_plot <- base_plot|>
   add_flowmap(
     flows_by_ca_twoway_coords,
-    node_radius_factor = 0.5,
+    node_radius_factor = 1,
     edge_width_factor = 1,
     arrow_point_angle = 35,
     node_buffer_factor = 1.5,
