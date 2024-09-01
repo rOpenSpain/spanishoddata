@@ -2,7 +2,7 @@
 title: "Making static flow maps"
 subtitle: "*or how to re-create `{spanishoddata}` logo*"
 vignette: >
-  %\VignetteIndexEntry{Download and convert mobility datasets}
+  %\VignetteIndexEntry{Making static flow maps}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
