@@ -145,7 +145,7 @@ head(od_20210407_total)
 
 We are going to use the `{flowmapper}` [@flowmapper-r] package to plot the flows. This package expects the data to be in the following format:
 
-```{r}
+```
 'data.frame':	7 obs. of  8 variables:
  $ id_a   : chr  "X1" "X2" "X3" "X3" ...
  $ id_b   : chr  "X5" "X4" "X1" "X5" ...
