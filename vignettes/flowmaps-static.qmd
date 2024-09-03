@@ -16,7 +16,7 @@ execute:
   eval: false
 ---
 
-In this tutorial we will show how to make static flow maps with `{spanishoddata}` and `{flowmapper}`. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup).
+This tutorial shows how to make static 'flow maps' with data from `{spanishoddata}` and the `{flowmapper}` data visualisation package. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup).
 
 # Setup {#setup}
 
@@ -34,7 +34,7 @@ library(sf)
 ```
 
 
-Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command:
+Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command (if you have not done it already):
 
 ```{r}
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
