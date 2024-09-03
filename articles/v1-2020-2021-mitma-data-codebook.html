@@ -6,6 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Codebook and cookbook for v1 (2020-2021) Spanish mobility data • spanishoddata</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
@@ -38,8 +44,9 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/v1-2020-2021-mitma-data-codebook.html">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a></li>
     <li><a class="dropdown-item" href="../articles/v2-2022-onwards-mitma-data-codebook.html">Codebook and cookbook for v2 (2022 onwards) Spanish mobility data</a></li>
-    <li><a class="dropdown-item" href="../articles/convert.html">Download and convert OD datasets</a></li>
+    <li><a class="dropdown-item" href="../articles/convert.html">Download and convert mobility datasets</a></li>
     <li><a class="dropdown-item" href="../articles/uses.html">Use cases</a></li>
+    <li><a class="dropdown-item" href="../articles/flowmaps-static.html">Making static flow maps</a></li>
   </ul>
 </li>
       </ul>
@@ -56,8 +63,7 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Codebook and cookbook for v1 (2020-2021) Spanish mobility data</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Codebook and cookbook for v1 (2020-2021) Spanish mobility data</h1>
 
 
 
@@ -202,7 +208,7 @@ Figure 1: The overview of how to use the pacakge functions to get the data
 </tbody>
 </table>
 <p>The spatial data you get via <code>spanishoddata</code> package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in <code>id</code> column. Apart from that <code>id</code> column, the original zones files do not have any metadata. However, as seen above, using the <code>spanishoddata</code> package you get many additional columns that provide a semantic connection between official statistical zones used by the Spanish government and the zones you can get for the v2 data (for 2022 onward).</p>
-</section></section><section class="section level2"><h2 id="mobility-data">2. mobility data<a class="anchor" aria-label="anchor" href="#mobility-data"></a>
+</section></section><section class="section level2"><h2 id="mobility-data">2. Mobility data<a class="anchor" aria-label="anchor" href="#mobility-data"></a>
 </h2>
 <p>All mobility data is referenced via <code>id_origin</code>, <code>id_destination</code>, or other location identifiers (mostly labelled as <code>id</code>) with the two sets of zones described above.</p>
 <section class="level2"><h3 id="od-data">2.1. Origin-destination data<a class="anchor" aria-label="anchor" href="#od-data"></a>
@@ -322,7 +328,7 @@ Figure 2: Origin destination flows in Barcelona on 2020-02-14
 Data transformation note
 </summary><p>The original data is stored in the <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" target="_blank" class="external-link"><code>maestra-2</code></a> folder with suffixes <code>distritos</code> (for district zoning) and <code>municipios</code> (for municipality zoning). We only use the <code>district</code> level data because of several data issues with the <code>municipality</code> data documented <a href="http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html" target="_blank" class="external-link">here</a> and <a href="http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html" target="_blank" class="external-link">here</a>, but also because the distric level data contains more columns with useful origin-destination flow characteristics. As a result, you get both the <code>district</code> level data and the <code>municipality</code> level data with the same columns. <code>Municipality</code> level data is simply a re-aggregation of <code>district</code> level data using the official relations file where <code>district</code> identifiers are mapped to <code>municipality</code> identifiers (orginal file is <a href="https://opendata-movilidad.mitma.es/relaciones_distrito_mitma.csv" target="_blank" class="external-link"><code>relaciones_distrito_mitma.csv</code></a>).</p>
 </details><p><strong>Getting the data</strong></p>
-<p>To access the data, use the <code><a href="../reference/spod_get_od.html">spod_get_od()</a></code> function. In this example we will use a short interval of dates:</p>
+<p>To access the data, use the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. In this example we will use a short interval of dates:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2020-02-14"</span>, end <span class="op">=</span> <span class="st">"2020-02-17"</span><span class="op">)</span></span>
@@ -360,7 +366,7 @@ Data transformation note
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
 <p>In this example above, we calculated mean hourly flows over the 4 days of the requested period. The full data for all 4 days was never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. This is done transparantly to the user with the help of <a href="https://duckdb.org/" target="_blank" class="external-link"><code>DuckDB</code></a> (specifically, with <a href="https://r.duckdb.org/index.html" target="_blank" class="external-link">{duckdb} R package</a> <span class="citation" data-cites="duckdb-r">Mühleisen and Raasveldt (<a href="#ref-duckdb-r" role="doc-biblioref">2024</a>)</span>).</p>
 <p>The same summary operation as provided in the example above can be done with the entire dataset for the full 18 month on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, we will also demonstrate in the end of the document, how the data can be converted to more efficient formats.</p>
-<p><em><strong>Note</strong>: As long as you use object <code>od_dist</code> created with <code><a href="../reference/spod_get_od.html">spod_get_od()</a></code> function, it is much quicker to filter the dates by the <code>year</code>, <code>month</code> and <code>day</code> variables, rather than by the <code>date</code> variable.</em> This is because the data for each day is in a separate CSV file located in folders that look like <code>year=2020/month=2/day=14</code>. So when filtering by the <code>date</code> field, R will have to scan all CSV files comparing the specified date with what is stored inside the file. However, if you query by <em><code>year</code>, <code>month</code> and <code>day</code> variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use <code><a href="../reference/spod_get_od.html">spod_get_od()</a></code> . If you convert (see the <a href="#convert-data">relevant section below</a>) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance as much.</em></p>
+<p><em><strong>Note</strong>: As long as you use object <code>od_dist</code> created with <code><a href="../reference/spod_get.html">spod_get()</a></code> function, it is much quicker to filter the dates by the <code>year</code>, <code>month</code> and <code>day</code> variables, rather than by the <code>date</code> variable.</em> This is because the data for each day is in a separate CSV file located in folders that look like <code>year=2020/month=2/day=14</code>. So when filtering by the <code>date</code> field, R will have to scan all CSV files comparing the specified date with what is stored inside the file. However, if you query by <em><code>year</code>, <code>month</code> and <code>day</code> variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use <code><a href="../reference/spod_get.html">spod_get()</a></code> . If you convert (see the <a href="#convert-data">relevant section below</a>) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance as much.</em></p>
 </section><section class="level2"><h3 id="tpp-data">2.2. Number of trips data<a class="anchor" aria-label="anchor" href="#tpp-data"></a>
 </h3>
 <p>The “number of trips” data shows the number of individuals in each district or municipality who made trips categorised by the number of trips.</p>
