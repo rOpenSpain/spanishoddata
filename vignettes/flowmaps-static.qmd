@@ -21,9 +21,8 @@ In this tutorial we will show how to make static flow maps with `{spanishoddata}
 # Setup {#setup}
 
 ```{r}
-#| include: false
 #| eval: false
-# install dev version of the package so that it accepts od and nodes and we don't have to do the data wrangling
+# temporarily, please use the dev version of the flowmapper package by installing it with the following command:
 remotes::install_github("JohMast/flowmapper", force = TRUE)
 ```
 
