@@ -80,7 +80,6 @@ od_20210407 <- spod_get("od", zones = "distr", dates = "2021-04-07")
 head(od_20210407)
 ```
 
-
 ```
 # Source:   SQL [6 x 14]
 # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
@@ -98,7 +97,7 @@ head(od_20210407)
 
 ### Zones
 
-We also get the district zones polygons to mathch the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.qmd)).
+We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.qmd)).
 
 ```{r}
 districts_v1 <- spod_get_zones("dist", ver = 1)
@@ -127,10 +126,9 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 
 ```{r}
 od_20210407_total <- od_20210407 |>
-  group_by(id_origin, id_destination) |>
-  summarise(n_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  group_by(o = id_origin, d = id_destination) |>
+  summarise(value = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
   collect() |> 
-  rename(o = id_origin, d = id_destination, value = n_trips) |> 
   arrange(o, d, value)
 
 head(od_20210407_total)
@@ -150,7 +148,7 @@ head(od_20210407_total)
 
 ## Reshape flows for visualization
 
-We are going to use the `{flowmapper}` [@flowmapper-r] package to plot the flows. This package expects the data to be in the following format:
+The `{flowmapper}` package was developed to visualise origin-destination 'flow' data [@flowmapper-r]. This package expects the data to be in the following format:
 
 A `data.frame` with origin-destination pairs and the flow counts between them with the following columns:
 
@@ -171,8 +169,7 @@ Another `data.frame` with the node `id`s or names and their coorindates. The coo
 
 ### Prepare the flows table
 
-The data we have right now in `od_20210407_total` already has the correct format expected by `{flowmapper}`.
-
+The previous code chunk created `od_20210407_total` with the column names expected by `{flowmapper}`.
 
 ```{r}
 head(od_20210407_total)
