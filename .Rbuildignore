@@ -19,3 +19,4 @@ README.qmd
 ^codemeta\.json$
 ^vignettes/.quarto$
 \.mp4$
+\.gif$
