@@ -202,7 +202,9 @@ head(districts_v1_coords)
 
 ### Plot the entire country
 
-Now we have the data structure that match the `{flowmapper}`'s expected data format. We cannot plot all the flows for the entire country (**TODO: link to the interactive flowmaps vignette when it is done**), because this plot would be very busy, therefore, we need to tweak the `k_node` argument in the `add_flowmap` function.
+Now we have the data structure that match the `{flowmapper}`'s expected data format we can plot a sample of the data (a plot containing all flows would be very 'busy' and world resemble a haystack!). The `k_node` argument in the `add_flowmap` function can be used to reduce this business.
+
+<!-- **TODO: link to the interactive flowmaps vignette when it is done** -->
 
 
 ```{r}
