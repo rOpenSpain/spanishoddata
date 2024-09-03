@@ -26,6 +26,8 @@ It supports the two versions of the Spanish mobility data that consists of origi
 
 ![Example of the data available through the package](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
 
+![Example of the data available through the package](man/figures/spain-folding-flows.gif){#fig-spain-flows}
+
 
 # Installation
 

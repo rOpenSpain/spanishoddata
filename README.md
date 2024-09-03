@@ -18,9 +18,8 @@ alt="R-CMD-check" /></a> <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
-Ministry of Transport and Sustainable mobility of Spain (Secretary of
-State for Transport, mobility and Urban Agenda (Secretaría de Estado de
-Transportes, Movilidad y Agenda Urbana) 2024).
+Ministry of Transport and Sustainable mobility of Spain (Secretaría de
+Estado de Transportes, Movilidad y Agenda Urbana 2024).
 
 It supports the two versions of the Spanish mobility data that consists
 of origin-destination matrices and some additional data sets. [The first
@@ -55,6 +54,14 @@ download only the files that are not already present.
 
 
 Figure 1: Example of the data available through the package
+
+</div>
+<div id="fig-spain-flows">
+
+![](man/figures/spain-folding-flows.gif)
+
+
+Figure 2: Example of the data available through the package
 
 </div>
 
@@ -429,11 +436,10 @@ Origin-Destination Data,” August.
 
 <div id="ref-mitma-mobility-2024-v6" class="csl-entry">
 
-Secretary of State for Transport, mobility and Urban Agenda (Secretaría
-de Estado de Transportes, Movilidad y Agenda Urbana). 2024. “Estudio de
-movilidad de viajeros de ámbito nacional aplicando la tecnología Big
-Data. Informe metodológico (Study of National Traveler mobility Using
-Big Data Technology. Methodological Report).”
+Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2024.
+“Estudio de movilidad de viajeros de ámbito nacional aplicando la
+tecnología Big Data. Informe metodológico (Study of National Traveler
+mobility Using Big Data Technology. Methodological Report).”
 <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 </div>
