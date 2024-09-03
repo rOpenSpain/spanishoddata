@@ -72,7 +72,7 @@ file.edit(".Renviron")
 
 ### Flows
 
-Let us get the flows between `districts` for a tipycal working day `2021-04-07`:
+Let us get the flows between `districts` for a typical working day `2021-04-07`:
 
 ```{r}
 od_20210407 <- spod_get("od", zones = "distr", dates = "2021-04-07")
@@ -434,7 +434,7 @@ library(sf)
 
 Just like in the simple example above, we will need the flows to visualise.
 
-Let us get the origin-destination flows between `districts` for a tipycal working day `2022-04-06`:
+Let us get the origin-destination flows between `districts` for a typical working day `2022-04-06`:
 
 ```{r}
 od <- spod_get("od", zones = "distr", dates = "2022-04-06")
