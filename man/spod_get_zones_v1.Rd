@@ -35,3 +35,4 @@ if (FALSE) {
   zones <- spod_get_zones_v1()
 }
 }
+\keyword{internal}

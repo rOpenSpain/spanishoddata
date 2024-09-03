@@ -308,6 +308,7 @@ spod_duckdb_number_of_trips <- function(
 #' @param new_view_name The name of the new duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files)
+#' @keywords internal
 spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, dates) {
   # prepare query to filter by dates
   query <- dplyr::sql(
@@ -396,6 +397,8 @@ spod_sql_where_dates <- function(dates) {
 #' @param con A duckdb connection
 #' @param max_mem_gb The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
 #' @param max_n_cpu The maximum number of threads to use. Defaults to the number of available cores minus 1.
+#' @return The duckdb connection.
+#' @keywords internal
 spod_duckdb_limit_resources <- function(
   con,
   max_mem_gb = max(4, spod_available_ram() - 4),

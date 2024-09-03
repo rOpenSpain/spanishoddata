@@ -40,3 +40,4 @@ if (FALSE) {
   head(metadata)
 }
 }
+\keyword{internal}

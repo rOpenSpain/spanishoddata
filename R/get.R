@@ -92,6 +92,7 @@ spod_available_data <- function(
 #' if (FALSE) {
 #'   spod_get_latest_v2_file_list()
 #' }
+#' @keywords internal
 spod_get_latest_v2_file_list <- function(
     data_dir = spod_get_data_dir(),
     xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
@@ -124,6 +125,7 @@ spod_get_latest_v2_file_list <- function(
 #'   names(metadata)
 #'   head(metadata)
 #' }
+#' @keywords internal
 spod_available_data_v2 <- function(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
@@ -294,6 +296,7 @@ spod_get_data_dir <- function(quiet = FALSE) {
 #' if (FALSE) {
 #'   zones <- spod_get_zones_v2()
 #' }
+#' @keywords internal
 spod_get_zones_v2 <- function(
   zones = c(
     "districts", "dist", "distr", "distritos",
