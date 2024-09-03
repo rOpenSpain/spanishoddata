@@ -130,20 +130,6 @@ od_20210407_total <- od_20210407 |>
   summarise(value = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
   collect() |> 
   arrange(o, d, value)
-
-head(od_20210407_total)
-```
-
-```
-# A tibble: 6 × 3
-  o       d          value
-  <fct>   <fct>      <dbl>
-1 2408910 2408910  1889.  
-2 2408910 24154_AM   11.0 
-3 2408910 5029703    12.8 
-4 2408910 24181_AM   22.3 
-5 2408910 4802004     9.45
-6 2408910 4718608     4.75
 ```
 
 ## Reshape flows for visualization
