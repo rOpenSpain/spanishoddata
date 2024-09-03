@@ -1,0 +1,319 @@
+---
+title: "Making interactive flow maps 2"
+vignette: >
+  %\VignetteIndexEntry{Making interactive flow maps 2}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+number-sections: true
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-overflow: wrap
+execute: 
+  eval: false
+---
+
+In this tutorial we will show how to make static flow maps with `{spanishoddata}` and `{flowmapper}`. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup).
+
+# Setup {#setup}
+
+```{r}
+library(spanishoddata)
+library(deckgl)
+library(tidyverse)
+library(sf)
+```
+
+
+Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command:
+
+```{r}
+Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
+```
+
+The package will create this directory if it does not exist on the first run of any function that downloads the data.
+
+<details><summary>Setting data directory for advanced users</summary>
+
+To permanently set the directory for all projects, you can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
+
+```{r}
+#| eval: false
+usethis::edit_r_environ()
+# Then set the data directory globally, by typing this line in the file:
+```
+
+```
+SPANISH_OD_DATA_DIR = "~/spanish_od_data"
+```
+
+You can also set the data directory locally, just for the current project. Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
+
+```{r}
+#| eval: false
+file.edit(".Renviron")
+```
+
+
+</details>
+
+# Simple example - plot flows data as it is {#simple-example}
+
+## Get data
+
+### Flows
+
+Let us get the flows between `districts` for a tipycal working day `2021-04-07`:
+
+```{r}
+od_20210407 <- spod_get("od", zones = "distr", dates = "2021-04-07")
+
+head(od_20210407)
+```
+
+
+```
+# Source:   SQL [6 x 14]
+# Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
+  date       id_origin id_destination activity_origin activity_destination residence_province_in…¹ residence_province_n…² time_slot distance n_trips trips_total_length_km  year month
+  <date>     <fct>     <fct>          <fct>           <fct>                <fct>                   <fct>                      <int> <fct>      <dbl>                 <dbl> <int> <int>
+1 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 005-010     10.5                  68.9  2021     4
+2 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 010-050     12.6                 127.   2021     4
+3 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    1 010-050     12.6                 232.   2021     4
+4 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    2 005-010     10.8                 102.   2021     4
+5 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    5 005-010     18.9                 156.   2021     4
+6 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    6 010-050     10.8                 119.   2021     4
+# ℹ abbreviated names: ¹​residence_province_ine_code, ²​residence_province_name
+# ℹ 1 more variable: day <int>
+```
+
+### Zones
+
+We also get the district zones polygons to mathch the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.qmd)).
+
+```{r}
+districts_v1 <- spod_get_zones("dist", ver = 1)
+
+head(districts_v1)
+```
+
+```
+Simple feature collection with 6 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 289502.8 ymin: 4173922 xmax: 1010926 ymax: 4720817
+Projected CRS: ETRS89 / UTM zone 30N (N-E)
+# A tibble: 6 × 7
+  id       census_districts                                              municipalities_mitma municipalities         district_names_in_v2 district_ids_in_v2                      geom
+  <chr>    <chr>                                                         <chr>                <chr>                  <chr>                <chr>                     <MULTIPOLYGON [m]>
+1 2408910  2408910                                                       24089                24089                  León distrito 10     2408910            (((290940.1 4719080, 290…
+2 22117_AM 2210201; 2210301; 2211501; 2211701; 2216401; 2218701; 2221401 22117_AM             22102; 22103; 22115; … Graus agregacion de… 22117_AM           (((774184.4 4662153, 774…
+3 2305009  2305009                                                       23050                23050                  Jaén distrito 09     2305009            (((429745 4179977, 42971…
+4 07058_AM 0701901; 0702501; 0703401; 0705801; 0705802                   07058_AM             07019; 07025; 07034; … Selva agregacion de… 07058_AM           (((1000859 4415059, 1000…
+5 2305006  2305006                                                       23050                23050                  Jaén distrito 06     2305006            (((429795.1 4180957, 429…
+6 2305005  2305005                                                       23050                23050                  Jaén distrito 05     2305005            (((430022.7 4181101, 429…
+```
+
+## Aggregate data - count total flows
+
+```{r}
+od_20210407_total <- od_20210407 |>
+  group_by(id_origin, id_destination) |>
+  summarise(n_trips = sum(n_trips, na.rm = TRUE)) |> 
+  collect()
+
+head(od_20210407_total)
+```
+
+```
+# A tibble: 6 × 3
+# Groups:   id_origin [2]
+  id_origin id_destination  n_trips
+  <fct>     <fct>             <dbl>
+1 0704003   07031           3958.  
+2 0704003   07036          17278.  
+3 0704003   07044            572.  
+4 0704003   0801903            6.19
+5 0704004   07027           3036.  
+6 0704004   0704003        56604.
+```
+## Add coordinates
+
+We need the coordinates for each origin and destination. We can use the centroids of `districts_v1` polygons for that.
+
+```{r}
+districts_v1_centroids <- districts_v1 |>
+  st_transform(4326) |> 
+  st_centroid() |>
+  st_coordinates() |>
+  as.data.frame() |>
+  mutate(id = districts_v1$id) |>
+  rename(x = X, y = Y)
+
+
+od_20210407_total_coords <- od_20210407_total |>
+  left_join(districts_v1_centroids, by = c("id_origin" = "id")) |>
+  rename(from_lng = x, from_lat = y) |>
+  left_join(districts_v1_centroids, by = c("id_destination" = "id")) |>
+  rename(to_lng = x, to_lat = y)
+
+head(od_20210407_total_coords)
+```
+
+
+
+```{r}
+properties <- list(
+  getWidth = 12,
+  getSourcePosition = ~from_lng + from_lat,
+  getTargetPosition = ~to_lng + to_lat,
+  getSourceColor = "@=[Math.sqrt(inbound), 140, 0, 180]",  # 128 is the alpha value (50% transparency)
+  getTargetColor = "@=[Math.sqrt(outbound), 140, 0, 180]", # 128 is the alpha value (50% transparency)
+  tooltip = use_tooltip(
+    html = "{{id_origin}} to {{id_destination}}",
+    style = "background: steelBlue; border-radius: 5px;"
+  )
+)
+
+
+
+deck <- deckgl(zoom = 10, pitch = 35) %>%
+  add_arc_layer(data = od_20210407_total_coords |> head(1000),
+    properties = properties) %>%
+  add_control("Arc Layer", "top-left") %>%
+  add_basemap()
+deck
+```
+
+
+```{r}
+library(mapdeck)
+mapdeck(style = mapdeck_style("dark"), pitch = 45) |> 
+  add_arc(data = od_20210407_total_coords |> head(1000) |>
+  mutate(stroke_width = log(n_trips+2), stroke_to_opacity =),
+  layer_id = "arcs",
+  origin = c("from_lng", "from_lat"), destination = c("to_lng", "to_lat"),
+  stroke_from = "origin_id", stroke_to = "destination_id",
+  stroke_width = "stroke_width",
+  palette = "viridis",
+  stroke_to_opacity = "stroke_to_opacity",
+  # brush_radius = 50000
+  )
+```
+
+# deck
+
+```{r}
+bart_sub <- bart_segments |>
+  filter(from_name == "MacArthur (MCAR)" & to_name == "19th St. Oakland (19TH)" | from_name == "19th St. Oakland (19TH)" & to_name == "MacArthur (MCAR)")
+```
+
+```{r}
+deckgl() |> 
+  add_basemap() |> 
+  add_arc_layer(bart_sub)
+```
+
+```{r}
+properties <- list(
+  getWidth = 12,
+  getSourcePosition = ~from_lng + from_lat,
+  getTargetPosition = ~to_lng + to_lat,
+  getSourceColor = "@=[Math.sqrt(inbound), 140, 0]",
+  getTargetColor = "@=[Math.sqrt(outbound), 140, 0]",
+  tooltip = use_tooltip(
+    html = "{{from_name}} to {{to_name}}",
+    style = "background: steelBlue; border-radius: 5px;"
+  )
+)
+
+
+deck <- deckgl(zoom = 10, pitch = 35) %>%
+  add_arc_layer(data = bart_sub, properties = properties) %>%
+  add_control("Arc Layer", "top-left") %>%
+  add_basemap()
+deck
+```
+
+
+
+```{r}
+Sys.setenv(MAPBOX_API_TOKEN = "pk.eyJ1IjoiZWtvdG92IiwiYSI6ImNsZXgwcWx3NDA1ZGEzb281Nmhyc3hsOHEifQ.dhm7SaonSGl7AL_CAvNu4g")
+# Sys.setenv(MAPBOX_API_TOKEN = "")
+# Sys.getenv("MAPBOX_API_TOKEN")
+
+Sys.setenv(MAPBOX_PUBLIC_TOKEN='pk.eyJ1IjoiZWtvdG92IiwiYSI6ImNsZXgwcWx3NDA1ZGEzb281Nmhyc3hsOHEifQ.dhm7SaonSGl7AL_CAvNu4g')
+# Sys.setenv(MAPBOX_PUBLIC_TOKEN='')
+# Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+```
+
+```{r}
+deckgl() |> 
+  add_arc_layer()
+```
+
+
+```{r}
+library(mapgl)
+
+
+d1 <- deckgl() |> 
+  add_basemap()
+
+class(d1)
+```
+
+
+
+```{r}
+library(mapgl)
+library(sf)
+
+nc <- st_read(system.file("shape/nc.shp", package="sf"))
+
+m1 <- maplibre(bounds = nc) |> 
+  # add_fill_layer(id = "nc_data",
+  #                source = nc,
+  #                fill_color = "blue",
+  #                fill_opacity = 0.5) |> 
+                  add_grid_layer(
+    data = sf_bike_parking,
+    properties = props
+  )
+
+class(m1)
+```
+
+```{r}
+# Grid layer example
+data("sf_bike_parking")
+
+props <- list(
+  extruded = TRUE,
+  cellSize = 200,
+  elevationScale = 4,
+  getPosition = ~lng + lat,
+  tooltip = "Count: {{count}}"
+)
+
+deckgl(zoom = 11, pitch = 45) %>%
+  add_basemap() %>%
+  add_grid_layer(
+    data = sf_bike_parking,
+    properties = props
+  )
+```
+
+
+```{r}
+sf_bike_parking_sf <- sf_bike_parking |> st_as_sf(coords = c("lng", "lat"), crs = 4326)
+md <- mapboxgl(bounds = sf_bike_parking_sf) |> 
+                  add_grid_layer(
+    data = sf_bike_parking,
+    properties = props
+  )
+class(md)
+md
+```
