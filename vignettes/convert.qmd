@@ -19,7 +19,7 @@ execute:
 
 **TL;DR (too long, didn't read): For analysing more than 1 week of data, use `spod_convert()` to convert the data into `DuckDB` and `spod_connect()` to connect to it for analysis using `{dplyr}`. Skip to the [section about it](#duckdb).**
 
-The main focus of this vignette is to show how to get long periods of origin-destination data for analysis. First, we describe and compare the two ways to get the mobility data using origin-destination data as an example. The package functions and overall approaches are the same for working with other types of data available through the package, such as the number of trips, overnight stays and any other data. Then we show how to get a few days of origin-destination data with `spod_get()`. Finally, we show how to download and convert multiple weeks, months or even years of origin-destination data into analysis-ready formats. See description of datasets in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in the [Codebook and cookbook for v2 (2022 onwards) Spanish mobility data](v2-2022-onwards-mitma-data-codebook.qmd).
+The main focus of this vignette is to show how to get long periods of origin-destination data for analysis. First, we describe and compare the two ways to get the mobility data using origin-destination data as an example. The package functions and overall approaches are the same for working with other types of data available through the package, such as the number of trips, overnight stays and any other data. Then we show how to get a few days of origin-destination data with `spod_get()`. Finally, we show how to download and convert multiple weeks, months or even years of origin-destination data into analysis-ready formats. See description of datasets in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.html) and in the [Codebook and cookbook for v2 (2022 onwards) Spanish mobility data](v2-2022-onwards-mitma-data-codebook.html).
 
 
 # Two ways to get the data
@@ -36,7 +36,7 @@ There are two main ways to import the datasets:
 
 The mobility datasets available through `{spanishiddata}` are very large. Particularly the origin-destination data, which contains millions of rows. These data sets may not fit into the memory of your computer, especially if you plan to run the analysis over multiple days, weeks, months, or even years.
 
-To work with these datasets, we highly recommend using `DuckDB` and `Parquet`. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar `data.frame`/`tibble` object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on [static](vignettes/flowmaps-static.qmd) and interactive (TODO: add link) flows visualisation.
+To work with these datasets, we highly recommend using `DuckDB` and `Parquet`. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar `data.frame`/`tibble` object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on [static](flowmaps-static.html) and interactive (TODO: add link) flows visualisation.
 
 Learning to use `DuckDB` and `Parquet` is easy for anyone who have ever worked with `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from `DuckDB` and `Parquet`. Please read the relevant sections below, where we first show how to convert the data, and then how to use it.
 
@@ -92,11 +92,11 @@ Make sure you have loaded the package:
 library(spanishoddata)
 ```
 
-{{< include _include/setup-data-directory.qmd >}}
+{{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
 # Getting a single day with `spod_get()` {#spod-get}
 
-As you might have seen in the codebooks for [v1](v1-2020-2021-mitma-data-codebook.qmd) and [v2](v2-2022-onwards-mitma-data-codebook.qmd) data, you can get a single day's worth of data as an in-memory object with `spod_get()`:
+As you might have seen in the codebooks for [v1](v1-2020-2021-mitma-data-codebook.html) and [v2](v2-2022-onwards-mitma-data-codebook.html) data, you can get a single day's worth of data as an in-memory object with `spod_get()`:
 
 ```{r}
 dates <- c("2024-03-01")
@@ -282,7 +282,7 @@ Due to mobile network outages, some dates are missing, so do not assume that a s
 
 ## Download all data
 
-Here the example is for origin-destination on district level for v1 data. You can change the `type` to "number_of_trips" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the [v2 data codebook](v2-2022-onwards-mitma-data-codebook.qmd), as it has many more datasets in addition to "origin-destination" and "number_of_trips".
+Here the example is for origin-destination on district level for v1 data. You can change the `type` to "number_of_trips" and the `zones` to "municipalities" for v1 data. For v2 data, just use `dates` starting with 2022-01-01 or the `dates_v2` from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the [v2 data codebook](v2-2022-onwards-mitma-data-codebook.html), as it has many more datasets in addition to "origin-destination" and "number_of_trips".
 
 ```{r}
 type <- "origin-destination"
@@ -310,7 +310,7 @@ analysis_data_storage <- spod_convert_data(
 )
 ```
 
-This will convert all downloaded data to `DuckDB` format for lightning fast analysis. You can change the `save_format` to `parquet` if you want to save the data in `Parquet` format. For comparison overview of the two formats please see the [Converting the data to DuckDB/Parquet for faster analysis](converting-the-data-for-faster-analysis.qmd).
+This will convert all downloaded data to `DuckDB` format for lightning fast analysis. You can change the `save_format` to `parquet` if you want to save the data in `Parquet` format. For comparison overview of the two formats please see the [Converting the data to DuckDB/Parquet for faster analysis](converting-the-data-for-faster-analysis.html).
 
 By default, `spod_convert_data()` will save the converted data in the `SPANISH_OD_DATA_DIR` directory. You can change the `save_path` argument of `spod_convert_data()` if you want to save the data in a different location.
 
