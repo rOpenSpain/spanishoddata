@@ -18,9 +18,8 @@ alt="R-CMD-check" /></a> <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
-Ministry of Transport and Sustainable mobility of Spain (Secretary of
-State for Transport, mobility and Urban Agenda (Secretaría de Estado de
-Transportes, Movilidad y Agenda Urbana) 2024).
+Ministry of Transport and Sustainable mobility of Spain (Secretaría de
+Estado de Transportes, Movilidad y Agenda Urbana 2024).
 
 It supports the two versions of the Spanish mobility data that consists
 of origin-destination matrices and some additional data sets. [The first
@@ -99,14 +98,14 @@ devtools::load_all()
 
 </details>
 
-# Setting the data directory
+## Set the data directory
 
 Choose where `{spanishoddata}` should download (and convert) the data by
 setting the `SPANISH_OD_DATA_DIR` environment variable with the
 following command:
 
 ``` r
-Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
+Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 ```
 
 The package will create this directory if it does not exist on the first
@@ -117,32 +116,23 @@ run of any function that downloads the data.
 Setting data directory for advanced users
 </summary>
 
-You can specify the data directory globally by setting the
-`SPANISH_OD_DATA_DIR` environment variable, e.g. with the following
-command:
+To permanently set the directory for all projects, you can specify the
+data directory globally by setting the `SPANISH_OD_DATA_DIR` environment
+variable, e.g. with the following command:
 
 ``` r
 usethis::edit_r_environ()
 # Then set the data directory globally, by typing this line in the file:
 ```
 
-    SPANISH_OD_DATA_DIR = "/path/to/data"
+    SPANISH_OD_DATA_DIR = "~/spanish_od_data"
 
-You can also set the data directory locally or on a per session basis as
-described below.
-
-Set the ‘envar’ in the working directory by editing `.Renviron` file in
-the root of the project:
+You can also set the data directory locally, just for the current
+project. Set the ‘envar’ in the working directory by editing `.Renviron`
+file in the root of the project:
 
 ``` r
 file.edit(".Renviron")
-```
-
-Finally, you can set the data directory in the current R session as
-follows:
-
-``` r
-Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
 ```
 
 </details>
@@ -429,11 +419,10 @@ Origin-Destination Data,” August.
 
 <div id="ref-mitma-mobility-2024-v6" class="csl-entry">
 
-Secretary of State for Transport, mobility and Urban Agenda (Secretaría
-de Estado de Transportes, Movilidad y Agenda Urbana). 2024. “Estudio de
-movilidad de viajeros de ámbito nacional aplicando la tecnología Big
-Data. Informe metodológico (Study of National Traveler mobility Using
-Big Data Technology. Methodological Report).”
+Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2024.
+“Estudio de movilidad de viajeros de ámbito nacional aplicando la
+tecnología Big Data. Informe metodológico (Study of National Traveler
+mobility Using Big Data Technology. Methodological Report).”
 <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 </div>

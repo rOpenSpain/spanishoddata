@@ -33,38 +33,7 @@ library(tidyverse)
 library(sf)
 ```
 
-
-Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command (if you have not done it already):
-
-```{r}
-Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
-```
-
-The package will create this directory if it does not exist on the first run of any function that downloads the data.
-
-<details><summary>Setting data directory for advanced users</summary>
-
-To permanently set the directory for all projects, you can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
-
-```{r}
-#| eval: false
-usethis::edit_r_environ()
-# Then set the data directory globally, by typing this line in the file:
-```
-
-```
-SPANISH_OD_DATA_DIR = "~/spanish_od_data"
-```
-
-You can also set the data directory locally, just for the current project. Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
-
-```{r}
-#| eval: false
-file.edit(".Renviron")
-```
-
-
-</details>
+{{< include _include/setup-data-directory.qmd >}}
 
 # Simple example - plot flows data as it is {#simple-example}
 
@@ -635,7 +604,7 @@ Now we have the data structure that match the `{flowmapper}`'s expected data for
 ```{r}
 # create base ggplot with boundaries removing any extra elements
 base_plot <- ggplot() +
-  geom_sf(data = spain_for_vis, fill=NA, col = "grey40", linewidth = 0.05)+
+  geom_sf(data = spain_for_vis, fill=NA, col = "grey30", linewidth = 0.05)+
   theme_classic(base_size = 20) +
   labs(title = "",
     subtitle = "", fill = "", caption = "") +
@@ -686,7 +655,7 @@ The image may look a bit bleak, but when we put it on a sticker, it will look gr
 
 ## Make the sticker
 
-We make the sticker usin the `{hexSticker}` [@hexSticker-r] package.
+We make the sticker using the `{hexSticker}` [@hexSticker-r] package.
 
 ```{r}
 sticker(flows_plot,

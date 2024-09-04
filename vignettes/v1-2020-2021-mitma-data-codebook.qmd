@@ -50,12 +50,15 @@ remotes::install_github("Robinlovelace/spanishoddata",
   force = TRUE, dependencies = TRUE)
 ```
 
-Set the cache folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a `DuckDB` database file, or a folder of `parquet` files). You can find more info on this conversion in the [Download and convert OD datasets](convert.qmd) vignette.
+Load the package:
 
 ```{r}
 library(spanishoddata)
-Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/your/cache/directory")
 ```
+
+Using the instructions below, set the data folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a `DuckDB` database file, or a folder of `parquet` files). You can find more info on this conversion in the [Download and convert OD datasets](convert.qmd) vignette.
+
+{{< include _include/setup-data-directory.qmd >}}
 
 # Overall approach to working with data
 
