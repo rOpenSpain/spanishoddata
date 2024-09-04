@@ -93,7 +93,10 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Choose where <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command (if you have not done it already):</p>
+<section class="level2" data-number="1.1"><h3 data-number="1.1" id="set-data-folder">
+<span class="header-section-number">1.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h3>
+<p>Choose where <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
@@ -113,7 +116,7 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</details></section><section class="section level2" data-number="2"><h2 data-number="2" id="simple-example">
+</details></section></section><section class="section level2" data-number="2"><h2 data-number="2" id="simple-example">
 <span class="header-section-number">2</span> Simple example - plot flows data as it is<a class="anchor" aria-label="anchor" href="#simple-example"></a>
 </h2>
 <section class="level2" data-number="2.1"><h3 data-number="2.1" id="get-data">
@@ -144,7 +147,7 @@ Setting data directory for advanced users
 </section><section class="level3" data-number="2.1.2"><h4 data-number="2.1.2" id="zones">
 <span class="header-section-number">2.1.2</span> Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
 </h4>
-<p>We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant <a href="v1-2020-2021-mitma-data-codebook.qmd">codebook</a>).</p>
+<p>We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant <a href="v1-2020-2021-mitma-data-codebook.html">codebook</a>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"dist"</span>, ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -430,7 +433,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span><span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="st">"2022-04-06"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Also get the spatial data for the zones. We are using the version 2 of zones, because the data we got was for 2022 and onwards, which corresponds to the v2 data (see the relevant <a href="v2-2022-onwards-mitma-data-codebook.qmd">codebook</a>).</p>
+<p>Also get the spatial data for the zones. We are using the version 2 of zones, because the data we got was for 2022 and onwards, which corresponds to the v2 data (see the relevant <a href="v2-2022-onwards-mitma-data-codebook.html">codebook</a>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"distr"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
@@ -609,7 +612,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="sourceCode cell-code" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create base ggplot with boundaries removing any extra elements</span></span>
 <span><span class="va">base_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">spain_for_vis</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey40"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">spain_for_vis</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey30"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">theme_classic</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">""</span>, fill <span class="op">=</span> <span class="st">""</span>, caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
@@ -653,7 +656,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </section><section class="level2" data-number="3.5"><h3 data-number="3.5" id="make-the-sticker">
 <span class="header-section-number">3.5</span> Make the sticker<a class="anchor" aria-label="anchor" href="#make-the-sticker"></a>
 </h3>
-<p>We make the sticker usin the <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> <span class="citation" data-cites="hexSticker-r">(<a href="#ref-hexSticker-r" role="doc-biblioref">Yu 2020</a>)</span> package.</p>
+<p>We make the sticker using the <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> <span class="citation" data-cites="hexSticker-r">(<a href="#ref-hexSticker-r" role="doc-biblioref">Yu 2020</a>)</span> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/hexSticker/man/sticker.html" class="external-link">sticker</a></span><span class="op">(</span><span class="va">flows_plot</span>,</span>

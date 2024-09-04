@@ -80,27 +80,32 @@
     <section class="section level2" data-number="1"><h2 data-number="1" id="intro">
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h2>
-<p><strong>TL;DR: For analysing more than 1 week of data, use <code><a href="../reference/spod_convert.html">spod_convert()</a></code> to convert the data into <code>DuckDB</code> and <code><a href="../reference/spod_connect.html">spod_connect()</a></code> to conenct to it for analysis using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>. Skip to the <a href="#duckdb">section about it</a>.</strong></p>
-<p>Using origin-destination data as an example, this vignette shows how to download the mobility datasets from versions v1 (2020-2021) and v2 (2022-onwards) of the Spanish mobility data and convert them into analysis-ready formats. See description of datasets in the <a href="v1-2020-2021-mitma-data-codebook.qmd">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a> and in the <a href="v2-2022-onwards-mitma-data-codebook.qmd">Codebook and cookbook for v2 (2022 onwards) Spanish mobility data</a>.</p>
-<section class="level2" data-number="1.1"><h3 data-number="1.1" id="two-ways-to-get-the-data">
-<span class="header-section-number">1.1</span> Two ways to get the data<a class="anchor" aria-label="anchor" href="#two-ways-to-get-the-data"></a>
-</h3>
+<p><strong>TL;DR (too long, didn’t read): For analysing more than 1 week of data, use <code><a href="../reference/spod_convert.html">spod_convert()</a></code> to convert the data into <code>DuckDB</code> and <code><a href="../reference/spod_connect.html">spod_connect()</a></code> to connect to it for analysis using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>. Skip to the <a href="#duckdb">section about it</a>.</strong></p>
+<p>The main focus of this vignette is to show how to get long periods of origin-destination data for analysis. First, we describe and compare the two ways to get the mobility data using origin-destination data as an example. The package functions and overall approaches are the same for working with other types of data available through the package, such as the number of trips, overnight stays and any other data. Then we show how to get a few days of origin-destination data with <code><a href="../reference/spod_get.html">spod_get()</a></code>. Finally, we show how to download and convert multiple weeks, months or even years of origin-destination data into analysis-ready formats. See description of datasets in the <a href="v1-2020-2021-mitma-data-codebook.html">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a> and in the <a href="v2-2022-onwards-mitma-data-codebook.html">Codebook and cookbook for v2 (2022 onwards) Spanish mobility data</a>.</p>
+</section><section class="section level2" data-number="2"><h2 data-number="2" id="two-ways-to-get-the-data">
+<span class="header-section-number">2</span> Two ways to get the data<a class="anchor" aria-label="anchor" href="#two-ways-to-get-the-data"></a>
+</h2>
 <p>There are two main ways to import the datasets:</p>
 <ol type="1">
 <li><p>as an in-memory object with <code><a href="../reference/spod_get.html">spod_get()</a></code>;</p></li>
-<li><p>as a connection to DuckDB or Parquet files on disk with <code><a href="../reference/spod_convert.html">spod_convert()</a></code> + <code><a href="../reference/spod_connect.html">spod_connect()</a></code>. The latter is recommended for large datasets (more than several days), as it is much faster and more memory efficient, as we demonstarte below.</p></li>
+<li><p>as a connection to DuckDB or Parquet files on disk with <code><a href="../reference/spod_convert.html">spod_convert()</a></code> + <code><a href="../reference/spod_connect.html">spod_connect()</a></code>. The latter is recommended for large datasets (more than 1 week), as it is much faster and more memory efficient, as we demonstarte below.</p></li>
 </ol>
-<p><code><a href="../reference/spod_get.html">spod_get()</a></code> returns objects that are only appropriate for small datasets representing a few days of the national origin-destination flows. We recommend converting the data into analysis-ready formats (<code>DuckDB</code> or <code>Parquet</code>), allowing you to work with much longer time periods (months and years) on a consumer laptop (with 8-16 GB of memory).</p>
-<p><strong>Converting the data to either <code>DuckDB</code> or <code>Parquet</code> can lead to ~10x speed-up compared to using data frames returned by <code><a href="../reference/spod_get.html">spod_get()</a></code>, which have to read the original compressed CSV.gz files from disk every time you filter, aggregate or reshape the data.</strong></p>
-<p><code>DuckDB</code> and <code>Parquet</code> are systems for efficiently processing larger-than-memory datasets. For an introduction to them, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: <a href="https://arrow-user2022.netlify.app/" target="_blank" class="external-link">website</a>, <a href="https://arrow-user2022.netlify.app/slides" target="_blank" class="external-link">slides</a>, and <a href="https://www.youtube.com/watch?v=YZMuFavEgA4" target="_blank" class="external-link">the video tutorial</a>.</p>
+<p><code><a href="../reference/spod_get.html">spod_get()</a></code> returns objects that are only appropriate for small datasets representing a few days of the national origin-destination flows. We recommend converting the data into analysis-ready formats (<code>DuckDB</code> or <code>Parquet</code>) using <code><a href="../reference/spod_convert.html">spod_convert()</a></code> + <code><a href="../reference/spod_connect.html">spod_connect()</a></code>. This will allow you to work with much longer time periods (months and years) on a consumer laptop (with 8-16 GB of memory). See the section below for more details.</p>
+</section><section class="section level2" data-number="3"><h2 data-number="3" id="analysis-large-datasets">
+<span class="header-section-number">3</span> Analysing large datasets<a class="anchor" aria-label="anchor" href="#analysis-large-datasets"></a>
+</h2>
+<p>The mobility datasets available through <code>{spanishiddata}</code> are very large. Particularly the origin-destination data, which contains millions of rows. These data sets may not fit into the memory of your computer, especially if you plan to run the analysis over multiple days, weeks, months, or even years.</p>
+<p>To work with these datasets, we highly recommend using <code>DuckDB</code> and <code>Parquet</code>. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar <code>data.frame</code>/<code>tibble</code> object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: <a href="https://arrow-user2022.netlify.app/" target="_blank" class="external-link">website</a>, <a href="https://arrow-user2022.netlify.app/slides" target="_blank" class="external-link">slides</a>, and <a href="https://www.youtube.com/watch?v=YZMuFavEgA4" target="_blank" class="external-link">the video tutorial</a>. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on <a href="flowmaps-static.html">static</a> and interactive (TODO: add link) flows visualisation.</p>
 <p>Learning to use <code>DuckDB</code> and <code>Parquet</code> is easy for anyone who have ever worked with <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from <code>DuckDB</code> and <code>Parquet</code>. Please read the relevant sections below, where we first show how to convert the data, and then how to use it.</p>
-</section><section class="level2" data-number="1.2"><h3 data-number="1.2" id="duckdb-vs-parquet-csv">
-<span class="header-section-number">1.2</span> How to choose between DuckDB, Parquet, and CSV<a class="anchor" aria-label="anchor" href="#duckdb-vs-parquet-csv"></a>
+<section class="level2" data-number="3.1"><h3 data-number="3.1" id="duckdb-vs-parquet-csv">
+<span class="header-section-number">3.1</span> How to choose between DuckDB, Parquet, and CSV<a class="anchor" aria-label="anchor" href="#duckdb-vs-parquet-csv"></a>
 </h3>
-<section class="level3" data-number="1.2.1"><h4 data-number="1.2.1" id="speed-comparison">
-<span class="header-section-number">1.2.1</span> Speed<a class="anchor" aria-label="anchor" href="#speed-comparison"></a>
+<p>The main considerations to make when choosing between <code>DuckDB</code> and <code>Parquet</code> (that you can get with <code><a href="../reference/spod_convert.html">spod_convert()</a></code> + <code><a href="../reference/spod_connect.html">spod_connect()</a></code>), as well as <code>CSV.gz</code> (that you can get with <code><a href="../reference/spod_get.html">spod_get()</a></code>) are analysis speed, convenience of data analysis, and the specific approach you prefer when getting the data. We discuss all three below.</p>
+<section class="level3" data-number="3.1.1"><h4 data-number="3.1.1" id="speed-comparison">
+<span class="header-section-number">3.1.1</span> Analysis Speed<a class="anchor" aria-label="anchor" href="#speed-comparison"></a>
 </h4>
-<p>In our testing (see <a href="#fig-csv-duckdb-parquet-speed" class="quarto-xref">Figure 1</a>), using <code>DuckDB</code> database has a significant speed advantage over running the analysis on raw CSV.gz files. Using the full origin destination dataset for 18 months, we compared a query that would find mean hourly number of trips between all zone pairs over the whole time period. <code>DuckDB</code> database was up to 8 times faster than running the analysis on raw CSV.gz files, and up to 5 times faster than running the analysis on <code>Parquet</code> files.</p>
+<p>The data format you choose may dramatically impact the speed of analysis (e.g. filtering by dates, calculating number of trips per hour, per week, per month, per origin-destination pair, and any other data aggregation or manipulation).</p>
+<p>In our tests (see <a href="#fig-csv-duckdb-parquet-speed" class="quarto-xref">Figure 1</a>), we found that conducting an analysis using <code>DuckDB</code> database provided a significant speed advantage over using <code>Parquet</code> and, more importantly, raw <code>CSV.gz</code> files. Specifically, when comparing a query to determine the mean hourly trips over 18 months for each zone pair, we observed that using <code>DuckDB</code> database was <strong>up to 5 times</strong> faster than using <code>Parquet</code> files and <strong>up to 8 times</strong> faster than using <code>CSV.gz</code> files.</p>
 <div id="fig-csv-duckdb-parquet-speed" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-csv-duckdb-parquet-speed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="media/duckdb-parquet-csv-speed-mean-hourly-v1.svg">
@@ -119,25 +124,29 @@ You can see the query we used for measuring the speed here
 <span>  <span class="fu">summarise</span><span class="op">(</span>mean_hourly_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span></code></pre></div>
 </details><p><a href="#fig-csv-duckdb-parquet-speed" class="quarto-xref">Figure 1</a> also shows that <code>DuckDB</code> format will give you the best performance even on low-end systems with limited memory and number of processor cores, conditional on a fast SSD storage. Also note, that if you do choose to work with long time periods using CSV.gz files via <code><a href="../reference/spod_get.html">spod_get()</a></code>, you will need to balance the amount of memory and processor cores via the <code>max_n_cpu</code> and <code>max_mem_gb</code> arguments, otherwise the analysis may fail (see the grey area in the figure), when there are too many parallel processes running at the same time with limited memory.</p>
-</section><section class="level3" data-number="1.2.2"><h4 data-number="1.2.2" id="convenience">
-<span class="header-section-number">1.2.2</span> Convenience<a class="anchor" aria-label="anchor" href="#convenience"></a>
+</section><section class="level3" data-number="3.1.2"><h4 data-number="3.1.2" id="convenience-of-data-analysis">
+<span class="header-section-number">3.1.2</span> Convenience of data analysis<a class="anchor" aria-label="anchor" href="#convenience-of-data-analysis"></a>
 </h4>
-<p>The approaches to working with all formats are exactly the same, as under the hood all analysis is actually done by the <code>DuckDB</code> <span class="citation" data-cites="duckdb-r">(<a href="#ref-duckdb-r" role="doc-biblioref">Mühleisen and Raasveldt 2024</a>)</span> engine. So from that point of view, there is no difference between data formats. You can manipulate the data using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc. In the end of any sequence of commands you will need to add <code>collect()</code> to execute the whole chain of data manipulations and load the results into memory in an R <code>data.frame</code>/<code>tibble</code>. We provide examples in the following sections.</p>
-</section><section class="level3" data-number="1.2.3"><h4 data-number="1.2.3" id="use-cases">
-<span class="header-section-number">1.2.3</span> Use cases<a class="anchor" aria-label="anchor" href="#use-cases"></a>
+<p>Regardless of the data format (<code>DuckDB</code>, <code>Parquet</code>, or <code>CSV.gz</code>), the functions you will need for data manipulation and analysis are the same. This is because the analysis is actually performed by the <code>DuckDB</code> <span class="citation" data-cites="duckdb-r">(<a href="#ref-duckdb-r" role="doc-biblioref">Mühleisen and Raasveldt 2024</a>)</span> engine, which presents the data as if it were a regular <code>data.frame</code>/<code>tibble</code> object in R (almost). So from that point of view, there is no difference between the data formats. You can manipulate the data using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc. In the end of any sequence of commands you will need to add <code>collect()</code> to execute the whole chain of data manipulations and load the results into memory in an R <code>data.frame</code>/<code>tibble</code>. We provide examples in the following sections. Please refer to the recommended external tutorials and our own vignettes in the <a href="#analysing-large-datasets">Analysing large datasets</a> section.</p>
+</section><section class="level3" data-number="3.1.3"><h4 data-number="3.1.3" id="scenarios-of-getting-the-data">
+<span class="header-section-number">3.1.3</span> Scenarios of getting the data<a class="anchor" aria-label="anchor" href="#scenarios-of-getting-the-data"></a>
 </h4>
-<p>The choice between converting to <code>DuckDB</code> and <code>Parquet</code> could also be made based on your needs:</p>
+<p>The choice between converting to <code>DuckDB</code> and <code>Parquet</code> could also be made based on how you plan to work with the data. Specifically whether you want to just download long periods or even all available data, or if you want to get the data gradually, as you progress through with the analysis.</p>
 <ul>
 <li><p>If you plan to work with long time periods, we recommend <code>DuckDB</code>, as it is one big file and it is easier to update it completely. For example you may be working with all 2020 data. Later you decide to add all of 2021 data. In this case it would be better to delete the database and create it from scratch.</p></li>
 <li><p>If you only want certain dates, analyse them and add additional dates later, <code>Parquet</code> may be better, as each day is saved in a separate file, just like the original CSV files. Therefore updating a folder of <code>Parquet</code> files is as easy as just creating a new file only for the missing date.</p></li>
-</ul></section></section></section><section class="section level2" data-number="2"><h2 data-number="2" id="setup">
-<span class="header-section-number">2</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
+<li><p>If you only work with a few individual days, you may not notice the advantages of the <code>DuckDB</code> or <code>Parquet</code> formats. In this case, you can keep using the <code>CSV.gz</code> format for the analysis using the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. This is also useful for quick tutorials, where you only need one or two days of data for demonstration purposes.</p></li>
+</ul></section></section></section><section class="section level2" data-number="4"><h2 data-number="4" id="setup">
+<span class="header-section-number">4</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p>Let’s start by loading the package and setting up the data directory, then we can explore how the functions for downloading and converting the dataset work.</p>
+<p>Make sure you have loaded the package:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span></code></pre></div>
 </div>
+<section class="level2" data-number="4.1"><h3 data-number="4.1" id="set-data-folder">
+<span class="header-section-number">4.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h3>
 <p>Choose where <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
@@ -158,11 +167,11 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</details></section><section class="section level2" data-number="3"><h2 data-number="3" id="spod-get">
-<span class="header-section-number">3</span> Getting a single day with <code>spod_get()</code>
+</details></section></section><section class="section level2" data-number="5"><h2 data-number="5" id="spod-get">
+<span class="header-section-number">5</span> Getting a single day with <code>spod_get()</code>
 <a class="anchor" aria-label="anchor" href="#spod-get"></a>
 </h2>
-<p>As you might have seen in the codebooks for <a href="v1-2020-2021-mitma-data-codebook.qmd">v1</a> and <a href="v2-2022-onwards-mitma-data-codebook.qmd">v2</a> data, you can get a single day’s worth of data as an in-memory object with <code><a href="../reference/spod_get.html">spod_get()</a></code>:</p>
+<p>As you might have seen in the codebooks for <a href="v1-2020-2021-mitma-data-codebook.html">v1</a> and <a href="v2-2022-onwards-mitma-data-codebook.html">v2</a> data, you can get a single day’s worth of data as an in-memory object with <code><a href="../reference/spod_get.html">spod_get()</a></code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2024-03-01"</span><span class="op">)</span></span>
@@ -177,12 +186,12 @@ Setting data directory for advanced users
  1 2024-03-01        19 01009_AM  01001          0.5-2    frequent_activity
  2 2024-03-01        15 01002     01001          10-50    frequent_activity</code></pre>
 <p>Note that this is a lazily-evaluated in-memory object (note the <code>:memory:</code> in the database path). This means that the data is not loaded into memory until you call <code>collect()</code> on it. While this is useful for quick exploration of the data, we do not recommended this for large datasets, as we have demonstrated <a href="#speed-comparison">above</a>.</p>
-</section><section class="section level2" data-number="4"><h2 data-number="4" id="duckdb">
-<span class="header-section-number">4</span> Analysing the data using <code>DuckDB</code> database<a class="anchor" aria-label="anchor" href="#duckdb"></a>
+</section><section class="section level2" data-number="6"><h2 data-number="6" id="duckdb">
+<span class="header-section-number">6</span> Analysing the data using <code>DuckDB</code> database<a class="anchor" aria-label="anchor" href="#duckdb"></a>
 </h2>
 <p>Please make sure you did all the steps in the <a href="#setup">Setup</a> section above.</p>
-<section class="level2" data-number="4.1"><h3 data-number="4.1" id="convert-to-duckdb">
-<span class="header-section-number">4.1</span> Convert to <code>DuckDB</code>
+<section class="level2" data-number="6.1"><h3 data-number="6.1" id="convert-to-duckdb">
+<span class="header-section-number">6.1</span> Convert to <code>DuckDB</code>
 <a class="anchor" aria-label="anchor" href="#convert-to-duckdb"></a>
 </h3>
 <p>You can download and convert the data into <code>DuckDB</code> database in two steps. For example, you select a few dates, and download the data manually (note: we use <code>dates_2</code> to refer to the fact that we are using v2 data):</p>
@@ -205,8 +214,8 @@ Setting data directory for advanced users
 <span><span class="va">db_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_convert.html">spod_convert</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="va">dates_1</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>In this case, any missing data that has now yet been downloaded will be automatically downloaded, while 2020-02-17 will not be redownloaded, as we already requsted it when creating <code>db_1</code>. Then the requested dates will be converted into <code>DuckDB</code>, overwriting the file with <code>db_1</code>. Once again, we save the path to the output <code>DuckDB</code> database file into <code>db_2</code> variable.</p>
-</section><section class="level2" data-number="4.2"><h3 data-number="4.2" id="load-converted-duckdb">
-<span class="header-section-number">4.2</span> Load the converted <code>DuckDB</code>
+</section><section class="level2" data-number="6.2"><h3 data-number="6.2" id="load-converted-duckdb">
+<span class="header-section-number">6.2</span> Load the converted <code>DuckDB</code>
 <a class="anchor" aria-label="anchor" href="#load-converted-duckdb"></a>
 </h3>
 <p>You can read the introductory information on how to connect to <code>DuckDB</code> files <a href="https://duckdb.org/docs/api/r" target="_blank" class="external-link">here</a>, however to simplify things for you we created a helper function. So to connect to the data stored in at path <code>db_1</code> and <code>db_2</code> you can do the following:</p>
@@ -214,20 +223,20 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_od_data_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_connect.html">spod_connect</a></span><span class="op">(</span><span class="va">db_2</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Just like before, with <code><a href="../reference/spod_get.html">spod_get()</a></code> funciton that we used to download raw CSV.gz files and analyse them without any conversion, the resulting object <code>my_od_data_2</code> is also a <code>tbl_duckdb_connection</code>. So, you can treat it as regular <code>data.frame</code> or <code>tibble</code> and use <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc.</p>
+<p>Just like before, with <code><a href="../reference/spod_get.html">spod_get()</a></code> funciton that we used to download raw CSV.gz files and analyse them without any conversion, the resulting object <code>my_od_data_2</code> is also a <code>tbl_duckdb_connection</code>. So, you can treat it as regular <code>data.frame</code> or <code>tibble</code> and use <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc. For analysis, please refer to the recommended external tutorials and our own vignettes in the <a href="#analysing-large-datasets">Analysing large datasets</a> section.</p>
 <p>After finishing working with <code>my_od_data_2</code> we advise that you “disconnect” this data using:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spod_disconnect.html">spod_disconnect</a></span><span class="op">(</span><span class="va">my_od_data_2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>This is useful to free-up memory and is neccessary if you would like to run <code><a href="../reference/spod_convert.html">spod_convert()</a></code> again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.</p>
-</section></section><section class="section level2" data-number="5"><h2 data-number="5" id="arrow-parquet">
-<span class="header-section-number">5</span> Analysing the data using <code>Parquet</code>
-<a class="anchor" aria-label="anchor" href="#arrow-parquet"></a>
+</section></section><section class="section level2" data-number="7"><h2 data-number="7" id="parquet">
+<span class="header-section-number">7</span> Analysing the data using <code>Parquet</code>
+<a class="anchor" aria-label="anchor" href="#parquet"></a>
 </h2>
 <p>Please make sure you did all the steps in the <a href="#setup">Setup</a> section above.</p>
-<section class="level2" data-number="5.1"><h3 data-number="5.1" id="convert-to-parquet">
-<span class="header-section-number">5.1</span> Convert to <code>Parquet</code>
+<section class="level2" data-number="7.1"><h3 data-number="7.1" id="convert-to-parquet">
+<span class="header-section-number">7.1</span> Convert to <code>Parquet</code>
 <a class="anchor" aria-label="anchor" href="#convert-to-parquet"></a>
 </h3>
 <p>The process is exactly the same as for <code>DuckDB</code> above. The only difference is that the data is converted to <code>parquet</code> format and stored in <code>SPANISH_OD_DATA_DIR</code> under <code>v1/clean_data/tabular/parquet/</code> directory for v1 data (change this with the <code>save_path</code> argument), and the subfolders are in hive-style format like <code>year=2020/month=2/day=14</code> and inside each of these folders a single <code>parquet</code> file will be placed containing the data for that day.</p>
@@ -247,8 +256,8 @@ Setting data directory for advanced users
 <span><span class="va">od_parquet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_convert.html">spod_convert</a></span><span class="op">(</span>type <span class="op">=</span> <span class="va">type</span>, zones <span class="op">=</span> <span class="va">zones</span>, dates <span class="op">=</span> <span class="va">dates</span>, save_format <span class="op">=</span> <span class="st">"parquet"</span>, overwrite <span class="op">=</span> <span class="st">'update'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>That is, 16 and 17 Feboruary will not be converted again. Only the new data, that was not converted (18 and 19 February) will be converted, and these will be added to the existing folder structure of<code>parquet</code> files stored at the default <code>save_path</code> location, which is <code>&lt;data_dir&gt;/clean_data/v1/tabular/parquet/od_distritos</code>. Alternatively, you can set any other save location by setting the <code>save_path</code> argument.</p>
-</section><section class="level2" data-number="5.2"><h3 data-number="5.2" id="load-converted-parquet">
-<span class="header-section-number">5.2</span> Load the converted <code>Parquet</code>
+</section><section class="level2" data-number="7.2"><h3 data-number="7.2" id="load-converted-parquet">
+<span class="header-section-number">7.2</span> Load the converted <code>Parquet</code>
 <a class="anchor" aria-label="anchor" href="#load-converted-parquet"></a>
 </h3>
 <p>Working with these <code>parquet</code> files is exactly the same as with <code>DuckDB</code> and <code>Arrow</code> files. Just like before, you can use the same helper function <code><a href="../reference/spod_connect.html">spod_connect()</a></code> to connect to the <code>parquet</code> files:</p>
@@ -264,8 +273,9 @@ Setting data directory for advanced users
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section><section class="section level2" data-number="6"><h2 data-number="6" id="all-dates">
-<span class="header-section-number">6</span> Download all available data<a class="anchor" aria-label="anchor" href="#all-dates"></a>
+<p>For analysis, please refer to the recommended external tutorials and our own vignettes in the <a href="#analysing-large-datasets">Analysing large datasets</a> section.</p>
+</section></section><section class="section level2" data-number="8"><h2 data-number="8" id="all-dates">
+<span class="header-section-number">8</span> Download all available data<a class="anchor" aria-label="anchor" href="#all-dates"></a>
 </h2>
 <p>To prepare origin-destination data v1 (2020-2021) for analysis over the whole period of data availability, please follow the steps below:</p>
 <div class="cell">
@@ -274,10 +284,10 @@ Setting data directory for advanced users
 <span><span class="va">dates_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Due to mobile network outages, some dates are missing, so do not assume that a simple interval between two dates will just work. Currently <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" target="_blank" class="external-link">known outages</a> are: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. This is why it is adviseable to use <code><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates()</a></code> function to get all possible dates from available data.</p>
-<section class="level2" data-number="6.1"><h3 data-number="6.1" id="download-all-data">
-<span class="header-section-number">6.1</span> Download all data<a class="anchor" aria-label="anchor" href="#download-all-data"></a>
+<section class="level2" data-number="8.1"><h3 data-number="8.1" id="download-all-data">
+<span class="header-section-number">8.1</span> Download all data<a class="anchor" aria-label="anchor" href="#download-all-data"></a>
 </h3>
-<p>Here the example is for origin-destination on district level for v1 data. You can change the <code>type</code> to “number_of_trips” and the <code>zones</code> to “municipalities” for v1 data. For v2 data, just use <code>dates</code> starting with 2022-01-01 or the <code>dates_v2</code> from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the <a href="v2-2022-onwards-mitma-data-codebook.qmd">v2 data codebook</a>, as it has many more datasets in addition to “origin-destination” and “number_of_trips”.</p>
+<p>Here the example is for origin-destination on district level for v1 data. You can change the <code>type</code> to “number_of_trips” and the <code>zones</code> to “municipalities” for v1 data. For v2 data, just use <code>dates</code> starting with 2022-01-01 or the <code>dates_v2</code> from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the <a href="v2-2022-onwards-mitma-data-codebook.html">v2 data codebook</a>, as it has many more datasets in addition to “origin-destination” and “number_of_trips”.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">type</span> <span class="op">&lt;-</span> <span class="st">"origin-destination"</span></span>
@@ -290,8 +300,8 @@ Setting data directory for advanced users
 <span>  max_download_size_gb <span class="op">=</span> <span class="fl">50</span> <span class="co"># in Gb, this should be well over the actual download size for v1 data</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2" data-number="6.2"><h3 data-number="6.2" id="convert-all-data-into-analysis-ready-format">
-<span class="header-section-number">6.2</span> Convert all data into analysis ready format<a class="anchor" aria-label="anchor" href="#convert-all-data-into-analysis-ready-format"></a>
+</section><section class="level2" data-number="8.2"><h3 data-number="8.2" id="convert-all-data-into-analysis-ready-format">
+<span class="header-section-number">8.2</span> Convert all data into analysis ready format<a class="anchor" aria-label="anchor" href="#convert-all-data-into-analysis-ready-format"></a>
 </h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
@@ -305,16 +315,16 @@ Setting data directory for advanced users
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>This will convert all downloaded data to <code>DuckDB</code> format for lightning fast analysis. You can change the <code>save_format</code> to <code>parquet</code> if you want to save the data in <code>Parquet</code> format. For comparison overview of the two formats please see the <a href="converting-the-data-for-faster-analysis.qmd">Converting the data to DuckDB/Parquet for faster analysis</a>.</p>
+<p>This will convert all downloaded data to <code>DuckDB</code> format for lightning fast analysis. You can change the <code>save_format</code> to <code>parquet</code> if you want to save the data in <code>Parquet</code> format. For comparison overview of the two formats please see the <a href="converting-the-data-for-faster-analysis.html">Converting the data to DuckDB/Parquet for faster analysis</a>.</p>
 <p>By default, <code>spod_convert_data()</code> will save the converted data in the <code>SPANISH_OD_DATA_DIR</code> directory. You can change the <code>save_path</code> argument of <code>spod_convert_data()</code> if you want to save the data in a different location.</p>
 <p>For this conversion, 4 GB or operating memory should be enough, the speed of the process depends on the number of processor cores and the speed of your disk storage. SSD is preferred. By default, the <code>spod_convert_data()</code> will use all except one processor cores on your computer. You can adjust this with the <code>max_n_cpu</code> argument of <code>spod_convert_data()</code>. You can also increase the maximum amount of memory used with the <code>max_mem_gb</code> argument, but this makes more difference during the analysis stage.</p>
 <p>Finally, <code>analysis_data_storage</code> will simply store the path to the converted data. Either a path to the <code>DuckDB</code> database file or a path to the folder with <code>Parquet</code> files.</p>
-</section><section class="level2" data-number="6.3"><h3 data-number="6.3" id="conversion-speed">
-<span class="header-section-number">6.3</span> Conversion speed<a class="anchor" aria-label="anchor" href="#conversion-speed"></a>
+</section><section class="level2" data-number="8.3"><h3 data-number="8.3" id="conversion-speed">
+<span class="header-section-number">8.3</span> Conversion speed<a class="anchor" aria-label="anchor" href="#conversion-speed"></a>
 </h3>
 <p>For reference, converting the whole v1 origin-destination data to <code>DuckDB</code> takes about 20 minutes with 4 GB of memory and 3 processor cores. The final size of the <code>DuckDB</code> database is about 18 GB, in <code>Parquet</code> format - 26 GB. The raw CSV files in gzip archives are about 20GB. v2 data is much larger, with origin-destination tables for 2022 - mid-2024 taking up 150+ GB in raw CSV.gz format.</p>
-</section><section class="level2" data-number="6.4"><h3 data-number="6.4" id="connecting-to-and-analysing-the-converted-datasets">
-<span class="header-section-number">6.4</span> Connecting to and analysing the converted datasets<a class="anchor" aria-label="anchor" href="#connecting-to-and-analysing-the-converted-datasets"></a>
+</section><section class="level2" data-number="8.4"><h3 data-number="8.4" id="connecting-to-and-analysing-the-converted-datasets">
+<span class="header-section-number">8.4</span> Connecting to and analysing the converted datasets<a class="anchor" aria-label="anchor" href="#connecting-to-and-analysing-the-converted-datasets"></a>
 </h3>
 <p>You can pass the <code>analysis_data_storage</code> path to <code><a href="../reference/spod_connect.html">spod_connect()</a></code> function, whether it is <code>DuckDB</code> or <code>Parquet</code>. The function will determine the data type automatically and give you back a <code>tbl_duckdb_connection</code><a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For reference: this object also has classes: &lt;code&gt;tbl_dbi&lt;/code&gt; ,&lt;code&gt;tbl_sql&lt;/code&gt;, &lt;code&gt;tbl_lazy&lt;/code&gt; ,and &lt;code&gt;tbl&lt;/code&gt; .&lt;/p&gt;"><sup>1</sup></a>.</p>
 <div class="cell">
@@ -326,7 +336,7 @@ Setting data directory for advanced users
 </div>
 <p>Here we set <code>max_mem_gb</code> to 16 GB. Generally, if you have more, feel free to increase it, but also consult the <a href="#fig-csv-duckdb-parquet-speed" class="quarto-xref">Figure 1</a> with our speed testing results in the <a href="#speed-comparison">Speed</a> section. You can try other combinations of <code>max_mem_gb</code> and <code>max_n_cpu</code> arguments for your needs</p>
 <p>Compared to conversion process, you might want to increase the available memory for the analysis step. The more, the better. You can control that with the <code>max_mem_gb</code> argument.</p>
-<p>You can manipulate <code>my_data</code> using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc. In the end of any sequence of commands you will need to add <code>collect()</code> to execute the whole chain of data manipulations and load the results into memory in an R <code>data.frame</code>/<code>tibble</code>.</p>
+<p>You can manipulate <code>my_data</code> using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc. In the end of any sequence of commands you will need to add <code>collect()</code> to execute the whole chain of data manipulations and load the results into memory in an R <code>data.frame</code>/<code>tibble</code>. For analysis, please refer to the recommended external tutorials and our own vignettes in the <a href="#analysing-large-datasets">Analysing large datasets</a> section.</p>
 <p>After finishing working with <code>my_data</code> we advise that you “disconnect” to free up memory:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
