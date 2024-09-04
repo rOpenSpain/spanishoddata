@@ -635,7 +635,7 @@ Now we have the data structure that match the `{flowmapper}`'s expected data for
 ```{r}
 # create base ggplot with boundaries removing any extra elements
 base_plot <- ggplot() +
-  geom_sf(data = spain_for_vis, fill=NA, col = "grey40", linewidth = 0.05)+
+  geom_sf(data = spain_for_vis, fill=NA, col = "grey30", linewidth = 0.05)+
   theme_classic(base_size = 20) +
   labs(title = "",
     subtitle = "", fill = "", caption = "") +
