@@ -56,15 +56,15 @@ Load the package:
 library(spanishoddata)
 ```
 
-Using the instructions below, set the data folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a `DuckDB` database file, or a folder of `parquet` files). You can find more info on this conversion in the [Download and convert OD datasets](convert.qmd) vignette.
+Using the instructions below, set the data folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a `DuckDB` database file, or a folder of `parquet` files). You can find more info on this conversion in the [Download and convert OD datasets](convert.html) vignette.
 
-{{< include _include/setup-data-directory.qmd >}}
+{{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
 # Overall approach to working with data
 
 If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.
 
-If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis, for this see the [Download and convert OD datasets](convert.qmd) vignette. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://robinlovelace.github.io/spanishoddata/](https://robinlovelace.github.io/spanishoddata/). The @fig-overall-flow presents the overall approach to accessing the data in the `spanishoddata` package.
+If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis, for this see the [Download and convert OD datasets](convert.html) vignette. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://robinlovelace.github.io/spanishoddata/](https://robinlovelace.github.io/spanishoddata/). The @fig-overall-flow presents the overall approach to accessing the data in the `spanishoddata` package.
 
 ![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.svg){#fig-overall-flow width="78%"}
 
@@ -94,8 +94,8 @@ Data structure:
 | `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
 | `municipalities_mitma` | A list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` . |
 | `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
-| `district_names_in_v2` | A list of names of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.qmd) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
-| `district_ids_in_v2` | A list of identifiers of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.qmd) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `district_names_in_v2` | A list of names of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `district_ids_in_v2` | A list of identifiers of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
 
 ## 1.2 `Municipalities` {#municipalities}
 
@@ -117,8 +117,8 @@ Data structure:
 | `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
 | `districts_mitma` | A list of district identifiers as assigned by the data provider in districts zones spatial dataset that correspond to a given municipality `id` . |
 | `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
-| `municipality_names_in_v2` | A list of names of municipality polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.qmd) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
-| `municipality_ids_in_v2` | A list of identifiers of municipality polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.qmd) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `municipality_names_in_v2` | A list of names of municipality polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `municipality_ids_in_v2` | A list of identifiers of municipality polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
 
 The spatial data you get via `spanishoddata` package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in `id` column. Apart from that `id` column, the original zones files do not have any metadata. However, as seen above, using the `spanishoddata` package you get many additional columns that provide a semantic connection between official statistical zones used by the Spanish government and the zones you can get for the v2 data (for 2022 onward).
 
@@ -248,4 +248,4 @@ tpp_dist_tbl <- tpp_dist |> dplyr::collect()
 
 # Advanced use
 
-For more advanced use, especially for analysing longer periods (months or even years), please see [Download and convert OD datasets](convert.qmd).
+For more advanced use, especially for analysing longer periods (months or even years), please see [Download and convert mobility datasets](convert.html).

@@ -33,7 +33,7 @@ library(tidyverse)
 library(sf)
 ```
 
-{{< include _include/setup-data-directory.qmd >}}
+{{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
 # Simple example - plot flows data as it is {#simple-example}
 
@@ -66,7 +66,7 @@ head(od_20210407)
 
 ### Zones
 
-We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.qmd)).
+We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.html)).
 
 ```{r}
 districts_v1 <- spod_get_zones("dist", ver = 1)
@@ -394,7 +394,7 @@ Let us get the origin-destination flows between `districts` for a typical workin
 od <- spod_get("od", zones = "distr", dates = "2022-04-06")
 ```
 
-Also get the spatial data for the zones. We are using the version 2 of zones, because the data we got was for 2022 and onwards, which corresponds to the v2 data (see the relevant [codebook](v2-2022-onwards-mitma-data-codebook.qmd)).
+Also get the spatial data for the zones. We are using the version 2 of zones, because the data we got was for 2022 and onwards, which corresponds to the v2 data (see the relevant [codebook](v2-2022-onwards-mitma-data-codebook.html)).
 
 ```{r}
 districts <- spod_get_zones("distr", ver = 2)
