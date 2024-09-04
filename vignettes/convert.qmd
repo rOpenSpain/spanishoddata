@@ -92,7 +92,7 @@ Make sure you have loaded the package:
 library(spanishoddata)
 ```
 
-{{< include setup-data-directory.qmd >}}
+{{< include _include/setup-data-directory.qmd >}}
 
 # Getting a single day with `spod_get()` {#spod-get}
 

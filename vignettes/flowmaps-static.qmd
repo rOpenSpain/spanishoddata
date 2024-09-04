@@ -33,7 +33,7 @@ library(tidyverse)
 library(sf)
 ```
 
-{{< include setup-data-directory.qmd >}}
+{{< include _include/setup-data-directory.qmd >}}
 
 # Simple example - plot flows data as it is {#simple-example}
 
@@ -655,7 +655,7 @@ The image may look a bit bleak, but when we put it on a sticker, it will look gr
 
 ## Make the sticker
 
-We make the sticker usin the `{hexSticker}` [@hexSticker-r] package.
+We make the sticker using the `{hexSticker}` [@hexSticker-r] package.
 
 ```{r}
 sticker(flows_plot,

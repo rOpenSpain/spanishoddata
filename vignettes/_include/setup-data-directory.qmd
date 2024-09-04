@@ -1,9 +1,4 @@
 ---
-title: "Set the data directory"
-vignette: >
-  %\VignetteIndexEntry{Set the data directory}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
 execute: 
   eval: false
 ---

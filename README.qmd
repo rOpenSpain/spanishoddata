@@ -65,7 +65,7 @@ devtools::load_all()
 
 </details>
 
-{{< include vignettes/setup-data-directory.qmd >}}
+{{< include vignettes/_include/setup-data-directory.qmd >}}
 
 # Using the package
 

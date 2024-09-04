@@ -23,4 +23,4 @@ spanishoddata::spod_codebook(ver = 2)
 
 Work-in-progress. Coming soon, please come back in a few weeks. For now, please consult the official documentation [@mitma-mobility-2024-v6]. Some data is already available in the same way as [v1 data](v1-2020-2021-mitma-data-codebook.qmd), just use dates starting with 2022-01-01.
 
-{{< include setup-data-directory.qmd >}}
+{{< include _include/setup-data-directory.qmd >}}
