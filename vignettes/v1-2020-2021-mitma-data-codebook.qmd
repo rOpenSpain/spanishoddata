@@ -51,6 +51,7 @@ remotes::install_github("Robinlovelace/spanishoddata",
 ```
 
 Load the package:
+Load the package:
 
 ```{r}
 library(spanishoddata)
