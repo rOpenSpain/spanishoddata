@@ -17,31 +17,38 @@ execute:
 
 # Introduction {#intro}
 
-**TL;DR: For analysing more than 1 week of data, use `spod_convert()` to convert the data into `DuckDB` and `spod_connect()` to conenct to it for analysis using `{dplyr}`. Skip to the [section about it](#duckdb).**
+**TL;DR (too long, didn't read): For analysing more than 1 week of data, use `spod_convert()` to convert the data into `DuckDB` and `spod_connect()` to connect to it for analysis using `{dplyr}`. Skip to the [section about it](#duckdb).**
 
-Using origin-destination data as an example, this vignette shows how to download the mobility datasets from versions v1 (2020-2021) and v2 (2022-onwards) of the Spanish mobility data and convert them into analysis-ready formats. See description of datasets in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in the [Codebook and cookbook for v2 (2022 onwards) Spanish mobility data](v2-2022-onwards-mitma-data-codebook.qmd).
+The main focus of this vignette is to show how to get long periods of origin-destination data for analysis. First, we describe and compare the two ways to get the mobility data using origin-destination data as an example. The package functions and overall approaches are the same for working with other types of data available through the package, such as the number of trips, overnight stays and any other data. Then we show how to get a few days of origin-destination data with `spod_get()`. Finally, we show how to download and convert multiple weeks, months or even years of origin-destination data into analysis-ready formats. See description of datasets in the [Codebook and cookbook for v1 (2020-2021) Spanish mobility data](v1-2020-2021-mitma-data-codebook.qmd) and in the [Codebook and cookbook for v2 (2022 onwards) Spanish mobility data](v2-2022-onwards-mitma-data-codebook.qmd).
 
-## Two ways to get the data
+
+# Two ways to get the data
 
 There are two main ways to import the datasets:
 
 1. as an in-memory object with `spod_get()`;
 
-2. as a connection to DuckDB or Parquet files on disk with `spod_convert()` + `spod_connect()`. The latter is recommended for large datasets (more than several days), as it is much faster and more memory efficient, as we demonstarte below.
+2. as a connection to DuckDB or Parquet files on disk with `spod_convert()` + `spod_connect()`. The latter is recommended for large datasets (more than 1 week), as it is much faster and more memory efficient, as we demonstarte below.
 
-`spod_get()` returns objects that are only appropriate for small datasets representing a few days of the national origin-destination flows. We recommend converting the data into analysis-ready formats (`DuckDB` or `Parquet`), allowing you to work with much longer time periods (months and years) on a consumer laptop (with 8-16 GB of memory).
+`spod_get()` returns objects that are only appropriate for small datasets representing a few days of the national origin-destination flows. We recommend converting the data into analysis-ready formats (`DuckDB` or `Parquet`) using `spod_convert()` + `spod_connect()`. This will allow you to work with much longer time periods (months and years) on a consumer laptop (with 8-16 GB of memory). See the section below for more details.
 
-**Converting the data to either `DuckDB` or `Parquet` can lead to ~10x speed-up compared to using data frames returned by `spod_get()`, which have to read the original compressed CSV.gz files from disk every time you filter, aggregate or reshape the data.**
+# Analysing large datasets {#analysis-large-datasets}
 
-`DuckDB` and `Parquet` are systems for efficiently processing larger-than-memory datasets. For an introduction to them, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}.
+The mobility datasets available through `{spanishiddata}` are very large. Particularly the origin-destination data, which contains millions of rows. These data sets may not fit into the memory of your computer, especially if you plan to run the analysis over multiple days, weeks, months, or even years.
+
+To work with these datasets, we highly recommend using `DuckDB` and `Parquet`. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar `data.frame`/`tibble` object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: [website](https://arrow-user2022.netlify.app/){target="_blank"}, [slides](https://arrow-user2022.netlify.app/slides){target="_blank"}, and [the video tutorial](https://www.youtube.com/watch?v=YZMuFavEgA4){target="_blank"}. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on [static](vignettes/flowmaps-static.qmd) and interactive (TODO: add link) flows visualisation.
 
 Learning to use `DuckDB` and `Parquet` is easy for anyone who have ever worked with `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from `DuckDB` and `Parquet`. Please read the relevant sections below, where we first show how to convert the data, and then how to use it.
 
 ## How to choose between DuckDB, Parquet, and CSV {#duckdb-vs-parquet-csv}
 
-### Speed {#speed-comparison}
+The main considerations to make when choosing between `DuckDB` and `Parquet` (that you can get with `spod_convert()` + `spod_connect()`), as well as `CSV.gz` (that you can get with `spod_get()`) are analysis speed, convenience of data analysis, and the specific approach you prefer when getting the data. We discuss all three below.
 
-In our testing (see @fig-csv-duckdb-parquet-speed), using `DuckDB` database has a significant speed advantage over running the analysis on raw CSV.gz files. Using the full origin destination dataset for 18 months, we compared a query that would find mean hourly number of trips between all zone pairs over the whole time period. `DuckDB` database was up to 8 times faster than running the analysis on raw CSV.gz files, and up to 5 times faster than running the analysis on `Parquet` files.
+### Analysis Speed {#speed-comparison}
+
+The data format you choose may dramatically impact the speed of analysis (e.g. filtering by dates, calculating number of trips per hour, per week, per month, per origin-destination pair, and any other data aggregation or manipulation).
+
+In our tests (see @fig-csv-duckdb-parquet-speed), we found that conducting an analysis using `DuckDB` database provided a significant speed advantage over using `Parquet` and, more importantly, raw `CSV.gz` files. Specifically, when comparing a query to determine the mean hourly trips over 18 months for each zone pair, we observed that using `DuckDB` database was **up to 5 times** faster than using `Parquet` files and **up to 8 times** faster than using `CSV.gz` files.
 
 ![Data processing speed comparison: DuckDB engine running on CSV.gz files vs DuckDB database vs a folder of Parquet files](media/duckdb-parquet-csv-speed-mean-hourly-v1.svg){#fig-csv-duckdb-parquet-speed}
 
@@ -63,17 +70,19 @@ data |>
 
 @fig-csv-duckdb-parquet-speed also shows that `DuckDB` format will give you the best performance even on low-end systems with limited memory and number of processor cores, conditional on a fast SSD storage. Also note, that if you do choose to work with long time periods using CSV.gz files via `spod_get()`, you will need to balance the amount of memory and processor cores via the `max_n_cpu` and `max_mem_gb` arguments, otherwise the analysis may fail (see the grey area in the figure), when there are too many parallel processes running at the same time with limited memory.
 
-### Convenience
+### Convenience of data analysis
 
-The approaches to working with all formats are exactly the same, as under the hood all analysis is actually done by the `DuckDB` [@duckdb-r] engine. So from that point of view, there is no difference between data formats. You can manipulate the data using `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. We provide examples in the following sections.
+Regardless of the data format (`DuckDB`, `Parquet`, or `CSV.gz`), the functions you will need for data manipulation and analysis are the same. This is because the analysis is actually performed by the `DuckDB` [@duckdb-r] engine, which presents the data as if it were a regular `data.frame`/`tibble` object in R (almost). So from that point of view, there is no difference between the data formats. You can manipulate the data using `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. We provide examples in the following sections. Please refer to the recommended external tutorials and our own vignettes in the [Analysing large datasets](#analysing-large-datasets) section.
 
-### Use cases
+### Scenarios of getting the data
 
-The choice between converting to `DuckDB` and `Parquet` could also be made based on your needs:
+The choice between converting to `DuckDB` and `Parquet` could also be made based on how you plan to work with the data. Specifically whether you want to just download long periods or even all available data, or if you want to get the data gradually, as you progress through with the analysis.
 
--   If you plan to work with long time periods, we recommend `DuckDB`, as it is one big file and it is easier to update it completely. For example you may be working with all 2020 data. Later you decide to add all of 2021 data. In this case it would be better to delete the database and create it from scratch.
+- If you plan to work with long time periods, we recommend `DuckDB`, as it is one big file and it is easier to update it completely. For example you may be working with all 2020 data. Later you decide to add all of 2021 data. In this case it would be better to delete the database and create it from scratch.
 
--   If you only want certain dates, analyse them and add additional dates later, `Parquet` may be better, as each day is saved in a separate file, just like the original CSV files. Therefore updating a folder of `Parquet` files is as easy as just creating a new file only for the missing date.
+- If you only want certain dates, analyse them and add additional dates later, `Parquet` may be better, as each day is saved in a separate file, just like the original CSV files. Therefore updating a folder of `Parquet` files is as easy as just creating a new file only for the missing date.
+
+- If you only work with a few individual days, you may not notice the advantages of the `DuckDB` or `Parquet` formats. In this case, you can keep using the `CSV.gz` format for the analysis using the `spod_get()` function. This is also useful for quick tutorials, where you only need one or two days of data for demonstration purposes.
 
 
 # Setup
@@ -234,7 +243,7 @@ You can read the introductory information on how to connect to `DuckDB` files [h
 my_od_data_2 <- spod_connect(db_2)
 ```
 
-Just like before, with `spod_get()` funciton that we used to download raw CSV.gz files and analyse them without any conversion, the resulting object `my_od_data_2` is also a `tbl_duckdb_connection`. So, you can treat it as regular `data.frame` or `tibble` and use `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc.
+Just like before, with `spod_get()` funciton that we used to download raw CSV.gz files and analyse them without any conversion, the resulting object `my_od_data_2` is also a `tbl_duckdb_connection`. So, you can treat it as regular `data.frame` or `tibble` and use `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. For analysis, please refer to the recommended external tutorials and our own vignettes in the [Analysing large datasets](#analysing-large-datasets) section.
 
 After finishing working with `my_od_data_2` we advise that you "disconnect" this data using:
 
@@ -244,7 +253,7 @@ spod_disconnect(my_od_data_2)
 
 This is useful to free-up memory and is neccessary if you would like to run `spod_convert()` again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.
 
-# Analysing the data using `Parquet` {#arrow-parquet}
+# Analysing the data using `Parquet` {#parquet}
 
 Please make sure you did all the steps in the [Setup](#setup) section above.
 
@@ -296,6 +305,8 @@ my_od_data_3 |>
   dplyr::distinct(date) |>
   dplyr::arrange(date)
 ```
+
+For analysis, please refer to the recommended external tutorials and our own vignettes in the [Analysing large datasets](#analysing-large-datasets) section.
 
 
 # Download all available data {#all-dates}
@@ -368,7 +379,7 @@ Here we set `max_mem_gb` to 16 GB. Generally, if you have more, feel free to inc
 
 Compared to conversion process, you might want to increase the available memory for the analysis step. The more, the better. You can control that with the `max_mem_gb` argument.
 
-You can manipulate `my_data` using `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`.
+You can manipulate `my_data` using `{dplyr}` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. For analysis, please refer to the recommended external tutorials and our own vignettes in the [Analysing large datasets](#analysing-large-datasets) section.
 
 After finishing working with `my_data` we advise that you "disconnect" to free up memory:
 
