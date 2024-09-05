@@ -329,11 +329,23 @@ references:
     given-names: Jeroen
   year: '2024'
 - type: software
+  title: flowmapblue
+  abstract: 'flowmapblue: Flow Map Rendering'
+  notes: Suggests
+  url: https://flowmapblue.github.io/flowmapblue.R/
+  authors:
+  - family-names: Boyandin
+    given-names: Ilya
+    email: ilya@boyandin.me
+    orcid: https://orcid.org/0000-0001-5585-7587
+  year: '2024'
+- type: software
   title: flowmapper
   abstract: 'flowmapper: Draw Flows (Migration, Goods, Money, Information) on ''ggplot2''
     Plots'
   notes: Suggests
   url: https://github.com/JohMast/flowmapper
+  repository: https://CRAN.R-project.org/package=flowmapper
   authors:
   - family-names: Mast
     given-names: Johannes
@@ -367,6 +379,30 @@ references:
     orcid: https://orcid.org/0000-0002-7579-5165
   year: '2024'
 - type: software
+  title: hexSticker
+  abstract: 'hexSticker: Create Hexagon Sticker in R'
+  notes: Suggests
+  url: https://github.com/GuangchuangYu/hexSticker
+  repository: https://CRAN.R-project.org/package=hexSticker
+  authors:
+  - family-names: Yu
+    given-names: Guangchuang
+    email: guangchuangyu@gmail.com
+  year: '2024'
+- type: software
+  title: mapSpain
+  abstract: 'mapSpain: Administrative Boundaries of Spain'
+  notes: Suggests
+  url: https://ropenspain.github.io/mapSpain/
+  repository: https://CRAN.R-project.org/package=mapSpain
+  authors:
+  - family-names: Hernangómez
+    given-names: Diego
+    email: diego.hernangomezherrero@gmail.com
+    orcid: https://orcid.org/0000-0001-8457-4658
+    affiliation: rOpenSpain
+  year: '2024'
+- type: software
   title: quarto
   abstract: 'quarto: R Interface to ''Quarto'' Markdown Publishing System'
   notes: Suggests
@@ -394,3 +430,4 @@ references:
     email: hadley@posit.co
   year: '2024'
   version: '>= 3.0.0'
+
