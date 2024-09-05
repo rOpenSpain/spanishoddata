@@ -42,10 +42,10 @@ preferred-citation:
     given-names: Eugeni
     orcid: https://orcid.org/0000-0001-5199-4103
   year: '2024'
-  url: https://github.com/RobinLovelace/spanishoddata
+  url: https://github.com/rOpenSpain/spanishoddata
   doi: 10.32614/CRAN.package.spanishoddata
-repository-code: https://github.com/Robinlovelace/spanishoddata
-url: https://robinlovelace.github.io/spanishoddata/
+repository-code: https://github.com/rOpenSpain/spanishoddata
+url: https://rOpenSpain.github.io/spanishoddata/
 contact:
 - family-names: Kotov
   given-names: Egor
@@ -394,4 +394,3 @@ references:
     email: hadley@posit.co
   year: '2024'
   version: '>= 3.0.0'
-

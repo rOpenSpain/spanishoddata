@@ -4,9 +4,9 @@
   "identifier": "spanishoddata",
   "description": "Enables access to origin-destination (OD) provided by the Spanish Minstry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. It contains functions for downloading zone boundaries and associated origin-destination data. The OD datasets are large. The package eases working with them by using the database interface package 'duckdb', using an optional environment variable 'SPANISH_OD_DATA_DIR' to avoid repeated downloads, and by providing documentation demonstrating how to collect subsets of the resulting databases into memory.",
   "name": "spanishoddata: Get Spanish Origin-Destination Data",
-  "relatedLink": "https://robinlovelace.github.io/spanishoddata/",
-  "codeRepository": "https://github.com/Robinlovelace/spanishoddata",
-  "issueTracker": "https://github.com/Robinlovelace/spanishoddata/issues",
+  "relatedLink": "https://rOpenSpain.github.io/spanishoddata/",
+  "codeRepository": "https://github.com/rOpenSpain/spanishoddata",
+  "issueTracker": "https://github.com/rOpenSpain/spanishoddata/issues",
   "license": "https://spdx.org/licenses/MIT",
   "version": "0.0.1",
   "programmingLanguage": {
@@ -345,11 +345,11 @@
       ],
       "name": "spanishoddata",
       "identifier": "10.32614/CRAN.package.spanishoddata",
-      "url": "https://github.com/RobinLovelace/spanishoddata",
+      "url": "https://github.com/rOpenSpain/spanishoddata",
       "@id": "https://doi.org/10.32614/CRAN.package.spanishoddata",
       "sameAs": "https://doi.org/10.32614/CRAN.package.spanishoddata"
     }
   ],
-  "readme": "https://github.com/Robinlovelace/spanishoddata/blob/main/README.md",
+  "readme": "https://github.com/rOpenSpain/spanishoddata/blob/main/README.md",
   "keywords": ["cdr", "data", "data-package", "mobility", "origin-destination", "rstats", "mobile-telephone-data"]
 }

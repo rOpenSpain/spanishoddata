@@ -19,7 +19,7 @@ spod_codebook = function(ver = 1) {
     if( inherits(help, what = "vignette") ){
       return(help)
     } else {
-      message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://robinlovelace.github.io/spanishoddata/articles/codebook-v1.html")
+      message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://rOpenSpain.github.io/spanishoddata/articles/codebook-v1.html")
     }
   } else if (ver == 2) {
     help <- vignette(
@@ -29,7 +29,7 @@ spod_codebook = function(ver = 1) {
     if( inherits(help, what = "vignette") ){
       return(help)
     } else {
-      message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://robinlovelace.github.io/spanishoddata/articles/codebook-v2.html")
+      message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://rOpenSpain.github.io/spanishoddata/articles/codebook-v2.html")
     }
   } else {
     message("Version must be 1 or 2.")
