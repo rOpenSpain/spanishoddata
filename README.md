@@ -32,8 +32,7 @@ fifteenth of each month. Both versions of the data primarily consist of
 mobile phone positioning data, and include matrices for overnight stays,
 individual movements, and trips of Spanish residents at different
 geographical levels. See the [package
-website](https://rOpenSpain.github.io/spanishoddata/) and vignettes
-for
+website](https://rOpenSpain.github.io/spanishoddata/) and vignettes for
 [v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook)
 and
 [v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook)
@@ -406,7 +405,7 @@ For more information on the package, see:
     vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html)
     which documents use cases
   - [Making static
-    flowmaps](https://robinlovelace.github.io/spanishoddata/articles/flowmaps-static.html)
+    flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html)
     vignette shows how to create flowmaps using the data acquired with
     `{spanishoddata}`
 
