@@ -20,17 +20,23 @@
 <meta name="description" content="Enables access to origin-destination (OD) provided by the Spanish Minstry of Transport, hosted at &lt;https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad&gt;. It contains functions for downloading zone boundaries and associated origin-destination data. The OD datasets are large. The package eases working with them by using the database interface package duckdb, using an optional environment variable SPANISH_OD_DATA_DIR to avoid repeated downloads, and by providing documentation demonstrating how to collect subsets of the resulting databases into memory.">
 <meta property="og:description" content="Enables access to origin-destination (OD) provided by the Spanish Minstry of Transport, hosted at &lt;https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad&gt;. It contains functions for downloading zone boundaries and associated origin-destination data. The OD datasets are large. The package eases working with them by using the database interface package duckdb, using an optional environment variable SPANISH_OD_DATA_DIR to avoid repeated downloads, and by providing documentation demonstrating how to collect subsets of the resulting databases into memory.">
 <meta property="og:image" content="https://rOpenSpain.github.io/spanishoddata/reference/figures/card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@rOpenSpain">
+<meta name="twitter:site" content="@rOpenSpain">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&amp;family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap" rel="stylesheet">
+<!-- rogtemplate style sheet --><link href="BS5/rostemplate.min.css" rel="stylesheet">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
-
-    <a class="navbar-brand me-2" href="index.html">spanishoddata</a>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+  <a class="navbar-brand me-2" href="index.html">
+    <img src="apple-touch-icon-180x180.png" alt="spanishoddata logo" height="40" class="d-inline-block me-1">spanishoddata</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
-
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -57,8 +63,6 @@
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/rOpenSpain/spanishoddata/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
-
-
   </div>
 </nav><div class="container template-home">
 <div class="row">
@@ -89,7 +93,7 @@
 <p>Install the development version of the package as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rOpenSpain/spanishoddata"</span>,</span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rOpenSpain/spanishoddata"</span>,</span>
 <span>  force <span class="op">=</span> <span class="cn">TRUE</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Load it as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -103,7 +107,7 @@ Developer documentation
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="ex">rstudio</span> spanishoddata/spanishoddata.Rproj</span></code></pre></div>
 <p>Then run the following command from the R console:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </details><div class="section level2">
 <h2 id="set-the-data-directory">Set the data directory<a class="anchor" aria-label="anchor" href="#set-the-data-directory"></a>
 </h2>
@@ -115,7 +119,7 @@ Developer documentation
 Setting data directory for advanced users
 </summary><p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Then set the data directory globally, by typing this line in the file:</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>SPANISH_OD_DATA_DIR <span class="ot">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre></div>
 <p>You can also set the data directory locally, just for the current project. Set the ‘envar’ in the working directory by editing <code>.Renviron</code> file in the root of the project:</p>
@@ -309,7 +313,7 @@ Setting data directory for advanced users
 <li>The <a href="https://rOpenSpain.github.io/spanishoddata/articles/work-with-v1-data.html">v1 vs v2 vignette</a> which explains the differences between the two versions of the data</li>
 <li>The <a href="https://rOpenSpain.github.io/spanishoddata/articles/uses.html">uses vignette</a> which documents use cases</li>
 <li>
-<a href="https://robinlovelace.github.io/spanishoddata/articles/flowmaps-static.html" class="external-link">Making static flowmaps</a> vignette shows how to create flowmaps using the data acquired with <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a>
+<a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html">Making static flowmaps</a> vignette shows how to create flowmaps using the data acquired with <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a>
 </li>
 </ul>
 </li>
@@ -338,6 +342,7 @@ Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2024. “Estudi
 <ul class="list-unstyled">
 <li><a href="https://github.com/rOpenSpain/spanishoddata/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/rOpenSpain/spanishoddata/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://ropenspain.es/" class="external-link">About <img src="ROS-logo.png" alt="rOpenSpain-Logo" height="24" style="display: inline;"> rOpenSpain</a></li>
 </ul>
 </div>
 
@@ -360,8 +365,10 @@ Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2024. “Estudi
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Egor Kotov <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6690-5345" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Robin Lovelace <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-5679-6536" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>
+<a href="https://www.ekotov.pro" class="external-link">Egor Kotov</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6690-5345" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>
+<a href="https://www.robinlovelace.net/" class="external-link">Robin Lovelace</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-5679-6536" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -378,21 +385,61 @@ Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2024. “Estudi
   </aside>
 </div>
 
-
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Egor Kotov, Robin Lovelace.</p>
+<script>
+  var homeall = document.getElementsByTagName("h1");
+  var banner = document.createElement('div');
+  banner.innerHTML = '<a href="https://ropenspain.es/" id="ROS-heading-breadcrumbs">' +
+        '<div class="text-center" id="ROS-partof">' +
+          '<p>Part of <img src="ROS-logo.png" alt="rOpenSpain-Logo" id="homelogoxs"> rOpenSpain </p>' +
+        '</div></a>'
+  if (homeall.length > 0) {
+	  home = homeall[0];
+	  home.insertBefore(banner,home.firstChild);
+  }
+</script>
 </div>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <!-- ropenspain rostemplate -->
+<footer id="footer"><div class="container">
+    <div class="row">
+      <div class="col-md">
+        <h4 data-toc-skip>About <img src="logo.png" alt="spanishoddata Logo" height="24"> spanishoddata</h4>
+        <p>Developed by <a href="https://www.ekotov.pro" class="external-link">Egor Kotov</a>, <a href="https://www.robinlovelace.net/" class="external-link">Robin Lovelace</a>.</p>
+        <p>Part of the <span class="ROS-light">rOpenSpain</span> project.</p>
+        <hr class="d-md-none">
+</div>
+      <div class="col-md offset-md-4">
+        <h4 data-toc-skip>About <img src="ROS-logo.png" alt="ROpenSpain Logo" height="24"><span class="ROS-light"> rOpenSpain</span>
+</h4>
+        <a href="https://ropenspain.es/" class="external-link"><span class="ROS-light">rOpenSpain</span></a> is a community of R enthusiasts whose ultimate goal is to create high-quality R packages for data mining public Spanish open sources.
+        <hr class="d-md-none">
+</div>
+   </div>
+  </div>
+</footer><div id="copyright">
+  <div class="container">
+    <div class="row">
+      <div class="col-md text-center text-lg-start">
+        <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+      </div>
+      <div class="col-md offset-md-4 text-center text-lg-start">
+      <p>Template <a href="https://github.com/ropenspain/rostemplate/" class="external-link">rostemplate</a> by <a href="https://github.com/dieghernan/" class="external-link">dieghernan</a>, based on <a href="https://bootstrapious.com/" class="external-link">Bootstrapious</a>.
+      </p>
+      </div>
+    </div>
+  </div>
 </div>
 
-    </footer>
-</div>
 
 
 
-
-
-  </body>
+  <script>
+var h1s = document.getElementsByTagName("h1");
+var myH1;
+if (h1s.length > 0) {
+  myH1 = h1s[0];
+  myH1.classList.add("ROSh1");
+}
+</script>
+</body>
 </html>
