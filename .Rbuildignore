@@ -21,3 +21,4 @@ README.qmd
 \.mp4$
 \.gif$
 ^tools$
+^_pkgdown\.yaml$
