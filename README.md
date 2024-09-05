@@ -1,6 +1,6 @@
 
 
-# spanishoddata: Get Spanish Origin-Destination Data <a href="https://robinlovelace.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
+# spanishoddata: Get Spanish Origin-Destination Data <a href="https://rOpenSpain.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
 
 <!-- badges: start -->
 
@@ -11,9 +11,9 @@ alt="Project Status: WIP – Initial development is in progress, but there has n
 target="_blank"><img
 src="https://img.shields.io/badge/lifecycle-experimental-red.svg"
 alt="Lifecycle: experimental" /></a> <a
-href="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml"
+href="https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml"
 target="_blank"><img
-src="https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg"
+src="https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg"
 alt="R-CMD-check" /></a> <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
@@ -32,11 +32,11 @@ fifteenth of each month. Both versions of the data primarily consist of
 mobile phone positioning data, and include matrices for overnight stays,
 individual movements, and trips of Spanish residents at different
 geographical levels. See the [package
-website](https://robinlovelace.github.io/spanishoddata/) and vignettes
+website](https://rOpenSpain.github.io/spanishoddata/) and vignettes
 for
-[v1](https://robinlovelace.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook)
+[v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook)
 and
-[v2](https://robinlovelace.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook)
+[v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook)
 data for more details.
 
 **spanishoddata** is designed to save people time by providing the data
@@ -56,6 +56,14 @@ download only the files that are not already present.
 Figure 1: Example of the data available through the package
 
 </div>
+<div id="fig-spain-flows">
+
+![](man/figures/spain-folding-flows.gif)
+
+
+Figure 2: Example of the data available through the package
+
+</div>
 
 # Installation
 
@@ -65,7 +73,7 @@ Install the development version of the package as follows:
 
 ``` r
 if (!require("remotes")) install.packages("remotes")
-remotes::install_github("Robinlovelace/spanishoddata",
+remotes::install_github("rOpenSpain/spanishoddata",
   force = TRUE, dependencies = TRUE)
 ```
 
@@ -84,7 +92,7 @@ To load the package locally, clone it and navigate to the root of the
 package in the terminal, e.g. with the following:
 
 ``` bash
-gh repo clone Robinlovelace/spanishoddata
+gh repo clone rOpenSpain/spanishoddata
 code spanishoddata
 # with rstudio:
 rstudio spanishoddata/spanishoddata.Rproj
@@ -157,7 +165,7 @@ functions above using zones ’id’s. Please see a simple example below,
 and also consult the vignettes with detailed data description and
 instructions in the package vignettes with `spod_codebook(ver = 1)` and
 `spod_codebook(ver = 2)`, or simply visit the package website at
-<https://robinlovelace.github.io/spanishoddata/>.
+<https://rOpenSpain.github.io/spanishoddata/>.
 
 # Showcase
 
@@ -388,17 +396,14 @@ ggplot() +
 
 For more information on the package, see:
 
-- The [pkgdown site](https://robinlovelace.github.io/spanishoddata/)
+- The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
   - Information on the
-    [functions](https://robinlovelace.github.io/spanishoddata/reference/index.html)
-  - [v1 data (2020-2021)
-    codebook](https://robinlovelace.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html)
-  - [v2 data (2022 onwards) codebook (work in
-    progress)](https://robinlovelace.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.html)
-  - [Download and convert
-    data](https://robinlovelace.github.io/spanishoddata/articles/convert.html)
+    [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
+  - The [v1 vs v2
+    vignette](https://rOpenSpain.github.io/spanishoddata/articles/work-with-v1-data.html)
+    which explains the differences between the two versions of the data
   - The [uses
-    vignette](https://robinlovelace.github.io/spanishoddata/articles/uses.html)
+    vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html)
     which documents use cases
   - [Making static
     flowmaps](https://robinlovelace.github.io/spanishoddata/articles/flowmaps-static.html)

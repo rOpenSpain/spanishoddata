@@ -11,6 +11,6 @@ bibentry(
            comment = c(ORCID = "0000-0001-5199-4103"))
   ),
   year     = "2024",
-  url      = "https://github.com/RobinLovelace/spanishoddata",
+  url      = "https://github.com/rOpenSpain/spanishoddata",
   doi      = "10.32614/CRAN.package.spanishoddata"
 )

@@ -24,9 +24,9 @@ The mobility data v1 (2020-2021) was originally released by the Ministerio de Tr
 
 Key sources for this codebook/cookbook include:
 
-- [original data collection methodology in Spanish](https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf){target="_blank"} + [automatically translated English version of methodology](https://robinlovelace.github.io/spanishoddata/assets/codebooks/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3_en.pdf){target="_blank"}
+- [original data collection methodology in Spanish](https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf){target="_blank"} + [automatically translated English version of methodology](https://rOpenSpain.github.io/spanishoddata/assets/codebooks/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3_en.pdf){target="_blank"}
 
-- [original data codebook in Spanish](https://opendata-movilidad.mitma.es/README%20-%20formato%20ficheros%20movilidad%20MITMA%2020201228.pdf){target="_blank"} + [automatically translated English version of codebook](https://robinlovelace.github.io/spanishoddata/assets/codebooks/README_-_formato_ficheros_movilidad_MITMA_20201228_en.pdf){target="_blank"}
+- [original data codebook in Spanish](https://opendata-movilidad.mitma.es/README%20-%20formato%20ficheros%20movilidad%20MITMA%2020201228.pdf){target="_blank"} + [automatically translated English version of codebook](https://rOpenSpain.github.io/spanishoddata/assets/codebooks/README_-_formato_ficheros_movilidad_MITMA_20201228_en.pdf){target="_blank"}
 
 - [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad){target="_blank"}
 
@@ -46,7 +46,7 @@ Install `spanishoddata` R package:
 
 ```{r}
 if (!require("remotes")) install.packages("remotes")
-remotes::install_github("Robinlovelace/spanishoddata",
+remotes::install_github("rOpenSpain/spanishoddata",
   force = TRUE, dependencies = TRUE)
 ```
 
@@ -65,7 +65,7 @@ Using the instructions below, set the data folder for the package to download th
 
 If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.
 
-If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis, for this see the [Download and convert OD datasets](convert.html) vignette. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://robinlovelace.github.io/spanishoddata/](https://robinlovelace.github.io/spanishoddata/). The @fig-overall-flow presents the overall approach to accessing the data in the `spanishoddata` package.
+If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis, for this see the [Download and convert OD datasets](convert.qmd) vignette. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://rOpenSpain.github.io/spanishoddata/](https://rOpenSpain.github.io/spanishoddata/). The @fig-overall-flow presents the overall approach to accessing the data in the `spanishoddata` package.
 
 ![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.svg){#fig-overall-flow width="78%"}
 

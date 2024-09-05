@@ -42,10 +42,10 @@ preferred-citation:
     given-names: Eugeni
     orcid: https://orcid.org/0000-0001-5199-4103
   year: '2024'
-  url: https://github.com/RobinLovelace/spanishoddata
+  url: https://github.com/rOpenSpain/spanishoddata
   doi: 10.32614/CRAN.package.spanishoddata
-repository-code: https://github.com/Robinlovelace/spanishoddata
-url: https://robinlovelace.github.io/spanishoddata/
+repository-code: https://github.com/rOpenSpain/spanishoddata
+url: https://rOpenSpain.github.io/spanishoddata/
 contact:
 - family-names: Kotov
   given-names: Egor
@@ -367,6 +367,30 @@ references:
     orcid: https://orcid.org/0000-0002-7579-5165
   year: '2024'
 - type: software
+  title: hexSticker
+  abstract: 'hexSticker: Create Hexagon Sticker in R'
+  notes: Suggests
+  url: https://github.com/GuangchuangYu/hexSticker
+  repository: https://CRAN.R-project.org/package=hexSticker
+  authors:
+  - family-names: Yu
+    given-names: Guangchuang
+    email: guangchuangyu@gmail.com
+  year: '2024'
+- type: software
+  title: mapSpain
+  abstract: 'mapSpain: Administrative Boundaries of Spain'
+  notes: Suggests
+  url: https://ropenspain.github.io/mapSpain/
+  repository: https://CRAN.R-project.org/package=mapSpain
+  authors:
+  - family-names: Hernangómez
+    given-names: Diego
+    email: diego.hernangomezherrero@gmail.com
+    orcid: https://orcid.org/0000-0001-8457-4658
+    affiliation: rOpenSpain
+  year: '2024'
+- type: software
   title: quarto
   abstract: 'quarto: R Interface to ''Quarto'' Markdown Publishing System'
   notes: Suggests
@@ -394,4 +418,3 @@ references:
     email: hadley@posit.co
   year: '2024'
   version: '>= 3.0.0'
-
