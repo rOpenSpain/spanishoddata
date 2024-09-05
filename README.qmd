@@ -12,10 +12,11 @@ eval: false
 
 # spanishoddata: Get Spanish Origin-Destination Data <a href="https://rOpenSpain.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
 
+
 <!-- badges: start -->
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip){target="_blank"}
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental){target="_blank"}
-[![R-CMD-check](https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml){target="_blank"}
+[![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable mobility of Spain [@mitma-mobility-2024-v6].
@@ -315,10 +316,18 @@ ggplot() +
 For more information on the package, see:
 
 - The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
-  - Information on the [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
-  - The [v1 vs v2 vignette](https://rOpenSpain.github.io/spanishoddata/articles/work-with-v1-data.html) which explains the differences between the two versions of the data
-  - The [uses vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html) which documents use cases
-
+  - Information on the
+    [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
+  - The [v1 vs v2
+    vignette](https://rOpenSpain.github.io/spanishoddata/articles/work-with-v1-data.html)
+    which explains the differences between the two versions of the data
+  - The [uses
+    vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html)
+    which documents use cases
+  - [Making static
+    flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html)
+    vignette shows how to create flowmaps using the data acquired with
+    `{spanishoddata}`
 
 ```{r}
 #| label: repo-setup

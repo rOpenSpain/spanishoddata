@@ -10,11 +10,9 @@ alt="Project Status: WIP – Initial development is in progress, but there has n
 <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"
 target="_blank"><img
 src="https://img.shields.io/badge/lifecycle-experimental-red.svg"
-alt="Lifecycle: experimental" /></a> <a
-href="https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml"
-target="_blank"><img
-src="https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg"
-alt="R-CMD-check" /></a> <!-- badges: end -->
+alt="Lifecycle: experimental" /></a>
+[![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
@@ -32,8 +30,7 @@ fifteenth of each month. Both versions of the data primarily consist of
 mobile phone positioning data, and include matrices for overnight stays,
 individual movements, and trips of Spanish residents at different
 geographical levels. See the [package
-website](https://rOpenSpain.github.io/spanishoddata/) and vignettes
-for
+website](https://rOpenSpain.github.io/spanishoddata/) and vignettes for
 [v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook)
 and
 [v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook)
@@ -406,7 +403,7 @@ For more information on the package, see:
     vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html)
     which documents use cases
   - [Making static
-    flowmaps](https://robinlovelace.github.io/spanishoddata/articles/flowmaps-static.html)
+    flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html)
     vignette shows how to create flowmaps using the data acquired with
     `{spanishoddata}`
 
