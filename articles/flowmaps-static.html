@@ -19,7 +19,7 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="flowmaps-static_files/libs/quarto-html/popper.min.js"></script><script src="flowmaps-static_files/libs/quarto-html/tippy.umd.min.js"></script><link href="flowmaps-static_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="flowmaps-static_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Making static flow maps">
-<meta property="og:image" content="https://robinlovelace.github.io/spanishoddata/reference/figures/card.png">
+<meta property="og:image" content="https://rOpenSpain.github.io/spanishoddata/reference/figures/card.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -54,7 +54,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/Robinlovelace/spanishoddata/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/rOpenSpain/spanishoddata/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -64,11 +64,11 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Making static flow maps</h1>
-      <p class="subtitle"><em>or how to re-create <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> logo</em></p>
+      <p class="subtitle"><em>or how to re-create <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> logo</em></p>
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/Robinlovelace/spanishoddata/blob/main/vignettes/flowmaps-static.qmd" class="external-link"><code>vignettes/flowmaps-static.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/main/vignettes/flowmaps-static.qmd" class="external-link"><code>vignettes/flowmaps-static.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -77,7 +77,7 @@
 
 
 
-    <p>This tutorial shows how to make static ‘flow maps’ with data from <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> and the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a> data visualisation package. We cover two examples. <a href="#simple-example">First</a>, we only use the origin-destination flows and district zones that you can get using the <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> package. In the <a href="#advanced-example">second</a> more advanced example we also use <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> and <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> packages to re-create the <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> logo. For both examples, make sure you first go though the initial <a href="#setup">setup steps</a>.</p>
+    <p>This tutorial shows how to make static ‘flow maps’ with data from <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> and the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a> data visualisation package. We cover two examples. <a href="#simple-example">First</a>, we only use the origin-destination flows and district zones that you can get using the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> package. In the <a href="#advanced-example">second</a> more advanced example we also use <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> and <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> packages to re-create the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> logo. For both examples, make sure you first go though the initial <a href="#setup">setup steps</a>.</p>
 <section class="section level2" data-number="1"><h2 data-number="1" id="setup">
 <span class="header-section-number">1</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
@@ -88,7 +88,7 @@
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
@@ -96,7 +96,7 @@
 <section class="level2" data-number="1.1"><h3 data-number="1.1" id="set-data-folder">
 <span class="header-section-number">1.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
 </h3>
-<p>Choose where <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
+<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
@@ -416,7 +416,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># load these too, if you have not already</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
@@ -447,7 +447,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <code class="sourceCode R"><span><span class="va">spain_for_vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_ccaa.html" class="external-link">esp_get_ccaa</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">spain_for_join</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_ccaa.html" class="external-link">esp_get_ccaa</a></span><span class="op">(</span>moveCAN <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>We are getting two sets of boundaries. First one is with Canary Islands moved closer to the mainland Spain, for nicer visualisation. Second one is with the original location of the islands, so that we can spatially join them to the zones <code>districts</code> data we got from <a href="https://robinlovelace.github.io/spanishoddata/">spanishoddata</a>.</p>
+<p>We are getting two sets of boundaries. First one is with Canary Islands moved closer to the mainland Spain, for nicer visualisation. Second one is with the original location of the islands, so that we can spatially join them to the zones <code>districts</code> data we got from <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a>.</p>
 </section></section><section class="level2" data-number="3.2"><h3 data-number="3.2" id="flows-aggregation">
 <span class="header-section-number">3.2</span> Flows aggregation<a class="anchor" aria-label="anchor" href="#flows-aggregation"></a>
 </h3>
@@ -673,7 +673,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span>  h_fill<span class="op">=</span><span class="st">"#ffffff"</span>, h_color<span class="op">=</span><span class="st">"grey"</span>, h_size<span class="op">=</span><span class="fl">1.3</span>,</span>
 <span></span>
 <span>  <span class="co"># url</span></span>
-<span>  url <span class="op">=</span> <span class="st">"github.com/Robinlovelace/spanishoddata"</span>,</span>
+<span>  url <span class="op">=</span> <span class="st">"github.com/rOpenSpain/spanishoddata"</span>,</span>
 <span>  u_color<span class="op">=</span> <span class="st">"gray25"</span>,</span>
 <span>  u_family <span class="op">=</span> <span class="st">"Roboto"</span>,</span>
 <span>  u_size <span class="op">=</span> <span class="fl">1.2</span>,</span>
