@@ -10,11 +10,9 @@ alt="Project Status: WIP – Initial development is in progress, but there has n
 <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"
 target="_blank"><img
 src="https://img.shields.io/badge/lifecycle-experimental-red.svg"
-alt="Lifecycle: experimental" /></a> <a
-href="https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml"
-target="_blank"><img
-src="https://github.com/rOpenSpain/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg"
-alt="R-CMD-check" /></a> <!-- badges: end -->
+alt="Lifecycle: experimental" /></a>
+[![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
