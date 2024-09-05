@@ -27,6 +27,9 @@ spod_dates_argument_to_dates_seq <- function(dates) {
   if (is.null(dates) || (!is.character(dates) && !inherits(dates, "Date"))) {
     stop("Invalid date input format. Please provide a character vector or Date object.")
   }
+  if (length(dates) == 1 && dates %in% c("cached_v1", "cached_v2")) {
+    return(dates)
+  }
 
   range_regex <- "^\\d{4}(-\\d{2}){2}_\\d{4}(-\\d{2}){2}$|^\\d{8}_\\d{8}$"
   single_date_regex <- "^(\\d{4}-\\d{2}-\\d{2}|\\d{8})$"

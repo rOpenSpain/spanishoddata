@@ -329,23 +329,11 @@ references:
     given-names: Jeroen
   year: '2024'
 - type: software
-  title: flowmapblue
-  abstract: 'flowmapblue: Flow Map Rendering'
-  notes: Suggests
-  url: https://flowmapblue.github.io/flowmapblue.R/
-  authors:
-  - family-names: Boyandin
-    given-names: Ilya
-    email: ilya@boyandin.me
-    orcid: https://orcid.org/0000-0001-5585-7587
-  year: '2024'
-- type: software
   title: flowmapper
   abstract: 'flowmapper: Draw Flows (Migration, Goods, Money, Information) on ''ggplot2''
     Plots'
   notes: Suggests
   url: https://github.com/JohMast/flowmapper
-  repository: https://CRAN.R-project.org/package=flowmapper
   authors:
   - family-names: Mast
     given-names: Johannes
@@ -430,4 +418,3 @@ references:
     email: hadley@posit.co
   year: '2024'
   version: '>= 3.0.0'
-

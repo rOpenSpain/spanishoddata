@@ -51,20 +51,8 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
-      "identifier": "flowmapblue",
-      "name": "flowmapblue"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "flowmapper",
-      "name": "flowmapper",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=flowmapper"
+      "name": "flowmapper"
     },
     {
       "@type": "SoftwareApplication",
@@ -358,7 +346,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2166.339KB",
+  "fileSize": "1390.489KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
