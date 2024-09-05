@@ -396,9 +396,12 @@ For more information on the package, see:
 - The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
   - Information on the
     [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
-  - The [v1 vs v2
-    vignette](https://rOpenSpain.github.io/spanishoddata/articles/work-with-v1-data.html)
-    which explains the differences between the two versions of the data
+  - [v1 data (2020-2021)
+    codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html)
+  - [v2 data (2022 onwards) codebook (work in
+    progress)](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.html)
+  - [Download and convert
+    data](https://rOpenSpain.github.io/spanishoddata/articles/convert.html)
   - The [uses
     vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html)
     which documents use cases
