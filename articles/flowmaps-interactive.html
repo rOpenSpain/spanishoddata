@@ -73,7 +73,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/70-unhelpful-error-message-with-minimal-spod_get-example-ek/vignettes/flowmaps-interactive.qmd" class="external-link"><code>vignettes/flowmaps-interactive.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/minor-fixes-ek/vignettes/flowmaps-interactive.qmd" class="external-link"><code>vignettes/flowmaps-interactive.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -183,7 +183,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>A <code>data.frame</code> with <code>id</code>, optional <code>name</code>, as well as <code>lat</code> and <code>lon</code> for coordinates of the locations in WGS84 (EPSG: 4326) coordinate reference system.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">flowmapblue</span><span class="fu">::</span><span class="va">ch_locations</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">flowmapblue</span><span class="fu">::</span><span class="va"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/ch_locations.html" class="external-link">ch_locations</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <pre><code>'data.frame':   26 obs. of  4 variables:
  $ id  : chr  "ZH" "LU" "UR" "SZ" ...
@@ -194,7 +194,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>A <code>data.frame</code> with <code>origin</code>, <code>dest</code>, and <code>count</code> for the flows between locations, where <code>origin</code> and <code>dest</code> must match with <code>id</code>’s of the locations <code>data.frame</code> from above, and <code>count</code> is the number of trips between them.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">flowmapblue</span><span class="fu">::</span><span class="va">ch_flows</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">flowmapblue</span><span class="fu">::</span><span class="va"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/ch_flows.html" class="external-link">ch_flows</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <pre><code>str(flowmapblue::ch_flows)
 'data.frame':   676 obs. of  3 variables:
@@ -252,7 +252,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>Create the interactive flowmap with the <code>flowmapblue</code> function. In the example below we use the <code>darkMode</code> and <code>clustering</code>, and we disable the <code>animation</code>. We do not recommend disabling the <code>clustering</code> when plotting the flows between hundreds and thousands of locations, as this will reduce the redability of the map.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">flowmap</span> <span class="op">&lt;-</span> <span class="fu">flowmapblue</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">flowmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/flowmapblue.html" class="external-link">flowmapblue</a></span><span class="op">(</span></span>
 <span>  locations <span class="op">=</span> <span class="va">districts_v1_centroids</span>,</span>
 <span>  flows <span class="op">=</span> <span class="va">od_20210407_total</span>,</span>
 <span>  mapboxAccessToken <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"MAPBOX_TOKEN"</span><span class="op">)</span>,</span>
@@ -263,11 +263,11 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span></span>
 <span><span class="va">flowmap</span></span></code></pre></div>
 </div>
-<p><video src="../man/figures/flowmapblue-standard.mp4" controls=""><a href="../man/figures/flowmapblue-standard.mp4">Video</a></video></p>
+<p><video src="webmedia/flowmapblue-standard.mp4" controls=""><a href="webmedia/flowmapblue-standard.mp4">Video</a></video></p>
 <p>You can play around with the arguments of the <code>flowmapblue</code> function. For example, you can turn on the <code>animation</code> mode:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">flowmap_anim</span> <span class="op">&lt;-</span> <span class="fu">flowmapblue</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">flowmap_anim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/flowmapblue.html" class="external-link">flowmapblue</a></span><span class="op">(</span></span>
 <span>  locations <span class="op">=</span> <span class="va">districts_v1_centroids</span>,</span>
 <span>  flows <span class="op">=</span> <span class="va">od_20210407_total</span>,</span>
 <span>  mapboxAccessToken <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"MAPBOX_TOKEN"</span><span class="op">)</span>,</span>
@@ -278,7 +278,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span></span>
 <span><span class="va">flowmap_anim</span></span></code></pre></div>
 </div>
-<p><video src="../man/figures/flowmapblue-animated.mp4" controls=""><a href="../man/figures/flowmapblue-animated.mp4">Video</a></video></p>
+<p><video src="webmedia/flowmapblue-animated.mp4" controls=""><a href="webmedia/flowmapblue-animated.mp4">Video</a></video></p>
 </section></section><section class="section level2" data-number="3"><h2 data-number="3" id="advanced-example">
 <span class="header-section-number">3</span> Advanced example - time filter<a class="anchor" aria-label="anchor" href="#advanced-example"></a>
 </h2>
@@ -363,7 +363,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>Now, we can create a new plot with this data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">flowmap_time</span> <span class="op">&lt;-</span> <span class="fu">flowmapblue</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">flowmap_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/flowmapblue.html" class="external-link">flowmapblue</a></span><span class="op">(</span></span>
 <span>  locations <span class="op">=</span> <span class="va">zones_barcelona_fua_coords</span>,</span>
 <span>  flows <span class="op">=</span> <span class="va">od_20210407_time_barcelona</span>,</span>
 <span>  mapboxAccessToken <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"MAPBOX_TOKEN"</span><span class="op">)</span>,</span>
@@ -374,7 +374,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span></span>
 <span><span class="va">flowmap_time</span></span></code></pre></div>
 </div>
-<p><video src="../man/figures/flowmapblue-standard-time.mp4" controls=""><a href="../man/figures/flowmapblue-standard-time.mp4">Video</a></video></p>
+<p><video src="webmedia/flowmapblue-standard-time.mp4" controls=""><a href="webmedia/flowmapblue-standard-time.mp4">Video</a></video></p>
 </section></section></section><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
