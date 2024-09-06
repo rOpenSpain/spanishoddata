@@ -332,6 +332,7 @@ For more information on the package, see:
   - [Download and convert data](https://rOpenSpain.github.io/spanishoddata/articles/convert.html)
   - The [uses vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html) which documents use cases
   - [Making static flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html) vignette shows how to create flowmaps using the data acquired with `{spanishoddata}`
+  - [Making interactive flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html) shows how to create an interactive flowmap using the data acquired with `{spanishoddata}`
 
 
 ```{r}

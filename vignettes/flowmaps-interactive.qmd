@@ -16,7 +16,7 @@ execute:
 ---
 
 
-This tutorial shows how to make interactive 'flow maps' with data from `{spanishoddata}` and the `{flowmapblue}` [@flowmapblue_r] data visualisation package. We cover two examples. [First](#simple-example), we only visualise the total flows for a single day. In the [second](#advanced-example) more advanced example we also use the time component that allows you to interactively filter flows by time of day. For both examples, make sure you first go though the initial [setup steps](#setup).
+This tutorial shows how to make interactive 'flow maps' with data from `{spanishoddata}` and the `{flowmapblue}` [@flowmapblue_r] data visualisation package. We cover two examples. [First](#simple-example), we only visualise the total flows for a single day. In the [second](#advanced-example) more advanced example we also use the time component that allows you to interactively filter flows by time of day. For both examples, make sure you first go though the initial [setup steps](#setup). To make static flow maps, please see the [static flow maps](https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html) tutorial.
 
 
 # Setup {#setup}

@@ -17,7 +17,7 @@ execute:
   eval: false
 ---
 
-This tutorial shows how to make static 'flow maps' with data from `{spanishoddata}` and the `{flowmapper}` [@flowmapper-r] data visualisation package. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup). 
+This tutorial shows how to make static 'flow maps' with data from `{spanishoddata}` and the `{flowmapper}` [@flowmapper-r] data visualisation package. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup). To make interactive flow maps, please see the [interactive flow maps](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html) tutorial.
 
 # Setup {#setup}
 
@@ -180,7 +180,6 @@ head(districts_v1_coords)
 
 Now we have the data structure that match the `{flowmapper}`'s expected data format we can plot a sample of the data (a plot containing all flows would be very 'busy' and world resemble a haystack!). The `k_node` argument in the `add_flowmap` function can be used to reduce this business.
 
-<!-- **TODO: link to the interactive flowmaps vignette when it is done** -->
 
 
 ```{r}
