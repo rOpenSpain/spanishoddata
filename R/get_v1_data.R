@@ -21,10 +21,9 @@ spod_get_latest_v1_file_list <- function(
   current_filename <- glue::glue("{data_dir}/data_links_v1_{current_date}.xml")
 
   message("Saving the file to: ", current_filename)
-  xml_requested <- curl::curl_download(
-    url = xml_url,
-    destfile = current_filename,
-    quiet = FALSE
+  xml_requested <- curl::multi_download()(
+    urls = xml_url,
+    destfiles = current_filename
   )
   return(current_filename)
 }
@@ -231,7 +230,7 @@ spod_get_zones_v1 <- function(
 
   if (!fs::file_exists(metadata_zones$local_path)) {
     if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
-    downloaded_file <- curl::curl_download(metadata_zones$target_url, destfile = metadata_zones$local_path, mode = "wb", quiet = FALSE)
+    downloaded_file <- curl::multi_download(metadata_zones$target_url, destfiles = metadata_zones$local_path, resume = TRUE, progress = TRUE)
   } else {
     if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
     downloaded_file <- metadata_zones$local_path

@@ -105,7 +105,10 @@ spod_get_latest_v2_file_list <- function(
   current_filename <- glue::glue("{data_dir}/data_links_v2_{current_date}.xml")
 
   message("Saving the file to: ", current_filename)
-  xml_requested <- curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
+  xml_requested <- curl::multi_download()(
+    urls = xml_url,
+    destfiles = current_filename
+  )
   return(current_filename)
 }
 
