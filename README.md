@@ -431,6 +431,10 @@ For more information on the package, see:
     flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html)
     vignette shows how to create flowmaps using the data acquired with
     `{spanishoddata}`
+  - [Making interactive
+    flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html)
+    shows how to create an interactive flowmap using the data acquired
+    with `{spanishoddata}`
 
 # References
 
