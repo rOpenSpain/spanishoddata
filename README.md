@@ -64,7 +64,7 @@ To create static maps like that see our vignette
 
 <div id="fig-spain-flows">
 
-![](man/figures/spain-folding-flows.gif)
+![](https://ropenspain.github.io/spanishoddata/articles/webmedia/spain-folding-flows.gif)
 
 
 Figure 2: Example of the data available through the package: interactive
@@ -73,7 +73,7 @@ daily flows in Spain
 </div>
 <div id="fig-spain-flows">
 
-![](man/figures/barcelona-time.gif)
+![](https://ropenspain.github.io/spanishoddata/articles/webmedia/barcelona-time.gif)
 
 
 Figure 3: Example of the data available through the package: interactive
