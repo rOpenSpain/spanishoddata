@@ -22,18 +22,6 @@ This tutorial shows how to make static 'flow maps' with data from `{spanishoddat
 # Setup {#setup}
 
 ```{r}
-#| eval: false
-# temporarily, please use the dev version of the flowmapper package by installing it with the following command:
-remotes::install_github("JohMast/flowmapper", force = TRUE)
-```
-
-```{r}
-#| eval: false
-# temporarily, please use the dev version of the flowmapper package by installing it with the following command:
-remotes::install_github("JohMast/flowmapper", force = TRUE)
-```
-
-```{r}
 library(spanishoddata)
 library(flowmapper)
 library(tidyverse)
