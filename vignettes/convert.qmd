@@ -32,7 +32,7 @@ There are two main ways to import the datasets:
 
 `spod_get()` returns objects that are only appropriate for small datasets representing a few days of the national origin-destination flows. We recommend converting the data into analysis-ready formats (`DuckDB` or `Parquet`) using `spod_convert()` + `spod_connect()`. This will allow you to work with much longer time periods (months and years) on a consumer laptop (with 8-16 GB of memory). See the section below for more details.
 
-# Analysing large datasets {#analysis-large-datasets}
+# Analysing large datasets {#analysing-large-datasets}
 
 The mobility datasets available through `{spanishiddata}` are very large. Particularly the origin-destination data, which contains millions of rows. These data sets may not fit into the memory of your computer, especially if you plan to run the analysis over multiple days, weeks, months, or even years.
 
