@@ -237,13 +237,6 @@ spod_get_zones_v1 <- function(
     downloaded_file <- metadata_zones$local_path
   }
 
-  # #70 DEBUG PRINTS START
-  print("downloaded_file check")
-  print(downloaded_file)
-  print("file exists?")
-  print(fs::file_exists(downloaded_file))
-  # #70 DEBUG PRINTS END
-
   if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
   if (!fs::dir_exists(fs::path_dir(downloaded_file))){
     fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
@@ -261,14 +254,6 @@ spod_get_zones_v1 <- function(
     glob = glue::glue("*v1**{zones}/*.shp"),
     recurse = TRUE
   )
-
-  # #70 DEBUG PRINTS START
-  print("extracted file check")
-  print(zones_path)
-  print("file exists?")
-  print(fs::file_exists(zones_path))
-  # #70 DEBUG PRINTS END
-
 
   zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
@@ -293,13 +278,6 @@ spod_get_zones_v1 <- function(
 #' @importFrom rlang .data
 #'
 spod_clean_zones_v1 <- function(zones_path, zones) {
-  
-  # #70 DEBUG PRINTS START
-  print(zones_path)
-  print("file exists?")
-  print(fs::file_exists(zones_path))
-  zones_sf <- sf::read_sf(zones_path)
-  # #70 DEBUG PRINTS END
   
   if(fs::file_exists(zones_path) == FALSE) {
     stop("File does not exist: ", zones_path)
