@@ -378,6 +378,16 @@ spod_clean_zones_v2 <- function(zones_path) {
   # detect what kind of zones find out if it is distritos, municipios or GAU
   zones <- stringr::str_extract(zones_path, "distritos|municipios|gaus")
   
+  # #70 DEBUG PRINTS START
+  print(zones_path)
+  print("file exists?")
+  print(fs::file_exists(zones_path))
+  zones_sf <- sf::read_sf(zones_path)
+  # #70 DEBUG PRINTS END
+
+  if(fs::file_exists(zones_path) == FALSE) {
+    stop("File does not exist: ", zones_path)
+  }
   suppressWarnings({
     zones_sf <- sf::read_sf(zones_path)
   })
