@@ -339,13 +339,13 @@ spod_get_zones_v2 <- function(
     }
     if (isFALSE(quiet)) {
       message("Downloading missing zones data...")
-      curl::multi_download(
-        urls = metadata_zones_for_download$target_url,
-        destfiles = metadata_zones_for_download$local_path,
-        resume = TRUE,
-        progress = TRUE
-      )
     }
+    curl::multi_download(
+      urls = metadata_zones_for_download$target_url,
+      destfiles = metadata_zones_for_download$local_path,
+      resume = TRUE,
+      progress = TRUE
+    )
   }
   
   zones_path <- fs::dir_ls(
