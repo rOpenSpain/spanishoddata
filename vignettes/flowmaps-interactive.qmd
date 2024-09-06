@@ -204,21 +204,11 @@ flowmap <- flowmapblue(
 flowmap
 ```
 
-```{r}
-#| eval: true
-#| echo: false
-#| results: 'asis'
+![Video demonstrating the standard interactive flowmap](https://ropenspain.github.io/spanishoddata/media/flowmapblue-standard.mp4){width=80%}
 
-# Determine if we are in pkgdown and insert gif
-is_pkgdown <- Sys.getenv("IN_PKGDOWN") == "true"
-if (is_pkgdown) {
-  cat('![](webmedia/flowmapblue-standard.mp4)')
-} else {
-  # If not in pkgdown, insert static image
-  cat('![](../man/figures/flowmapblue-standard-01.png){width=50%}')
-  cat('![](../man/figures/flowmapblue-standard-02.png){width=50%}')
-}
-```
+
+![Screenshot demonstrating the standard interactive flowmap](../man/figures/flowmapblue-standard-01.png){width=45%}![Screenshot demonstrating the standard interactive flowmap](../man/figures/flowmapblue-standard-02.png){width=45%}
+
 
 You can play around with the arguments of the `flowmapblue` function. For example, you can turn on the `animation` mode:
 
@@ -236,21 +226,9 @@ flowmap_anim
 ```
 
 
-```{r}
-#| eval: true
-#| echo: false
-#| results: 'asis'
+![Video demonstrating the animated interactive flowmap](https://ropenspain.github.io/spanishoddata/media/flowmapblue-animated.mp4){width=80%}
 
-# Determine if we are in pkgdown and insert gif
-is_pkgdown <- Sys.getenv("IN_PKGDOWN") == "true"
-if (is_pkgdown) {
-  cat('![](webmedia/flowmapblue-animated.mp4)')
-} else {
-  # If not in pkgdown, insert static image
-  cat('![](../man/figures/flowmapblue-animated.png){width=100%}')
-}
-```
-
+![Screenshot demonstrating the animated interactive flowmap](../man/figures/flowmapblue-animated.png){width=80%}
 
 # Advanced example - time filter {#advanced-example}
 
@@ -309,7 +287,7 @@ zones_barcelona_fua_plot
 ggsave("./man/figures/zones_barcelona_fua_plot.png", plot = zones_barcelona_fua_plot, width = 6, height = 4, dpi = 300)
 ```
 
-![](../man/figures/zones_barcelona_fua_plot.png)
+![District zone boundaries in Barcelona and nearby areas](../man/figures/zones_barcelona_fua_plot.png){width=80%}
 
 Now we prepare the table with coordinates for the flowmap:
 
@@ -365,17 +343,6 @@ flowmap_time
 
 
 
-```{r}
-#| eval: true
-#| echo: false
-#| results: 'asis'
+![Video demonstrating the time filtering on a flowmap](https://rOpenSpain.github.io/spanishoddata/media/flowmapblue-standard-time.mp4){width=80%}
 
-# Determine if we are in pkgdown and insert gif
-is_pkgdown <- Sys.getenv("IN_PKGDOWN") == "true"
-if (is_pkgdown) {
-  cat('![](webmedia/flowmapblue-standard-time.mp4)')
-} else {
-  # If not in pkgdown, insert static image
-  cat('![](../man/figures/flowmapblue-standard-time.png){width=100%}')
-}
-```
+![Screnshot demonstrating the time filtering on a flowmap](../man/figures/flowmapblue-standard-time.png){width=80%}

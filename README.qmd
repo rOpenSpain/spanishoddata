@@ -8,9 +8,6 @@ execute:
 #   opts_chunk:
 #     fig.path: "man/figures/README-"
 eval: false
-resources: 
-  - 'vignettes/webmedia/spain-folding-flows.gif'
-  - 'vignettes/webmedia/barcelona-time.gif'
 ---
 
 # spanishoddata: Get Spanish Origin-Destination Data <a href="https://rOpenSpain.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
@@ -36,9 +33,9 @@ To create static maps like that see our vignette [here](https://ropenspain.githu
 
 ---
 
-![Example of the data available through the package: interactive daily flows in Spain](https://ropenspain.github.io/spanishoddata/articles/webmedia/spain-folding-flows.gif){#fig-spain-flows}
+![Example of the data available through the package: interactive daily flows in Spain](https://ropenspain.github.io/spanishoddata/media/spain-folding-flows.gif){#fig-spain-flows}
 
-![Example of the data available through the package: interactive daily flows in Barcelona with time filter](https://ropenspain.github.io/spanishoddata/articles/webmedia/barcelona-time.gif){#fig-spain-flows}
+![Example of the data available through the package: interactive daily flows in Barcelona with time filter](https://ropenspain.github.io/spanishoddata/media/barcelona-time.gif){#fig-spain-flows}
 
 To create interactive maps see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
