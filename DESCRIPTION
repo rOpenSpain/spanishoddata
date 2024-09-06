@@ -46,7 +46,7 @@ Imports:
     xml2
 Suggests: 
     flowmapblue,
-    flowmapper,
+    flowmapper (>= 0.1.2),
     furrr,
     future,
     hexSticker,
