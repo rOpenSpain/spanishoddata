@@ -102,7 +102,12 @@ spod_get_latest_v2_file_list <- function(
   }
 
   current_date <- format(Sys.Date(), format = "%Y-%m-%d")
-  current_filename <- glue::glue("{data_dir}/data_links_v2_{current_date}.xml")
+  current_filename <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}/data_links_v2_{current_date}.xml")
+
+  # ensure dir exists
+  if (!fs::dir_exists(dirname(current_filename))) {
+    fs::dir_create(dirname(current_filename), recurse = TRUE)
+  }
 
   message("Saving the file to: ", current_filename)
   xml_requested <- curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
@@ -131,7 +136,7 @@ spod_available_data_v2 <- function(
   check_local_files = FALSE,
   quiet = FALSE
 ) {
-  xml_files_list <- fs::dir_ls(data_dir, type = "file", regexp = "data_links_v2") |> sort()
+  xml_files_list <- fs::dir_ls(glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}"), type = "file", regexp = "data_links_v2") |> sort()
   if (length(xml_files_list) == 0) {
     if (isFALSE(quiet)) {
       message("No data links xml files found, getting latest v2 data links xml.")

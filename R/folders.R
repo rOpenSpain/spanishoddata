@@ -1,3 +1,12 @@
+#' Get metadata cache subfolder name
+#'
+#' Change subfolder name in the code of this function for metadata cache here to apply globally, as all functions in the package should use this function to get the metadata cache path.
+#' @return Character string with the subfolder name for the raw data cache.
+#' @keywords internal
+spod_subfolder_metadata_cache <- function() {
+  "metadata_cache"
+}
+
 #' Get raw data cache subfolder name
 #'
 #' Change subfolder name in the code of this function for raw data cache here to apply globally, as all functions in the package should use this function to get the raw data cache path.
