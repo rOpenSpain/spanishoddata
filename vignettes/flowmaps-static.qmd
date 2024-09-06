@@ -2,7 +2,7 @@
 title: "Making static flow maps"
 subtitle: "*or how to re-create `{spanishoddata}` logo*"
 vignette: >
-  %\VignetteIndexEntry{Download and convert mobility datasets}
+  %\VignetteIndexEntry{Making static flow maps}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -16,9 +16,15 @@ execute:
   eval: false
 ---
 
-In this tutorial we will show how to make static flow maps with `{spanishoddata}` and `{flowmapper}`. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup).
+This tutorial shows how to make static 'flow maps' with data from `{spanishoddata}` and the `{flowmapper}` [@flowmapper-r] data visualisation package. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup). 
 
 # Setup {#setup}
+
+```{r}
+#| eval: false
+# temporarily, please use the dev version of the flowmapper package by installing it with the following command:
+remotes::install_github("JohMast/flowmapper", force = TRUE)
+```
 
 ```{r}
 library(spanishoddata)
@@ -27,38 +33,7 @@ library(tidyverse)
 library(sf)
 ```
 
-
-Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command:
-
-```{r}
-Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
-```
-
-The package will create this directory if it does not exist on the first run of any function that downloads the data.
-
-<details><summary>Setting data directory for advanced users</summary>
-
-To permanently set the directory for all projects, you can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
-
-```{r}
-#| eval: false
-usethis::edit_r_environ()
-# Then set the data directory globally, by typing this line in the file:
-```
-
-```
-SPANISH_OD_DATA_DIR = "~/spanish_od_data"
-```
-
-You can also set the data directory locally, just for the current project. Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
-
-```{r}
-#| eval: false
-file.edit(".Renviron")
-```
-
-
-</details>
+{{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
 # Simple example - plot flows data as it is {#simple-example}
 
@@ -66,14 +41,13 @@ file.edit(".Renviron")
 
 ### Flows
 
-Let us get the flows between `districts` for a tipycal working day `2021-04-07`:
+Let us get the flows between `districts` for a typical working day `2021-04-07`:
 
 ```{r}
 od_20210407 <- spod_get("od", zones = "distr", dates = "2021-04-07")
 
 head(od_20210407)
 ```
-
 
 ```
 # Source:   SQL [6 x 14]
@@ -92,7 +66,7 @@ head(od_20210407)
 
 ### Zones
 
-We also get the district zones polygons to mathch the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.qmd)).
+We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.html)).
 
 ```{r}
 districts_v1 <- spod_get_zones("dist", ver = 1)
@@ -121,128 +95,85 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 
 ```{r}
 od_20210407_total <- od_20210407 |>
-  group_by(id_origin, id_destination) |>
-  summarise(n_trips = sum(n_trips, na.rm = TRUE)) |> 
-  collect()
+  group_by(o = id_origin, d = id_destination) |>
+  summarise(value = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  collect() |> 
+  arrange(o, d, value)
+```
 
+## Reshape flows for visualization
+
+The `{flowmapper}` package was developed to visualise origin-destination 'flow' data [@flowmapper-r]. This package expects the data to be in the following format:
+
+A `data.frame` with origin-destination pairs and the flow counts between them with the following columns:
+
+- `o`: The unique id of the origin node
+
+- `d`: The unique id of the destination node
+
+- `value`: The intensity of flow between the origin and destination
+
+Another `data.frame` with the node `id`s or names and their coorindates. The coordinate reference system should match whichever other data you are planning to use in the plot.
+
+`name`: The unique `id` or `name` of the node, must match with `o` and `d` in the flows `data.frame` above;
+
+`x`: The x coordinate of the node;
+
+`y`: The y coordinate of the node;
+
+
+### Prepare the flows table
+
+The previous code chunk created `od_20210407_total` with the column names expected by `{flowmapper}`.
+
+```{r}
 head(od_20210407_total)
 ```
 
 ```
 # A tibble: 6 × 3
-# Groups:   id_origin [2]
-  id_origin id_destination  n_trips
-  <fct>     <fct>             <dbl>
-1 0704003   07031           3958.  
-2 0704003   07036          17278.  
-3 0704003   07044            572.  
-4 0704003   0801903            6.19
-5 0704004   07027           3036.  
-6 0704004   0704003        56604.
+  o       d          value
+  <fct>   <fct>      <dbl>
+1 2408910 2408910  1889.  
+2 2408910 24154_AM   11.0 
+3 2408910 5029703    12.8 
+4 2408910 24181_AM   22.3 
+5 2408910 4802004     9.45
+6 2408910 4718608     4.75 
 ```
 
-## Reshape flows for visualization
-
-We are going to use the `{flowmapper}` [@flowmapper-r] package to plot the flows. This package expects the data to be in the following format:
-
-```
-'data.frame':	7 obs. of  8 variables:
- $ id_a   : chr  "X1" "X2" "X3" "X3" ...
- $ id_b   : chr  "X5" "X4" "X1" "X5" ...
- $ xa     : num  2 14 10 10 2 14 14
- $ ya     : num  6 10 9 9 6 10 10
- $ xb     : num  10 4 2 10 4 10 10
- $ yb     : num  4 10 6 4 10 4 9
- $ flow_ab: num  1 2 3 3 1 1 4
- $ flow_ba: num  2 3 2 5 2 1 5
-```
-
-### Reshape the flows
-
-The data we have right now in `od_20210407_total` is in a classic long format. That is, we have rows for both the number of trips from A to B and from B to A. `{flowmapper}` requires the data to be in different format, where there is only one row for each pair of `id_a` and `id_b` and two columns, one for the flow from `id_a` to `id_b` and one for the flow from `id_b` to `id_a`.
-
-
-```{r}
-od_20210407_total_twoway <- od_20210407_total |>
-  mutate(id_origin = as.character(id_origin),
-    id_destination = as.character(id_destination)
-  ) |>
-  # Rename columns to match the desired output
-  rename(id_a = id_origin, id_b = id_destination, flow_ab = n_trips) |>
-  # Create the reverse flow
-  full_join(
-    od_20210407_total |>
-      rename(id_b = id_origin, id_a = id_destination, flow_ba = n_trips),
-    by = c("id_a", "id_b")
-  ) |>
-  # Replace NA with 0 for flows that don't exist in one direction
-  mutate(
-    flow_ab = coalesce(flow_ab, 0),
-    flow_ba = coalesce(flow_ba, 0)
-  ) |>
-  # Remove duplicate rows (where id_a and id_b are swapped)
-  filter(id_a <= id_b) |>
-  # Sort by id_a and id_b
-  arrange(id_a, id_b) |> 
-  # Remove the flows within the autonomous communities
-  filter(id_a != id_b)
-
-head(od_20210407_total_twoway)
-```
-
-```
-# A tibble: 6 × 4
-# Groups:   id_a [1]
-  id_a     id_b     flow_ab flow_ba
-  <chr>    <chr>      <dbl>   <dbl>
-1 01001_AM 01002      20.2     29.6
-2 01001_AM 01010_AM   15.6      0  
-3 01001_AM 01031_AM   48.6     63.3
-4 01001_AM 01036      39.8     65.2
-5 01001_AM 01043_AM  387.     388. 
-6 01001_AM 01047_AM    4.15   109. 
-```
-
-### Add coordinates
+### Prepare the nodes table with coordinates
 
 We need the coordinates for each origin and destination. We can use the centroids of `districts_v1` polygons for that.
 
 ```{r}
-districts_v1_centroids <- districts_v1 |>
+districts_v1_coords <- districts_v1 |>
   st_centroid() |>
   st_coordinates() |>
   as.data.frame() |>
-  mutate(id = districts_v1$id) |>
+  mutate(name = districts_v1$id) |>
   rename(x = X, y = Y)
 
-
-od_20210407_total_twoway_coords <- od_20210407_total_twoway |>
-  left_join(districts_v1_centroids, by = c("id_a" = "id")) |>
-  rename(xa = x, ya = y) |>
-  left_join(districts_v1_centroids, by = c("id_b" = "id")) |>
-  rename(xb = x, yb = y)
-
-head(od_20210407_total_twoway_coords)
+head(districts_v1_coords)
 ```
 
 ```
-# A tibble: 6 × 8
-# Groups:   id_a [1]
-  id_a     id_b     flow_ab flow_ba      xa       ya      xb       yb
-  <chr>    <chr>      <dbl>   <dbl>   <dbl>    <dbl>   <dbl>    <dbl>
-1 01001_AM 01002      20.2     29.6 546087. 4747657. 502306. 4763643.
-2 01001_AM 01010_AM   15.6      0   546087. 4747657. 493680. 4771613.
-3 01001_AM 01031_AM   48.6     63.3 546087. 4747657. 525597. 4716481.
-4 01001_AM 01036      39.8     65.2 546087. 4747657. 501828. 4776158.
-5 01001_AM 01043_AM  387.     388.  546087. 4747657. 545174. 4724914.
-6 01001_AM 01047_AM    4.15   109.  546087. 4747657. 493922. 4741506.
+          x       y     name
+1  290380.7 4719394  2408910
+2  774727.2 4674304 22117_AM
+3  428315.4 4177662  2305009
+4 1001283.0 4422732 07058_AM
+5  427524.2 4180942  2305006
+6  428302.1 4190937  2305005
 ```
 
 ## Plot the flows
 
 ### Plot the entire country
 
-Now we have the data structure that match the `{flowmapper}`'s expected data format. We cannot plot all the flows for the entire country (**TODO: link to the interactive flowmaps vignette when it is done**), because this plot would be very busy, therefore, we need to tweak the `k_node` argument in the `add_flowmap` function.
+Now we have the data structure that match the `{flowmapper}`'s expected data format we can plot a sample of the data (a plot containing all flows would be very 'busy' and world resemble a haystack!). The `k_node` argument in the `add_flowmap` function can be used to reduce this business.
+
+<!-- **TODO: link to the interactive flowmaps vignette when it is done** -->
 
 
 ```{r}
@@ -274,7 +205,8 @@ base_plot_districts <- ggplot() +
 # add the flows
 flows_plot_all_districts <- base_plot_districts |>
   add_flowmap(
-    od_20210407_total_twoway_coords,
+    od = od_20210407_total,
+    nodes = districts_v1_coords,
     node_radius_factor = 1,
     edge_width_factor = 1,
     arrow_point_angle = 35,
@@ -336,13 +268,37 @@ ggsave("./man/figures/zones_barcelona_fua_plot.png", plot = zones_barcelona_fua_
 
 ![](../man/figures/zones_barcelona_fua_plot.png)
 
-#### Filter the flows
+
+We also prepare the nodes for the `add_flowmap` function:
+
+```{r}
+zones_barcelona_fua_coords <- zones_barcelona_fua |>
+  st_centroid() |>
+  st_coordinates() |>
+  as.data.frame() |>
+  mutate(name = zones_barcelona_fua$id) |>
+  rename(x = X, y = Y)
+
+head(zones_barcelona_fua_coords)
+```
+
+```
+      x       y    name
+1 930267.0 4607072   08180
+2 914854.0 4604279   08054
+3 926837.9 4597166 0801905
+4 927995.1 4594372 0801904
+5 930418.9 4599218 0801907
+6 930702.3 4597116 0801906
+```
+
+#### Prepare the flows
 
 Now we can use the zone `id`s from the `zones_barcelona_fua` data to select the flows that correspond to Barcelona and the 10 km radius around it.
 
 ```{r}
-od_20210407_total_twoway_coords_barcelona <- od_20210407_total_twoway_coords |>
-  filter(id_a %in% zones_barcelona_fua$id & id_b %in% zones_barcelona_fua$id)
+od_20210407_total_barcelona <- od_20210407_total |>
+  filter(o %in% zones_barcelona_fua$id & d %in% zones_barcelona_fua$id)
 ```
 
 #### Visualise the flows for Barcelona and surrounding areas
@@ -378,7 +334,8 @@ base_plot_barcelona <- ggplot() +
 # add the flows
 flows_plot_barcelona <- base_plot_barcelona |>
   add_flowmap(
-    od_20210407_total_twoway_coords_barcelona,
+    od = od_20210407_total_barcelona,
+    nodes = zones_barcelona_fua_coords,
     node_radius_factor = 1,
     edge_width_factor = 0.6,
     arrow_point_angle = 45,
@@ -432,13 +389,13 @@ library(sf)
 
 Just like in the simple example above, we will need the flows to visualise.
 
-Let us get the origin-destination flows between `districts` for a tipycal working day `2022-04-06`:
+Let us get the origin-destination flows between `districts` for a typical working day `2022-04-06`:
 
 ```{r}
 od <- spod_get("od", zones = "distr", dates = "2022-04-06")
 ```
 
-Also get the spatial data for the zones. We are using the version 2 of zones, because the data we got was for 2022 and onwards, which corresponds to the v2 data (see the relevant [codebook](v2-2022-onwards-mitma-data-codebook.qmd)).
+Also get the spatial data for the zones. We are using the version 2 of zones, because the data we got was for 2022 and onwards, which corresponds to the v2 data (see the relevant [codebook](v2-2022-onwards-mitma-data-codebook.html)).
 
 ```{r}
 districts <- spod_get_zones("distr", ver = 2)
@@ -463,31 +420,31 @@ We are getting two sets of boundaries. First one is with Canary Islands moved cl
 Let us count the total number of trips made between all locations on our selected day of `2022-04-06`:
 
 ```{r}
-flows_by_district <- od |> 
+flows_by_district <- od |>
   group_by(id_origin, id_destination) |> 
-  summarise(n_trips = sum(n_trips, na.rm = TRUE)) |> 
-  collect()
+  summarise(n_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  collect() |> 
+  arrange(desc(id_origin), id_destination, n_trips)
 
 flows_by_district
 ```
 
 
 ```
-# A tibble: 612,743 × 3
-# Groups:   id_origin [3,850]
+# A tibble: 402,711 × 3
    id_origin id_destination n_trips
    <fct>     <fct>            <dbl>
- 1 03055     0306507        2480.  
- 2 03055     03074_AM        310.  
- 3 03055     0307902           3.89
- 4 03055     0309906         190.  
- 5 03055     03107             6.23
- 6 03055     0313903          18.0 
- 7 03055     06070_AM          2.15
- 8 03055     08145_AM          2.27
- 9 03055     1102010           2.17
-10 03055     30018             8.66
-# ℹ 612,733 more rows
+ 1 31260_AM  01017_AM          7.15
+ 2 31260_AM  01043            13.7 
+ 3 31260_AM  0105902          16.1 
+ 4 31260_AM  2512005          12.2 
+ 5 31260_AM  26002_AM          8   
+ 6 31260_AM  26026_AM          4   
+ 7 31260_AM  26036            38.3 
+ 8 31260_AM  26061_AM         10.6 
+ 9 31260_AM  26084             5.5 
+10 31260_AM  2608902         109.  
+# ℹ 402,701 more rows
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
@@ -549,141 +506,95 @@ flows_by_ca <- flows_by_district |>
   group_by(id_orig, id_dest) |>
   summarise(n_trips = sum(n_trips, na.rm = TRUE),
     .groups = "drop") |> 
-  rename(id_origin = id_orig, id_destination = id_dest)
+  rename(o = id_orig, d = id_dest, value = n_trips)
 
 flows_by_ca
 ```
 
 ```
-# A tibble: 349 × 3
-   id_origin id_destination      n_trips
+# A tibble: 358 × 3
+   o         d                     value
    <chr>     <chr>                 <dbl>
- 1 Andalusia Andalusia         21991628.
- 2 Andalusia Aragon                1405.
- 3 Andalusia Asturias               777.
- 4 Andalusia Balearic Islands      1568.
- 5 Andalusia Basque Country         970.
- 6 Andalusia Canary Islands        1853.
- 7 Andalusia Cantabria              268.
- 8 Andalusia Castile and León      3025.
- 9 Andalusia Castile-La Mancha    11374.
-10 Andalusia Catalonia             5679.
-# ℹ 339 more rows
+ 1 Andalusia Andalusia         23681858.
+ 2 Andalusia Aragon                 643.
+ 3 Andalusia Asturias               373.
+ 4 Andalusia Balearic Islands       931.
+ 5 Andalusia Basque Country         769.
+ 6 Andalusia Canary Islands        1899.
+ 7 Andalusia Cantabria              153.
+ 8 Andalusia Castile and León      3114.
+ 9 Andalusia Castile-La Mancha    13655.
+10 Andalusia Catalonia             5453.
+# ℹ 348 more rows
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-## Reshaping the data for visualization
+## Reshape flows for visualization
 
 We are going to use the `{flowmapper}` [@flowmapper-r] package to plot the flows. This package expects the data to be in the following format:
 
-```
-'data.frame':	7 obs. of  8 variables:
- $ id_a   : chr  "X1" "X2" "X3" "X3" ...
- $ id_b   : chr  "X5" "X4" "X1" "X5" ...
- $ xa     : num  2 14 10 10 2 14 14
- $ ya     : num  6 10 9 9 6 10 10
- $ xb     : num  10 4 2 10 4 10 10
- $ yb     : num  4 10 6 4 10 4 9
- $ flow_ab: num  1 2 3 3 1 1 4
- $ flow_ba: num  2 3 2 5 2 1 5
-```
+A `data.frame` with origin-destination pairs and the flow counts between them with the following columns:
+
+- `o`: The unique id of the origin node
+
+- `d`: The unique id of the destination node
+
+- `value`: The intensity of flow between the origin and destination
+
+Another `data.frame` with the node `id`s or names and their coorindates. The coordinate reference system should match whichever other data you are planning to use in the plot.
+
+`name`: The unique `id` or `name` of the node, must match with `o` and `d` in the flows `data.frame` above;
+
+`x`: The x coordinate of the node;
+
+`y`: The y coordinate of the node;
 
 
-### Reshape the flows
+### Prepare the flows table
 
-The data we have right now in `flows_by_ca` is in a classic long format. That is, we have rows for both the number of trips from A to B and from B to A. `{flowmapper}` requires the data to be in different format, where there is only one row for each pair of `id_a` and `id_b` and two columns, one for the flow from `id_a` to `id_b` and one for the flow from `id_b` to `id_a`.
-
-```{r}
-flows_by_ca_twoway <- flows_by_ca |>
-  # Rename columns to match the desired output
-  rename(id_a = id_origin, id_b = id_destination, flow_ab = n_trips) |>
-  # Create the reverse flow
-  full_join(
-    flows_by_ca |>
-      rename(id_b = id_origin, id_a = id_destination, flow_ba = n_trips),
-    by = c("id_a", "id_b")
-  ) |>
-  # Replace NA with 0 for flows that don't exist in one direction
-  mutate(
-    flow_ab = coalesce(flow_ab, 0),
-    flow_ba = coalesce(flow_ba, 0)
-  ) |>
-  # Remove duplicate rows (where id_a and id_b are swapped)
-  filter(id_a <= id_b) |>
-  # Sort by id_a and id_b
-  arrange(id_a, id_b) |> 
-  # Remove the flows within the autonomous communities
-  filter(id_a != id_b)
-
-head(flows_by_ca_twoway)
-```
-
-```
-# A tibble: 6 × 4
-  id_a      id_b             flow_ab flow_ba
-  <chr>     <chr>              <dbl>   <dbl>
-1 Andalusia Aragon             1405.   1166.
-2 Andalusia Asturias            777.    596.
-3 Andalusia Balearic Islands   1568.   1362.
-4 Andalusia Basque Country      970.   1016.
-5 Andalusia Canary Islands     1853.   1494.
-6 Andalusia Cantabria           268.    167.
-```
-
-### Add coordinates
-
-We need the coordinates for each origin and destination. We can use the centroids of `spain_for_vis` polygons for that. Even though it has incorrect coordinates for the Canary Islands, this is actually what we want, as we will be plotting the flows on a map of Spain stored in the `spain_for_vis` object.
+The data we have right now in `flows_by_ca` already has the correct format expected by `{flowmapper}`.
 
 ```{r}
-#| include: false
-#| echo: false
-
-# tried to do it with `od_coordinates` but it didn't work as expected
-# I don't quite understand what it does, but this results in an error when doing `ggplot() |> add_flowmap(flows_by_ca_twoway_coords)` 
-# This join would result in more rows than dplyr can handle.
-# ℹ 393620992644 rows would be returned. 2147483647 rows is the maximum number allowed.
-# ℹ Double check your join keys. This error commonly occurs due to a missing join key, or an improperly specified join condition.
-# debugging `add_flowmap()` shows that it is working as expected, but the output of `od_coordinates()` is causuing over-inflation of nodes and leads to the error above. Perhaps I misinterpreted what `od_coordinates()` does. So I do it by hand in the next chunk.
-
-# flows_by_ca_twoway_coords <- flows_by_ca_twoway |> 
-#   bind_cols(
-#     od_coordinates(x = flows_by_ca_twoway,
-#       p = spain_for_vis |> st_centroid()
-#       )
-#     ) |> 
-#   rename(xa = ox, ya = oy, xb = dx, yb = dy)
-# flows_by_ca_twoway_coords
+head(flows_by_ca)
 ```
 
+```
+# A tibble: 6 × 3
+  o         d                    value
+  <chr>     <chr>                <dbl>
+1 Andalusia Andalusia        23681858.
+2 Andalusia Aragon                643.
+3 Andalusia Asturias              373.
+4 Andalusia Balearic Islands      931.
+5 Andalusia Basque Country        769.
+6 Andalusia Canary Islands       1899.
+```
+
+### Prepare the nodes table with coordinates
+
+We need the coordinates for each origin and destination. We can use the centroids of `districts_v1` polygons for that.
+
+
 ```{r}
-spain_for_vis_centroids <- spain_for_vis |>
+spain_for_vis_coords <- spain_for_vis |>
   st_centroid() |>
   st_coordinates() |>
   as.data.frame() |>
-  mutate(id = spain_for_vis$ccaa.shortname.en) |>
+  mutate(name = spain_for_vis$ccaa.shortname.en) |>
   rename(x = X, y = Y)
 
-
-flows_by_ca_twoway_coords <- flows_by_ca_twoway |>
-  left_join(spain_for_vis_centroids, by = c("id_a" = "id")) |>
-  rename(xa = x, ya = y) |>
-  left_join(spain_for_vis_centroids, by = c("id_b" = "id")) |>
-  rename(xb = x, yb = y)
-
-head(flows_by_ca_twoway_coords)
+head(spain_for_vis_coords)
 ```
 
 
 ```
-# A tibble: 6 × 8
-  id_a      id_b             flow_ab flow_ba    xa    ya      xb    yb
-  <chr>     <chr>              <dbl>   <dbl> <dbl> <dbl>   <dbl> <dbl>
-1 Andalusia Aragon             1405.   1166. -4.58  37.5  -0.665  41.5
-2 Andalusia Asturias            777.    596. -4.58  37.5  -5.99   43.3
-3 Andalusia Balearic Islands   1568.   1362. -4.58  37.5   2.91   39.6
-4 Andalusia Basque Country      970.   1016. -4.58  37.5  -2.62   43.0
-5 Andalusia Canary Islands     1853.   1494. -4.58  37.5 -10.7    35.4
-6 Andalusia Cantabria           268.    167. -4.58  37.5  -4.03   43.2
+      x        y             name
+1  -4.5777846 37.46782        Andalusia
+2  -0.6648791 41.51335           Aragon
+3  -5.9936312 43.29377         Asturias
+4   2.9065933 39.57481 Balearic Islands
+5 -10.7324736 35.36091   Canary Islands
+6  -4.0300438 43.19772        Cantabria
 ```
 
 ## Plot the flows
@@ -694,7 +605,7 @@ Now we have the data structure that match the `{flowmapper}`'s expected data for
 ```{r}
 # create base ggplot with boundaries removing any extra elements
 base_plot <- ggplot() +
-  geom_sf(data = spain_for_vis, fill=NA, col = "grey40", linewidth = 0.05)+
+  geom_sf(data = spain_for_vis, fill=NA, col = "grey30", linewidth = 0.05)+
   theme_classic(base_size = 20) +
   labs(title = "",
     subtitle = "", fill = "", caption = "") +
@@ -715,7 +626,8 @@ base_plot <- ggplot() +
 # add the flows
 flows_plot <- base_plot|>
   add_flowmap(
-    flows_by_ca_twoway_coords,
+    od = flows_by_ca,
+    nodes = spain_for_vis_coords,
     node_radius_factor = 1,
     edge_width_factor = 1,
     arrow_point_angle = 35,
@@ -744,7 +656,7 @@ The image may look a bit bleak, but when we put it on a sticker, it will look gr
 
 ## Make the sticker
 
-We make the sticker usin the `{hexSticker}` [@hexSticker-r] package.
+We make the sticker using the `{hexSticker}` [@hexSticker-r] package.
 
 ```{r}
 sticker(flows_plot,
@@ -761,7 +673,7 @@ sticker(flows_plot,
   h_fill="#ffffff", h_color="grey", h_size=1.3,
 
   # url
-  url = "github.com/Robinlovelace/spanishoddata",
+  url = "github.com/rOpenSpain/spanishoddata",
   u_color= "gray25",
   u_family = "Roboto",
   u_size = 1.2,

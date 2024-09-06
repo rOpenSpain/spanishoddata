@@ -10,23 +10,34 @@ execute:
 eval: false
 ---
 
-# spanishoddata: Get Spanish Origin-Destination Data <a href="https://robinlovelace.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
+# spanishoddata: Get Spanish Origin-Destination Data <a href="https://rOpenSpain.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
+
 
 <!-- badges: start -->
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip){target="_blank"}
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental){target="_blank"}
-[![R-CMD-check](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Robinlovelace/spanish_od_data/actions/workflows/R-CMD-check.yaml){target="_blank"}
+[![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable mobility of Spain [@mitma-mobility-2024-v6].
 
-It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the [package website](https://robinlovelace.github.io/spanishoddata/) and vignettes for [v1](https://robinlovelace.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook) and [v2](https://robinlovelace.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook) data for more details.
+It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the [package website](https://rOpenSpain.github.io/spanishoddata/) and vignettes for [v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook) and [v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook) data for more details.
 
 **spanishoddata** is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
-![Example of the data available through the package](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
+# Examples of available data
 
-![Example of the data available through the package](man/figures/spain-folding-flows.gif){#fig-spain-flows}
+![Example of the data available through the package: daily flows in Barcelona](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
+
+To create static maps like that see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html).
+
+---
+
+![Example of the data available through the package: interactive daily flows in Spain](man/figures/spain-folding-flows.gif){#fig-spain-flows}
+
+![Example of the data available through the package: interactive daily flows in Barcelona with time filter](man/figures/barcelona-time.gif){#fig-spain-flows}
+
+To create interactive maps see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
 
 # Installation
@@ -37,7 +48,7 @@ Install the development version of the package as follows:
 
 ```{r}
 if (!require("remotes")) install.packages("remotes")
-remotes::install_github("Robinlovelace/spanishoddata",
+remotes::install_github("rOpenSpain/spanishoddata",
   force = TRUE, dependencies = TRUE)
 ```
 
@@ -52,7 +63,7 @@ library(spanishoddata)
 To load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
 
 ```bash
-gh repo clone Robinlovelace/spanishoddata
+gh repo clone rOpenSpain/spanishoddata
 code spanishoddata
 # with rstudio:
 rstudio spanishoddata/spanishoddata.Rproj
@@ -67,49 +78,7 @@ devtools::load_all()
 
 </details>
 
-# Setting the data directory
-
-Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command:
-
-```{r}
-Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
-```
-
-
-The package will create this directory if it does not exist on the first run of any function that downloads the data.
-
-<details><summary>Setting data directory for advanced users</summary>
-
-You can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
-
-```{r}
-#| eval: false
-usethis::edit_r_environ()
-# Then set the data directory globally, by typing this line in the file:
-```
-
-```
-SPANISH_OD_DATA_DIR = "/path/to/data"
-```
-
-You can also set the data directory locally or on a per session basis as described below.
-
-
-Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
-
-```{r}
-#| eval: false
-file.edit(".Renviron")
-```
-
-Finally, you can set the data directory in the current R session as follows:
-
-```{r}
-#| eval: false
-Sys.setenv(SPANISH_OD_DATA_DIR = "/path/to/data")
-```
-
-</details>
+{{< include inst/vignette-include/setup-data-directory.qmd >}}
 
 # Using the package
 
@@ -117,7 +86,7 @@ You can find the overview of the key package functions in the following figure.
 
 ![The overview of how to use the pacakge functions to get the data](vignettes/media/package-functions-overview.svg){ width=120% height=120%}
 
-If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://robinlovelace.github.io/spanishoddata/](https://robinlovelace.github.io/spanishoddata/).
+If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://rOpenSpain.github.io/spanishoddata/](https://rOpenSpain.github.io/spanishoddata/).
 
 # Showcase
 
@@ -356,10 +325,13 @@ ggplot() +
 
 For more information on the package, see:
 
-- The [pkgdown site](https://robinlovelace.github.io/spanishoddata/)
-  - Information on the [functions](https://robinlovelace.github.io/spanishoddata/reference/index.html)
-  - The [v1 vs v2 vignette](https://robinlovelace.github.io/spanishoddata/articles/work-with-v1-data.html) which explains the differences between the two versions of the data
-  - The [uses vignette](https://robinlovelace.github.io/spanishoddata/articles/uses.html) which documents use cases
+- The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
+  - Information on the [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
+  - [v1 data (2020-2021) codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html)
+  - [v2 data (2022 onwards) codebook (work in progress)](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.html)
+  - [Download and convert data](https://rOpenSpain.github.io/spanishoddata/articles/convert.html)
+  - The [uses vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html) which documents use cases
+  - [Making static flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html) vignette shows how to create flowmaps using the data acquired with `{spanishoddata}`
 
 
 ```{r}

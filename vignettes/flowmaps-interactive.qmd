@@ -15,7 +15,9 @@ execute:
   eval: false
 ---
 
-In this tutorial we will show how to make static flow maps with `{spanishoddata}` and `{flowmapblue}` [@flowmapblue_r]. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup).
+
+This tutorial shows how to make interactive 'flow maps' with data from `{spanishoddata}` and the `{flowmapblue}` [@flowmapblue_r] data visualisation package. We cover two examples. [First](#simple-example), we only visualise the total flows for a single day. In the [second](#advanced-example) more advanced example we also use the time component that allows you to interactively filter flows by time of day. For both examples, make sure you first go though the initial [setup steps](#setup).
+
 
 # Setup {#setup}
 
@@ -36,38 +38,7 @@ library(tidyverse)
 library(sf)
 ```
 
-
-Choose where `{spanishoddata}` should download (and convert) the data by setting the `SPANISH_OD_DATA_DIR` environment variable with the following command:
-
-```{r}
-Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
-```
-
-The package will create this directory if it does not exist on the first run of any function that downloads the data.
-
-<details><summary>Setting data directory for advanced users</summary>
-
-To permanently set the directory for all projects, you can specify the data directory globally by setting the `SPANISH_OD_DATA_DIR` environment variable, e.g. with the following command:
-
-```{r}
-#| eval: false
-usethis::edit_r_environ()
-# Then set the data directory globally, by typing this line in the file:
-```
-
-```
-SPANISH_OD_DATA_DIR = "~/spanish_od_data"
-```
-
-You can also set the data directory locally, just for the current project. Set the 'envar' in the working directory by editing `.Renviron` file in the root of the project:
-
-```{r}
-#| eval: false
-file.edit(".Renviron")
-```
-
-
-</details>
+{{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
 # Simple example - plot flows data as it is {#simple-example}
 
@@ -87,16 +58,14 @@ head(od_20210407)
 ```
 # Source:   SQL [6 x 14]
 # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
-  date       id_origin id_destination activity_origin activity_destination residence_province_in…¹ residence_province_n…² time_slot distance n_trips trips_total_length_km  year month
-  <date>     <fct>     <fct>          <fct>           <fct>                <fct>                   <fct>                      <int> <fct>      <dbl>                 <dbl> <int> <int>
-1 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 005-010     10.5                  68.9  2021     4
-2 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 010-050     12.6                 127.   2021     4
-3 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    1 010-050     12.6                 232.   2021     4
-4 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    2 005-010     10.8                 102.   2021     4
-5 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    5 005-010     18.9                 156.   2021     4
-6 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    6 010-050     10.8                 119.   2021     4
-# ℹ abbreviated names: ¹​residence_province_ine_code, ²​residence_province_name
-# ℹ 1 more variable: day <int>
+  date       id_origin id_destination activity_origin activity_destination residence_province_ine_code residence_province_name time_slot distance n_trips trips_total_length_km  year month   day
+  <date>     <fct>     <fct>          <fct>           <fct>                <fct>                       <fct>                       <int> <fct>      <dbl>                 <dbl> <int> <int> <int>
+1 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     0 005-010     10.5                  68.9  2021     4     7
+2 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     0 010-050     12.6                 127.   2021     4     7
+3 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     1 010-050     12.6                 232.   2021     4     7
+4 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     2 005-010     10.8                 102.   2021     4     7
+5 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     5 005-010     18.9                 156.   2021     4     7
+6 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     6 010-050     10.8                 119.   2021     4     7
 ```
 
 ### Zones
@@ -116,14 +85,14 @@ Dimension:     XY
 Bounding box:  xmin: 289502.8 ymin: 4173922 xmax: 1010926 ymax: 4720817
 Projected CRS: ETRS89 / UTM zone 30N (N-E)
 # A tibble: 6 × 7
-  id       census_districts                                              municipalities_mitma municipalities         district_names_in_v2 district_ids_in_v2                      geom
-  <chr>    <chr>                                                         <chr>                <chr>                  <chr>                <chr>                     <MULTIPOLYGON [m]>
-1 2408910  2408910                                                       24089                24089                  León distrito 10     2408910            (((290940.1 4719080, 290…
-2 22117_AM 2210201; 2210301; 2211501; 2211701; 2216401; 2218701; 2221401 22117_AM             22102; 22103; 22115; … Graus agregacion de… 22117_AM           (((774184.4 4662153, 774…
-3 2305009  2305009                                                       23050                23050                  Jaén distrito 09     2305009            (((429745 4179977, 42971…
-4 07058_AM 0701901; 0702501; 0703401; 0705801; 0705802                   07058_AM             07019; 07025; 07034; … Selva agregacion de… 07058_AM           (((1000859 4415059, 1000…
-5 2305006  2305006                                                       23050                23050                  Jaén distrito 06     2305006            (((429795.1 4180957, 429…
-6 2305005  2305005                                                       23050                23050                  Jaén distrito 05     2305005            (((430022.7 4181101, 429…
+  id       census_districts                                              municipalities_mitma municipalities                                                                                  district_names_in_v2 district_ids_in_v2                      geom
+  <chr>    <chr>                                                         <chr>                <chr>                                                                                           <chr>                <chr>                     <MULTIPOLYGON [m]>
+1 2408910  2408910                                                       24089                24089                                                                                           León distrito 10     2408910            (((290940.1 4719080, 290…
+2 22117_AM 2210201; 2210301; 2211501; 2211701; 2216401; 2218701; 2221401 22117_AM             22102; 22103; 22115; 22117; 22164; 22187; 22214; 22102; 22103; 22115; 22117; 22164; 22187; 222… Graus agregacion de… 22117_AM           (((774184.4 4662153, 774…
+3 2305009  2305009                                                       23050                23050                                                                                           Jaén distrito 09     2305009            (((429745 4179977, 42971…
+4 07058_AM 0701901; 0702501; 0703401; 0705801; 0705802                   07058_AM             07019; 07025; 07034; 07058; 07019; 07025; 07034; 07058; 07019; 07025; 07034; 07058; 07019; 070… Selva agregacion de… 07058_AM           (((1000859 4415059, 1000…
+5 2305006  2305006                                                       23050                23050                                                                                           Jaén distrito 06     2305006            (((429795.1 4180957, 429…
+6 2305005  2305005                                                       23050                23050                                                                                           Jaén distrito 05     2305005            (((430022.7 4181101, 429…
 ```
 
 ## Prepare data for visualization
@@ -170,26 +139,26 @@ str(flowmapblue::ch_flows)
 
 ```{r}
 od_20210407_total <- od_20210407 |>
-  group_by(id_origin, id_destination) |>
-  summarise(n_trips = sum(n_trips, na.rm = TRUE)) |> 
-  collect() |> 
-  rename(origin = id_origin, dest = id_destination, count = n_trips)
+  group_by(origin = id_origin, dest = id_destination) |>
+  summarise(count = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  collect()
 
 head(od_20210407_total)
 ```
 
 ```
-origin  dest        count
-  <fct>   <fct>       <dbl>
-1 0704003 07051      208.  
-2 0704004 07003      756.  
-3 0704004 07010     1798.  
-4 0704004 07023_AM     8.64
-5 0704004 07038_AM   804.  
-6 0704004 0704005  22144.  
+# A tibble: 6 × 3
+  origin   dest       count
+  <fct>    <fct>      <dbl>
+1 01001_AM 01036      39.8 
+2 01001_AM 01051    2508.  
+3 01001_AM 0105903  1644.  
+4 01001_AM 09363_AM    3.96
+5 01001_AM 09907_AM   32.6 
+6 01001_AM 17033       9.61
 ```
 
-## Create locations table with coordinates
+## Create locations table with coordinates {#create-locations-table}
 
 We need the coordinates for each origin and destination. We can use the centroids of `districts_v1` polygons for that.
 
@@ -279,5 +248,134 @@ if (is_pkgdown) {
 } else {
   # If not in pkgdown, insert static image
   cat('![](../man/figures/flowmapblue-animated.png){width=100%}')
+}
+```
+
+
+# Advanced example - time filter {#advanced-example}
+
+After following the simple example, let us now add a time filter to the flows. We will use the `flowmapblue` function to plot flows between `districts_v1_centroids` for a typical working day `2021-04-07`.
+
+## Prepare data for visualization
+
+Just like before, we aggregate the data and rename some columns. This time we will keep combine the `date` and `time_slot` (which corresponds to the hour of the day) to procude timestamps, so that the flows can be interactively filtered by time of day.
+
+```{r}
+od_20210407_time <- od_20210407 |>
+  mutate(time = as.POSIXct(paste0(date, "T", time_slot, ":00:00"))) |>
+  group_by(origin = id_origin, dest = id_destination, time) |>
+  summarise(count = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
+  collect()
+
+head(od_20210407_time)
+```
+
+```
+# A tibble: 6 × 4
+  origin dest    time                count
+  <fct>  <fct>   <dttm>              <dbl>
+1 08054  0818401 2021-04-07 01:00:00 43.7 
+2 08054  0818401 2021-04-07 17:00:00 87.1 
+3 08054  0818402 2021-04-07 16:00:00 62.6 
+4 08054  0818403 2021-04-07 05:00:00 26.8 
+5 08054  0818403 2021-04-07 07:00:00 44.9 
+6 08054  0818403 2021-04-07 02:00:00  7.11
+```
+
+#### Filter the zones
+
+Because we are now using the flows for each hour of the day, there are 24 times more rows in this data, than in the simple example. Therefore it will take longer to generate the plot and the resulting visualisation may work slower. To create a more manageable example, let us only filter the data to Madrid and surrounding areas.
+
+Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the `district_names_in_v2` column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.
+
+```{r}
+zones_barcelona <- districts_v1 |>
+  filter(grepl("Barcelona", district_names_in_v2, ignore.case = TRUE))
+
+zones_barcelona_fua <- districts_v1[
+  st_buffer(zones_barcelona, dist = 10000)
+  ,
+]
+
+zones_barcelona_fua_plot <- ggplot() +
+  geom_sf(data = zones_barcelona_fua, fill=NA, col = "grey60", linewidth = 0.3) +
+  theme_minimal()
+
+zones_barcelona_fua_plot
+```
+
+```{r}
+#| include: false
+ggsave("./man/figures/zones_barcelona_fua_plot.png", plot = zones_barcelona_fua_plot, width = 6, height = 4, dpi = 300)
+```
+
+![](../man/figures/zones_barcelona_fua_plot.png)
+
+Now we prepare the table with coordinates for the flowmap:
+
+```{r}
+zones_barcelona_fua_coords <- zones_barcelona_fua |>
+  st_transform(crs = 4326) |>
+  st_centroid() |>
+  st_coordinates() |>
+  as.data.frame() |>
+  mutate(id = zones_barcelona_fua$id) |>
+  rename(lon = X, lat = Y)
+
+head(zones_barcelona_fua_coords)
+```
+
+```
+       lon      lat      id
+1 2.154317 41.49969   08180
+2 1.968438 41.48274   08054
+3 2.106401 41.41265 0801905
+4 2.118221 41.38697 0801904
+5 2.150536 41.42915 0801907
+6 2.152419 41.41014 0801906
+```
+
+#### Prepare the flows
+
+Now we can use the zone `id`s from the `zones_barcelona_fua` data to select the flows that correspond to Barcelona and the 10 km radius around it.
+
+```{r}
+od_20210407_time_barcelona <- od_20210407_time |>
+  filter(origin %in% zones_barcelona_fua$id & dest %in% zones_barcelona_fua$id)
+```
+
+
+#### Visualise the flows for Barcelona and surrounding areas
+
+Now, we can create a new plot with this data.
+
+
+```{r}
+flowmap_time <- flowmapblue(
+  locations = zones_barcelona_fua_coords,
+  flows = od_20210407_time_barcelona,
+  mapboxAccessToken = Sys.getenv("MAPBOX_TOKEN"),
+  darkMode = TRUE,
+  animation = FALSE,
+  clustering = TRUE
+  )
+
+flowmap_time
+```
+
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| results: 'asis'
+
+# Determine if we are in pkgdown and insert gif
+is_pkgdown <- Sys.getenv("IN_PKGDOWN") == "true"
+if (is_pkgdown) {
+  cat('![](../man/figures/flowmapblue-standard-time.mp4)')
+} else {
+  # If not in pkgdown, insert static image
+  cat('![](../man/figures/flowmapblue-standard-time.png){width=100%}')
 }
 ```
