@@ -3,6 +3,7 @@ title: "Making static flow maps"
 subtitle: "*or how to re-create `{spanishoddata}` logo*"
 vignette: >
   %\VignetteIndexEntry{Making static flow maps}
+  %\VignetteIndexEntry{Making static flow maps}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -19,6 +20,12 @@ execute:
 This tutorial shows how to make static 'flow maps' with data from `{spanishoddata}` and the `{flowmapper}` [@flowmapper-r] data visualisation package. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup). 
 
 # Setup {#setup}
+
+```{r}
+#| eval: false
+# temporarily, please use the dev version of the flowmapper package by installing it with the following command:
+remotes::install_github("JohMast/flowmapper", force = TRUE)
+```
 
 ```{r}
 #| eval: false

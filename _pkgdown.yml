@@ -1,9 +1,17 @@
-url: https://robinlovelace.github.io/spanishoddata/
+url: https://rOpenSpain.github.io/spanishoddata/
 template:
   bootstrap: 5
+  package: rostemplate
+
   opengraph:
     image:
       src: man/figures/card.png
+
+authors:
+  Egor Kotov:
+    href: "https://www.ekotov.pro"
+  Robin Lovelace:
+    href: "https://www.robinlovelace.net/"
 
 articles:
 - title: Documentation
@@ -14,7 +22,6 @@ articles:
   - convert
   - uses
   - flowmaps-static
-  - flowmaps-interactive
 
 navbar:
   structure:

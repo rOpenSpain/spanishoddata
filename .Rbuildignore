@@ -20,3 +20,5 @@ README.qmd
 ^vignettes/.quarto$
 \.mp4$
 \.gif$
+^tools$
+^_pkgdown\.yaml$
