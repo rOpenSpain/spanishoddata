@@ -212,7 +212,7 @@ flowmap
 # Determine if we are in pkgdown and insert gif
 is_pkgdown <- Sys.getenv("IN_PKGDOWN") == "true"
 if (is_pkgdown) {
-  cat('![](../man/figures/flowmapblue-standard.mp4)')
+  cat('![](webmedia/flowmapblue-standard.mp4)')
 } else {
   # If not in pkgdown, insert static image
   cat('![](../man/figures/flowmapblue-standard-01.png){width=50%}')
@@ -244,7 +244,7 @@ flowmap_anim
 # Determine if we are in pkgdown and insert gif
 is_pkgdown <- Sys.getenv("IN_PKGDOWN") == "true"
 if (is_pkgdown) {
-  cat('![](../man/figures/flowmapblue-animated.mp4)')
+  cat('![](webmedia/flowmapblue-animated.mp4)')
 } else {
   # If not in pkgdown, insert static image
   cat('![](../man/figures/flowmapblue-animated.png){width=100%}')
@@ -373,7 +373,7 @@ flowmap_time
 # Determine if we are in pkgdown and insert gif
 is_pkgdown <- Sys.getenv("IN_PKGDOWN") == "true"
 if (is_pkgdown) {
-  cat('![](../man/figures/flowmapblue-standard-time.mp4)')
+  cat('![](webmedia/flowmapblue-standard-time.mp4)')
 } else {
   # If not in pkgdown, insert static image
   cat('![](../man/figures/flowmapblue-standard-time.png){width=100%}')

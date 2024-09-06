@@ -33,9 +33,9 @@ To create static maps like that see our vignette [here](https://ropenspain.githu
 
 ---
 
-![Example of the data available through the package: interactive daily flows in Spain](man/figures/spain-folding-flows.gif){#fig-spain-flows}
+![Example of the data available through the package: interactive daily flows in Spain](https://ropenspain.github.io/spanishoddata/articles/webmedia/spain-folding-flows.gif){#fig-spain-flows}
 
-![Example of the data available through the package: interactive daily flows in Barcelona with time filter](man/figures/barcelona-time.gif){#fig-spain-flows}
+![Example of the data available through the package: interactive daily flows in Barcelona with time filter](https://ropenspain.github.io/spanishoddata/articles/webmedia/barcelona-time.gif){#fig-spain-flows}
 
 To create interactive maps see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 

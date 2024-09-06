@@ -18,6 +18,7 @@ README.qmd
 ^CITATION\.cff$
 ^codemeta\.json$
 ^vignettes/.quarto$
+^vignettes/webmedia$
 \.mp4$
 \.gif$
 ^tools$
