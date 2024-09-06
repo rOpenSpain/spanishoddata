@@ -53,7 +53,6 @@
     <li><a class="dropdown-item" href="articles/convert.html">Download and convert mobility datasets</a></li>
     <li><a class="dropdown-item" href="articles/uses.html">Use cases</a></li>
     <li><a class="dropdown-item" href="articles/flowmaps-static.html">Making static flow maps</a></li>
-    <li><a class="dropdown-item" href="articles/flowmaps-interactive.html">Making interactive flow maps</a></li>
   </ul>
 </li>
       </ul>
@@ -78,25 +77,14 @@
 <p><strong>spanishoddata</strong> is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable mobility of Spain (Secretaría de Estado de Transportes, Movilidad y Agenda Urbana 2024).</p>
 <p>It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" class="external-link">The first version</a> covers data from 2020 and 2021, including the period of the COVID-19 pandemic. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" class="external-link">The second version</a> contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the <a href="https://rOpenSpain.github.io/spanishoddata/">package website</a> and vignettes for <a href="https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook">v1</a> and <a href="https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook">v2</a> data for more details.</p>
 <p><strong>spanishoddata</strong> is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.</p>
-</div>
-<div class="section level1">
-<h1 id="examples-of-available-data">Examples of available data<a class="anchor" aria-label="anchor" href="#examples-of-available-data"></a>
-</h1>
 <div id="fig-barcelona-flows">
 <p><img src="articles/media/flows_plot.svg"></p>
-<p>Figure 1: Example of the data available through the package: daily flows in Barcelona</p>
+<p>Figure 1: Example of the data available through the package</p>
 </div>
-<p>To create static maps like that see our vignette <a href="https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html" class="external-link">here</a>.</p>
-<hr>
 <div id="fig-spain-flows">
 <p><img src="reference/figures/spain-folding-flows.gif"></p>
-<p>Figure 2: Example of the data available through the package: interactive daily flows in Spain</p>
+<p>Figure 2: Example of the data available through the package</p>
 </div>
-<div id="fig-spain-flows">
-<p><img src="reference/figures/barcelona-time.gif"></p>
-<p>Figure 3: Example of the data available through the package: interactive daily flows in Barcelona with time filter</p>
-</div>
-<p>To create interactive maps see our vignette <a href="https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html" class="external-link">here</a>.</p>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -328,9 +316,6 @@ Setting data directory for advanced users
 <li>The <a href="https://rOpenSpain.github.io/spanishoddata/articles/uses.html">uses vignette</a> which documents use cases</li>
 <li>
 <a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html">Making static flowmaps</a> vignette shows how to create flowmaps using the data acquired with <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a>
-</li>
-<li>
-<a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html">Making interactive flowmaps</a> shows how to create an interactive flowmap using the data acquired with <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a>
 </li>
 </ul>
 </li>

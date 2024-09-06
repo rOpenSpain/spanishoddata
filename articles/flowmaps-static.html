@@ -53,7 +53,6 @@
     <li><a class="dropdown-item" href="../articles/convert.html">Download and convert mobility datasets</a></li>
     <li><a class="dropdown-item" href="../articles/uses.html">Use cases</a></li>
     <li><a class="dropdown-item" href="../articles/flowmaps-static.html">Making static flow maps</a></li>
-    <li><a class="dropdown-item" href="../articles/flowmaps-interactive.html">Making interactive flow maps</a></li>
   </ul>
 </li>
       </ul>
@@ -73,7 +72,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/vignette-interactive-flowmaps/vignettes/flowmaps-static.qmd" class="external-link"><code>vignettes/flowmaps-static.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/64-stop-piling-up-of-xml-files-with-file-links/vignettes/flowmaps-static.qmd" class="external-link"><code>vignettes/flowmaps-static.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -82,7 +81,7 @@
 
 
 
-    <p>This tutorial shows how to make static ‘flow maps’ with data from <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> and the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a> <span class="citation" data-cites="flowmapper-r">(<a href="#ref-flowmapper-r" role="doc-biblioref">Mast 2024</a>)</span> data visualisation package. We cover two examples. <a href="#simple-example">First</a>, we only use the origin-destination flows and district zones that you can get using the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> package. In the <a href="#advanced-example">second</a> more advanced example we also use <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> and <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> packages to re-create the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> logo. For both examples, make sure you first go though the initial <a href="#setup">setup steps</a>. To make interactive flow maps, please see the <a href="https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html" class="external-link">interactive flow maps</a> tutorial.</p>
+    <p>This tutorial shows how to make static ‘flow maps’ with data from <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> and the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a> data visualisation package. We cover two examples. <a href="#simple-example">First</a>, we only use the origin-destination flows and district zones that you can get using the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> package. In the <a href="#advanced-example">second</a> more advanced example we also use <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> and <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> packages to re-create the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> logo. For both examples, make sure you first go though the initial <a href="#setup">setup steps</a>.</p>
 <section class="section level2" data-number="1"><h2 data-number="1" id="setup">
 <span class="header-section-number">1</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
@@ -93,11 +92,6 @@
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># temporarily, please use the dev version of the flowmapper package by installing it with the following command:</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"JohMast/flowmapper"</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
@@ -108,7 +102,7 @@
 </h3>
 <p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The package will create this directory if it does not exist on the first run of any function that downloads the data.</p>
@@ -116,14 +110,14 @@
 Setting data directory for advanced users
 </summary><p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Then set the data directory globally, by typing this line in the file:</span></span></code></pre></div>
 </div>
 <pre><code><span><span class="va">SPANISH_OD_DATA_DIR</span> <span class="op">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre>
 <p>You can also set the data directory locally, just for the current project. Set the ‘envar’ in the working directory by editing <code>.Renviron</code> file in the root of the project:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </details></section></section><section class="section level2" data-number="2"><h2 data-number="2" id="simple-example">
@@ -137,7 +131,7 @@ Setting data directory for advanced users
 </h4>
 <p>Let us get the flows between <code>districts</code> for a typical working day <code>2021-04-07</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span><span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="st">"2021-04-07"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">od_20210407</span><span class="op">)</span></span></code></pre></div>
@@ -159,7 +153,7 @@ Setting data directory for advanced users
 </h4>
 <p>We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant <a href="v1-2020-2021-mitma-data-codebook.html">codebook</a>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"dist"</span>, ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">districts_v1</span><span class="op">)</span></span></code></pre></div>
@@ -182,7 +176,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span class="header-section-number">2.2</span> Aggregate data - count total flows<a class="anchor" aria-label="anchor" href="#aggregate-data---count-total-flows"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_total</span> <span class="op">&lt;-</span> <span class="va">od_20210407</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span>o <span class="op">=</span> <span class="va">id_origin</span>, d <span class="op">=</span> <span class="va">id_destination</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -208,7 +202,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>The previous code chunk created <code>od_20210407_total</code> with the column names expected by <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">od_20210407_total</span><span class="op">)</span></span></code></pre></div>
 </div>
 <pre><code># A tibble: 6 × 3
@@ -225,7 +219,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>We need the coordinates for each origin and destination. We can use the centroids of <code>districts_v1</code> polygons for that.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts_v1_coords</span> <span class="op">&lt;-</span> <span class="va">districts_v1</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -249,8 +243,9 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span class="header-section-number">2.4.1</span> Plot the entire country<a class="anchor" aria-label="anchor" href="#plot-the-entire-country"></a>
 </h4>
 <p>Now we have the data structure that match the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>‘s expected data format we can plot a sample of the data (a plot containing all flows would be very ’busy’ and world resemble a haystack!). The <code>k_node</code> argument in the <code>add_flowmap</code> function can be used to reduce this business.</p>
+<!-- **TODO: link to the interactive flowmaps vignette when it is done** -->
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create base ggplot with boundaries removing various visual clutter</span></span>
 <span><span class="va">base_plot_districts</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">districts_v1</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
@@ -312,7 +307,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h5>
 <p>Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the <code>district_names_in_v2</code> column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zones_barcelona</span> <span class="op">&lt;-</span> <span class="va">districts_v1</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Barcelona"</span>, <span class="va">district_names_in_v2</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -328,6 +323,15 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="va">zones_barcelona_fua_plot</span></span></code></pre></div>
 </div>
 <p><img src="../reference/figures/zones_barcelona_fua_plot.png"></p>
+</section><section class="level4" data-number="2.4.2.2"><h5 data-number="2.4.2.2" id="prepare-the-flows">
+<span class="header-section-number">2.4.2.2</span> Prepare the flows<a class="anchor" aria-label="anchor" href="#prepare-the-flows"></a>
+</h5>
+<p>Now we can use the zone <code>id</code>s from the <code>zones_barcelona_fua</code> data to select the flows that correspond to Barcelona and the 10 km radius around it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">od_20210407_total_barcelona</span> <span class="op">&lt;-</span> <span class="va">od_20210407_total</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">o</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span> <span class="op">&amp;</span> <span class="va">d</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span></code></pre></div>
+</div>
 <p>We also prepare the nodes for the <code>add_flowmap</code> function:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
@@ -347,21 +351,12 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 927995.1 4594372 0801904
 5 930418.9 4599218 0801907
 6 930702.3 4597116 0801906</code></pre>
-</section><section class="level4" data-number="2.4.2.2"><h5 data-number="2.4.2.2" id="prepare-the-flows">
-<span class="header-section-number">2.4.2.2</span> Prepare the flows<a class="anchor" aria-label="anchor" href="#prepare-the-flows"></a>
-</h5>
-<p>Now we can use the zone <code>id</code>s from the <code>zones_barcelona_fua</code> data to select the flows that correspond to Barcelona and the 10 km radius around it.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">od_20210407_total_barcelona</span> <span class="op">&lt;-</span> <span class="va">od_20210407_total</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">o</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span> <span class="op">&amp;</span> <span class="va">d</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span></code></pre></div>
-</div>
 </section><section class="level4" data-number="2.4.2.3"><h5 data-number="2.4.2.3" id="visualise-the-flows-for-barcelona-and-surrounding-areas">
 <span class="header-section-number">2.4.2.3</span> Visualise the flows for Barcelona and surrounding areas<a class="anchor" aria-label="anchor" href="#visualise-the-flows-for-barcelona-and-surrounding-areas"></a>
 </h5>
 <p>Now, we can create a new plot with this data. Once again, we need the <code>k_node</code> argument to tweak the aggregation of nodes and flows. Feel free to tweak it yourself and see how the results change.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create base ggplot with boundaries removing various visual clutter</span></span>
 <span><span class="va">base_plot_barcelona</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">zones_barcelona_fua</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
@@ -419,7 +414,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h2>
 <p>For the advanced example we will need two additional packages: <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> <span class="citation" data-cites="R-mapspain">(<a href="#ref-R-mapspain" role="doc-biblioref">Hernangómez 2024</a>)</span> and <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> <span class="citation" data-cites="R-hexSticker">(<a href="#ref-R-hexSticker" role="doc-biblioref"><strong>R-hexSticker?</strong></a>)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># two new packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a></span><span class="op">)</span></span>
@@ -439,12 +434,12 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>Just like in the simple example above, we will need the flows to visualise.</p>
 <p>Let us get the origin-destination flows between <code>districts</code> for a typical working day <code>2022-04-06</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span><span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="st">"2022-04-06"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Also get the spatial data for the zones. We are using the version 2 of zones, because the data we got was for 2022 and onwards, which corresponds to the v2 data (see the relevant <a href="v2-2022-onwards-mitma-data-codebook.html">codebook</a>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"distr"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level3" data-number="3.1.2"><h4 data-number="3.1.2" id="map-of-spain">
@@ -452,7 +447,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>Ultimately, we would like to plot the flows on a map of Spain, so we will aggregate the flows for visualisation to avoid visual clutter. We therefore also need a nice map of Spain, which we will get using <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> <span class="citation" data-cites="R-mapspain">(<a href="#ref-R-mapspain" role="doc-biblioref">Hernangómez 2024</a>)</span> package:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spain_for_vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_ccaa.html" class="external-link">esp_get_ccaa</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">spain_for_join</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_ccaa.html" class="external-link">esp_get_ccaa</a></span><span class="op">(</span>moveCAN <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -465,7 +460,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>Let us count the total number of trips made between all locations on our selected day of <code>2022-04-06</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flows_by_district</span> <span class="op">&lt;-</span> <span class="va">od</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id_origin</span>, <span class="va">id_destination</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">summarise</span><span class="op">(</span>n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -494,7 +489,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>Now we need to do a spatial join between <code>districts</code> and <code>spain_for_join</code> to find out which districts fall within which autonomous community. We use <code>spain_for_join</code>. If we used <code>spain_for_vis</code>, the <code>districts</code> in the Canary Islands would not match with the boundaries of the islands.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">district_centroids</span> <span class="op">&lt;-</span> <span class="va">districts</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">spain_for_join</span><span class="op">)</span><span class="op">)</span></span>
@@ -528,7 +523,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>We can now add these ids to the total flows by <code>districts</code> <code>id</code> pairs and calculate total flows between autonomous communities:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flows_by_ca</span> <span class="op">&lt;-</span> <span class="va">flows_by_district</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">ca_distr</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">rename</span><span class="op">(</span>id_orig <span class="op">=</span> <span class="va">ca_name</span><span class="op">)</span>,</span>
@@ -579,7 +574,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>The data we have right now in <code>flows_by_ca</code> already has the correct format expected by <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">flows_by_ca</span><span class="op">)</span></span></code></pre></div>
 </div>
 <pre><code># A tibble: 6 × 3
@@ -596,7 +591,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h4>
 <p>We need the coordinates for each origin and destination. We can use the centroids of <code>districts_v1</code> polygons for that.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spain_for_vis_coords</span> <span class="op">&lt;-</span> <span class="va">spain_for_vis</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -618,7 +613,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h3>
 <p>Now we have the data structure that match the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>’s expected data format:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create base ggplot with boundaries removing any extra elements</span></span>
 <span><span class="va">base_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_sf</span><span class="op">(</span>data <span class="op">=</span> <span class="va">spain_for_vis</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey30"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
@@ -667,7 +662,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h3>
 <p>We make the sticker using the <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> <span class="citation" data-cites="hexSticker-r">(<a href="#ref-hexSticker-r" role="doc-biblioref">Yu 2020</a>)</span> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/hexSticker/man/sticker.html" class="external-link">sticker</a></span><span class="op">(</span><span class="va">flows_plot</span>,</span>
 <span></span>
 <span>  <span class="co"># package name</span></span>
