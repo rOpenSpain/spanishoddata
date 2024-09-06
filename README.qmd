@@ -8,6 +8,9 @@ execute:
 #   opts_chunk:
 #     fig.path: "man/figures/README-"
 eval: false
+resources: 
+  - 'vignettes/webmedia/spain-folding-flows.gif'
+  - 'vignettes/webmedia/barcelona-time.gif'
 ---
 
 # spanishoddata: Get Spanish Origin-Destination Data <a href="https://rOpenSpain.github.io/spanishoddata/"><img src="man/figures/logo.png" align="right" width="200" alt="spanishoddata website" /></a>
