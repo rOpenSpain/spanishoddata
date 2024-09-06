@@ -7,7 +7,7 @@ articles:
   uses: uses.html
   v1-2020-2021-mitma-data-codebook: v1-2020-2021-mitma-data-codebook.html
   v2-2022-onwards-mitma-data-codebook: v2-2022-onwards-mitma-data-codebook.html
-last_built: 2024-09-06T13:03Z
+last_built: 2024-09-06T13:11Z
 urls:
   reference: https://rOpenSpain.github.io/spanishoddata/reference
   article: https://rOpenSpain.github.io/spanishoddata/articles
