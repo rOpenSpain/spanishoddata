@@ -53,6 +53,7 @@
     <li><a class="dropdown-item" href="../articles/convert.html">Download and convert mobility datasets</a></li>
     <li><a class="dropdown-item" href="../articles/uses.html">Use cases</a></li>
     <li><a class="dropdown-item" href="../articles/flowmaps-static.html">Making static flow maps</a></li>
+    <li><a class="dropdown-item" href="../articles/flowmaps-interactive.html">Making interactive flow maps</a></li>
   </ul>
 </li>
       </ul>
@@ -72,7 +73,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/main/vignettes/convert.qmd" class="external-link"><code>vignettes/convert.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/vignette-interactive-flowmaps/vignettes/convert.qmd" class="external-link"><code>vignettes/convert.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -99,7 +100,7 @@
 <span class="header-section-number">3</span> Analysing large datasets<a class="anchor" aria-label="anchor" href="#analysis-large-datasets"></a>
 </h2>
 <p>The mobility datasets available through <code>{spanishiddata}</code> are very large. Particularly the origin-destination data, which contains millions of rows. These data sets may not fit into the memory of your computer, especially if you plan to run the analysis over multiple days, weeks, months, or even years.</p>
-<p>To work with these datasets, we highly recommend using <code>DuckDB</code> and <code>Parquet</code>. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar <code>data.frame</code>/<code>tibble</code> object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: <a href="https://arrow-user2022.netlify.app/" target="_blank" class="external-link">website</a>, <a href="https://arrow-user2022.netlify.app/slides" target="_blank" class="external-link">slides</a>, and <a href="https://www.youtube.com/watch?v=YZMuFavEgA4" target="_blank" class="external-link">the video tutorial</a>. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on <a href="flowmaps-static.html">static</a> and interactive (TODO: add link) flows visualisation.</p>
+<p>To work with these datasets, we highly recommend using <code>DuckDB</code> and <code>Parquet</code>. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar <code>data.frame</code>/<code>tibble</code> object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: <a href="https://arrow-user2022.netlify.app/" target="_blank" class="external-link">website</a>, <a href="https://arrow-user2022.netlify.app/slides" target="_blank" class="external-link">slides</a>, and <a href="https://www.youtube.com/watch?v=YZMuFavEgA4" target="_blank" class="external-link">the video tutorial</a>. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on <a href="flowmaps-static.html">static</a> and <a href="flowmaps-interactive.html">interactive</a> flows visualisation.</p>
 <p>Learning to use <code>DuckDB</code> and <code>Parquet</code> is easy for anyone who have ever worked with <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code>select()</code>, <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code>, <code>group_by()</code>, <code>summarise()</code>, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from <code>DuckDB</code> and <code>Parquet</code>. Please read the relevant sections below, where we first show how to convert the data, and then how to use it.</p>
 <section class="level2" data-number="3.1"><h3 data-number="3.1" id="duckdb-vs-parquet-csv">
 <span class="header-section-number">3.1</span> How to choose between DuckDB, Parquet, and CSV<a class="anchor" aria-label="anchor" href="#duckdb-vs-parquet-csv"></a>
