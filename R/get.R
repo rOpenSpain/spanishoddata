@@ -110,7 +110,10 @@ spod_get_latest_v2_file_list <- function(
   }
 
   message("Saving the file to: ", current_filename)
-  xml_requested <- curl::curl_download(url = xml_url, destfile = current_filename, quiet = FALSE)
+  xml_requested <- curl::multi_download(
+    urls = xml_url,
+    destfiles = current_filename
+  )
   return(current_filename)
 }
 
@@ -341,13 +344,13 @@ spod_get_zones_v2 <- function(
     }
     if (isFALSE(quiet)) {
       message("Downloading missing zones data...")
-      curl::multi_download(
-        urls = metadata_zones_for_download$target_url,
-        destfiles = metadata_zones_for_download$local_path,
-        resume = TRUE,
-        progress = TRUE
-      )
     }
+    curl::multi_download(
+      urls = metadata_zones_for_download$target_url,
+      destfiles = metadata_zones_for_download$local_path,
+      resume = TRUE,
+      progress = TRUE
+    )
   }
   
   zones_path <- fs::dir_ls(
@@ -379,7 +382,10 @@ spod_get_zones_v2 <- function(
 spod_clean_zones_v2 <- function(zones_path) {
   # detect what kind of zones find out if it is distritos, municipios or GAU
   zones <- stringr::str_extract(zones_path, "distritos|municipios|gaus")
-  
+
+  if(fs::file_exists(zones_path) == FALSE) {
+    stop("File does not exist: ", zones_path)
+  }
   suppressWarnings({
     zones_sf <- sf::read_sf(zones_path)
   })

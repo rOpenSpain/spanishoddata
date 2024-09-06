@@ -26,10 +26,9 @@ spod_get_latest_v1_file_list <- function(
   }
 
   message("Saving the file to: ", current_filename)
-  xml_requested <- curl::curl_download(
-    url = xml_url,
-    destfile = current_filename,
-    quiet = FALSE
+  xml_requested <- curl::multi_download(
+    urls = xml_url,
+    destfiles = current_filename
   )
   return(current_filename)
 }
@@ -236,15 +235,19 @@ spod_get_zones_v1 <- function(
 
   if (!fs::file_exists(metadata_zones$local_path)) {
     if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
-    downloaded_file <- curl::curl_download(metadata_zones$target_url, destfile = metadata_zones$local_path, mode = "wb", quiet = FALSE)
+    downloaded_file <- curl::multi_download(metadata_zones$target_url, destfiles = metadata_zones$local_path, resume = TRUE, progress = TRUE)
+    downloaded_file <- downloaded_file$destfile
   } else {
     if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
     downloaded_file <- metadata_zones$local_path
   }
 
   if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
+  if (!fs::dir_exists(fs::path_dir(downloaded_file))){
+    fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
+  }
   utils::unzip(downloaded_file,
-    exdir = fs::path_dir(downloaded_file)
+    exdir = paste0(fs::path_dir(downloaded_file),"/")
   )
 
   # remove artifacts (remove __MACOSX if exists)
@@ -256,6 +259,7 @@ spod_get_zones_v1 <- function(
     glob = glue::glue("*v1**{zones}/*.shp"),
     recurse = TRUE
   )
+
   zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
   sf::st_write(
@@ -279,6 +283,10 @@ spod_get_zones_v1 <- function(
 #' @importFrom rlang .data
 #'
 spod_clean_zones_v1 <- function(zones_path, zones) {
+  
+  if(fs::file_exists(zones_path) == FALSE) {
+    stop("File does not exist: ", zones_path)
+  }
   suppressWarnings({
     zones_sf <- sf::read_sf(zones_path)
   })
