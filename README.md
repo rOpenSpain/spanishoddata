@@ -45,22 +45,44 @@ To effectively work with multiple data files, it’s recommended you set
 up a data directory where the package can search for the data and
 download only the files that are not already present.
 
+# Examples of available data
+
 <div id="fig-barcelona-flows">
 
 ![](vignettes/media/flows_plot.svg)
 
 
-Figure 1: Example of the data available through the package
+Figure 1: Example of the data available through the package: daily flows
+in Barcelona
 
 </div>
+
+To create static maps like that see our vignette
+[here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html).
+
+------------------------------------------------------------------------
+
 <div id="fig-spain-flows">
 
 ![](man/figures/spain-folding-flows.gif)
 
 
-Figure 2: Example of the data available through the package
+Figure 2: Example of the data available through the package: interactive
+daily flows in Spain
 
 </div>
+<div id="fig-spain-flows">
+
+![](man/figures/barcelona-time.gif)
+
+
+Figure 3: Example of the data available through the package: interactive
+daily flows in Barcelona with time filter
+
+</div>
+
+To create interactive maps see our vignette
+[here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
 # Installation
 
@@ -409,6 +431,10 @@ For more information on the package, see:
     flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html)
     vignette shows how to create flowmaps using the data acquired with
     `{spanishoddata}`
+  - [Making interactive
+    flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html)
+    shows how to create an interactive flowmap using the data acquired
+    with `{spanishoddata}`
 
 # References
 

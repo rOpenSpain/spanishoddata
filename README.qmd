@@ -25,9 +25,19 @@ It supports the two versions of the Spanish mobility data that consists of origi
 
 **spanishoddata** is designed to save people time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
-![Example of the data available through the package](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
+# Examples of available data
 
-![Example of the data available through the package](man/figures/spain-folding-flows.gif){#fig-spain-flows}
+![Example of the data available through the package: daily flows in Barcelona](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
+
+To create static maps like that see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html).
+
+---
+
+![Example of the data available through the package: interactive daily flows in Spain](man/figures/spain-folding-flows.gif){#fig-spain-flows}
+
+![Example of the data available through the package: interactive daily flows in Barcelona with time filter](man/figures/barcelona-time.gif){#fig-spain-flows}
+
+To create interactive maps see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
 
 # Installation
@@ -322,6 +332,7 @@ For more information on the package, see:
   - [Download and convert data](https://rOpenSpain.github.io/spanishoddata/articles/convert.html)
   - The [uses vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html) which documents use cases
   - [Making static flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html) vignette shows how to create flowmaps using the data acquired with `{spanishoddata}`
+  - [Making interactive flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html) shows how to create an interactive flowmap using the data acquired with `{spanishoddata}`
 
 
 ```{r}
