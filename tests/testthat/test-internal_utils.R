@@ -8,15 +8,18 @@ if (length(gz_files) == 0) stop("No gzipped XML files found.")
 # Create a temporary directory
 test_data_dir <- tempfile()
 dir.create(test_data_dir, recursive = TRUE)
+# Create metadata directory
+metadata_dir <- paste0(test_data_dir, "/", spod_subfolder_metadata_cache())
+dir.create(metadata_dir, recursive = TRUE)
 
 current_date <- format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE)
 
 # Copy and rename gzipped XML files to the temporary directory
 for (gz_file in gz_files) {
   if (grepl("v1", gz_file)) {
-    file.copy(gz_file, file.path(test_data_dir, paste0("data_links_v1_", current_date, ".xml.gz")))
+    file.copy(gz_file, file.path(metadata_dir, paste0("data_links_v1_", current_date, ".xml.gz")))
   } else if (grepl("v2", gz_file)) {
-    file.copy(gz_file, file.path(test_data_dir, paste0("data_links_v2_", current_date, ".xml.gz")))
+    file.copy(gz_file, file.path(metadata_dir, paste0("data_links_v2_", current_date, ".xml.gz")))
   }
 }
 
