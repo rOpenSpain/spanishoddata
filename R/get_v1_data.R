@@ -55,7 +55,13 @@ spod_available_data_v1 <- function(
     # check_local_files (below) is FALSE by default to avoid excessive filesystem access, perhaps should be TRUE. Download functions use it to load the xml file, but we probably do not want the script to check all local cache directories every time we run a get data function. Perhaps it is better to offload this check to a separate function and have a csv file or some other way to keep track of the files that were downloaded and cached. An output of curl::multi_download() could be used for this purpose.
     check_local_files = FALSE,
     quiet = FALSE) {
-  xml_files_list <- fs::dir_ls(glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}"), type = "file", regexp = "data_links_v1") |> sort()
+  
+  metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
+  if{!fs::dir_exists(metadata_folder)}{
+    fs::dir_create(metadata_folder)
+  }
+  
+  xml_files_list <- fs::dir_ls(metadata_folder), type = "file", regexp = "data_links_v1") |> sort()
   if (length(xml_files_list) == 0) {
     if (isFALSE(quiet)) {
       message("No data links xml files found, getting latest v1 data links xml")

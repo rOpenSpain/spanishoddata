@@ -139,7 +139,13 @@ spod_available_data_v2 <- function(
   check_local_files = FALSE,
   quiet = FALSE
 ) {
-  xml_files_list <- fs::dir_ls(glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}"), type = "file", regexp = "data_links_v2") |> sort()
+  
+  metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
+  if{!fs::dir_exists(metadata_folder)}{
+    fs::dir_create(metadata_folder)
+  }
+
+  xml_files_list <- fs::dir_ls(metadata_folder, type = "file", regexp = "data_links_v2") |> sort()
   if (length(xml_files_list) == 0) {
     if (isFALSE(quiet)) {
       message("No data links xml files found, getting latest v2 data links xml.")
