@@ -57,7 +57,7 @@ spod_available_data_v1 <- function(
     quiet = FALSE) {
   
   metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
-  if{!fs::dir_exists(metadata_folder)}{
+  if{!fs::dir_exists(metadata_folder){
     fs::dir_create(metadata_folder)
   }
   
