@@ -61,7 +61,7 @@ spod_available_data_v1 <- function(
     fs::dir_create(metadata_folder)
   }
   
-  xml_files_list <- fs::dir_ls(metadata_folder), type = "file", regexp = "data_links_v1") |> sort()
+  xml_files_list <- fs::dir_ls(metadata_folder, type = "file", regexp = "data_links_v1") |> sort()
   if (length(xml_files_list) == 0) {
     if (isFALSE(quiet)) {
       message("No data links xml files found, getting latest v1 data links xml")
