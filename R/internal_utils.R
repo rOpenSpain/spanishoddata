@@ -185,7 +185,7 @@ spod_get_valid_dates <- function(ver = NULL) {
   all_dates <- sort(all_dates)
   return(all_dates)
 }
-# currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
+# TODO: currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
 
 
 
