@@ -1,1 +1,5 @@
-CREATE TYPE DISTANCE_ENUM AS ENUM ('0.5-2', '2-10', '10-50', '>50');
+CREATE TYPE DISTANCE_ENUM AS ENUM (
+  '0.5-2',
+  '2-10',
+  '10-50',
+  '>50');

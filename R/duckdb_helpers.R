@@ -59,7 +59,9 @@ spod_duckdb_od <- function(
     ver = NULL,
     data_dir = spod_get_data_dir()
 ) {
-    
+  
+  locale <- "en" # hardcode locale for now, but be ready to make it a function argument across the package #TODO
+
   ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
@@ -111,7 +113,11 @@ spod_duckdb_od <- function(
   if( ver == 1 ) {
     unique_ids <- unique(spatial_data$id)
   } else if( ver == 2 ) {
-    unique_ids <- c("external", unique(spatial_data$id))
+    if (locale == "en" ){
+      unique_ids <- c("external", unique(spatial_data$id))
+    } else if (locale == "es" ){
+      unique_ids <- c("externo", unique(spatial_data$id))
+    }
   }
   
   DBI::dbExecute(
@@ -128,7 +134,7 @@ spod_duckdb_od <- function(
   # create ACTIV_ENUM (for all except for municipalities in v1 data)
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-od-enum-activity-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-od-enum-activity-{locale}.sql"))
   )
 
   # create DISTANCE_ENUM
@@ -157,7 +163,7 @@ spod_duckdb_od <- function(
     # sex ENUM
     DBI::dbExecute(
       con,
-      spod_read_sql(glue::glue("v{ver}-od-enum-sex-en.sql"))
+      spod_read_sql(glue::glue("v{ver}-od-enum-sex-{locale}.sql"))
     )
   }
 
@@ -172,7 +178,7 @@ spod_duckdb_od <- function(
   }
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-csv-view-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-csv-view-{locale}.sql"))
   )
 
   # return the connection as duckdb object
@@ -201,6 +207,8 @@ spod_duckdb_number_of_trips <- function(
   data_dir = spod_get_data_dir()
 ) {
   
+  locale <- "en" # TODO: add support for Spanish, hardcode for now
+
   ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
@@ -251,12 +259,8 @@ spod_duckdb_number_of_trips <- function(
     quiet = TRUE
   )
   
-  if( ver == 1 ) {
-    unique_ids <- unique(spatial_data$id)
-  } else if( ver == 2 ) {
-    unique_ids <- c("external", unique(spatial_data$id))
-  }
-  
+  unique_ids <- unique(spatial_data$id)
+
   DBI::dbExecute(
     con,
     dplyr::sql(
@@ -276,9 +280,20 @@ spod_duckdb_number_of_trips <- function(
 
   
   # v2 only enums
-  if (ver == 2) {
-    ### TODO - check if any v2 specific ones
-  }
+# v2 only enums
+if (ver == 2) {
+  # age ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-nt-enum-age.sql"))
+  )
+  
+  # sex ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-nt-enum-sex-{locale}.sql"))
+  )
+}
 
   # create od_csv_clean view
   if (ver == 1 && zones == "municipios") {
@@ -291,7 +306,7 @@ spod_duckdb_number_of_trips <- function(
   }
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-nt-{zones}-clean-csv-view-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-nt-{zones}-clean-csv-view-{locale}.sql"))
   )
 
   return(con)
