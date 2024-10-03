@@ -40,17 +40,8 @@ To create static maps like that see our vignette [here](https://ropenspain.githu
 To create interactive maps see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
 
-# Installation
+{{< include inst/vignette-include/install-package.qmd >}}
 
-The package is not yet available on CRAN.
-
-Install the development version of the package as follows:
-
-```{r}
-if (!require("remotes")) install.packages("remotes")
-remotes::install_github("rOpenSpain/spanishoddata",
-  force = TRUE, dependencies = TRUE)
-```
 
 Load it as follows:
 
@@ -58,25 +49,6 @@ Load it as follows:
 library(spanishoddata)
 ```
 
-<details><summary>Developer documentation</summary>
-
-To load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
-
-```bash
-gh repo clone rOpenSpain/spanishoddata
-code spanishoddata
-# with rstudio:
-rstudio spanishoddata/spanishoddata.Rproj
-```
-
-Then run the following command from the R console:
-
-```{r}
-#| eval: false
-devtools::load_all()
-```
-
-</details>
 
 {{< include inst/vignette-include/setup-data-directory.qmd >}}
 
