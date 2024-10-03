@@ -45,7 +45,7 @@ Key sources for this codebook/cookbook include:
 
 To access the data we reference in this codebook, please follow these steps:
 
-{{< include inst/vignette-include/install-package.qmd >}}
+{{< include ../inst/vignette-include/install-package.qmd >}}
 
 
 Load it as follows:
@@ -59,7 +59,7 @@ Using the instructions below, set the data folder for the package to download th
 
 {{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
-{{< include inst/vignette-include/overall-approach.qmd >}}
+{{< include ../inst/vignette-include/overall-approach.qmd >}}
 
 
 # 1. Spatial data with zoning boundaries
