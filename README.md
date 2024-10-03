@@ -17,7 +17,7 @@ alt="Lifecycle: experimental" /></a>
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
 Ministry of Transport and Sustainable mobility of Spain (Secretaría de
-Estado de Transportes, Movilidad y Agenda Urbana 2024).
+Estado de Transportes y Movilidad Sostenible 2024).
 
 It supports the two versions of the Spanish mobility data that consists
 of origin-destination matrices and some additional data sets. [The first
@@ -84,28 +84,34 @@ daily flows in Barcelona with time filter
 To create interactive maps see our vignette
 [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
-# Installation
+## Install the package
 
 The package is not yet available on CRAN.
 
-Install the development version of the package as follows:
+You can install the latest version of the package from rOpenSpain R
+universe:
 
 ``` r
-if (!require("remotes")) install.packages("remotes")
-remotes::install_github("rOpenSpain/spanishoddata",
-  force = TRUE, dependencies = TRUE)
-```
-
-Load it as follows:
-
-``` r
-library(spanishoddata)
+install.packages("spanishoddata",
+  repos = c("https://ropenspain.r-universe.dev",
+    "https://cloud.r-project.org"))
 ```
 
 <details>
 <summary>
-Developer documentation
+Alternative installation and developemnt
 </summary>
+
+Alternative way to install the package from GitHub:
+
+``` r
+if (!require("remotes")) install.packages("remotes")
+
+remotes::install_github("rOpenSpain/spanishoddata",
+  force = TRUE, dependencies = TRUE)
+```
+
+**For Developers**
 
 To load the package locally, clone it and navigate to the root of the
 package in the terminal, e.g. with the following:
@@ -124,6 +130,12 @@ devtools::load_all()
 ```
 
 </details>
+
+Load it as follows:
+
+``` r
+library(spanishoddata)
+```
 
 ## Set the data directory
 
@@ -455,9 +467,9 @@ Origin-Destination Data,” August.
 
 </div>
 
-<div id="ref-mitma-mobility-2024-v6" class="csl-entry">
+<div id="ref-mitma-mobility-2024-v7" class="csl-entry">
 
-Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2024.
+Secretaría de Estado de Transportes y Movilidad Sostenible. 2024.
 “Estudio de movilidad de viajeros de ámbito nacional aplicando la
 tecnología Big Data. Informe metodológico (Study of National Traveler
 mobility Using Big Data Technology. Methodological Report).”
