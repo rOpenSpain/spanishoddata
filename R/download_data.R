@@ -98,7 +98,7 @@ spod_download_data <- function(
 
   # only download files if some are missing
   if (nrow(files_to_download) > 0) {
-    total_size_to_download_gb <- round(sum(files_to_download$remote_file_size_mb / 1024, na.rm = TRUE), 2)
+    total_size_to_download_gb <- round(sum(files_to_download$remote_file_size_mb / 1024, na.rm = TRUE), 4)
     # warn if more than 1 GB is to be downloaded
     if( total_size_to_download_gb > max_download_size_gb) {
       message(glue::glue("Approximately {total_size_to_download_gb} GB of data will be downloaded."))
