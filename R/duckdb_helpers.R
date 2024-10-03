@@ -111,7 +111,7 @@ spod_duckdb_od <- function(
   if( ver == 1 ) {
     unique_ids <- unique(spatial_data$id)
   } else if( ver == 2 ) {
-    unique_ids <- c("externo", unique(spatial_data$id))
+    unique_ids <- c("external", unique(spatial_data$id))
   }
   
   DBI::dbExecute(
@@ -230,7 +230,7 @@ spod_duckdb_number_of_trips <- function(
       data_dir, "/",
       spod_subfolder_raw_data_cache(ver = ver),
       "/estudios_basicos/por-", spod_zone_names_en2es(zones),
-      "/viajes/ficheros-diarios/"
+      "/personas/ficheros-diarios/"
     )
   }
 
@@ -239,7 +239,7 @@ spod_duckdb_number_of_trips <- function(
   # create view to the raw TXT/CSV.gz files
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-raw-csv-view.sql"))
+    spod_read_sql(glue::glue("v{ver}-nt-{zones}-raw-csv-view.sql"))
   )
 
   # create ENUMs
@@ -254,7 +254,7 @@ spod_duckdb_number_of_trips <- function(
   if( ver == 1 ) {
     unique_ids <- unique(spatial_data$id)
   } else if( ver == 2 ) {
-    # unique_ids <- c("externo", unique(spatial_data$id)) # double check
+    unique_ids <- c("external", unique(spatial_data$id))
   }
   
   DBI::dbExecute(
@@ -271,7 +271,7 @@ spod_duckdb_number_of_trips <- function(
   # create N_TRIPS_ENUM
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-tpp-enum-ntrips.sql"))
+    spod_read_sql(glue::glue("v{ver}-nt-enum-ntrips.sql"))
   )
 
   
@@ -291,7 +291,7 @@ spod_duckdb_number_of_trips <- function(
   }
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-clean-csv-view-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-nt-{zones}-clean-csv-view-en.sql"))
   )
 
   return(con)
