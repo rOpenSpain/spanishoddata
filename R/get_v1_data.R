@@ -536,14 +536,12 @@ spod_get <- function(
       data_dir = data_dir
     )
   } else if (type == "os") {
-    message("overnight stays data retrieval is not yet implemented")
-    invisible(return(NULL))
-    # con <- spod_duckdb_overnight_stays(
-    #   con = con,
-    #   zones = zones,
-    #   ver = ver,
-    #   data_dir = data_dir
-    # )
+    con <- spod_duckdb_overnight_stays(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
+    )
   }
   
   clean_csv_view_name <- glue::glue("{type}_csv_clean")

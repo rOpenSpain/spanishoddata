@@ -312,6 +312,105 @@ if (ver == 2) {
   return(con)
 }
 
+#' Create a duckdb overnight stays table
+#' 
+#' @description
+#' This function creates a duckdb connection to the overnight stays data stored in a folder of CSV.gz files.
+#' @inheritParams spod_duckdb_od
+#' @inheritParams spod_available_data
+#' @inheritParams spod_download_data
+#' 
+#' @return A duckdb connection with 2 views.
+#' 
+#' @keywords internal
+spod_duckdb_overnight_stays <- function(
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
+  zones = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ),
+  ver = NULL,
+  data_dir = spod_get_data_dir()
+) {
+  
+  locale <- "en" # TODO: add support for Spanish, hardcode for now
+
+  ver <- as.integer(ver)
+  if (ver == 1) {
+    stop("Overnight stays data is only available in v2 data (2022-01-01 onwards).")
+  }
+  
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
+
+
+  csv_folder <- paste0(
+    data_dir, "/",
+    spod_subfolder_raw_data_cache(ver = ver),
+    "/estudios_basicos/por-", spod_zone_names_en2es(zones),
+    "/pernoctaciones/ficheros-diarios/"
+  )
+
+  # create view of csv files and preset variable types
+
+  # create view to the raw TXT/CSV.gz files
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-os-{zones}-raw-csv-view.sql"))
+  )
+
+  # create ENUMs
+
+  # zones ENUMs for residence, these are always detailed down to "districts", despite the selected zones
+  spatial_data_residence <- spod_get_zones("distr",
+    ver = ver,
+    data_dir = data_dir,
+    quiet = TRUE
+  )
+  
+  unique_ids_residence <- unique(spatial_data_residence$id)
+  
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      paste0(
+        "CREATE TYPE RESID_ZONES_ENUM AS ENUM ('",
+        paste0(unique_ids_residence, collapse = "','"),
+        "');"
+      )
+    )
+  )
+
+  # zones ENUMs for overnight stays, these always match the selected zones
+  spatial_data_overnight <- spod_get_zones(zones,
+    ver = ver,
+    data_dir = data_dir,
+    quiet = TRUE
+  )
+
+  unique_ids_overnight <- unique(spatial_data_overnight$id)
+  
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      paste0(
+        "CREATE TYPE OVERNIGHT_ZONES_ENUM AS ENUM ('",
+        paste0(unique_ids_overnight, collapse = "','"),
+        "');"
+      )
+    )
+  )
+
+
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-os-{zones}-clean-csv-view-{locale}.sql"))
+  )
+
+  return(con)
+}
+
 #' Filter a duckdb conenction by dates
 #' 
 #' @description
