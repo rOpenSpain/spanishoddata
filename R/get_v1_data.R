@@ -464,7 +464,8 @@ spod_get <- function(
   ),
   zones = c(
     "districts", "dist", "distr", "distritos",
-    "municipalities", "muni", "municip", "municipios"
+    "municipalities", "muni", "municip", "municipios",
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
   ),
   dates = NULL,
   data_dir = spod_get_data_dir(),
