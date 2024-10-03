@@ -252,7 +252,7 @@ spod_available_data_v2 <- function(
           TRUE ~ "other"
         )
       ) |>
-      dplyr::select(-.data$cleaned_url)
+      dplyr::select(-"cleaned_url")
 
     # Calculate mean file sizes by category
     size_by_file_category <- files_table |>
@@ -261,7 +261,9 @@ spod_available_data_v2 <- function(
 
     # Impute missing file sizes
     files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
-    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- files_table$mean_file_size_mb
+    if(length(files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)]) > 0){
+      files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- median(files_table$mean_file_size_mb)
+    }
     files_table$mean_file_size_mb <- NULL
     files_table$file_category <- NULL
   }
