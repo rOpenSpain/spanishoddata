@@ -167,7 +167,7 @@ spod_available_data_v1 <- function(
 
     # Clean up temporary columns
     files_table <- files_table |>
-      dplyr::select("mean_file_size_mb", "file_category")
+      dplyr::select(-"mean_file_size_mb", -"file_category")
   }
   
   # now check if any of local files exist
