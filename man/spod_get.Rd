@@ -7,7 +7,7 @@
 spod_get(
   type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"),
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
-    "municip", "municipios"),
+    "municip", "municipios", "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"),
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
