@@ -20,7 +20,64 @@ You can view this vignette any time by running:
 spanishoddata::spod_codebook(ver = 2)
 ```
 
+The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitma-mobility-2024-v7].
 
-Work-in-progress. Coming soon, please come back in a few weeks. For now, please consult the official documentation [@mitma-mobility-2024-v7]. Some data is already available in the same way as [v1 data](v1-2020-2021-mitma-data-codebook.html), just use dates starting with 2022-01-01.
+The dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology).
+
+The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2022-01-01 onwards), the number of individuals making trips for each zone, the number of individuals spending the nights in one location while regularly residing in a different location, and many more advanced datasets. This document will introduce you to the available data and provide brief code snippets on how to access it using the `{spanishoddata}` R package.
+
+Compared to the [v1 data (2020-2021)](v1-2020-2021-mitma-data-codebook.qmd) this dataset has many additional variables, such as age, sex, and income, has better spatial resolution (the zones are more spatially granular) and covers a continuous period[^1] (2022-01-01 onward), rather than only a limited period (in v1 - 2020-02-14 to 2021-05-09). The datasets comparable to the v1 data are called ["basic studies" ("estudios basicos")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudio-basico-diario){target="_blank"}, however there are even more advanced datasets that are already available or will be made available soon: ["complete studies" ("estudios completos")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-completos){target="_blank"} and ["road routes" ("rutas de carretera")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/rutas-por-carretera){target="_blank"}. At the moment, the `{spanishoddata}` package only provides the interface to the "basic studies" datasets, but support for "complete studies" and "road routes" will be added in the future.
+
+[^1]: As of the time of writing (2024-10-03), days not available due to incidents in Orange network: October 26, 27, 30, 31, November 1, 2 and 3, 2023, and April 4, 18, 19, 2024. Please heck the [original data page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"} for up to date information about missing dates.
+
+Key sources for this codebook/cookbook include:
+
+-   [original data collection methodology and codebook in Spanish](https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_resumen_v7.pdf){target="_blank"} + [automatically translated English version of methodology and codebook](https://rOpenSpain.github.io/spanishoddata/codebooks/a3_informe_metodologico_resumen_v7_en.pdf){target="_blank"}
+
+-   [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"}
+
+-   [original data license](https://movilidad-opendata.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf){target="_blank"}
+
+-   [homepage of the v2 study and open mobility data project of the Ministry of Transport and Sustainable mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
+
+**Note: Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.**
+
+To access the data we reference in this codebook, please follow these steps:
+
+{{< include ../inst/vignette-include/install-package.qmd >}}
+
+Load it as follows:
+
+```{r}
+library(spanishoddata)
+```
+
+Using the instructions below, set the data folder for the package to download the files into. You may need up to 400 GB to download all data and another 400 GB if you would like to convert the downloaded data into analysis ready format (a `DuckDB` database file, or a folder of `parquet` files). You can find more info on this conversion in the [Download and convert OD datasets](convert.html) vignette.
 
 {{< include ../inst/vignette-include/setup-data-directory.qmd >}}
+
+{{< include ../inst/vignette-include/overall-approach.qmd >}}
+
+# 1. Spatial data with zoning boundaries
+
+The boundary data is provided at three geographic levels: [`Distrtics`](#districts), [`Municipalities`](#municipalities), and [`Large Urban Areas`](#lua). It's important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities".
+
+## 1.1 `Districts` {#districts}
+
+`Districts` correspond to official census districts in cities; however, in those with lower population density, they are grouped together. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset. Therefore, there are 3792 'districts' compared to the 10494 official census districts on which they are based. There are also [NUTS3 statistical regions](https://ec.europa.eu/eurostat/web/nuts){target="_blank"} covering France (94 units) and Portugal (23 units). Therefore there is a total of 3909 zones in the `Districts` dataset.
+
+```{r}
+districts_v2 <- spod_get_zones("dist", ver = 2)
+```
+
+The `districts_v2` object is of class `sf` consisting of polygons.
+
+Data structure:
+
+| Variable Name | **Description** |
+|------------------------------------|------------------------------------|
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#nt-data). |
+| `name` | Name of the district. |
+| `population` | Number of individuals in the district according to [INE](https://ine.es/){target="_blank"}[^2]. |
+
+[^2]: This is likely the population as of end of 2021 or start of 2022. Population for a few districts is missing. Instead of population, residence and overnight stays data may be used as a proxy with caution. Also, newer population figures may be obtained and joined with the provided zones using the reference tables that match the zones ids with official municipal and census district ids from INE.
