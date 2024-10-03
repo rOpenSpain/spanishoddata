@@ -90,7 +90,7 @@ Data structure:
 
 | Variable Name | **Description** |
 |------------------------------------|------------------------------------|
-| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#tpp-data). |
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#nt-data). |
 | `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
 | `municipalities_mitma` | A list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` . |
 | `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
@@ -113,7 +113,7 @@ Data structure:
 
 | Variable Name | **Description** |
 |------------------------------------|------------------------------------|
-| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in municipality level [origin-destination data](#od-data) and [number of trips data](#tpp-data). |
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in municipality level [origin-destination data](#od-data) and [number of trips data](#nt-data). |
 | `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
 | `districts_mitma` | A list of district identifiers as assigned by the data provider in districts zones spatial dataset that correspond to a given municipality `id` . |
 | `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
@@ -210,7 +210,7 @@ The same summary operation as provided in the example above can be done with the
 
 ***Note**: As long as you use object `od_dist` created with `spod_get()` function, it is much quicker to filter the dates by the `year`, `month` and `day` variables, rather than by the `date` variable.* This is because the data for each day is in a separate CSV file located in folders that look like `year=2020/month=2/day=14`. So when filtering by the `date` field, R will have to scan all CSV files comparing the specified date with what is stored inside the file. However, if you query by *`year`, `month` and `day` variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use `spod_get()` . If you convert (see the [relevant section below](#convert-data)) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance as much.*
 
-## 2.2. Number of trips data {#tpp-data}
+## 2.2. Number of trips data {#nt-data}
 
 The "number of trips" data shows the number of individuals in each district or municipality who made trips categorised by the number of trips.
 
@@ -237,13 +237,13 @@ To access it use `spod_get()` with `type` set to "number_of_trips", or just "nt"
 
 ```{r}
 dates <- c(start = "2020-02-14", end = "2021-05-09")
-tpp_dist <- spod_get(type = "number_of_trips", zones = "dist", dates = dates)
+nt_dist <- spod_get(type = "number_of_trips", zones = "dist", dates = dates)
 ```
 
 Because this data is small, we can actually load it completely into memory:
 
 ```{r}
-tpp_dist_tbl <- tpp_dist |> dplyr::collect()
+nt_dist_tbl <- nt_dist |> dplyr::collect()
 ```
 
 # Advanced use

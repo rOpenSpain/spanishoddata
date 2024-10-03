@@ -13,8 +13,8 @@ FROM
     }}
 );
 
--- Create the tpp_csv_clean view with the necessary joins, recoding, and aggregation
-CREATE VIEW tpp_csv_clean AS 
+-- Create the nt_csv_clean view with the necessary joins, recoding, and aggregation
+CREATE VIEW nt_csv_clean AS 
 SELECT
     d.fecha AS date,
     CAST(r.municipio_mitma AS ZONES_ENUM) AS id,
@@ -24,7 +24,7 @@ SELECT
     CAST(d.month AS INTEGER) AS month,
     CAST(d.day AS INTEGER) AS day
 FROM 
-    tpp_csv_raw d
+    nt_csv_raw d
 LEFT JOIN 
     relations_districts_municipalities r ON d.distrito = r.distrito_mitma 
 GROUP BY 
