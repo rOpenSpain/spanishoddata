@@ -440,11 +440,41 @@ spod_clean_zones_v2 <- function(zones_path) {
       dplyr::select(-"row")
   }
  
+  # zones reference
+  zones_ref <- readr::read_delim(
+    glue::glue(spod_get_data_dir(quiet = TRUE), "/", spod_subfolder_raw_data_cache(ver = 2), "zonificacion/relacion_ine_zonificacionMitma.csv"),
+    delim = "|",
+    col_types = rep("c", 6)
+  )
+
+  zone_mitma <- glue::glue("{gsub('s$', '', zones)}_mitma")
+  
+  zones_ref_renamed <- zones_ref |>
+    dplyr::rename(
+      census_sections = "seccion_ine",
+      census_districts = "distrito_ine",
+      municipalities = "municipio_ine",
+      districts_mitma = "distrito_mitma",
+      municipalities_mitma = "municipio_mitma",
+      luas_mitma = "gau_mitma",
+      id = zone_mitma
+    )
+  
+  zones_ref_aggregated <- zones_ref_renamed |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(across(
+    .cols = everything(),
+    .fns = ~ paste(.x, collapse = "; "),
+    .names = "{.col}"
+  ))
+
+
   # combine zones with population and names
   zones_sf <- zones_sf |>
     dplyr::left_join(zone_names, by = "id") |> 
     dplyr::left_join(population, by = "id") |> 
-    dplyr::select(-"geometry", "geometry")
+    dplyr::left_join(zones_ref_aggregated, by = "id") |>
+    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
   
   return(zones_sf)
 }
