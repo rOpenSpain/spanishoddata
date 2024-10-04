@@ -345,7 +345,7 @@ spod_get_zones_v2 <- function(
     return(sf::read_sf(expected_gpkg_path))
   }
   
-  # if no existing gpkg found above, contunue here with download and data cleanup
+  # if no existing gpkg found above, continue here with download and data cleanup
   metadata <- spod_available_data_v2(data_dir, check_local_files = TRUE)
   zones_regex <- glue::glue("(zonificacion_{zones}\\.*)|(poblacion\\.csv)|(relacion_ine_zonificacionMitma\\.csv)")
   sel_zones <- stringr::str_detect(metadata$local_path, zones_regex)
