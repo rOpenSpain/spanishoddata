@@ -178,7 +178,64 @@ spod_available_data_v1 <- function(
   return(files_table)
 }
 
-#' retrieves the zones for v1 data
+#' Downloads and extracts the raw v1 zones data
+#'
+#' This function ensures that the necessary v1 raw data for zones files are downloaded and extracted from the specified data directory.
+#'
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
+#' @param data_dir The directory where the data is stored.
+#' @param quiet Boolean flag to control the display of messages.
+#' @return The path to the downloaded and extracted file.
+#' @keywords internal
+spod_download_zones_v1 <- function(
+  zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni", "municip", "municipios"),
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
+) {
+zones <- match.arg(zones)
+zones <- spod_zone_names_en2es(zones)
+
+metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
+
+# download id relation files if missing
+relation_files <- metadata[grepl("relaciones_(distrito|municipio)_mitma.csv", metadata$target_url),]
+if (any(!fs::file_exists(relation_files$local_path))) {
+  fs::dir_create(unique(fs::path_dir(relation_files$local_path)), recurse = TRUE)
+  invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
+}
+
+regex <- glue::glue("zonificacion_{zones}\\.")
+sel_zones <- stringr::str_detect(metadata$target_url, regex)
+metadata_zones <- metadata[sel_zones, ]
+dir_name <- fs::path_dir(metadata_zones$local_path[1])
+if (!fs::dir_exists(dir_name)) {
+  fs::dir_create(dir_name, recurse = TRUE)
+}
+
+if (!fs::file_exists(metadata_zones$local_path)) {
+  if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
+  downloaded_file <- curl::multi_download(metadata_zones$target_url, destfiles = metadata_zones$local_path, resume = TRUE, progress = TRUE)
+  downloaded_file <- downloaded_file$destfile
+} else {
+  if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
+  downloaded_file <- metadata_zones$local_path
+}
+
+if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
+if (!fs::dir_exists(fs::path_dir(downloaded_file))){
+  fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
+}
+utils::unzip(downloaded_file, exdir = paste0(fs::path_dir(downloaded_file), "/"))
+
+# remove artifacts (remove __MACOSX if exists)
+junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
+if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
+
+return(metadata_zones$local_path)
+}
+
+
+#' Retrieves the zones for v1 data
 #'
 #' This function retrieves the zones data from the specified data directory.
 #' It can retrieve either "distritos" or "municipios" zones data.
@@ -198,85 +255,48 @@ spod_available_data_v1 <- function(
 #' }
 #' @keywords internal
 spod_get_zones_v1 <- function(
-    zones = c(
-      "districts", "dist", "distr", "distritos",
-      "municipalities", "muni", "municip", "municipios"
-    ),
-    data_dir = spod_get_data_dir(),
-    quiet = FALSE
-  ) {
-  zones <- match.arg(zones)
-  zones <- spod_zone_names_en2es(zones)
+  zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni", "municip", "municipios"),
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
+) {
+zones <- match.arg(zones)
+zones <- spod_zone_names_en2es(zones)
 
-  metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
+metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
 
-  # download id relation files if missing
-  relation_files <- metadata[grepl("relaciones_(distrito|municipio)_mitma.csv", metadata$target_url),]
-  if (any(!fs::file_exists(relation_files$local_path))) {
-    fs::dir_create(unique(fs::path_dir(relation_files$local_path)), recurse = TRUE)
-    invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
+# Ensure the raw data is downloaded and extracted
+spod_download_zones_v1(zones, data_dir, quiet)
+
+# check if gpkg files are already saved and load them if available
+expected_gpkg_path <- fs::path(
+  data_dir,
+  glue::glue(spod_subfolder_clean_data_cache(ver = 1), "/zones/{zones}_mitma.gpkg")
+)
+if (fs::file_exists(expected_gpkg_path)) {
+  if (isFALSE(quiet)) {
+    message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
   }
-
-  # check if gpkg files are already saved and load them if available
-  expected_gpkg_path <- fs::path(
-    data_dir,
-    glue::glue(spod_subfolder_clean_data_cache(ver = 1),
-      "/zones/{zones}_mitma.gpkg"
-    )
-  )
-  if (fs::file_exists(expected_gpkg_path)) {
-    if (isFALSE(quiet)) {
-      message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
-    }
-    return(sf::read_sf(expected_gpkg_path))
-  }
-
-  regex <- glue::glue("zonificacion_{zones}\\.")
-  sel_zones <- stringr::str_detect(metadata$target_url, regex)
-  metadata_zones <- metadata[sel_zones, ]
-  dir_name <- fs::path_dir(metadata_zones$local_path[1])
-  if (!fs::dir_exists(dir_name)) {
-    fs::dir_create(dir_name, recurse = TRUE)
-  }
-
-  if (!fs::file_exists(metadata_zones$local_path)) {
-    if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
-    downloaded_file <- curl::multi_download(metadata_zones$target_url, destfiles = metadata_zones$local_path, resume = TRUE, progress = TRUE)
-    downloaded_file <- downloaded_file$destfile
-  } else {
-    if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
-    downloaded_file <- metadata_zones$local_path
-  }
-
-  if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
-  if (!fs::dir_exists(fs::path_dir(downloaded_file))){
-    fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
-  }
-  utils::unzip(downloaded_file,
-    exdir = paste0(fs::path_dir(downloaded_file),"/")
-  )
-
-  # remove artifacts (remove __MACOSX if exists)
-  junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
-  if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
-
-  zones_path <- fs::dir_ls(
-    path = fs::path(data_dir, spod_subfolder_raw_data_cache(ver = 1)),
-    glob = glue::glue("*v1**{zones}/*.shp"),
-    recurse = TRUE
-  )
-
-  zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
-  fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
-  sf::st_write(
-    zones_sf,
-    expected_gpkg_path,
-    delete_dsn = TRUE,
-    delete_layer = TRUE
-  )
-
-  return(zones_sf)
+  return(sf::read_sf(expected_gpkg_path))
 }
+
+zones_path <- fs::dir_ls(
+  path = fs::path(data_dir, spod_subfolder_raw_data_cache(ver = 1)),
+  glob = glue::glue("*v1**{zones}/*.shp"),
+  recurse = TRUE
+)
+
+zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
+fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
+sf::st_write(
+  zones_sf,
+  expected_gpkg_path,
+  delete_dsn = TRUE,
+  delete_layer = TRUE
+)
+
+return(zones_sf)
+}
+
 
 #' Fixes common issues in the zones data and cleans up variable names
 #'
