@@ -427,8 +427,9 @@ spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, da
   # prepare query to filter by dates
   query <- dplyr::sql(
     glue::glue(
-      "CREATE VIEW {new_view_name} AS SELECT * FROM {source_view_name} ",
-      spod_sql_where_dates(dates)
+      'CREATE VIEW "{new_view_name}" AS SELECT * FROM "{source_view_name}" ',
+      spod_sql_where_dates(dates),
+      ";"
     )
   )
 

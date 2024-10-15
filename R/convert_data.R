@@ -197,7 +197,7 @@ spod_convert <- function(
     target_table_name <- gsub("\\..*", "", basename(save_path)) # experimental
     sql_import_query <- dplyr::sql(
       # glue::glue("CREATE TABLE {type} AS SELECT * FROM {table_to_convert} ;") should be standard
-      glue::glue('CREATE TABLE {target_table_name} AS SELECT * FROM {table_to_convert} ;') # experimental - for the user friendly duckdb connection wrapper so that it can guess the table name from the file name, hopefully the user will not rename it
+      glue::glue('CREATE TABLE "{target_table_name}" AS SELECT * FROM {table_to_convert} ;') # experimental - for the user friendly duckdb connection wrapper so that it can guess the table name from the file name, hopefully the user will not rename it
     )
       
     # import view of CSV files into duckdb
