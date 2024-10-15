@@ -379,22 +379,13 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
       districts_mitma = paste(.data$districts_mitma, collapse = "; "),
       census_districts = paste(.data$census_districts, collapse = "; ")
     )
-  
-  # now we have some duplicate ids, we need to remove them
-  # here's a function for that
-  unique_separated_ids <- function(column) {
-    purrr::map_chr(column, ~ {
-      unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
-      stringr::str_c(unique_ids, collapse = "; ")  # Join them back with semicolons
-    })
-  }
 
   # cleanup duplacate ids in municipalities
   relations_municipalities_aggregated <- relations_municipalities_aggregated |> 
     dplyr::mutate(
       dplyr::across(
         c(.data$municipalities, .data$districts_mitma, .data$census_districts),
-        unique_separated_ids
+        spod_unique_separated_ids
       )
     )
   names(relations_municipalities_aggregated)[names(relations_municipalities_aggregated) == "municipality_mitma"] <- "id"
@@ -403,7 +394,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   relations_districts_aggregated <- relations_districts_aggregated |> 
     dplyr::mutate(
       dplyr::across(
-        c(.data$census_districts, .data$municipalities_mitma), unique_separated_ids
+        c(.data$census_districts, .data$municipalities_mitma), spod_unique_separated_ids
       )
     )
   names(relations_districts_aggregated)[names(relations_districts_aggregated) == "district_mitma"] <- "id"
@@ -424,7 +415,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   names(zones_v2_sf)[names(zones_v2_sf) == "id"] <- "id_in_v2"
   names(zones_v2_sf)[names(zones_v2_sf) == "name"] <- "name_in_v2"
   suppressWarnings(
-    zones_v2_sf_centroids <- zones_v2_sf |> sf::st_centroid()
+    zones_v2_sf_centroids <- zones_v2_sf |> sf::st_point_on_surface()
   )
   v2_to_v1 <- sf::st_join(zones_sf, zones_v2_sf_centroids, left = TRUE) |> 
     sf::st_drop_geometry() 
@@ -455,7 +446,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 #' If you want to analyse longer periods of time (especiially several months or even the whole data over several years), consider using the \link{spod_convert} and then \link{spod_connect}.
 #' 
 #' @param duckdb_target (Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the `spod_convert` function. If not specified, it will be set to ":memory:" and the data will be stored in memory.
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams spod_duckdb_set_temp
 #' @inheritParams global_quiet_param
@@ -516,13 +507,13 @@ spod_get <- function(
     dates <- spod_dates_argument_to_dates_seq(dates = dates)
     ver <- spod_infer_data_v_from_dates(dates)
     # use the spot_download_data() function to download any missing data
-    spod_download_data(
+    spod_download(
       type = type,
       zones = zones,
       dates = dates,
       max_download_size_gb = max_download_size_gb,
       data_dir = data_dir,
-      return_output = FALSE
+      return_local_file_paths = FALSE
     )
   } else if (isTRUE(cached_data_requested)) {
     ver <- as.numeric(stringr::str_extract(dates, "(1|2)$"))

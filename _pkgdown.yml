@@ -42,7 +42,7 @@ reference:
       Download data for longer periods, convert them into analysis ready format such as `DuckDB` or `Parquet` for out-of-memory analysis of this large data
     contents:
       - spod_get_zones
-      - spod_download_data
+      - spod_download
       - spod_convert
       - spod_connect
       - spod_disconnect

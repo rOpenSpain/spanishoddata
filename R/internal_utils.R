@@ -6,7 +6,7 @@
 #'
 #' The possible values can be any of the following:
 #' 
-#'  * For the `spod_get()` function, the `dates` can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to `spod_download_data()`.
+#'  * For the `spod_get()` function, the `dates` can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to `spod_download()`.
 #'
 #'  * A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. `character` or `Date` object.
 #'
@@ -279,4 +279,19 @@ spod_available_ram <- function(){
   return(
     as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])/1024/1024/1024
   )
+}
+
+#' Remove duplicate values in a semicolon-separated string
+#' 
+#' @description
+#' Remove duplicate IDs in a semicolon-separated string in a selected column in a data frame
+#' @param column A `character` vector column in a data frame to remove duplicates from.
+#' 
+#' @return A `character` vector with semicolon-separated unique IDs.
+#' @keywords internal
+spod_unique_separated_ids <- function(column) {
+  purrr::map_chr(column, ~ {
+    unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
+    stringr::str_c(unique_ids, collapse = "; ")  # Join them back with semicolons
+  })
 }

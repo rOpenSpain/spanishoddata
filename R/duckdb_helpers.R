@@ -4,7 +4,7 @@
 #'
 #' @param con A duckdb connection object. If not specified, a new in-memory connection will be created.
 #' @inheritParams spod_available_data
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' @return A duckdb connection object with 2 views:
 #'
 #'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
@@ -191,7 +191,7 @@ spod_duckdb_od <- function(
 #' This function creates a duckdb connection to the number of trips data stored in a folder of CSV.gz files.
 #' @inheritParams spod_duckdb_od
 #' @inheritParams spod_available_data
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' 
 #' @return A duckdb connection with 2 views.
 #' 
@@ -318,7 +318,7 @@ if (ver == 2) {
 #' This function creates a duckdb connection to the overnight stays data stored in a folder of CSV.gz files.
 #' @inheritParams spod_duckdb_od
 #' @inheritParams spod_available_data
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' 
 #' @return A duckdb connection with 2 views.
 #' 
