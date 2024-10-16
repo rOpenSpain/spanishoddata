@@ -329,7 +329,7 @@ spod_convert <- function(
   
   # a few instructions on how to use the duckdb file
   if (isFALSE(quiet)){
-    message("You can start working with the imported data by runining:\n mydata <- spod_connect('path=", save_path, "')")
+    message("You can start working with the imported data by runining:\n mydata <- spod_connect(data_path='", save_path, "')")
     message("You can then manipulate `mydata` using `dplyr` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain and load the results into memory in an R `data.frame`/`tibble`.")
     if (save_format == "duckdb"){
       message("For more in-depth usage of such data, please refer to DuckDB documentation and examples at https://duckdb.org/docs/api/r#dbplyr . Some more useful examples can be found here https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb .")
