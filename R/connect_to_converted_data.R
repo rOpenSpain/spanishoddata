@@ -4,7 +4,7 @@
 #' This function allows the user to quickly connect to the data converted to DuckDB with the `spod_convert_to_duckdb()` function. This function is a simplificaiton of the connection process. It uses
 #' 
 #' @param data_path a path to the `DuckDB` database file with '.duckdb' extension, or a path to the folder with `parquet` files. Eigher one should have been created with the `spod_convert()` function.
-#' @param target_table_name table name inside the database.
+#' @param target_table_name Default is `NULL`. When connecting to a folder of `parquet` files, this argument is ignored. When connecting to a `DuckDB` database, a `character` vector of length 1 with the table name to open from the database file. If not specified, it will be guessed from the `data_path` argument and from table names that are available in the database. If you have not manually interfered with the database, this should be guessed automatically and you do not need to specify it.
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams spod_duckdb_set_temp
 #' @inheritParams global_quiet_param
@@ -47,7 +47,7 @@ spod_connect <- function(
       target_table_name = gsub("\\..*", "", basename(duckdb_path)) # experimental
       tables_list <- DBI::dbListTables(con)
       if (target_table_name %in% tables_list) {
-        # if the table with the same
+        # if the table with the same name exists, use it
         target_table_name = target_table_name
       } else {
         # pick the first table that does not contain CSV

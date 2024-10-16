@@ -16,7 +16,7 @@ spod_connect(
 \arguments{
 \item{data_path}{a path to the \code{DuckDB} database file with '.duckdb' extension, or a path to the folder with \code{parquet} files. Eigher one should have been created with the \code{spod_convert()} function.}
 
-\item{target_table_name}{table name inside the database.}
+\item{target_table_name}{Default is \code{NULL}. When connecting to a folder of \code{parquet} files, this argument is ignored. When connecting to a \code{DuckDB} database, a \code{character} vector of length 1 with the table name to open from the database file. If not specified, it will be guessed from the \code{data_path} argument and from table names that are available in the database. If you have not manually interfered with the database, this should be guessed automatically and you do not need to specify it.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
