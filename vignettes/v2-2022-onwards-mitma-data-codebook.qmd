@@ -97,7 +97,6 @@ Data structure:
 
 ```{r}
 municipalities_v2 <- spod_get_zones("muni", ver = 2)
-municipalities_v2 |> filter(grepl("PT.*", id)) |> nrow()
 ```
 
 The resulting `municipalities_v2` object is type `sf` consisting of polygons.
@@ -113,17 +112,32 @@ Data structure:
 | `census_sections`        | Semicolon-separated list of census section identifiers that correspond to each district, classified by the Spanish Statistical Office (INE).                                                                                       |
 | `census_districts`       | Semicolon-separated list of census district identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).                                                                                     |
 | `municipalities`         | Semicolon-separated list of municipality identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).                                                                                        |
-| `municipalities_mitma`   | Semicolon-separated list of municipality identifiers as assigned by the data provider (MITMA).                                                                                                                                    |
+| `districts_mitma`   | Semicolon-separated list of district identifiers as assigned by the data provider (MITMA).                                                                                                                                    |
 | `luas_mitma`             | Semicolon-separated list of Large Urban Areas (LUAs) as assigned by the data provider, corresponding to each district.                                                                                                            |
 | `municipality_ids_in_v1`     | Semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, marked as `NA`.                                                                                                   |
 | `geometry`               | Spatial geometry of each district stored as a `MULTIPOLYGON` object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.                                                                                               |
 
 ## 1.3 `LUAs (Large Urban Areas)` {#luas}
 
-`Large Urban Areas (LUAs)` has essentially the same spatial units as [`Municipalities`](#municipalities), but are not aggregated. Therefore, there are 8,125 LUAs in the `Districts` dataset.
+`Large Urban Areas (LUAs)` has essentially the same spatial units as [`Municipalities`](#municipalities), but are not aggregated. Therefore, there are 2086 locations in the `LUAs` dataset. There are also [NUTS3 statistical regions](https://ec.europa.eu/eurostat/web/nuts){target="_blank"} covering France (94 units) and Portugal (23 units). Therefore there is a total of 2203 zones in the `LUAs` dataset.
 
 ```{r}
-debugonce(spod_clean_zones_v2)
-luas_v2 <- spod_get_zones("lu", ver = 2)
-luas_v2 |> filter(grepl("PT.*", id)) |> nrow()
+luas_v2 <- spod_get_zones("lua", ver = 2)
 ```
+
+The resulting `luas_v2` object is type `sf` consisting of polygons.
+
+Data structure:
+
+
+| Variable Name            | **Description**                                                                                                                                                                                                                   |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                     | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district-level origin-destination and number of trips data.                                                                   |
+| `name`                   | Name of the district.                                                                                                                                                                                                             |
+| `population`             | Number of individuals in the district according to [INE](https://ine.es/){target="_blank"}[^2].                                                                                                                                   |
+| `census_sections`        | Semicolon-separated list of census section identifiers that correspond to each district, classified by the Spanish Statistical Office (INE).                                                                                       |
+| `census_districts`       | Semicolon-separated list of census district identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).                                                                                     |
+| `municipalities`         | Semicolon-separated list of municipality identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).                                                                                        |
+| `districts_mitma`   | Semicolon-separated list of district identifiers as assigned by the data provider (MITMA).                                                                                                                                    |
+| `municipalities_mitma`   | Semicolon-separated list of municipality identifiers as assigned by the data provider (MITMA).                                                                                                                                    |
+| `geometry`               | Spatial geometry of each district stored as a `MULTIPOLYGON` object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.                                                                                               |
