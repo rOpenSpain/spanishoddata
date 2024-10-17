@@ -89,7 +89,7 @@ CREATE VIEW od_csv_clean AS SELECT
         WHEN '51' THEN 'Ceuta'
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM)
-        AS residence_province,
+        AS residence_province_name,
     CAST (renta AS INCOME_ENUM) AS income,
     CAST (CASE edad
         WHEN 'NA' THEN NULL
