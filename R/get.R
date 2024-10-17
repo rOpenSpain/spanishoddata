@@ -515,19 +515,18 @@ spod_clean_zones_v2 <- function(zones_path) {
     suppressWarnings(
       zones_v2_sf_centroids <- zones_sf |> sf::st_point_on_surface()
     )
-    mapview::mapview(zones_v1_sf)+ mapview::mapview(zones_v2_sf_centroids)
-    v1_to_v2 <- sf::st_join(zones_v2_sf_centroids, zones_v1_sf, left = TRUE) |> 
+    v2_to_v1 <- sf::st_join(zones_v1_sf, zones_v2_sf_centroids, left = TRUE) |> 
       sf::st_drop_geometry()
-    v1_to_v2ref <- v1_to_v2 |>
+    v2_v_1ref <- v2_to_v1 |>
       dplyr::group_by(.data$id) |> 
         dplyr::summarize(
         ids_in_v1_data = paste(.data$id_in_v1, collapse = "; ")
       )
     eng_zones <- dplyr::if_else(zones == "distritos", true = "district", false = "municipality")
-    names(v1_to_v2ref)[names(v1_to_v2ref) == "ids_in_v1_data"] <- glue::glue("{eng_zones}_ids_in_v1")
+    names(v2_v_1ref)[names(v2_v_1ref) == "ids_in_v1_data"] <- glue::glue("{eng_zones}_ids_in_v1")
 
     zones_sf <- zones_sf |> 
-      dplyr::left_join(v1_to_v2ref, by = "id") |> 
+      dplyr::left_join(v2_v_1ref, by = "id") |> 
       dplyr::relocate(.data$geometry, .after = dplyr::last_col())
   }
   
