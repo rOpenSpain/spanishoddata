@@ -1,18 +1,14 @@
 ---
-title: "Use cases"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Use cases}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
-format:
-  html:
-    toc: true
-    toc-depth: 2
-    code-overflow: wrap
-execute: 
-  eval: false
+title: "OD data disaggregation"
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 
 ```{r setup}
 remotes::install_dev("tmap")
@@ -123,3 +119,4 @@ This can be useful for understanding the spatial distribution of trips within a 
 
 We have plotted the disaggregated desire lines on top of the major road network in Salamanca.
 A next step could be routing to help prioritise infrastructure improvements.
+
