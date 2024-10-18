@@ -1,18 +1,14 @@
 ---
-title: "Use cases"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Use cases}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
-format:
-  html:
-    toc: true
-    toc-depth: 2
-    code-overflow: wrap
-execute: 
-  eval: false
+title: "OD data disaggregation"
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 
 ```{r setup}
 remotes::install_dev("tmap")
@@ -24,7 +20,12 @@ library(tmap)
 
 # Introduction
 
-This vignette serves as a place to showcase use cases of the package.
+This vignette demonstrates origin-destination (OD) data disaggregation using the `odjitter` package.
+The package is an implementation of the method described in the paper "Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data" (Lovelace et al. [2020](https://findingspress.org/article/33873-jittering-a-computationally-efficient-method-for-generating-realistic-route-networks-from-origin-destination-data)) for adding value to OD data by disaggregating desire lines.
+This can be especially useful for transport planning purposes in which high levels of geographic resolution are required (see also the [`od2net`](https://od2net.org/) for direct network generation from OD data).
+
+# Data preparation
+
 We'll start by loading a week's worth of origin-destination data for the city of Salamanca, building on the example in the README (note: these chunks are not evaluated):
 
 ```{r}
@@ -123,3 +124,4 @@ This can be useful for understanding the spatial distribution of trips within a 
 
 We have plotted the disaggregated desire lines on top of the major road network in Salamanca.
 A next step could be routing to help prioritise infrastructure improvements.
+
