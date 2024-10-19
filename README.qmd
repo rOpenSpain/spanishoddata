@@ -330,7 +330,7 @@ For more information on the package, see:
   - [v1 data (2020-2021) codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html)
   - [v2 data (2022 onwards) codebook (work in progress)](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.html)
   - [Download and convert data](https://rOpenSpain.github.io/spanishoddata/articles/convert.html)
-  - The [uses vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html) which documents use cases
+  - The [OD disaggregation vignette](https://rOpenSpain.github.io/spanishoddata/articles/disaggregation.html) showcases flows disaggregation
   - [Making static flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html) vignette shows how to create flowmaps using the data acquired with `{spanishoddata}`
   - [Making interactive flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html) shows how to create an interactive flowmap using the data acquired with `{spanishoddata}`
 
@@ -358,8 +358,6 @@ usethis::use_github_pages()
 # Auto-style with styler
 styler::style_pkg()
 usethis::use_tidy_description()
-# Create new vignette called 'uses' with the title "Use cases":
-usethis::use_vignette("uses", title = "Use cases")
 ```
 
 # References

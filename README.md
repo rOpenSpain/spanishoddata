@@ -424,9 +424,9 @@ For more information on the package, see:
     progress)](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.html)
   - [Download and convert
     data](https://rOpenSpain.github.io/spanishoddata/articles/convert.html)
-  - The [uses
-    vignette](https://rOpenSpain.github.io/spanishoddata/articles/uses.html)
-    which documents use cases
+  - The [OD disaggregation
+    vignette](https://rOpenSpain.github.io/spanishoddata/articles/disaggregation.html)
+    showcases flows disaggregation
   - [Making static
     flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html)
     vignette shows how to create flowmaps using the data acquired with
