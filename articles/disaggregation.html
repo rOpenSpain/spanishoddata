@@ -93,7 +93,7 @@
 <section class="section level2" data-number="1"><h2 data-number="1" id="introduction">
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette demonstrates origin-destination (OD) data disaggregation using the <code>odjitter</code> package. The package is an implementation of the method described in the paper “Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data” (Lovelace et al. <a href="https://findingspress.org/article/33873-jittering-a-computationally-efficient-method-for-generating-realistic-route-networks-from-origin-destination-data" class="external-link">2020</a>) for adding value to OD data by disaggregating desire lines. This can be especially useful for transport planning purposes in which high levels of geographic resolution are required (see also the <a href="https://od2net.org/" class="external-link"><code>od2net</code></a> for direct network generation from OD data).</p>
+<p>This vignette demonstrates origin-destination (OD) data disaggregation using the <code>{odjitter}</code> package. The package is an implementation of the method described in the paper “Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data” <span class="citation" data-cites="lovelace2022jittering">(<a href="#ref-lovelace2022jittering" role="doc-biblioref">Lovelace, Félix, and Carlino 2022</a>)</span> for adding value to OD data by disaggregating desire lines. This can be especially useful for transport planning purposes in which high levels of geographic resolution are required (see also the <a href="https://od2net.org/" target="_blank" class="external-link"><code>od2net</code></a> for direct network generation from OD data).</p>
 </section><section class="section level2" data-number="2"><h2 data-number="2" id="data-preparation">
 <span class="header-section-number">2</span> Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a>
 </h2>
@@ -180,8 +180,13 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><img src="media/disaggregated.png"></p>
-<p>The results show that you can add value to the OD data by disaggregating the desire lines with the <code>odjitter</code> package. This can be useful for understanding the spatial distribution of trips within a zone for transport planning.</p>
+<p>The results show that you can add value to the OD data by disaggregating the desire lines with the <code>{odjitter}</code> package. This can be useful for understanding the spatial distribution of trips within a zone for transport planning.</p>
 <p>We have plotted the disaggregated desire lines on top of the major road network in Salamanca. A next step could be routing to help prioritise infrastructure improvements.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-lovelace2022jittering" class="csl-entry" role="listitem">
+Lovelace, Robin, Rosa Félix, and Dustin Carlino. 2022. <span>“Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data.”</span> <em>Findings</em>.
+</div>
+</div>
 </section><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
