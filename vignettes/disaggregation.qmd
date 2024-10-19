@@ -1,6 +1,20 @@
 ---
 title: "OD data disaggregation"
+vignette: >
+  %\VignetteIndexEntry{OD data disaggregation}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+number-sections: true
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-overflow: wrap
+execute: 
+  eval: false
 ---
+
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -90,7 +104,7 @@ map_net <- osmactive::plot_osm_tmap(cycle_net)
 map_net
 ```
 
-![](osm.png)
+![](media/osm.png)
 
 We can use the road network to disaggregate the desire lines:
 
@@ -117,11 +131,10 @@ od_jittered |>
   theme_void()
 ```
 
-![](disaggregated.png)
+![](media/disaggregated.png)
 
 The results show that you can add value to the OD data by disaggregating the desire lines with the `odjitter` package.
 This can be useful for understanding the spatial distribution of trips within a zone for transport planning.
 
 We have plotted the disaggregated desire lines on top of the major road network in Salamanca.
 A next step could be routing to help prioritise infrastructure improvements.
-

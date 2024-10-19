@@ -23,4 +23,8 @@ README.qmd
 \.gif$
 ^tools$
 ^_pkgdown\.yaml$
-^vignettes/articles$
+^vignettes/disaggregation\.qmd$
+^vignettes/flowmaps-interactive\.qmd$
+^vignettes/flowmaps-static\.qmd$
+^man/figures/card\.png$
+^man/figures/.*flowmapblue.*

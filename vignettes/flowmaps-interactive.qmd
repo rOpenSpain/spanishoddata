@@ -226,7 +226,9 @@ flowmap_anim
 ```
 
 
-![Video demonstrating the animated interactive flowmap](https://ropenspain.github.io/spanishoddata/media/flowmapblue-animated.mp4){width=80%}
+<!-- ![Video demonstrating the animated interactive flowmap](https://ropenspain.github.io/spanishoddata/media/flowmapblue-animated.mp4){width=80%} -->
+
+{{< video https://ropenspain.github.io/spanishoddata/media/flowmapblue-animated.mp4 width=80% title="Video demonstrating the animated interactive flowmap">}}
 
 ![Screenshot demonstrating the animated interactive flowmap](../man/figures/flowmapblue-animated.png){width=80%}
 

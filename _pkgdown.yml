@@ -20,7 +20,7 @@ articles:
   - v1-2020-2021-mitma-data-codebook
   - v2-2022-onwards-mitma-data-codebook
   - convert
-  - uses
+  - disaggregation
   - flowmaps-static
   - flowmaps-interactive
 
