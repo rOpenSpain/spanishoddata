@@ -64,7 +64,12 @@ spod_dates_argument_to_dates_seq <- function(dates) {
       # if the vector is named with 'start' and 'end', we can assume it is a date range
       if (all(names(dates) %in% c("start", "end"))) {
         date_parts <- lubridate::ymd(dates)
-        dates <- seq.Date(date_parts[1], date_parts[2], by = "day")
+        names(date_parts) <- names(dates)
+        # check if start is before end
+        if (date_parts["start"] > date_parts["end"]) {
+          stop("Start date must be before end date.")
+        }
+        dates <- seq.Date(date_parts["start"], date_parts["end"], by = "day")
       }
     } else {
       # this is apparantly a sequence of dates
