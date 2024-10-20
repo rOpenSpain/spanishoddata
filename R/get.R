@@ -399,6 +399,7 @@ spod_get_zones_v2 <- function(
 #'
 #' @param zones_path The path to the zones spatial data file.
 #' @return A spatial object containing the cleaned zones data. 
+#' @importFrom stats median
 #' @keywords internal
 #'
 spod_clean_zones_v2 <- function(zones_path) {
@@ -469,9 +470,10 @@ spod_clean_zones_v2 <- function(zones_path) {
     )
   
   zones_ref_aggregated <- zones_ref_renamed |>
-  dplyr::group_by(id) |>
-  dplyr::summarise(across(
-    .cols = everything(),
+  dplyr::group_by(.data$id) |>
+  dplyr::summarise(
+    dplyr::across(
+    .cols = dplyr::everything(),
     .fns = ~ paste(.x, collapse = "; "),
     .names = "{.col}"
   ))
@@ -480,7 +482,7 @@ spod_clean_zones_v2 <- function(zones_path) {
   zones_ref_aggregated <- zones_ref_aggregated |>
     dplyr::mutate(
       dplyr::across(
-        .cols = everything(),
+        .cols = dplyr::everything(),
         .fns = spod_unique_separated_ids
       )
     )
