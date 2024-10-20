@@ -1,10 +1,11 @@
 ---
-title: "Use cases"
-output: rmarkdown::html_vignette
+title: "OD data disaggregation"
 vignette: >
-  %\VignetteIndexEntry{Use cases}
+  %\VignetteIndexEntry{OD data disaggregation}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+number-sections: true
 format:
   html:
     toc: true
@@ -13,6 +14,15 @@ format:
 execute: 
   eval: false
 ---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 
 ```{r setup}
 remotes::install_dev("tmap")
@@ -24,7 +34,12 @@ library(tmap)
 
 # Introduction
 
-This vignette serves as a place to showcase use cases of the package.
+This vignette demonstrates origin-destination (OD) data disaggregation using the `{odjitter}` package.
+The package is an implementation of the method described in the paper "Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data" [@lovelace2022jittering] for adding value to OD data by disaggregating desire lines.
+This can be especially useful for transport planning purposes in which high levels of geographic resolution are required (see also the [`od2net`](https://od2net.org/){target="_blank"} for direct network generation from OD data).
+
+# Data preparation
+
 We'll start by loading a week's worth of origin-destination data for the city of Salamanca, building on the example in the README (note: these chunks are not evaluated):
 
 ```{r}
@@ -89,7 +104,7 @@ map_net <- osmactive::plot_osm_tmap(cycle_net)
 map_net
 ```
 
-![](osm.png)
+![](media/osm.png)
 
 We can use the road network to disaggregate the desire lines:
 
@@ -116,9 +131,9 @@ od_jittered |>
   theme_void()
 ```
 
-![](disaggregated.png)
+![](media/disaggregated.png)
 
-The results show that you can add value to the OD data by disaggregating the desire lines with the `odjitter` package.
+The results show that you can add value to the OD data by disaggregating the desire lines with the `{odjitter}` package.
 This can be useful for understanding the spatial distribution of trips within a zone for transport planning.
 
 We have plotted the disaggregated desire lines on top of the major road network in Salamanca.
