@@ -26,9 +26,13 @@ The dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} usi
 
 The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2022-01-01 onwards), the number of individuals making trips for each zone, the number of individuals spending the nights in one location while regularly residing in a different location, and many more advanced datasets. This document will introduce you to the available data and provide brief code snippets on how to access it using the `{spanishoddata}` R package.
 
-Compared to the [v1 data (2020-2021)](v1-2020-2021-mitma-data-codebook.qmd) this dataset has many additional variables, such as age, sex, and income, has better spatial resolution (the zones are more spatially granular) and covers a continuous period[^1] (2022-01-01 onward), rather than only a limited period (in v1 - 2020-02-14 to 2021-05-09). The datasets comparable to the v1 data are called ["basic studies" ("estudios basicos")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudio-basico-diario){target="_blank"}, however there are even more advanced datasets that are already available or will be made available soon: ["complete studies" ("estudios completos")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-completos){target="_blank"} and ["road routes" ("rutas de carretera")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/rutas-por-carretera){target="_blank"}. At the moment, the `{spanishoddata}` package only provides the interface to the "basic studies" datasets, but support for "complete studies" and "road routes" will be added in the future.
+Compared to the [v1 data (2020-2021)](v1-2020-2021-mitma-data-codebook.qmd) this dataset has many additional variables, such as age, sex, and income, has better spatial resolution (the zones are more spatially granular) and covers a continuous period[^1] (2022-01-01 onward), rather than only a limited period (in v1 - 2020-02-14 to 2021-05-09).
 
 [^1]: For reference: this object also has classes: `tbl_dbi` ,`tbl_sql`, `tbl_lazy` ,and `tbl` .
+
+{{< include ../inst/vignette-include/missing-dates-outages.qmd >}}
+
+In v2 data, the datasets comparable to the [v1 (2020-2021) data](v1-2020-2021-mitma-data-codebook.qmd) (hourly daily origin destination matrices and number of trips at each location) are called ["basic studies" ("estudios basicos")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudio-basico-diario){target="_blank"}, however there are even more advanced datasets that are already available or will be made available soon: ["complete studies" ("estudios completos")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-completos){target="_blank"} and ["road routes" ("rutas de carretera")](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/rutas-por-carretera){target="_blank"}. At the moment, the `{spanishoddata}` package only provides the interface to the "basic studies" datasets, but support for "complete studies" and "road routes" will be added in the future.
 
 Key sources for this codebook/cookbook include:
 
@@ -40,7 +44,9 @@ Key sources for this codebook/cookbook include:
 
 -   [homepage of the v2 study and open mobility data project of the Ministry of Transport and Sustainable mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
 
-**Note: Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.**
+::: callout-note
+Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.
+:::
 
 To access the data we reference in this codebook, please follow these steps:
 
@@ -75,7 +81,7 @@ The `districts_v2` object is of class `sf` consisting of polygons.
 Data structure:
 
 | Variable Name | **Description** |
-|-----------------|-------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district-level origin-destination and number of trips data. |
 | `name` | Name of the district. |
 | `population` | Number of individuals in the district according to [INE](https://ine.es/){target="_blank"}[^2]. |
@@ -102,7 +108,7 @@ The resulting `municipalities_v2` object is type `sf` consisting of polygons.
 Data structure:
 
 | Variable Name | **Description** |
-|-----------------|-------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district-level origin-destination and number of trips data. |
 | `name` | Name of the district. |
 | `population` | Number of individuals in the district according to [INE](https://ine.es/){target="_blank"}[^3]. |
@@ -129,7 +135,7 @@ The resulting `luas_v2` object is type `sf` consisting of polygons.
 Data structure:
 
 | Variable Name | **Description** |
-|-----------------|-------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district-level origin-destination and number of trips data. |
 | `name` | Name of the district. |
 | `population` | Number of individuals in the district according to [INE](https://ine.es/){target="_blank"}[^4]. |
@@ -150,31 +156,29 @@ All mobility data is referenced via `id_origin`, `id_destination`, or other loca
 
 The origin-destination data contain the number of trips between `districts`, `municipalities`, or `large urban areas (LUAs)` in Spain for every hour of every day between 2022-02-01 and whichever currently available latest data (2024-06-30 at the time of writing). Each flow also has attributes such as the trip purpose (composed of the type of activity (`home`/`work_or_study`/`frequent_activity`/`infrequent_activity`) at both the origin and destination, but also age, sex, and income of each group of individuals traveling between the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table.
 
-Here are the variables you can find in the `district`, `municipality` and `large urban area` level origin-destination data:
+Here are the variables you can find in the `district`, `municipality` and `large urban area` level data:
 
-
-| **English Variable Name**         | **Original Variable Name**         | **Type**     | **Description**                                                                                                                                                                                                                                                                                         |
-|-----------------------------------|------------------------------------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `date`                            | `fecha`                            | `Date`       | The date of the recorded data, formatted as `YYYY-MM-DD`.                                                                                                                                                                                                                                               |
-| `time_slot`                       | `periodo`                          | `integer`    | The time slot during which the trips occurred.                                                                                                                                                                                                                                                          |
-| `id_origin`                       | `origen`                           | `factor`     | The origin zone `id` of `district`, `municipality`, or `large urban area`.                                                                                                                                                                                                                              |
-| `id_destination`                  | `destino`                          | `factor`     | The destination zone `id` of `district`, `municipality`, or `large urban area`.                                                                                                                                                                                                                         |
-| `distance`                        | `distancia`                        | `factor`     | The distance range of the trip, categorized into specific intervals such as `0.5-2` (500 m to 2 km), `2-10` (2-10 km), `10-50` (10-50km), and `>50` (50 or more km).                                                                                                                                    |
-| `activity_origin`                 | `actividad_origen`                 | `factor`     | The type of activity at the origin zone, recoded from `casa`, `trabajo_estudio`, `frecuente`, `no_frecuente` to `home`, `work_or_study`, `frequent_activity`, `infrequent_activity` respectively.                                                                                                       |
-| `activity_destination`            | `actividad_destino`                | `factor`     | The type of activity at the destination zone, similarly recoded as for `activity_origin` above.                                                                                                                                                                                                        |
-| `study_possible_origin`           | `estudio_origen_posible`           | `logical`    | `TRUE` if the activity at origin may be connected with study, and `FALSE` otherwise.                                                                                                                                                                                                                    |
-| `study_possible_destination`      | `estudio_destino_posible`          | `logical`    | `TRUE` if the activity at destination may be connected with study, and `FALSE` otherwise.                                                                                                                                                                                                               |
-| `residence_province_ine_code`     | `residencia`                       | `factor`     | The province code of residence of individuals making the trips in `n_trips`, encoded as province codes as classified by the Spanish Statistical Office (INE).                                                                                                                                            |
-| `residence_province_name`         | Derived from `residencia`          | `factor`     | The full name of the residence province, derived from the province code above.                                                                                                                                                                                                                          |
-| `income`                          | `renta`                            | `factor`     | The income group of individuals making the trips in `n_trips`. Categorized into `<10`, `10-15`, and `>15` (thousands of euros per year). The income for each individual is assigned based on the mean census tract income per person (data source is [INE Household income distribution map](https://www.ine.es/dyngs/INEbase/en/operacion.htm?c=Estadistica_C&cid=1254736177088&menu=ultiDatos&idp=1254735976608)). |
-| `age`                             | `edad`                             | `factor`     | The age group of individuals making the trips in `n_trips`. Categorized into `0-25`, `25-45`, `45-65`, `65-100`, or `NA`. The data is partially imputed, for details see [this blogpost](https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/) by Nommon.         |
-| `sex`                             | `sexo`                             | `factor`     | The sex of individuals making the trips in `n_trips`. Categorized into `female`, `male`, or `NA`. The data is partially imputed, for details see [this blogpost](https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/) by Nommon.                               |
-| `n_trips`                         | `viajes`                           | `numeric`    | The number of trips for that specific origin-destination pair and time slot.                                                                                                                                                                                                                            |
-| `trips_total_length_km`           | `viajes_km`                        | `numeric`    | The total length of trips in kilometers, summing up all trips between the origin and destination zones.                                                                                                                                                                                                 |
-| `year`                            | `year`                             | `integer`    | The year of the recorded data, extracted from the date.                                                                                                                                                                                                                                                 |
-| `month`                           | `month`                            | `integer`    | The month of the recorded data, extracted from the date.                                                                                                                                                                                                                                                |
-| `day`                             | `day`                              | `integer`    | The day of the recorded data, extracted from the date.                                                                                                                                                                                                                                                  |
-
+| **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
+|---------|---------|---------|---------------------------------------------|
+| `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
+| `time_slot` | `periodo` | `integer` | The time slot during which the trips occurred. |
+| `id_origin` | `origen` | `factor` | The origin zone `id` of `district`, `municipality`, or `large urban area`. |
+| `id_destination` | `destino` | `factor` | The destination zone `id` of `district`, `municipality`, or `large urban area`. |
+| `distance` | `distancia` | `factor` | The distance range of the trip, categorized into specific intervals such as `0.5-2` (500 m to 2 km), `2-10` (2-10 km), `10-50` (10-50km), and `>50` (50 or more km). |
+| `activity_origin` | `actividad_origen` | `factor` | The type of activity at the origin zone, recoded from `casa`, `trabajo_estudio`, `frecuente`, `no_frecuente` to `home`, `work_or_study`, `frequent_activity`, `infrequent_activity` respectively. |
+| `activity_destination` | `actividad_destino` | `factor` | The type of activity at the destination zone, similarly recoded as for `activity_origin` above. |
+| `study_possible_origin` | `estudio_origen_posible` | `logical` | `TRUE` if the activity at origin may be connected with study, and `FALSE` otherwise. |
+| `study_possible_destination` | `estudio_destino_posible` | `logical` | `TRUE` if the activity at destination may be connected with study, and `FALSE` otherwise. |
+| `residence_province_ine_code` | `residencia` | `factor` | The province code of residence of individuals making the trips in `n_trips`, encoded as province codes as classified by the Spanish Statistical Office (INE). |
+| `residence_province_name` | Derived from `residencia` | `factor` | The full name of the residence province, derived from the province code above. |
+| `income` | `renta` | `factor` | The income group of individuals making the trips in `n_trips`. Categorized into `<10`, `10-15`, and `>15` (thousands of euros per year). The income for each individual is assigned based on the mean census tract income per person (data source is [INE Household income distribution map](https://www.ine.es/dyngs/INEbase/en/operacion.htm?c=Estadistica_C&cid=1254736177088&menu=ultiDatos&idp=1254735976608)). |
+| `age` | `edad` | `factor` | The age group of individuals making the trips in `n_trips`. Categorized into `0-25`, `25-45`, `45-65`, `65-100`, or `NA`. The data is partially imputed, for details see [this blogpost](https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/) by Nommon. |
+| `sex` | `sexo` | `factor` | The sex of individuals making the trips in `n_trips`. Categorized into `female`, `male`, or `NA`. The data is partially imputed, for details see [this blogpost](https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/) by Nommon. |
+| `n_trips` | `viajes` | `numeric` | The number of trips for that specific origin-destination pair and time slot. |
+| `trips_total_length_km` | `viajes_km` | `numeric` | The total length of trips in kilometers, summing up all trips between the origin and destination zones. |
+| `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
+| `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
+| `day` | `day` | `integer` | The day of the recorded data, extracted from the date. |
 
 **Getting the data**
 
@@ -197,9 +201,13 @@ The resulting objects `od_dist` and `od_muni` are of class `tbl_duckdb_connectio
 ```{r}
 library(dplyr)
 od_mean_trips_by_ses_over_the_4_days <- od_dist |>
+  group_by(date, age, sex, income) |>
+  summarise(
+    n_trips = sum(n_trips, na.rm = TRUE),
+    .groups = "drop") |> 
   group_by(age, sex, income) |>
   summarise(
-    mean_n_trips = mean(n_trips, na.rm = TRUE),
+    daily_mean_n_trips = mean(n_trips, na.rm = TRUE),
     .groups = "drop") |> 
   collect()
 od_mean_trips_by_ses_over_the_4_days
@@ -207,18 +215,88 @@ od_mean_trips_by_ses_over_the_4_days
 
 ```         
 # A tibble: 39 × 4
-   age   sex    income mean_n_trips
-   <fct> <fct>  <fct>         <dbl>
- 1 NA    NA     <10            6.27
- 2 NA    NA     10-15          6.16
- 3 NA    NA     >15            5.72
- 4 0-25  NA     <10            7.83
- 5 0-25  NA     10-15          8.16
- 6 0-25  NA     >15            7.45
- 7 0-25  female <10           13.7 
- 8 0-25  female 10-15         12.7 
- 9 0-25  female >15           13.7 
-10 0-25  male   <10           13.1 
+   age   sex    income daily_mean_n_trips
+   <fct> <fct>  <fct>               <dbl>
+ 1 NA    NA     <10              7002485.
+ 2 NA    NA     10-15           16551405.
+ 3 NA    NA     >15              2651481.
+ 4 0-25  NA     <10               539060.
+ 5 0-25  NA     10-15            1950892.
+ 6 0-25  NA     >15               401557.
+ 7 0-25  female <10              1484989.
+ 8 0-25  female 10-15            5357785.
+ 9 0-25  female >15              1764454.
+10 0-25  male   <10              1558461.
 # ℹ 29 more rows
 # ℹ Use `print(n = ...)` to see more rows
+```
+
+In this example above, becaus the data is with hourly intervals within each day, we first summed the number of trips for each day by age, sex, and income groups. We then grouped the data again dropping the day variable and calculated the mean number of trips per day by age, sex, and income groups. The full data for all 4 days was probably never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. If you were doing the same opearation on 100 or even more days, it would work in the same way and would be possible even with limited memory. This is done transparantly to the user with the help of [`DuckDB`](https://duckdb.org/){target="_blank"} (specifically, with [{duckdb} R package](https://r.duckdb.org/index.html){target="_blank"} @duckdb-r).
+
+The same summary operation as provided in the example above can be done with the entire dataset for multiple years worth of data on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, please also see the [vignette on converting the data](convert.qmd) into formats that will increase the analsysis performance.
+
+{{< include ../inst/vignette-include/csv-date-filter-note.qmd >}}
+
+## 2.2. Number of trips data {#nt-data}
+
+For each location, the "number of trips" data provides the number of individuals who spent the night there, with breakdown by the number of trips made, age, and sex.
+
+| **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
+|-----------------|-----------------|-----------------|----------------------|
+| `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
+| `id` | `distrito` | `factor` | The identifier of the `district` or `municipality` zone. |
+| `age` | `edad` | `factor` | The age group of individuals making the trips in `n_trips`. Categorized into `0-25`, `25-45`, `45-65`, `65-100`, or `NA`. The data is partially imputed, for details see [this blogpost](https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/) by Nommon. |
+| `sex` | `sexo` | `factor` | The sex of individuals making the trips in `n_trips`. Categorized into `female`, `male`, or `NA`. The data is partially imputed, for details see [this blogpost](https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/) by Nommon. |
+| `n_trips` | `numero_viajes` | `factor` | The number of individuals who made trips, categorized by `0`, `1`, `2`, or `2+` trips. |
+| `n_persons` | `personas` | `factor` | The number of persons making the trips from `district`, `municipality`, or `large urban area (LUA)` with zone `id`. |
+| `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
+| `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
+| `day` | `day` | `integer` | The day of the recorded data, extracted from the date. |
+
+**Getting the data**
+
+To access it use `spod_get()` with `type` set to "number_of_trips", or just "nt".
+
+```{r}
+dates <- c(start = "2022-01-01", end = "2022-01-04")
+nt_dist <- spod_get(type = "number_of_trips", zones = "dist", dates = dates)
+```
+
+Because this data is small, we can actually load it completely into memory:
+
+```{r}
+nt_dist_tbl <- nt_dist |> dplyr::collect()
+```
+
+## 2.3. Overnight stays {#os-data}
+
+This dataset provides the number of people who spend the night in each location, also identifying their place of residence down to the census district level according to the [INE encoding](https://www.ine.es/ss/Satellite?c=Page&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout&cid=1259952026632&L=1){target="_blank"}.
+
+Here are the variables you can find in the `district`, `municipality` and `large urban area` level data:
+
+| **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
+|-----------------|-----------------|-----------------|----------------------|
+| `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
+| `id_residence` | `zona_residencia ` | `factor` | The identifier of the census district according to the [INE encoding](https://www.ine.es/ss/Satellite?c=Page&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout&cid=1259952026632&L=1){target="_blank"}. |
+| `id_overnight_stay` | `zona_pernoctacion ` | `factor` | The identifier of the `district`, `municipality`, or `large urban area (LUA)` zone. |
+| `n_persons` | `personas` | `factor` | The number of persons making the trips from `district`, `municipality`, or `large urban area` with zone `id`. |
+| `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
+| `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
+| `day` | `day` | `integer` | The day of the recorded data, extracted from the date. |
+
+
+
+**Getting the data**
+
+To access it use `spod_get()` with `type` set to "number_of_trips", or just "nt".
+
+```{r}
+dates <- c(start = "2022-01-01", end = "2022-01-04")
+os_dist <- spod_get(type = "overnight_stays", zones = "dist", dates = dates)
+```
+
+Because this data is small, we can actually load it completely into memory:
+
+```{r}
+os_dist_tbl <- os_dist |> dplyr::collect()
 ```
