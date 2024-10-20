@@ -1,0 +1,6 @@
+
+::: {.callout-note}
+
+As long as you use a table connection object created with `spod_get()` function, it is much quicker to filter the dates by the `year`, `month` and `day` variables, rather than by the `date` variable. This is because the data for each day is in a separate CSV file located in folders that look like `year=2020/month=2/day=14`. So when filtering by the `date` field, R will have to scan all CSV files comparing the specified date with what is stored inside each CSV file. However, if you query by `year`, `month` and `day` variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use `spod_get()` . If you convert (see the [relevant vignette](convert.qmd)) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance.
+
+:::

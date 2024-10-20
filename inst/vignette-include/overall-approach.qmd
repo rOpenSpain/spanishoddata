@@ -4,7 +4,7 @@ execute:
 ---
 
 
-# Overall approach to working with data
+# Overall approach to accessing the data
 
 If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.
 
