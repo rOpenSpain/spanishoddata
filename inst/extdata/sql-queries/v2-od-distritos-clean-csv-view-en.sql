@@ -1,8 +1,16 @@
 CREATE VIEW od_csv_clean AS SELECT
     fecha AS date,
     periodo AS time_slot,
-    CAST (origen AS ZONES_ENUM) AS id_origin,
-    CAST (destino AS ZONES_ENUM) AS id_destination,
+    CAST (CASE origen
+        WHEN 'externo' THEN 'external'
+        ELSE origen
+        END AS ZONES_ENUM)
+        AS id_origin,
+    CAST (CASE destino
+        WHEN 'externo' THEN 'external'
+        ELSE destino
+        END AS ZONES_ENUM)
+        AS id_destination,
     CAST (distancia AS DISTANCE_ENUM) AS distance,
     CAST (CASE actividad_origen
         WHEN 'casa' THEN 'home'
@@ -81,7 +89,7 @@ CREATE VIEW od_csv_clean AS SELECT
         WHEN '51' THEN 'Ceuta'
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM)
-        AS residence_province,
+        AS residence_province_name,
     CAST (renta AS INCOME_ENUM) AS income,
     CAST (CASE edad
         WHEN 'NA' THEN NULL

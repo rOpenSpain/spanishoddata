@@ -13,10 +13,10 @@
 #' 
 #' * If `save_path` ends with a folder name (e.g. `/data_dir/clean_data/v1/tabular/parquet/od_distr` for origin-destination data for district level), the data will be saved as a collection of `parquet` files in a hive-style directory structure. So the subfolders of `od_distr` will be `year=2020/month=2/day=14` and inside each of these folders a single `parquet` file will be placed containing the data for that day.
 #' 
-#' * If `NULL`, uses the default location in `data_dir` (set by the `SPANISH_OD_DATA_DIR` environment variable using `Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')`). Therefore, the default relative path for `DuckDB` is `<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb` and for `parquet` files is `<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/`, where `type` is the type of data (e.g. 'od', 'os', 'tpp', etc.) and `zones` is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
+#' * If `NULL`, uses the default location in `data_dir` (set by the `SPANISH_OD_DATA_DIR` environment variable using `Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')`). Therefore, the default relative path for `DuckDB` is `<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb` and for `parquet` files is `<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/`, where `type` is the type of data (e.g. 'od', 'os', 'nt', that correspoind to 'origin-destination', 'overnight-stays', 'number-of-trips', etc.) and `zones` is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
 #' 
 #' @inheritParams spod_get_zones
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' @inheritParams spod_get
 #' @inheritParams spod_duckdb_limit_resources
 #' @param overwrite A `logical` or a `character` vector of length 1`. If `TRUE`, overwrites existing `DuckDB` or `parquet` files. Defaults to `FALSE`. For parquet files can also be set to 'update', so that only parquet files are only created for the dates that have not yet been converted.
@@ -197,7 +197,7 @@ spod_convert <- function(
     target_table_name <- gsub("\\..*", "", basename(save_path)) # experimental
     sql_import_query <- dplyr::sql(
       # glue::glue("CREATE TABLE {type} AS SELECT * FROM {table_to_convert} ;") should be standard
-      glue::glue('CREATE TABLE {target_table_name} AS SELECT * FROM {table_to_convert} ;') # experimental - for the user friendly duckdb connection wrapper so that it can guess the table name from the file name, hopefully the user will not rename it
+      glue::glue('CREATE TABLE "{target_table_name}" AS SELECT * FROM {table_to_convert} ;') # experimental - for the user friendly duckdb connection wrapper so that it can guess the table name from the file name, hopefully the user will not rename it
     )
       
     # import view of CSV files into duckdb
@@ -329,7 +329,7 @@ spod_convert <- function(
   
   # a few instructions on how to use the duckdb file
   if (isFALSE(quiet)){
-    message("You can start working with the imported data by runining:\n mydata <- spod_connect('path=", save_path, "')")
+    message("You can start working with the imported data by runining:\n mydata <- spod_connect(data_path='", save_path, "')")
     message("You can then manipulate `mydata` using `dplyr` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain and load the results into memory in an R `data.frame`/`tibble`.")
     if (save_format == "duckdb"){
       message("For more in-depth usage of such data, please refer to DuckDB documentation and examples at https://duckdb.org/docs/api/r#dbplyr . Some more useful examples can be found here https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb .")

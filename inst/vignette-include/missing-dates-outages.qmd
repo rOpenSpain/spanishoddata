@@ -1,0 +1,17 @@
+---
+execute: 
+  eval: false
+---
+
+
+::: {.callout-warning}
+
+
+Due to mobile network outages, the data on certain dates is missing. Kindly keep this in mind when calculating mean monthly or weekly flows.
+
+\
+
+Please check the [original data page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"} for currently known missing dates. At the time of writing, the following dates are missing: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. You can use `spod_get_valid_dates()` function to get all available dates.
+
+
+:::

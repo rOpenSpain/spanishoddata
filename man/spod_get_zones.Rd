@@ -24,16 +24,29 @@ spod_get_zones(
 \value{
 An \code{sf} object (Simple Feature collection).
 
-The columns include (for both v1 (2020-2021) and v2 (2022 onwards) data:
+The columns for v1 (2020-2021) data include:
 \describe{
-\item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
-\item{geometry}{A \code{MULTIPOLYGON} column containing the spatial geometry of each zone, stored as an sf object.
-The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
+\item{id}{A character vector containing the unique identifier for each district, assigned by the data provider. This \code{id} matches the \code{id_origin}, \code{id_destination}, and \code{id} in district-level origin-destination and number of trips data.}
+\item{census_districts}{A string with semicolon-separated identifiers of census districts classified by the Spanish Statistical Office (INE) that are spatially bound within the polygons for each \code{id}.}
+\item{municipalities_mitma}{A string with semicolon-separated municipality identifiers (as assigned by the data provider) corresponding to each district \code{id}.}
+\item{municipalities}{A string with semicolon-separated municipality identifiers classified by the Spanish Statistical Office (INE) corresponding to each \code{id}.}
+\item{district_names_in_v2/municipality_names_in_v2}{A string with semicolon-separated district names (from the v2 version of this data) corresponding to each district \code{id} in v1.}
+\item{district_ids_in_v2/municipality_ids_in_v2}{A string with semicolon-separated district identifiers (from the v2 version of this data) corresponding to each district \code{id} in v1.}
+\item{geometry}{A \code{MULTIPOLYGON} column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 }
-Additionally, for v2 (2022 onwards) data:
+
+The columns for v2 (2022 onwards) data include:
 \describe{
-\item{name}{A character vector with the name of the zone.}
-\item{population}{A numeric vector representing the population of each zone (as of 2022).}
+\item{id}{A character vector containing the unique identifier for each zone, assigned by the data provider.}
+\item{name}{A character vector with the name of each district.}
+\item{population}{A numeric vector representing the population of each district (as of 2022).}
+\item{census_sections}{A string with semicolon-separated identifiers of census sections corresponding to each district.}
+\item{census_districts}{A string with semicolon-separated identifiers of census districts as classified by the Spanish Statistical Office (INE) corresponding to each district.}
+\item{municipalities}{A string with semicolon-separated identifiers of municipalities classified by the Spanish Statistical Office (INE) corresponding to each district.}
+\item{municipalities_mitma}{A string with semicolon-separated identifiers of municipalities, as assigned by the data provider, that correspond to each district.}
+\item{luas_mitma}{A string with semicolon-separated identifiers of LUAs (Local Urban Areas) from the provider, associated with each district.}
+\item{district_ids_in_v1/municipality_ids_in_v1}{A string with semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, it is marked as \code{NA}.}
+\item{geometry}{A \code{MULTIPOLYGON} column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 }
 }
 \description{

@@ -19,7 +19,7 @@ eval: false
 [![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable mobility of Spain [@mitma-mobility-2024-v6].
+**spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable mobility of Spain [@mitma-mobility-2024-v7].
 
 It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is updated monthly on the fifteenth of each month. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the [package website](https://rOpenSpain.github.io/spanishoddata/) and vignettes for [v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook) and [v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook) data for more details.
 
@@ -40,17 +40,8 @@ To create static maps like that see our vignette [here](https://ropenspain.githu
 To create interactive maps see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
 
-# Installation
+{{< include inst/vignette-include/install-package.qmd >}}
 
-The package is not yet available on CRAN.
-
-Install the development version of the package as follows:
-
-```{r}
-if (!require("remotes")) install.packages("remotes")
-remotes::install_github("rOpenSpain/spanishoddata",
-  force = TRUE, dependencies = TRUE)
-```
 
 Load it as follows:
 
@@ -58,35 +49,10 @@ Load it as follows:
 library(spanishoddata)
 ```
 
-<details><summary>Developer documentation</summary>
-
-To load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:
-
-```bash
-gh repo clone rOpenSpain/spanishoddata
-code spanishoddata
-# with rstudio:
-rstudio spanishoddata/spanishoddata.Rproj
-```
-
-Then run the following command from the R console:
-
-```{r}
-#| eval: false
-devtools::load_all()
-```
-
-</details>
 
 {{< include inst/vignette-include/setup-data-directory.qmd >}}
 
-# Using the package
-
-You can find the overview of the key package functions in the following figure.
-
-![The overview of how to use the pacakge functions to get the data](vignettes/media/package-functions-overview.svg){ width=120% height=120%}
-
-If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://rOpenSpain.github.io/spanishoddata/](https://rOpenSpain.github.io/spanishoddata/).
+{{< include inst/vignette-include/overall-approach.qmd >}}
 
 # Showcase
 

@@ -20,7 +20,11 @@ You can view this vignette any time by running:
 spanishoddata::spod_codebook(ver = 1)
 ```
 
-The mobility data v1 (2020-2021) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitma_data_v1]. The dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology). The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09), and the number of individuals making trips for each zone. This document will introduce you to the available data and provide brief code snippets on how to access it using the `spanishoddata` R package.
+The mobility data v1 (2020-2021) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitma_data_v1]. 
+
+The dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology).
+
+The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09), and the number of individuals making trips for each zone. This document will introduce you to the available data and provide brief code snippets on how to access it using the `{spanishoddata}` R package.
 
 Key sources for this codebook/cookbook include:
 
@@ -41,38 +45,26 @@ Key sources for this codebook/cookbook include:
 
 To access the data we reference in this codebook, please follow these steps:
 
-Install `spanishoddata` R package:
+{{< include ../inst/vignette-include/install-package.qmd >}}
 
-```{r}
-if (!require("remotes")) install.packages("remotes")
-remotes::install_github("rOpenSpain/spanishoddata",
-  force = TRUE, dependencies = TRUE)
-```
 
-Load the package:
-Load the package:
+Load it as follows:
 
 ```{r}
 library(spanishoddata)
 ```
 
+
 Using the instructions below, set the data folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a `DuckDB` database file, or a folder of `parquet` files). You can find more info on this conversion in the [Download and convert OD datasets](convert.html) vignette.
 
 {{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
-# Overall approach to working with data
-
-If you only want to analyse the data for a few days, you can use the `spod_get()` function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.
-
-If you need longer periods (several months or years), you should use the `spod_convert()` and `spod_connect()` functions, which will convert the data into special format which is much faster for analysis, for this see the [Download and convert OD datasets](convert.qmd) vignette. `spod_get_zones()` will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones 'id's. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or simply visit the package website at [https://rOpenSpain.github.io/spanishoddata/](https://rOpenSpain.github.io/spanishoddata/). The @fig-overall-flow presents the overall approach to accessing the data in the `spanishoddata` package.
-
-![The overview of how to use the pacakge functions to get the data](media/package-functions-overview.svg){#fig-overall-flow width="78%"}
-
+{{< include ../inst/vignette-include/overall-approach.qmd >}}
 
 
 # 1. Spatial data with zoning boundaries
 
-The boundary data is provided at two geographic levels: [`Distrtics`](#districts) and [`Municipalities`](#municipalities). It's important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities"
+The boundary data is provided at two geographic levels: [`Distrtics`](#districts) and [`Municipalities`](#municipalities). It's important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities".
 
 ## 1.1 `Districts` {#districts}
 
@@ -90,12 +82,12 @@ Data structure:
 
 | Variable Name | **Description** |
 |------------------------------------|------------------------------------|
-| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#tpp-data). |
-| `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
-| `municipalities_mitma` | A list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` . |
-| `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
-| `district_names_in_v2` | A list of names of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
-| `district_ids_in_v2` | A list of identifiers of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#nt-data). |
+| `census_districts` | A string with semicolon-separated list of census district semicolon-separated identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
+| `municipalities_mitma` | A string with semicolon-separated list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` . |
+| `municipalities` | A string with semicolon-separated list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
+| `district_names_in_v2` | A string with semicolon-separated list of names of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `district_ids_in_v2` | A string with semicolon-separated list of identifiers of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
 
 ## 1.2 `Municipalities` {#municipalities}
 
@@ -113,7 +105,7 @@ Data structure:
 
 | Variable Name | **Description** |
 |------------------------------------|------------------------------------|
-| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in municipality level [origin-destination data](#od-data) and [number of trips data](#tpp-data). |
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in municipality level [origin-destination data](#od-data) and [number of trips data](#nt-data). |
 | `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
 | `districts_mitma` | A list of district identifiers as assigned by the data provider in districts zones spatial dataset that correspond to a given municipality `id` . |
 | `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
@@ -204,13 +196,13 @@ od_mean_hourly_trips_over_the_4_days
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-In this example above, we calculated mean hourly flows over the 4 days of the requested period. The full data for all 4 days was never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. This is done transparantly to the user with the help of [`DuckDB`](https://duckdb.org/){target="_blank"} (specifically, with [{duckdb} R package](https://r.duckdb.org/index.html){target="_blank"} @duckdb-r).
+In this example above, we calculated mean hourly flows over the 4 days of the requested period. The full data for all 4 days was probably never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. If you were doing the same opearation on 100 or even more days, it would work in the same way and would be possible even with limited memory. This is done transparantly to the user with the help of [`DuckDB`](https://duckdb.org/){target="_blank"} (specifically, with [{duckdb} R package](https://r.duckdb.org/index.html){target="_blank"} @duckdb-r).
 
-The same summary operation as provided in the example above can be done with the entire dataset for the full 18 month on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, we will also demonstrate in the end of the document, how the data can be converted to more efficient formats.
+The same summary operation as provided in the example above can be done with the entire dataset for the full 18 month on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, please also see the [vignette on converting the data](convert.qmd) into formats that will increase the analsysis performance.
 
-***Note**: As long as you use object `od_dist` created with `spod_get()` function, it is much quicker to filter the dates by the `year`, `month` and `day` variables, rather than by the `date` variable.* This is because the data for each day is in a separate CSV file located in folders that look like `year=2020/month=2/day=14`. So when filtering by the `date` field, R will have to scan all CSV files comparing the specified date with what is stored inside the file. However, if you query by *`year`, `month` and `day` variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use `spod_get()` . If you convert (see the [relevant section below](#convert-data)) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance as much.*
+{{< include ../inst/vignette-include/csv-date-filter-note.qmd >}}
 
-## 2.2. Number of trips data {#tpp-data}
+## 2.2. Number of trips data {#nt-data}
 
 The "number of trips" data shows the number of individuals in each district or municipality who made trips categorised by the number of trips.
 
@@ -237,13 +229,13 @@ To access it use `spod_get()` with `type` set to "number_of_trips", or just "nt"
 
 ```{r}
 dates <- c(start = "2020-02-14", end = "2021-05-09")
-tpp_dist <- spod_get(type = "number_of_trips", zones = "dist", dates = dates)
+nt_dist <- spod_get(type = "number_of_trips", zones = "dist", dates = dates)
 ```
 
 Because this data is small, we can actually load it completely into memory:
 
 ```{r}
-tpp_dist_tbl <- tpp_dist |> dplyr::collect()
+nt_dist_tbl <- nt_dist |> dplyr::collect()
 ```
 
 # Advanced use

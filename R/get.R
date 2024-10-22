@@ -3,21 +3,35 @@
 #' @description
 #' Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 #' 
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' @inheritParams spod_available_data
 #' @return An `sf` object (Simple Feature collection).
 #' 
-#' The columns include (for both v1 (2020-2021) and v2 (2022 onwards) data:
+#' The columns for v1 (2020-2021) data include:
 #' \describe{
-#'   \item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
-#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
-#'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
+#'   \item{id}{A character vector containing the unique identifier for each district, assigned by the data provider. This `id` matches the `id_origin`, `id_destination`, and `id` in district-level origin-destination and number of trips data.}
+#'   \item{census_districts}{A string with semicolon-separated identifiers of census districts classified by the Spanish Statistical Office (INE) that are spatially bound within the polygons for each `id`.}
+#'   \item{municipalities_mitma}{A string with semicolon-separated municipality identifiers (as assigned by the data provider) corresponding to each district `id`.}
+#'   \item{municipalities}{A string with semicolon-separated municipality identifiers classified by the Spanish Statistical Office (INE) corresponding to each `id`.}
+#'   \item{district_names_in_v2/municipality_names_in_v2}{A string with semicolon-separated district names (from the v2 version of this data) corresponding to each district `id` in v1.}
+#'   \item{district_ids_in_v2/municipality_ids_in_v2}{A string with semicolon-separated district identifiers (from the v2 version of this data) corresponding to each district `id` in v1.}
+#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 #' }
-#' Additionally, for v2 (2022 onwards) data:
+#' 
+#' The columns for v2 (2022 onwards) data include:
 #' \describe{
-#'   \item{name}{A character vector with the name of the zone.}
-#'   \item{population}{A numeric vector representing the population of each zone (as of 2022).}
+#'   \item{id}{A character vector containing the unique identifier for each zone, assigned by the data provider.}
+#'   \item{name}{A character vector with the name of each district.}
+#'   \item{population}{A numeric vector representing the population of each district (as of 2022).}
+#'   \item{census_sections}{A string with semicolon-separated identifiers of census sections corresponding to each district.}
+#'   \item{census_districts}{A string with semicolon-separated identifiers of census districts as classified by the Spanish Statistical Office (INE) corresponding to each district.}
+#'   \item{municipalities}{A string with semicolon-separated identifiers of municipalities classified by the Spanish Statistical Office (INE) corresponding to each district.}
+#'   \item{municipalities_mitma}{A string with semicolon-separated identifiers of municipalities, as assigned by the data provider, that correspond to each district.}
+#'   \item{luas_mitma}{A string with semicolon-separated identifiers of LUAs (Local Urban Areas) from the provider, associated with each district.}
+#'   \item{district_ids_in_v1/municipality_ids_in_v1}{A string with semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, it is marked as `NA`.}
+#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 #' }
+#' 
 #' @export
 spod_get_zones <- function(
   zones = c(
@@ -252,7 +266,7 @@ spod_available_data_v2 <- function(
           TRUE ~ "other"
         )
       ) |>
-      dplyr::select(-.data$cleaned_url)
+      dplyr::select(-"cleaned_url")
 
     # Calculate mean file sizes by category
     size_by_file_category <- files_table |>
@@ -261,7 +275,9 @@ spod_available_data_v2 <- function(
 
     # Impute missing file sizes
     files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
-    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- files_table$mean_file_size_mb
+    if(length(files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)]) > 0){
+      files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- median(files_table$mean_file_size_mb)
+    }
     files_table$mean_file_size_mb <- NULL
     files_table$file_category <- NULL
   }
@@ -337,7 +353,7 @@ spod_get_zones_v2 <- function(
     return(sf::read_sf(expected_gpkg_path))
   }
   
-  # if no existing gpkg found above, contunue here with download and data cleanup
+  # if no existing gpkg found above, continue here with download and data cleanup
   metadata <- spod_available_data_v2(data_dir, check_local_files = TRUE)
   zones_regex <- glue::glue("(zonificacion_{zones}\\.*)|(poblacion\\.csv)|(relacion_ine_zonificacionMitma\\.csv)")
   sel_zones <- stringr::str_detect(metadata$local_path, zones_regex)
@@ -383,6 +399,7 @@ spod_get_zones_v2 <- function(
 #'
 #' @param zones_path The path to the zones spatial data file.
 #' @return A spatial object containing the cleaned zones data. 
+#' @importFrom stats median
 #' @keywords internal
 #'
 spod_clean_zones_v2 <- function(zones_path) {
@@ -432,11 +449,88 @@ spod_clean_zones_v2 <- function(zones_path) {
       dplyr::select(-"row")
   }
  
-  # combine zones with population and names
+  # zones reference
+  zones_ref <- readr::read_delim(
+    glue::glue(spod_get_data_dir(quiet = TRUE), "/", spod_subfolder_raw_data_cache(ver = 2), "zonificacion/relacion_ine_zonificacionMitma.csv"),
+    delim = "|",
+    col_types = rep("c", 6)
+  )
+
+  zone_mitma <- glue::glue("{gsub('s$', '', zones)}_mitma")
+  
+  zones_ref_renamed <- zones_ref |>
+    dplyr::rename(
+      census_sections = "seccion_ine",
+      census_districts = "distrito_ine",
+      municipalities = "municipio_ine",
+      districts_mitma = "distrito_mitma",
+      municipalities_mitma = "municipio_mitma",
+      luas_mitma = "gau_mitma",
+      id = zone_mitma
+    )
+  
+  zones_ref_aggregated <- zones_ref_renamed |>
+  dplyr::group_by(.data$id) |>
+  dplyr::summarise(
+    dplyr::across(
+    .cols = dplyr::everything(),
+    .fns = ~ paste(.x, collapse = "; "),
+    .names = "{.col}"
+  ))
+
+  # cleanup duplacate ids in zones_ref_aggregated
+  zones_ref_aggregated <- zones_ref_aggregated |>
+    dplyr::mutate(
+      dplyr::across(
+        .cols = dplyr::everything(),
+        .fns = spod_unique_separated_ids
+      )
+    )
+
+  # combine zones with population, names, and zones reference
   zones_sf <- zones_sf |>
     dplyr::left_join(zone_names, by = "id") |> 
     dplyr::left_join(population, by = "id") |> 
-    dplyr::select(-"geometry", "geometry")
+    dplyr::left_join(zones_ref_aggregated, by = "id") |>
+    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+
+
+  # load v1 zones to join ids, unless it's gau zones
+  if(zones != "gaus") {
+    spod_download_zones_v1(zones = zones, quiet = TRUE)
+    zones_v1_path <- fs::dir_ls(
+      path = fs::path(spod_get_data_dir(), spod_subfolder_raw_data_cache(ver = 1)),
+      glob = glue::glue("*v1**{zones}/*.shp"),
+      recurse = TRUE
+    )
+    suppressWarnings({
+      zones_v1_sf <- sf::read_sf(zones_v1_path)
+    })
+    invalid_geometries <- !sf::st_is_valid(zones_v1_sf)
+    if (sum(invalid_geometries) > 0) {
+      fixed_zones_v1_sf <- sf::st_make_valid(zones_v1_sf[invalid_geometries, ])
+      zones_v1_sf <- rbind(zones_v1_sf[!invalid_geometries, ], fixed_zones_sf)
+    }
+    
+    names(zones_v1_sf)[names(zones_v1_sf) == "ID"] <- "id_in_v1"
+
+    suppressWarnings(
+      zones_v2_sf_centroids <- zones_sf |> sf::st_point_on_surface()
+    )
+    v2_to_v1 <- sf::st_join(zones_v1_sf, zones_v2_sf_centroids, left = TRUE) |> 
+      sf::st_drop_geometry()
+    v2_v_1ref <- v2_to_v1 |>
+      dplyr::group_by(.data$id) |> 
+        dplyr::summarize(
+        ids_in_v1_data = paste(.data$id_in_v1, collapse = "; ")
+      )
+    eng_zones <- dplyr::if_else(zones == "distritos", true = "district", false = "municipality")
+    names(v2_v_1ref)[names(v2_v_1ref) == "ids_in_v1_data"] <- glue::glue("{eng_zones}_ids_in_v1")
+
+    zones_sf <- zones_sf |> 
+      dplyr::left_join(v2_v_1ref, by = "id") |> 
+      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+  }
   
   return(zones_sf)
 }

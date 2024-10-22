@@ -6,7 +6,7 @@
 #'
 #' The possible values can be any of the following:
 #' 
-#'  * For the `spod_get()` function, the `dates` can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to `spod_download_data()`.
+#'  * For the `spod_get()` and `spod_convert()` functions, the `dates` can be set to "cached_v1" or "cached_v2" to request data from cached (already previously downloaded) v1 (2020-2021) or v2 (2022 onwards) data. In this case, the function will identify and use all data files that have been downloaded and cached locally, (e.g. using an explicit run of `spod_download()`, or any data requests made using the `spod_get()` or `spod_convert()` functions).
 #'
 #'  * A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. `character` or `Date` object.
 #'
@@ -64,7 +64,12 @@ spod_dates_argument_to_dates_seq <- function(dates) {
       # if the vector is named with 'start' and 'end', we can assume it is a date range
       if (all(names(dates) %in% c("start", "end"))) {
         date_parts <- lubridate::ymd(dates)
-        dates <- seq.Date(date_parts[1], date_parts[2], by = "day")
+        names(date_parts) <- names(dates)
+        # check if start is before end
+        if (date_parts["start"] > date_parts["end"]) {
+          stop("Start date must be before end date.")
+        }
+        dates <- seq.Date(date_parts["start"], date_parts["end"], by = "day")
       }
     } else {
       # this is apparantly a sequence of dates
@@ -185,7 +190,7 @@ spod_get_valid_dates <- function(ver = NULL) {
   all_dates <- sort(all_dates)
   return(all_dates)
 }
-# currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
+# TODO: currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
 
 
 
@@ -279,4 +284,19 @@ spod_available_ram <- function(){
   return(
     as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])/1024/1024/1024
   )
+}
+
+#' Remove duplicate values in a semicolon-separated string
+#' 
+#' @description
+#' Remove duplicate IDs in a semicolon-separated string in a selected column in a data frame
+#' @param column A `character` vector column in a data frame to remove duplicates from.
+#' 
+#' @return A `character` vector with semicolon-separated unique IDs.
+#' @keywords internal
+spod_unique_separated_ids <- function(column) {
+  purrr::map_chr(column, ~ {
+    unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
+    stringr::str_c(unique_ids, collapse = "; ")  # Join them back with semicolons
+  })
 }

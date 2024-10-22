@@ -167,7 +167,7 @@ spod_available_data_v1 <- function(
 
     # Clean up temporary columns
     files_table <- files_table |>
-      dplyr::select(-.data$mean_file_size_mb, -.data$file_category)
+      dplyr::select(-"mean_file_size_mb", -"file_category")
   }
   
   # now check if any of local files exist
@@ -178,7 +178,64 @@ spod_available_data_v1 <- function(
   return(files_table)
 }
 
-#' retrieves the zones for v1 data
+#' Downloads and extracts the raw v1 zones data
+#'
+#' This function ensures that the necessary v1 raw data for zones files are downloaded and extracted from the specified data directory.
+#'
+#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
+#' @param data_dir The directory where the data is stored.
+#' @param quiet Boolean flag to control the display of messages.
+#' @return The path to the downloaded and extracted file.
+#' @keywords internal
+spod_download_zones_v1 <- function(
+  zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni", "municip", "municipios"),
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
+) {
+zones <- match.arg(zones)
+zones <- spod_zone_names_en2es(zones)
+
+metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
+
+# download id relation files if missing
+relation_files <- metadata[grepl("relaciones_(distrito|municipio)_mitma.csv", metadata$target_url),]
+if (any(!fs::file_exists(relation_files$local_path))) {
+  fs::dir_create(unique(fs::path_dir(relation_files$local_path)), recurse = TRUE)
+  invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
+}
+
+regex <- glue::glue("zonificacion_{zones}\\.")
+sel_zones <- stringr::str_detect(metadata$target_url, regex)
+metadata_zones <- metadata[sel_zones, ]
+dir_name <- fs::path_dir(metadata_zones$local_path[1])
+if (!fs::dir_exists(dir_name)) {
+  fs::dir_create(dir_name, recurse = TRUE)
+}
+
+if (!fs::file_exists(metadata_zones$local_path)) {
+  if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
+  downloaded_file <- curl::multi_download(metadata_zones$target_url, destfiles = metadata_zones$local_path, resume = TRUE, progress = TRUE)
+  downloaded_file <- downloaded_file$destfile
+} else {
+  if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
+  downloaded_file <- metadata_zones$local_path
+}
+
+if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
+if (!fs::dir_exists(fs::path_dir(downloaded_file))){
+  fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
+}
+utils::unzip(downloaded_file, exdir = paste0(fs::path_dir(downloaded_file), "/"))
+
+# remove artifacts (remove __MACOSX if exists)
+junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
+if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
+
+return(metadata_zones$local_path)
+}
+
+
+#' Retrieves the zones for v1 data
 #'
 #' This function retrieves the zones data from the specified data directory.
 #' It can retrieve either "distritos" or "municipios" zones data.
@@ -198,85 +255,48 @@ spod_available_data_v1 <- function(
 #' }
 #' @keywords internal
 spod_get_zones_v1 <- function(
-    zones = c(
-      "districts", "dist", "distr", "distritos",
-      "municipalities", "muni", "municip", "municipios"
-    ),
-    data_dir = spod_get_data_dir(),
-    quiet = FALSE
-  ) {
-  zones <- match.arg(zones)
-  zones <- spod_zone_names_en2es(zones)
+  zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni", "municip", "municipios"),
+  data_dir = spod_get_data_dir(),
+  quiet = FALSE
+) {
+zones <- match.arg(zones)
+zones <- spod_zone_names_en2es(zones)
 
-  metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
+metadata <- spod_available_data(ver = 1, data_dir = data_dir, check_local_files = FALSE)
 
-  # download id relation files if missing
-  relation_files <- metadata[grepl("relaciones_(distrito|municipio)_mitma.csv", metadata$target_url),]
-  if (any(!fs::file_exists(relation_files$local_path))) {
-    fs::dir_create(unique(fs::path_dir(relation_files$local_path)), recurse = TRUE)
-    invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
+# Ensure the raw data is downloaded and extracted
+spod_download_zones_v1(zones, data_dir, quiet)
+
+# check if gpkg files are already saved and load them if available
+expected_gpkg_path <- fs::path(
+  data_dir,
+  glue::glue(spod_subfolder_clean_data_cache(ver = 1), "/zones/{zones}_mitma.gpkg")
+)
+if (fs::file_exists(expected_gpkg_path)) {
+  if (isFALSE(quiet)) {
+    message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
   }
-
-  # check if gpkg files are already saved and load them if available
-  expected_gpkg_path <- fs::path(
-    data_dir,
-    glue::glue(spod_subfolder_clean_data_cache(ver = 1),
-      "/zones/{zones}_mitma.gpkg"
-    )
-  )
-  if (fs::file_exists(expected_gpkg_path)) {
-    if (isFALSE(quiet)) {
-      message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
-    }
-    return(sf::read_sf(expected_gpkg_path))
-  }
-
-  regex <- glue::glue("zonificacion_{zones}\\.")
-  sel_zones <- stringr::str_detect(metadata$target_url, regex)
-  metadata_zones <- metadata[sel_zones, ]
-  dir_name <- fs::path_dir(metadata_zones$local_path[1])
-  if (!fs::dir_exists(dir_name)) {
-    fs::dir_create(dir_name, recurse = TRUE)
-  }
-
-  if (!fs::file_exists(metadata_zones$local_path)) {
-    if (isFALSE(quiet)) message("Downloading the file to: ", metadata_zones$local_path)
-    downloaded_file <- curl::multi_download(metadata_zones$target_url, destfiles = metadata_zones$local_path, resume = TRUE, progress = TRUE)
-    downloaded_file <- downloaded_file$destfile
-  } else {
-    if (isFALSE(quiet)) message("File already exists: ", metadata_zones$local_path)
-    downloaded_file <- metadata_zones$local_path
-  }
-
-  if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
-  if (!fs::dir_exists(fs::path_dir(downloaded_file))){
-    fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
-  }
-  utils::unzip(downloaded_file,
-    exdir = paste0(fs::path_dir(downloaded_file),"/")
-  )
-
-  # remove artifacts (remove __MACOSX if exists)
-  junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
-  if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
-
-  zones_path <- fs::dir_ls(
-    path = fs::path(data_dir, spod_subfolder_raw_data_cache(ver = 1)),
-    glob = glue::glue("*v1**{zones}/*.shp"),
-    recurse = TRUE
-  )
-
-  zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
-  fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
-  sf::st_write(
-    zones_sf,
-    expected_gpkg_path,
-    delete_dsn = TRUE,
-    delete_layer = TRUE
-  )
-
-  return(zones_sf)
+  return(sf::read_sf(expected_gpkg_path))
 }
+
+zones_path <- fs::dir_ls(
+  path = fs::path(data_dir, spod_subfolder_raw_data_cache(ver = 1)),
+  glob = glue::glue("*v1**{zones}/*.shp"),
+  recurse = TRUE
+)
+
+zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
+fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
+sf::st_write(
+  zones_sf,
+  expected_gpkg_path,
+  delete_dsn = TRUE,
+  delete_layer = TRUE
+)
+
+return(zones_sf)
+}
+
 
 #' Fixes common issues in the zones data and cleans up variable names
 #'
@@ -359,22 +379,13 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
       districts_mitma = paste(.data$districts_mitma, collapse = "; "),
       census_districts = paste(.data$census_districts, collapse = "; ")
     )
-  
-  # now we have some duplicate ids, we need to remove them
-  # here's a function for that
-  unique_separated_ids <- function(column) {
-    purrr::map_chr(column, ~ {
-      unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
-      stringr::str_c(unique_ids, collapse = "; ")  # Join them back with semicolons
-    })
-  }
 
   # cleanup duplacate ids in municipalities
   relations_municipalities_aggregated <- relations_municipalities_aggregated |> 
     dplyr::mutate(
       dplyr::across(
         c(.data$municipalities, .data$districts_mitma, .data$census_districts),
-        unique_separated_ids
+        spod_unique_separated_ids
       )
     )
   names(relations_municipalities_aggregated)[names(relations_municipalities_aggregated) == "municipality_mitma"] <- "id"
@@ -383,7 +394,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   relations_districts_aggregated <- relations_districts_aggregated |> 
     dplyr::mutate(
       dplyr::across(
-        c(.data$census_districts, .data$municipalities_mitma), unique_separated_ids
+        c(.data$census_districts, .data$municipalities_mitma), spod_unique_separated_ids
       )
     )
   names(relations_districts_aggregated)[names(relations_districts_aggregated) == "district_mitma"] <- "id"
@@ -404,7 +415,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   names(zones_v2_sf)[names(zones_v2_sf) == "id"] <- "id_in_v2"
   names(zones_v2_sf)[names(zones_v2_sf) == "name"] <- "name_in_v2"
   suppressWarnings(
-    zones_v2_sf_centroids <- zones_v2_sf |> sf::st_centroid()
+    zones_v2_sf_centroids <- zones_v2_sf |> sf::st_point_on_surface()
   )
   v2_to_v1 <- sf::st_join(zones_sf, zones_v2_sf_centroids, left = TRUE) |> 
     sf::st_drop_geometry() 
@@ -435,7 +446,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 #' If you want to analyse longer periods of time (especiially several months or even the whole data over several years), consider using the \link{spod_convert} and then \link{spod_connect}.
 #' 
 #' @param duckdb_target (Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the `spod_convert` function. If not specified, it will be set to ":memory:" and the data will be stored in memory.
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams spod_duckdb_set_temp
 #' @inheritParams global_quiet_param
@@ -464,7 +475,8 @@ spod_get <- function(
   ),
   zones = c(
     "districts", "dist", "distr", "distritos",
-    "municipalities", "muni", "municip", "municipios"
+    "municipalities", "muni", "municip", "municipios",
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
   ),
   dates = NULL,
   data_dir = spod_get_data_dir(),
@@ -495,13 +507,13 @@ spod_get <- function(
     dates <- spod_dates_argument_to_dates_seq(dates = dates)
     ver <- spod_infer_data_v_from_dates(dates)
     # use the spot_download_data() function to download any missing data
-    spod_download_data(
+    spod_download(
       type = type,
       zones = zones,
       dates = dates,
       max_download_size_gb = max_download_size_gb,
       data_dir = data_dir,
-      return_output = FALSE
+      return_local_file_paths = FALSE
     )
   } else if (isTRUE(cached_data_requested)) {
     ver <- as.numeric(stringr::str_extract(dates, "(1|2)$"))
@@ -535,14 +547,12 @@ spod_get <- function(
       data_dir = data_dir
     )
   } else if (type == "os") {
-    message("overnight stays data retrieval is not yet implemented")
-    invisible(return(NULL))
-    # con <- spod_duckdb_overnight_stays(
-    #   con = con,
-    #   zones = zones,
-    #   ver = ver,
-    #   data_dir = data_dir
-    # )
+    con <- spod_duckdb_overnight_stays(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
+    )
   }
   
   clean_csv_view_name <- glue::glue("{type}_csv_clean")

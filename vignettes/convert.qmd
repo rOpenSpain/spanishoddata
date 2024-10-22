@@ -130,14 +130,14 @@ You can download and convert the data into `DuckDB` database in two steps. For e
 
 ```{r}
 dates_2 <- c(start = "2023-02-14", end = "2023-02-17")
-spod_download_data(type = "od", zones = "distr", dates = dates_2)
+spod_download(type = "od", zones = "distr", dates = dates_2)
 ```
 
 ```{r}
 #| echo: false
 # Try for v1 data
 dates_1 <- c(start = "2020-02-14", end = "2020-02-17")
-spod_download_data(type = "od", zones = "distr", dates = dates_1)
+spod_download(type = "od", zones = "distr", dates = dates_1)
 ```
 
 ```{r}
@@ -151,14 +151,14 @@ db_1 # check the path to the saved `DuckDB` database
 # Test adding another day:
 fs::file_size(db_1)
 dates_1 <- c(start = "2020-02-14", end = "2020-02-2018")
-spod_download_data(type = "od", zones = "distr", dates = dates_1)
+spod_download(type = "od", zones = "distr", dates = dates_1)
 db_1 <- spod_convert(type = "od", zones = "distr", dates = "cached_v1", save_format = "duckdb") # no overwrite, failed
 db_1 <- spod_convert(type = "od", zones = "distr", dates = "cached_v1", save_format = "duckdb", overwrite = TRUE)
 db_1 <- spod_convert(type = "od", zones = "distr", dates = "cached_v1", save_format = "duckdb", overwrite = 'update')
 db_1 # check the path to the saved `DuckDB` database
 ```
 
-After that, you can convert any downloaded data (including the files that might have been downloaded previosly by running `spod_get()` or `spod_download_data()` with other dates or date intervals) into `DuckDB` like so (`dates = "cached_v2"` means use *all* downloaded files):
+After that, you can convert any downloaded data (including the files that might have been downloaded previosly by running `spod_get()` or `spod_download()` with other dates or date intervals) into `DuckDB` like so (`dates = "cached_v2"` means use *all* downloaded files):
 
 ```{r}
 db_2 <- spod_convert(type = "od", zones = "distr", dates = "cached_v2", save_format = "duckdb", overwrite = TRUE)
@@ -170,7 +170,7 @@ db_2 # check the path to the saved `DuckDB` database
 # Test adding another day:
 fs::file_size(db_2)
 dates_2 <- c(start = "2020-02-14", end = "2020-02-18")
-spod_download_data(type = "od", zones = "distr", dates = dates_2)
+spod_download(type = "od", zones = "distr", dates = dates_2)
 db_2 <- spod_convert(type = "od", zones = "distr", dates = "cached_v2", save_format = "duckdb") # no overwrite, failed
 db_2 <- spod_convert(type = "od", zones = "distr", dates = "cached_v2", save_format = "duckdb", overwrite = TRUE)
 db_2 <- spod_convert(type = "od", zones = "distr", dates = "cached_v2", save_format = "duckdb", overwrite = 'update')
@@ -278,7 +278,8 @@ dates_v1 <- spod_get_valid_dates(ver = 1)
 dates_v2 <- spod_get_valid_dates(ver = 2)
 ```
 
-Due to mobile network outages, some dates are missing, so do not assume that a simple interval between two dates will just work. Currently [known outages](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"} are: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. This is why it is adviseable to use `spod_get_valid_dates()` function to get all possible dates from available data.
+
+{{< include ../inst/vignette-include/missing-dates-outages.qmd >}}
 
 ## Download all data
 
@@ -287,11 +288,11 @@ Here the example is for origin-destination on district level for v1 data. You ca
 ```{r}
 type <- "origin-destination"
 zones <- "districts"
-spod_download_data(
+spod_download(
   type = type,
   zones = zones,
   dates = dates_v1,
-  return_output = FALSE, # to avoid getting all downloaded files printed to console
+  return_local_file_paths = FALSE, # to avoid getting all downloaded file paths printed to console
   max_download_size_gb = 50 # in Gb, this should be well over the actual download size for v1 data
 )
 ```

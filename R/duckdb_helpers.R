@@ -4,7 +4,7 @@
 #'
 #' @param con A duckdb connection object. If not specified, a new in-memory connection will be created.
 #' @inheritParams spod_available_data
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' @return A duckdb connection object with 2 views:
 #'
 #'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
@@ -59,7 +59,9 @@ spod_duckdb_od <- function(
     ver = NULL,
     data_dir = spod_get_data_dir()
 ) {
-    
+  
+  locale <- "en" # hardcode locale for now, but be ready to make it a function argument across the package #TODO
+
   ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
@@ -111,7 +113,11 @@ spod_duckdb_od <- function(
   if( ver == 1 ) {
     unique_ids <- unique(spatial_data$id)
   } else if( ver == 2 ) {
-    unique_ids <- c("externo", unique(spatial_data$id))
+    if (locale == "en" ){
+      unique_ids <- c("external", unique(spatial_data$id))
+    } else if (locale == "es" ){
+      unique_ids <- c("externo", unique(spatial_data$id))
+    }
   }
   
   DBI::dbExecute(
@@ -128,7 +134,7 @@ spod_duckdb_od <- function(
   # create ACTIV_ENUM (for all except for municipalities in v1 data)
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-od-enum-activity-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-od-enum-activity-{locale}.sql"))
   )
 
   # create DISTANCE_ENUM
@@ -157,7 +163,7 @@ spod_duckdb_od <- function(
     # sex ENUM
     DBI::dbExecute(
       con,
-      spod_read_sql(glue::glue("v{ver}-od-enum-sex-en.sql"))
+      spod_read_sql(glue::glue("v{ver}-od-enum-sex-{locale}.sql"))
     )
   }
 
@@ -172,7 +178,7 @@ spod_duckdb_od <- function(
   }
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-csv-view-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-od-{zones}-clean-csv-view-{locale}.sql"))
   )
 
   # return the connection as duckdb object
@@ -185,7 +191,7 @@ spod_duckdb_od <- function(
 #' This function creates a duckdb connection to the number of trips data stored in a folder of CSV.gz files.
 #' @inheritParams spod_duckdb_od
 #' @inheritParams spod_available_data
-#' @inheritParams spod_download_data
+#' @inheritParams spod_download
 #' 
 #' @return A duckdb connection with 2 views.
 #' 
@@ -201,6 +207,8 @@ spod_duckdb_number_of_trips <- function(
   data_dir = spod_get_data_dir()
 ) {
   
+  locale <- "en" # TODO: add support for Spanish, hardcode for now
+
   ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
@@ -230,7 +238,7 @@ spod_duckdb_number_of_trips <- function(
       data_dir, "/",
       spod_subfolder_raw_data_cache(ver = ver),
       "/estudios_basicos/por-", spod_zone_names_en2es(zones),
-      "/viajes/ficheros-diarios/"
+      "/personas/ficheros-diarios/"
     )
   }
 
@@ -239,7 +247,7 @@ spod_duckdb_number_of_trips <- function(
   # create view to the raw TXT/CSV.gz files
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-raw-csv-view.sql"))
+    spod_read_sql(glue::glue("v{ver}-nt-{zones}-raw-csv-view.sql"))
   )
 
   # create ENUMs
@@ -251,12 +259,8 @@ spod_duckdb_number_of_trips <- function(
     quiet = TRUE
   )
   
-  if( ver == 1 ) {
-    unique_ids <- unique(spatial_data$id)
-  } else if( ver == 2 ) {
-    # unique_ids <- c("externo", unique(spatial_data$id)) # double check
-  }
-  
+  unique_ids <- unique(spatial_data$id)
+
   DBI::dbExecute(
     con,
     dplyr::sql(
@@ -271,14 +275,25 @@ spod_duckdb_number_of_trips <- function(
   # create N_TRIPS_ENUM
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-tpp-enum-ntrips.sql"))
+    spod_read_sql(glue::glue("v{ver}-nt-enum-ntrips.sql"))
   )
 
   
   # v2 only enums
-  if (ver == 2) {
-    ### TODO - check if any v2 specific ones
-  }
+# v2 only enums
+if (ver == 2) {
+  # age ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-nt-enum-age.sql"))
+  )
+  
+  # sex ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-nt-enum-sex-{locale}.sql"))
+  )
+}
 
   # create od_csv_clean view
   if (ver == 1 && zones == "municipios") {
@@ -291,7 +306,106 @@ spod_duckdb_number_of_trips <- function(
   }
   DBI::dbExecute(
     con,
-    spod_read_sql(glue::glue("v{ver}-tpp-{zones}-clean-csv-view-en.sql"))
+    spod_read_sql(glue::glue("v{ver}-nt-{zones}-clean-csv-view-{locale}.sql"))
+  )
+
+  return(con)
+}
+
+#' Create a duckdb overnight stays table
+#' 
+#' @description
+#' This function creates a duckdb connection to the overnight stays data stored in a folder of CSV.gz files.
+#' @inheritParams spod_duckdb_od
+#' @inheritParams spod_available_data
+#' @inheritParams spod_download
+#' 
+#' @return A duckdb connection with 2 views.
+#' 
+#' @keywords internal
+spod_duckdb_overnight_stays <- function(
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
+  zones = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ),
+  ver = NULL,
+  data_dir = spod_get_data_dir()
+) {
+  
+  locale <- "en" # TODO: add support for Spanish, hardcode for now
+
+  ver <- as.integer(ver)
+  if (ver == 1) {
+    stop("Overnight stays data is only available in v2 data (2022-01-01 onwards).")
+  }
+  
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
+
+
+  csv_folder <- paste0(
+    data_dir, "/",
+    spod_subfolder_raw_data_cache(ver = ver),
+    "/estudios_basicos/por-", spod_zone_names_en2es(zones),
+    "/pernoctaciones/ficheros-diarios/"
+  )
+
+  # create view of csv files and preset variable types
+
+  # create view to the raw TXT/CSV.gz files
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-os-{zones}-raw-csv-view.sql"))
+  )
+
+  # create ENUMs
+
+  # zones ENUMs for residence, these are always detailed down to "districts", despite the selected zones
+  spatial_data_residence <- spod_get_zones("distr",
+    ver = ver,
+    data_dir = data_dir,
+    quiet = TRUE
+  )
+  
+  unique_ids_residence <- unique(spatial_data_residence$id)
+  
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      paste0(
+        "CREATE TYPE RESID_ZONES_ENUM AS ENUM ('",
+        paste0(unique_ids_residence, collapse = "','"),
+        "');"
+      )
+    )
+  )
+
+  # zones ENUMs for overnight stays, these always match the selected zones
+  spatial_data_overnight <- spod_get_zones(zones,
+    ver = ver,
+    data_dir = data_dir,
+    quiet = TRUE
+  )
+
+  unique_ids_overnight <- unique(spatial_data_overnight$id)
+  
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      paste0(
+        "CREATE TYPE OVERNIGHT_ZONES_ENUM AS ENUM ('",
+        paste0(unique_ids_overnight, collapse = "','"),
+        "');"
+      )
+    )
+  )
+
+
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-os-{zones}-clean-csv-view-{locale}.sql"))
   )
 
   return(con)
@@ -313,8 +427,9 @@ spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, da
   # prepare query to filter by dates
   query <- dplyr::sql(
     glue::glue(
-      "CREATE VIEW {new_view_name} AS SELECT * FROM {source_view_name} ",
-      spod_sql_where_dates(dates)
+      'CREATE VIEW "{new_view_name}" AS SELECT * FROM "{source_view_name}" ',
+      spod_sql_where_dates(dates),
+      ";"
     )
   )
 

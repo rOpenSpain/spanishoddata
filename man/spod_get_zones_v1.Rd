@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_v1_data.R
 \name{spod_get_zones_v1}
 \alias{spod_get_zones_v1}
-\title{retrieves the zones for v1 data}
+\title{Retrieves the zones for v1 data}
 \usage{
 spod_get_zones_v1(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",

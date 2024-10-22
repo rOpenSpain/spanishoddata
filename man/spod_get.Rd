@@ -7,7 +7,7 @@
 spod_get(
   type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"),
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
-    "municip", "municipios"),
+    "municip", "municipios", "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"),
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
@@ -27,7 +27,7 @@ spod_get(
 
 The possible values can be any of the following:
 \itemize{
-\item For the \code{spod_get()} function, the \code{dates} can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to \code{spod_download_data()}.
+\item For the \code{spod_get()} and \code{spod_convert()} functions, the \code{dates} can be set to "cached_v1" or "cached_v2" to request data from cached (already previously downloaded) v1 (2020-2021) or v2 (2022 onwards) data. In this case, the function will identify and use all data files that have been downloaded and cached locally, (e.g. using an explicit run of \code{spod_download()}, or any data requests made using the \code{spod_get()} or \code{spod_convert()} functions).
 \item A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object.
 \item A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. \code{character} or \code{Date} object. Can be any non-consecutive sequence of dates.
 \item A date range
