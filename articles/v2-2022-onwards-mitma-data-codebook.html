@@ -73,7 +73,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/main/vignettes/v2-2022-onwards-mitma-data-codebook.qmd" class="external-link"><code>vignettes/v2-2022-onwards-mitma-data-codebook.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/v2-codebook/vignettes/v2-2022-onwards-mitma-data-codebook.qmd" class="external-link"><code>vignettes/v2-2022-onwards-mitma-data-codebook.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -87,12 +87,75 @@
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">spanishoddata</span><span class="fu">::</span><span class="fu"><a href="../reference/spod_codebook.html">spod_codebook</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Work-in-progress. Coming soon, please come back in a few weeks. For now, please consult the official documentation <span class="citation" data-cites="mitma-mobility-2024-v6">(<a href="#ref-mitma-mobility-2024-v6" role="doc-biblioref">Secretaría de Estado de Transportes, Movilidad y Agenda Urbana 2024</a>)</span>. Some data is already available in the same way as <a href="v1-2020-2021-mitma-data-codebook.html">v1 data</a>, just use dates starting with 2022-01-01.</p>
-<section class="level2"><h2 id="set-data-folder">Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
-</h2>
-<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
+<p>The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now <a href="https://www.transportes.gob.es/" class="external-link">Ministerio de Transportes y Movilidad Sostenible (MITMS)</a> <span class="citation" data-cites="mitma-mobility-2024-v7">(<a href="#ref-mitma-mobility-2024-v7" role="doc-biblioref">Secretaría de Estado de Transportes y Movilidad Sostenible 2024</a>)</span>.</p>
+<p>The dataset is produced by <a href="https://www.nommon.es/" target="_blank" class="external-link">Nommon</a> using the raw data from <a href="https://www.orange.es/" target="_blank" class="external-link">Orange España</a>. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology).</p>
+<p>The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2022-01-01 onwards), the number of individuals making trips for each zone, the number of individuals spending the nights in one location while regularly residing in a different location, and many more advanced datasets. This document will introduce you to the available data and provide brief code snippets on how to access it using the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> R package.</p>
+<p>Compared to the <a href="v1-2020-2021-mitma-data-codebook.qmd">v1 data (2020-2021)</a> this dataset has many additional variables, such as age, sex, and income, has better spatial resolution (the zones are more spatially granular) and covers a continuous period<a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For reference: this object also has classes: &lt;code&gt;tbl_dbi&lt;/code&gt; ,&lt;code&gt;tbl_sql&lt;/code&gt;, &lt;code&gt;tbl_lazy&lt;/code&gt; ,and &lt;code&gt;tbl&lt;/code&gt; .&lt;/p&gt;"><sup>1</sup></a> (2022-01-01 onward), rather than only a limited period (in v1 - 2020-02-14 to 2021-05-09).</p>
+<div>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p>Due to mobile network outages, the data on certain dates is missing. Kindly keep this in mind when calculating mean monthly or weekly flows.</p>
+<p><br></p>
+<p>Please check the <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" target="_blank" class="external-link">original data page</a> for currently known missing dates. At the time of writing, the following dates are missing: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. You can use <code><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates()</a></code> function to get all available dates.</p>
+</blockquote>
+</div>
+<p>In v2 data, the datasets comparable to the <a href="v1-2020-2021-mitma-data-codebook.qmd">v1 (2020-2021) data</a> (hourly daily origin destination matrices and number of trips at each location) are called <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudio-basico-diario" target="_blank" class="external-link">“basic studies” (“estudios basicos”)</a>, however there are even more advanced datasets that are already available or will be made available soon: <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-completos" target="_blank" class="external-link">“complete studies” (“estudios completos”)</a> and <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/rutas-por-carretera" target="_blank" class="external-link">“road routes” (“rutas de carretera”)</a>. At the moment, the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> package only provides the interface to the “basic studies” datasets, but support for “complete studies” and “road routes” will be added in the future.</p>
+<p>Key sources for this codebook/cookbook include:</p>
+<ul>
+<li><p><a href="https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_resumen_v7.pdf" target="_blank" class="external-link">original data collection methodology and codebook in Spanish</a> + <a href="https://rOpenSpain.github.io/spanishoddata/codebooks/a3_informe_metodologico_resumen_v7_en.pdf" target="_blank">automatically translated English version of methodology and codebook</a></p></li>
+<li><p><a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" target="_blank" class="external-link">original data download page</a></p></li>
+<li><p><a href="https://movilidad-opendata.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf" target="_blank" class="external-link">original data license</a></p></li>
+<li><p><a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" target="_blank" class="external-link">homepage of the v2 study and open mobility data project of the Ministry of Transport and Sustainable mobility of Spain</a></p></li>
+</ul>
+<div>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.</p>
+</blockquote>
+</div>
+<p>To access the data we reference in this codebook, please follow these steps:</p>
+<section class="section level3"><h3 id="install-package">Install the package<a class="anchor" aria-label="anchor" href="#install-package"></a>
+</h3>
+<p>The package is not yet available on CRAN.</p>
+<p>You can install the latest version of the package from rOpenSpain R universe:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"spanishoddata"</span>,</span>
+<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://ropenspain.r-universe.dev"</span>,</span>
+<span>    <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<details><summary>
+Alternative installation and developemnt
+</summary><p>Alternative way to install the package from GitHub:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rOpenSpain/spanishoddata"</span>,</span>
+<span>  force <span class="op">=</span> <span class="cn">TRUE</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p><strong>For Developers</strong></p>
+<p>To load the package locally, clone it and navigate to the root of the package in the terminal, e.g. with the following:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo clone rOpenSpain/spanishoddata</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">code</span> spanishoddata</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># with rstudio:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">rstudio</span> spanishoddata/spanishoddata.Rproj</span></code></pre></div>
+<p>Then run the following command from the R console:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+</details><p>Load it as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>Using the instructions below, set the data folder for the package to download the files into. You may need up to 400 GB to download all data and another 400 GB if you would like to convert the downloaded data into analysis ready format (a <code>DuckDB</code> database file, or a folder of <code>parquet</code> files). You can find more info on this conversion in the <a href="convert.html">Download and convert OD datasets</a> vignette.</p>
+</section><section class="section level3"><h3 id="set-data-folder">Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h3>
+<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The package will create this directory if it does not exist on the first run of any function that downloads the data.</p>
@@ -100,22 +163,537 @@
 Setting data directory for advanced users
 </summary><p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Then set the data directory globally, by typing this line in the file:</span></span></code></pre></div>
 </div>
 <pre><code><span><span class="va">SPANISH_OD_DATA_DIR</span> <span class="op">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre>
 <p>You can also set the data directory locally, just for the current project. Set the ‘envar’ in the working directory by editing <code>.Renviron</code> file in the root of the project:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</details><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-mitma-mobility-2024-v6" class="csl-entry" role="listitem">
-Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2024. <span>“<span>Estudio de movilidad de viajeros de <span>á</span>mbito nacional aplicando la tecnolog<span>í</span>a Big Data. Informe metodol<span>ó</span>gico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)</span>.”</span> <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" class="external-link">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data</a>.
+</details></section><section class="section level2"><h2 id="overall-approach-to-accessing-the-data">Overall approach to accessing the data<a class="anchor" aria-label="anchor" href="#overall-approach-to-accessing-the-data"></a>
+</h2>
+<p>If you only want to analyse the data for a few days, you can use the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.</p>
+<p>If you need longer periods (several months or years), you should use the <code><a href="../reference/spod_convert.html">spod_convert()</a></code> and <code><a href="../reference/spod_connect.html">spod_connect()</a></code> functions, which will convert the data into special format which is much faster for analysis, for this see the <a href="convert.qmd">Download and convert OD datasets</a> vignette. <code><a href="../reference/spod_get_zones.html">spod_get_zones()</a></code> will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones ’id’s. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with <code>spod_codebook(ver = 1)</code> and <code>spod_codebook(ver = 2)</code>, or simply visit the package website at <a href="https://ropenspain.github.io/spanishoddata/" class="external-link">https://ropenspain.github.io/spanishoddata/</a>. The <a href="#fig-overall-flow" class="quarto-xref">Figure 1</a> presents the overall approach to accessing the data in the <code>spanishoddata</code> package.</p>
+<div id="fig-overall-flow" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-overall-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="media/package-functions-overview.svg" style="width:78.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-overall-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 1: The overview of how to use the pacakge functions to get the data
+</figcaption></figure>
+</div>
+</section><section class="section level2"><h2 id="spatial-data-with-zoning-boundaries">1. Spatial data with zoning boundaries<a class="anchor" aria-label="anchor" href="#spatial-data-with-zoning-boundaries"></a>
+</h2>
+<p>The boundary data is provided at three geographic levels: <a href="#districts"><code>Distrtics</code></a>, <a href="#municipalities"><code>Municipalities</code></a>, and <a href="#lua"><code>Large Urban Areas</code></a>. It’s important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities”.</p>
+<section class="level2"><h3 id="districts">1.1 <code>Districts</code>
+<a class="anchor" aria-label="anchor" href="#districts"></a>
+</h3>
+<p><code>Districts</code> correspond to official census districts in cities; however, in those with lower population density, they are grouped together. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset. Therefore, there are 3792 ‘districts’ compared to the 10494 official census districts on which they are based. There are also <a href="https://ec.europa.eu/eurostat/web/nuts" target="_blank" class="external-link">NUTS3 statistical regions</a> covering France (94 units) and Portugal (23 units). Therefore there is a total of 3909 zones in the <code>Districts</code> dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">districts_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"dist"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The <code>districts_v2</code> object is of class <code>sf</code> consisting of polygons.</p>
+<p>Data structure:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th>Variable Name</th>
+<th><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>District <code>id</code> assigned by the data provider. Matches with <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in district-level origin-destination and number of trips data.</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>Name of the district.</td>
+</tr>
+<tr class="odd">
+<td><code>population</code></td>
+<td>Number of individuals in the district according to <a href="https://ine.es/" target="_blank" class="external-link">INE</a><a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This is likely the population as of end of 2021 or start of 2022. Population for a few districts is missing. Instead of population, residence and overnight stays data may be used as a proxy with caution. Also, newer population figures may be obtained and joined with the provided zones using the reference tables that match the zones ids with official municipal and census district ids from INE.&lt;/p&gt;"><sup>2</sup></a>.</td>
+</tr>
+<tr class="even">
+<td><code>census_sections</code></td>
+<td>Semicolon-separated list of census section identifiers that correspond to each district, classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="odd">
+<td><code>census_districts</code></td>
+<td>Semicolon-separated list of census district identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="even">
+<td><code>municipalities</code></td>
+<td>Semicolon-separated list of municipality identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="odd">
+<td><code>municipalities_mitma</code></td>
+<td>Semicolon-separated list of municipality identifiers as assigned by the data provider (MITMA).</td>
+</tr>
+<tr class="even">
+<td><code>luas_mitma</code></td>
+<td>Semicolon-separated list of Large Urban Areas (LUAs) as assigned by the data provider, corresponding to each district.</td>
+</tr>
+<tr class="odd">
+<td><code>district_ids_in_v1</code></td>
+<td>Semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, marked as <code>NA</code>.</td>
+</tr>
+<tr class="even">
+<td><code>geometry</code></td>
+<td>Spatial geometry of each district stored as a <code>MULTIPOLYGON</code> object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.</td>
+</tr>
+</tbody>
+</table></section><section class="level2"><h3 id="municipalities">1.2 <code>Municipalities</code>
+<a class="anchor" aria-label="anchor" href="#municipalities"></a>
+</h3>
+<p><code>Municipalities</code> are made up of official municipalities in those of a certain size; however, they have also been aggregated in cases of lower population density. As a result, there are 2618 municipalities compared to the 8,125 official municipalities on which they are based. There are also <a href="https://ec.europa.eu/eurostat/web/nuts" target="_blank" class="external-link">NUTS3 statistical regions</a> covering France (94 units) and Portugal (23 units). Therefore there is a total of 2735 zones in the <code>Districts</code> dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">municipalities_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"muni"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The resulting <code>municipalities_v2</code> object is type <code>sf</code> consisting of polygons.</p>
+<p>Data structure:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th>Variable Name</th>
+<th><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>District <code>id</code> assigned by the data provider. Matches with <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in district-level origin-destination and number of trips data.</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>Name of the district.</td>
+</tr>
+<tr class="odd">
+<td><code>population</code></td>
+<td>Number of individuals in the district according to <a href="https://ine.es/" target="_blank" class="external-link">INE</a><a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This is likely the population as of end of 2021 or start of 2022. Population for a few districts is missing. Instead of population, residence and overnight stays data may be used as a proxy with caution. Also, newer population figures may be obtained and joined with the provided zones using the reference tables that match the zones ids with official municipal and census district ids from INE.&lt;/p&gt;"><sup>3</sup></a>.</td>
+</tr>
+<tr class="even">
+<td><code>census_sections</code></td>
+<td>Semicolon-separated list of census section identifiers that correspond to each district, classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="odd">
+<td><code>census_districts</code></td>
+<td>Semicolon-separated list of census district identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="even">
+<td><code>municipalities</code></td>
+<td>Semicolon-separated list of municipality identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="odd">
+<td><code>districts_mitma</code></td>
+<td>Semicolon-separated list of district identifiers as assigned by the data provider (MITMA).</td>
+</tr>
+<tr class="even">
+<td><code>luas_mitma</code></td>
+<td>Semicolon-separated list of Large Urban Areas (LUAs) as assigned by the data provider, corresponding to each district.</td>
+</tr>
+<tr class="odd">
+<td><code>municipality_ids_in_v1</code></td>
+<td>Semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, marked as <code>NA</code>.</td>
+</tr>
+<tr class="even">
+<td><code>geometry</code></td>
+<td>Spatial geometry of each district stored as a <code>MULTIPOLYGON</code> object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.</td>
+</tr>
+</tbody>
+</table></section><section class="level2"><h3 id="luas">1.3 <code>LUAs (Large Urban Areas)</code>
+<a class="anchor" aria-label="anchor" href="#luas"></a>
+</h3>
+<p><code>Large Urban Areas (LUAs)</code> has essentially the same spatial units as <a href="#municipalities"><code>Municipalities</code></a>, but are not aggregated. Therefore, there are 2086 locations in the <code>LUAs</code> dataset. There are also <a href="https://ec.europa.eu/eurostat/web/nuts" target="_blank" class="external-link">NUTS3 statistical regions</a> covering France (94 units) and Portugal (23 units). Therefore there is a total of 2203 zones in the <code>LUAs</code> dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">luas_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"lua"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The resulting <code>luas_v2</code> object is type <code>sf</code> consisting of polygons.</p>
+<p>Data structure:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th>Variable Name</th>
+<th><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>District <code>id</code> assigned by the data provider. Matches with <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in district-level origin-destination and number of trips data.</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>Name of the district.</td>
+</tr>
+<tr class="odd">
+<td><code>population</code></td>
+<td>Number of individuals in the district according to <a href="https://ine.es/" target="_blank" class="external-link">INE</a><a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;This is likely the population as of end of 2021 or start of 2022. Population for a few districts is missing. Instead of population, residence and overnight stays data may be used as a proxy with caution. Also, newer population figures may be obtained and joined with the provided zones using the reference tables that match the zones ids with official municipal and census district ids from INE.&lt;/p&gt;"><sup>4</sup></a>.</td>
+</tr>
+<tr class="even">
+<td><code>census_sections</code></td>
+<td>Semicolon-separated list of census section identifiers that correspond to each district, classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="odd">
+<td><code>census_districts</code></td>
+<td>Semicolon-separated list of census district identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="even">
+<td><code>municipalities</code></td>
+<td>Semicolon-separated list of municipality identifiers corresponding to each district, as classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="odd">
+<td><code>districts_mitma</code></td>
+<td>Semicolon-separated list of district identifiers as assigned by the data provider (MITMA).</td>
+</tr>
+<tr class="even">
+<td><code>municipalities_mitma</code></td>
+<td>Semicolon-separated list of municipality identifiers as assigned by the data provider (MITMA).</td>
+</tr>
+<tr class="odd">
+<td><code>geometry</code></td>
+<td>Spatial geometry of each district stored as a <code>MULTIPOLYGON</code> object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.</td>
+</tr>
+</tbody>
+</table></section></section><section class="section level2"><h2 id="mobility-data">2. Mobility data<a class="anchor" aria-label="anchor" href="#mobility-data"></a>
+</h2>
+<p>All mobility data is referenced via <code>id_origin</code>, <code>id_destination</code>, or other location identifiers (mostly labelled as <code>id</code>) with the two sets of zones described above.</p>
+<section class="level2"><h3 id="od-data">2.1. Origin-destination data<a class="anchor" aria-label="anchor" href="#od-data"></a>
+</h3>
+<p>The origin-destination data contain the number of trips between <code>districts</code>, <code>municipalities</code>, or <code>large urban areas (LUAs)</code> in Spain for every hour of every day between 2022-02-01 and whichever currently available latest data (2024-06-30 at the time of writing). Each flow also has attributes such as the trip purpose (composed of the type of activity (<code>home</code>/<code>work_or_study</code>/<code>frequent_activity</code>/<code>infrequent_activity</code>) at both the origin and destination, but also age, sex, and income of each group of individuals traveling between the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table.</p>
+<p>Here are the variables you can find in the <code>district</code>, <code>municipality</code> and <code>large urban area</code> level data:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th><strong>English Variable Name</strong></th>
+<th><strong>Original Variable Name</strong></th>
+<th><strong>Type</strong></th>
+<th><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>date</code></td>
+<td><code>fecha</code></td>
+<td><code>Date</code></td>
+<td>The date of the recorded data, formatted as <code>YYYY-MM-DD</code>.</td>
+</tr>
+<tr class="even">
+<td><code>time_slot</code></td>
+<td><code>periodo</code></td>
+<td><code>integer</code></td>
+<td>The time slot during which the trips occurred.</td>
+</tr>
+<tr class="odd">
+<td><code>id_origin</code></td>
+<td><code>origen</code></td>
+<td><code>factor</code></td>
+<td>The origin zone <code>id</code> of <code>district</code>, <code>municipality</code>, or <code>large urban area</code>.</td>
+</tr>
+<tr class="even">
+<td><code>id_destination</code></td>
+<td><code>destino</code></td>
+<td><code>factor</code></td>
+<td>The destination zone <code>id</code> of <code>district</code>, <code>municipality</code>, or <code>large urban area</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>distance</code></td>
+<td><code>distancia</code></td>
+<td><code>factor</code></td>
+<td>The distance range of the trip, categorized into specific intervals such as <code>0.5-2</code> (500 m to 2 km), <code>2-10</code> (2-10 km), <code>10-50</code> (10-50km), and <code>&gt;50</code> (50 or more km).</td>
+</tr>
+<tr class="even">
+<td><code>activity_origin</code></td>
+<td><code>actividad_origen</code></td>
+<td><code>factor</code></td>
+<td>The type of activity at the origin zone, recoded from <code>casa</code>, <code>trabajo_estudio</code>, <code>frecuente</code>, <code>no_frecuente</code> to <code>home</code>, <code>work_or_study</code>, <code>frequent_activity</code>, <code>infrequent_activity</code> respectively.</td>
+</tr>
+<tr class="odd">
+<td><code>activity_destination</code></td>
+<td><code>actividad_destino</code></td>
+<td><code>factor</code></td>
+<td>The type of activity at the destination zone, similarly recoded as for <code>activity_origin</code> above.</td>
+</tr>
+<tr class="even">
+<td><code>study_possible_origin</code></td>
+<td><code>estudio_origen_posible</code></td>
+<td><code>logical</code></td>
+<td>
+<code>TRUE</code> if the activity at origin may be connected with study, and <code>FALSE</code> otherwise.</td>
+</tr>
+<tr class="odd">
+<td><code>study_possible_destination</code></td>
+<td><code>estudio_destino_posible</code></td>
+<td><code>logical</code></td>
+<td>
+<code>TRUE</code> if the activity at destination may be connected with study, and <code>FALSE</code> otherwise.</td>
+</tr>
+<tr class="even">
+<td><code>residence_province_ine_code</code></td>
+<td><code>residencia</code></td>
+<td><code>factor</code></td>
+<td>The province code of residence of individuals making the trips in <code>n_trips</code>, encoded as province codes as classified by the Spanish Statistical Office (INE).</td>
+</tr>
+<tr class="odd">
+<td><code>residence_province_name</code></td>
+<td>Derived from <code>residencia</code>
+</td>
+<td><code>factor</code></td>
+<td>The full name of the residence province, derived from the province code above.</td>
+</tr>
+<tr class="even">
+<td><code>income</code></td>
+<td><code>renta</code></td>
+<td><code>factor</code></td>
+<td>The income group of individuals making the trips in <code>n_trips</code>. Categorized into <code>&lt;10</code>, <code>10-15</code>, and <code>&gt;15</code> (thousands of euros per year). The income for each individual is assigned based on the mean census tract income per person (data source is <a href="https://www.ine.es/dyngs/INEbase/en/operacion.htm?c=Estadistica_C&amp;cid=1254736177088&amp;menu=ultiDatos&amp;idp=1254735976608" class="external-link">INE Household income distribution map</a>).</td>
+</tr>
+<tr class="odd">
+<td><code>age</code></td>
+<td><code>edad</code></td>
+<td><code>factor</code></td>
+<td>The age group of individuals making the trips in <code>n_trips</code>. Categorized into <code>0-25</code>, <code>25-45</code>, <code>45-65</code>, <code>65-100</code>, or <code>NA</code>. The data is partially imputed, for details see <a href="https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/" class="external-link">this blogpost</a> by Nommon.</td>
+</tr>
+<tr class="even">
+<td><code>sex</code></td>
+<td><code>sexo</code></td>
+<td><code>factor</code></td>
+<td>The sex of individuals making the trips in <code>n_trips</code>. Categorized into <code>female</code>, <code>male</code>, or <code>NA</code>. The data is partially imputed, for details see <a href="https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/" class="external-link">this blogpost</a> by Nommon.</td>
+</tr>
+<tr class="odd">
+<td><code>n_trips</code></td>
+<td><code>viajes</code></td>
+<td><code>numeric</code></td>
+<td>The number of trips for that specific origin-destination pair and time slot.</td>
+</tr>
+<tr class="even">
+<td><code>trips_total_length_km</code></td>
+<td><code>viajes_km</code></td>
+<td><code>numeric</code></td>
+<td>The total length of trips in kilometers, summing up all trips between the origin and destination zones.</td>
+</tr>
+<tr class="odd">
+<td><code>year</code></td>
+<td><code>year</code></td>
+<td><code>integer</code></td>
+<td>The year of the recorded data, extracted from the date.</td>
+</tr>
+<tr class="even">
+<td><code>month</code></td>
+<td><code>month</code></td>
+<td><code>integer</code></td>
+<td>The month of the recorded data, extracted from the date.</td>
+</tr>
+<tr class="odd">
+<td><code>day</code></td>
+<td><code>day</code></td>
+<td><code>integer</code></td>
+<td>The day of the recorded data, extracted from the date.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Getting the data</strong></p>
+<p>To access the data, use the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. In this example we will use a short interval of dates:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2022-01-01"</span>, end <span class="op">=</span> <span class="st">"2022-01-04"</span><span class="op">)</span></span>
+<span><span class="va">od_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"dist"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span>
+<span><span class="va">od_muni</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"muni"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The data for the specified dates will be automatically downloaded and cached in the <code>SPANISH_OD_DATA_DIR</code> directory. Existing files will not be re-downloaded.</p>
+<p><strong>Working with the data</strong></p>
+<p>The resulting objects <code>od_dist</code> and <code>od_muni</code> are of class <code>tbl_duckdb_connection</code><a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For reference: this object also has classes: &lt;code&gt;tbl_dbi&lt;/code&gt; ,&lt;code&gt;tbl_sql&lt;/code&gt;, &lt;code&gt;tbl_lazy&lt;/code&gt; ,and &lt;code&gt;tbl&lt;/code&gt; .&lt;/p&gt;"><sup>5</sup></a>. Basically, you can treat these as regular <code>data.frame</code>s or <code>tibble</code>s. One important difference is that the data is not actually loaded into memory, because if you requested more dates, e.g. a whole month or a year, all that data would most likely not fit into your computer’s memory. A <code>tbl_duckdb_connection</code> is mapped to the downloaded CSV files that are cached on disk and the data is only loaded in small chunks as needed at the time of computation. You can manipulate <code>od_dist</code> and <code>od_muni</code> using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>, etc. In the end of any sequence of commands you will need to add <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code> to execute the whole chain of data manipulations and load the results into memory in an R <code>data.frame</code>/<code>tibble</code> like so:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="va">od_mean_trips_by_ses_over_the_4_days</span> <span class="op">&lt;-</span> <span class="va">od_dist</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">age</span>, <span class="va">sex</span>, <span class="va">income</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span>, <span class="va">income</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    daily_mean_n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">od_mean_trips_by_ses_over_the_4_days</span></span></code></pre></div>
+</div>
+<pre><code># A tibble: 39 × 4
+   age   sex    income daily_mean_n_trips
+   &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;               &lt;dbl&gt;
+ 1 NA    NA     &lt;10              7002485.
+ 2 NA    NA     10-15           16551405.
+ 3 NA    NA     &gt;15              2651481.
+ 4 0-25  NA     &lt;10               539060.
+ 5 0-25  NA     10-15            1950892.
+ 6 0-25  NA     &gt;15               401557.
+ 7 0-25  female &lt;10              1484989.
+ 8 0-25  female 10-15            5357785.
+ 9 0-25  female &gt;15              1764454.
+10 0-25  male   &lt;10              1558461.
+# ℹ 29 more rows
+# ℹ Use `print(n = ...)` to see more rows</code></pre>
+<p>In this example above, becaus the data is with hourly intervals within each day, we first summed the number of trips for each day by age, sex, and income groups. We then grouped the data again dropping the day variable and calculated the mean number of trips per day by age, sex, and income groups. The full data for all 4 days was probably never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. If you were doing the same opearation on 100 or even more days, it would work in the same way and would be possible even with limited memory. This is done transparantly to the user with the help of <a href="https://duckdb.org/" target="_blank" class="external-link"><code>DuckDB</code></a> (specifically, with <a href="https://r.duckdb.org/index.html" target="_blank" class="external-link">{duckdb} R package</a> <span class="citation" data-cites="duckdb-r">Mühleisen and Raasveldt (<a href="#ref-duckdb-r" role="doc-biblioref">2024</a>)</span>).</p>
+<p>The same summary operation as provided in the example above can be done with the entire dataset for multiple years worth of data on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, please also see the <a href="convert.qmd">vignette on converting the data</a> into formats that will increase the analsysis performance.</p>
+<div>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>As long as you use a table connection object created with <code><a href="../reference/spod_get.html">spod_get()</a></code> function, it is much quicker to filter the dates by the <code>year</code>, <code>month</code> and <code>day</code> variables, rather than by the <code>date</code> variable. This is because the data for each day is in a separate CSV file located in folders that look like <code>year=2020/month=2/day=14</code>. So when filtering by the <code>date</code> field, R will have to scan all CSV files comparing the specified date with what is stored inside each CSV file. However, if you query by <code>year</code>, <code>month</code> and <code>day</code> variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use <code><a href="../reference/spod_get.html">spod_get()</a></code> . If you convert (see the <a href="convert.qmd">relevant vignette</a>) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance.</p>
+</blockquote>
+</div>
+</section><section class="level2"><h3 id="nt-data">2.2. Number of trips data<a class="anchor" aria-label="anchor" href="#nt-data"></a>
+</h3>
+<p>For each location, the “number of trips” data provides the number of individuals who spent the night there, with breakdown by the number of trips made, age, and sex.</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th><strong>English Variable Name</strong></th>
+<th><strong>Original Variable Name</strong></th>
+<th><strong>Type</strong></th>
+<th><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>date</code></td>
+<td><code>fecha</code></td>
+<td><code>Date</code></td>
+<td>The date of the recorded data, formatted as <code>YYYY-MM-DD</code>.</td>
+</tr>
+<tr class="even">
+<td><code>id</code></td>
+<td><code>distrito</code></td>
+<td><code>factor</code></td>
+<td>The identifier of the <code>district</code> or <code>municipality</code> zone.</td>
+</tr>
+<tr class="odd">
+<td><code>age</code></td>
+<td><code>edad</code></td>
+<td><code>factor</code></td>
+<td>The age group of individuals making the trips in <code>n_trips</code>. Categorized into <code>0-25</code>, <code>25-45</code>, <code>45-65</code>, <code>65-100</code>, or <code>NA</code>. The data is partially imputed, for details see <a href="https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/" class="external-link">this blogpost</a> by Nommon.</td>
+</tr>
+<tr class="even">
+<td><code>sex</code></td>
+<td><code>sexo</code></td>
+<td><code>factor</code></td>
+<td>The sex of individuals making the trips in <code>n_trips</code>. Categorized into <code>female</code>, <code>male</code>, or <code>NA</code>. The data is partially imputed, for details see <a href="https://www.nommon.es/blog/using-machine-learning-to-predict-sociodemographic-characteristics/" class="external-link">this blogpost</a> by Nommon.</td>
+</tr>
+<tr class="odd">
+<td><code>n_trips</code></td>
+<td><code>numero_viajes</code></td>
+<td><code>factor</code></td>
+<td>The number of individuals who made trips, categorized by <code>0</code>, <code>1</code>, <code>2</code>, or <code>2+</code> trips.</td>
+</tr>
+<tr class="even">
+<td><code>n_persons</code></td>
+<td><code>personas</code></td>
+<td><code>factor</code></td>
+<td>The number of persons making the trips from <code>district</code>, <code>municipality</code>, or <code>large urban area (LUA)</code> with zone <code>id</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>year</code></td>
+<td><code>year</code></td>
+<td><code>integer</code></td>
+<td>The year of the recorded data, extracted from the date.</td>
+</tr>
+<tr class="even">
+<td><code>month</code></td>
+<td><code>month</code></td>
+<td><code>integer</code></td>
+<td>The month of the recorded data, extracted from the date.</td>
+</tr>
+<tr class="odd">
+<td><code>day</code></td>
+<td><code>day</code></td>
+<td><code>integer</code></td>
+<td>The day of the recorded data, extracted from the date.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Getting the data</strong></p>
+<p>To access it use <code><a href="../reference/spod_get.html">spod_get()</a></code> with <code>type</code> set to “number_of_trips”, or just “nt”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2022-01-01"</span>, end <span class="op">=</span> <span class="st">"2022-01-04"</span><span class="op">)</span></span>
+<span><span class="va">nt_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"number_of_trips"</span>, zones <span class="op">=</span> <span class="st">"dist"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>Because this data is small, we can actually load it completely into memory:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nt_dist_tbl</span> <span class="op">&lt;-</span> <span class="va">nt_dist</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h3 id="os-data">2.3. Overnight stays<a class="anchor" aria-label="anchor" href="#os-data"></a>
+</h3>
+<p>This dataset provides the number of people who spend the night in each location, also identifying their place of residence down to the census district level according to the <a href="https://www.ine.es/ss/Satellite?c=Page&amp;p=1259952026632&amp;pagename=ProductosYServicios%2FPYSLayout&amp;cid=1259952026632&amp;L=1" target="_blank" class="external-link">INE encoding</a>.</p>
+<p>Here are the variables you can find in the <code>district</code>, <code>municipality</code> and <code>large urban area</code> level data:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th><strong>English Variable Name</strong></th>
+<th><strong>Original Variable Name</strong></th>
+<th><strong>Type</strong></th>
+<th><strong>Description</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>date</code></td>
+<td><code>fecha</code></td>
+<td><code>Date</code></td>
+<td>The date of the recorded data, formatted as <code>YYYY-MM-DD</code>.</td>
+</tr>
+<tr class="even">
+<td><code>id_residence</code></td>
+<td><code>zona_residencia</code></td>
+<td><code>factor</code></td>
+<td>The identifier of the census district according to the <a href="https://www.ine.es/ss/Satellite?c=Page&amp;p=1259952026632&amp;pagename=ProductosYServicios%2FPYSLayout&amp;cid=1259952026632&amp;L=1" target="_blank" class="external-link">INE encoding</a>.</td>
+</tr>
+<tr class="odd">
+<td><code>id_overnight_stay</code></td>
+<td><code>zona_pernoctacion</code></td>
+<td><code>factor</code></td>
+<td>The identifier of the <code>district</code>, <code>municipality</code>, or <code>large urban area (LUA)</code> zone.</td>
+</tr>
+<tr class="even">
+<td><code>n_persons</code></td>
+<td><code>personas</code></td>
+<td><code>factor</code></td>
+<td>The number of persons making the trips from <code>district</code>, <code>municipality</code>, or <code>large urban area</code> with zone <code>id</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>year</code></td>
+<td><code>year</code></td>
+<td><code>integer</code></td>
+<td>The year of the recorded data, extracted from the date.</td>
+</tr>
+<tr class="even">
+<td><code>month</code></td>
+<td><code>month</code></td>
+<td><code>integer</code></td>
+<td>The month of the recorded data, extracted from the date.</td>
+</tr>
+<tr class="odd">
+<td><code>day</code></td>
+<td><code>day</code></td>
+<td><code>integer</code></td>
+<td>The day of the recorded data, extracted from the date.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Getting the data</strong></p>
+<p>To access it use <code><a href="../reference/spod_get.html">spod_get()</a></code> with <code>type</code> set to “number_of_trips”, or just “nt”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2022-01-01"</span>, end <span class="op">=</span> <span class="st">"2022-01-04"</span><span class="op">)</span></span>
+<span><span class="va">os_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"overnight_stays"</span>, zones <span class="op">=</span> <span class="st">"dist"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>Because this data is small, we can actually load it completely into memory:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">os_dist_tbl</span> <span class="op">&lt;-</span> <span class="va">os_dist</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-duckdb-r" class="csl-entry" role="listitem">
+Mühleisen, Hannes, and Mark Raasveldt. 2024. <em>Duckdb: DBI Package for the DuckDB Database Management System</em>. <a href="https://doi.org/10.32614/CRAN.package.duckdb" class="external-link">https://doi.org/10.32614/CRAN.package.duckdb</a>.
+</div>
+<div id="ref-mitma-mobility-2024-v7" class="csl-entry" role="listitem">
+Secretaría de Estado de Transportes y Movilidad Sostenible. 2024. <span>“<span>Estudio de movilidad de viajeros de <span>á</span>mbito nacional aplicando la tecnolog<span>í</span>a Big Data. Informe metodol<span>ó</span>gico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)</span>.”</span> <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" class="external-link">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data</a>.
 </div>
 </div>
-</section><script id="quarto-html-after-body" type="application/javascript">
+</section></section><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -216,7 +794,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script></main>
+</script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

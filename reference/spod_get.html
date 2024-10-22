@@ -35,7 +35,7 @@ If you want to analyse longer periods of time (especiially several months or eve
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Get tabular data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/main/R/get_v1_data.R" class="external-link"><code>R/get_v1_data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/v2-codebook/R/get_v1_data.R" class="external-link"><code>R/get_v1_data.R</code></a></small>
       <div class="d-none name"><code>spod_get.Rd</code></div>
     </div>
 
@@ -49,7 +49,7 @@ If you want to analyse longer periods of time (especiially several months or eve
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">spod_get</span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"od"</span>, <span class="st">"origin-destination"</span>, <span class="st">"os"</span>, <span class="st">"overnight_stays"</span>, <span class="st">"nt"</span>, <span class="st">"number_of_trips"</span><span class="op">)</span>,</span>
 <span>  zones <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"districts"</span>, <span class="st">"dist"</span>, <span class="st">"distr"</span>, <span class="st">"distritos"</span>, <span class="st">"municipalities"</span>, <span class="st">"muni"</span>,</span>
-<span>    <span class="st">"municip"</span>, <span class="st">"municipios"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"municip"</span>, <span class="st">"municipios"</span>, <span class="st">"lua"</span>, <span class="st">"large_urban_areas"</span>, <span class="st">"gau"</span>, <span class="st">"grandes_areas_urbanas"</span><span class="op">)</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data_dir <span class="op">=</span> <span class="fu"><a href="spod_get_data_dir.html">spod_get_data_dir</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -75,7 +75,7 @@ If you want to analyse longer periods of time (especiially several months or eve
 
 <dt id="arg-dates">dates<a class="anchor" aria-label="anchor" href="#arg-dates"></a></dt>
 <dd><p>A <code>character</code> or <code>Date</code> vector of dates to process. Kindly keep in mind that v1 and v2 data follow different data collection methodologies and may not be directly comparable. Therefore, do not try to request data from both versions for the same date range. If you need to compare data from both versions, please refer to the respective codebooks and methodology documents. The v1 data covers the period from 2020-02-14 to 2021-05-09, and the v2 data covers the period from 2022-01-01 to the present until further notice. The true dates range is checked against the available data for each version on every function run.</p>
-<p>The possible values can be any of the following:</p><ul><li><p>For the <code>spod_get()</code> function, the <code>dates</code> can be set to "cached_v1" or "cached_v2" to request data from cached v1 (2020-2021) or v2 (2022 onwards). In this case, the function will identify and use all data files that have been downloaded and cached locally, e.g. using a separate previous call to <code><a href="spod_download_data.html">spod_download_data()</a></code>.</p></li>
+<p>The possible values can be any of the following:</p><ul><li><p>For the <code>spod_get()</code> and <code><a href="spod_convert.html">spod_convert()</a></code> functions, the <code>dates</code> can be set to "cached_v1" or "cached_v2" to request data from cached (already previously downloaded) v1 (2020-2021) or v2 (2022 onwards) data. In this case, the function will identify and use all data files that have been downloaded and cached locally, (e.g. using an explicit run of <code><a href="spod_download.html">spod_download()</a></code>, or any data requests made using the <code>spod_get()</code> or <code><a href="spod_convert.html">spod_convert()</a></code> functions).</p></li>
 <li><p>A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. <code>character</code> or <code>Date</code> object.</p></li>
 <li><p>A vector of dates in ISO (YYYY-MM-DD) or YYYYMMDD format. <code>character</code> or <code>Date</code> object. Can be any non-consecutive sequence of dates.</p></li>
 <li><p>A date range</p><ul><li><p>eigher a <code>character</code> or <code>Date</code> object of length 2 with clearly named elements <code>start</code> and <code>end</code> in ISO (YYYY-MM-DD) or YYYYMMDD format. E.g. <code>c(start = "2020-02-15", end = "2020-02-17")</code>;</p></li>

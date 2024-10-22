@@ -33,7 +33,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Connect to data converted to DuckDB</h1>
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/main/R/connect_to_converted_data.R" class="external-link"><code>R/connect_to_converted_data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/v2-codebook/R/connect_to_converted_data.R" class="external-link"><code>R/connect_to_converted_data.R</code></a></small>
       <div class="d-none name"><code>spod_connect.Rd</code></div>
     </div>
 
@@ -62,7 +62,7 @@
 
 
 <dt id="arg-target-table-name">target_table_name<a class="anchor" aria-label="anchor" href="#arg-target-table-name"></a></dt>
-<dd><p>table name inside the database.</p></dd>
+<dd><p>Default is <code>NULL</code>. When connecting to a folder of <code>parquet</code> files, this argument is ignored. When connecting to a <code>DuckDB</code> database, a <code>character</code> vector of length 1 with the table name to open from the database file. If not specified, it will be guessed from the <code>data_path</code> argument and from table names that are available in the database. If you have not manually interfered with the database, this should be guessed automatically and you do not need to specify it.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>

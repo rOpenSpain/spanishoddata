@@ -33,7 +33,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Get zones</h1>
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/main/R/get.R" class="external-link"><code>R/get.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/v2-codebook/R/get.R" class="external-link"><code>R/get.R</code></a></small>
       <div class="d-none name"><code>spod_get_zones.Rd</code></div>
     </div>
 
@@ -75,19 +75,57 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code>sf</code> object (Simple Feature collection).</p>
-<p>The columns include (for both v1 (2020-2021) and v2 (2022 onwards) data:</p><dl><dt>id</dt>
-<dd><p>A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.</p></dd>
+<p>The columns for v1 (2020-2021) data include:</p><dl><dt>id</dt>
+<dd><p>A character vector containing the unique identifier for each district, assigned by the data provider. This <code>id</code> matches the <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in district-level origin-destination and number of trips data.</p></dd>
+
+<dt>census_districts</dt>
+<dd><p>A string with semicolon-separated identifiers of census districts classified by the Spanish Statistical Office (INE) that are spatially bound within the polygons for each <code>id</code>.</p></dd>
+
+<dt>municipalities_mitma</dt>
+<dd><p>A string with semicolon-separated municipality identifiers (as assigned by the data provider) corresponding to each district <code>id</code>.</p></dd>
+
+<dt>municipalities</dt>
+<dd><p>A string with semicolon-separated municipality identifiers classified by the Spanish Statistical Office (INE) corresponding to each <code>id</code>.</p></dd>
+
+<dt>district_names_in_v2/municipality_names_in_v2</dt>
+<dd><p>A string with semicolon-separated district names (from the v2 version of this data) corresponding to each district <code>id</code> in v1.</p></dd>
+
+<dt>district_ids_in_v2/municipality_ids_in_v2</dt>
+<dd><p>A string with semicolon-separated district identifiers (from the v2 version of this data) corresponding to each district <code>id</code> in v1.</p></dd>
 
 <dt>geometry</dt>
-<dd><p>A <code>MULTIPOLYGON</code> column containing the spatial geometry of each zone, stored as an sf object.
-The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.</p></dd>
+<dd><p>A <code>MULTIPOLYGON</code> column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.</p></dd>
 
 
-</dl><p>Additionally, for v2 (2022 onwards) data:</p><dl><dt>name</dt>
-<dd><p>A character vector with the name of the zone.</p></dd>
+</dl><p>The columns for v2 (2022 onwards) data include:</p><dl><dt>id</dt>
+<dd><p>A character vector containing the unique identifier for each zone, assigned by the data provider.</p></dd>
+
+<dt>name</dt>
+<dd><p>A character vector with the name of each district.</p></dd>
 
 <dt>population</dt>
-<dd><p>A numeric vector representing the population of each zone (as of 2022).</p></dd>
+<dd><p>A numeric vector representing the population of each district (as of 2022).</p></dd>
+
+<dt>census_sections</dt>
+<dd><p>A string with semicolon-separated identifiers of census sections corresponding to each district.</p></dd>
+
+<dt>census_districts</dt>
+<dd><p>A string with semicolon-separated identifiers of census districts as classified by the Spanish Statistical Office (INE) corresponding to each district.</p></dd>
+
+<dt>municipalities</dt>
+<dd><p>A string with semicolon-separated identifiers of municipalities classified by the Spanish Statistical Office (INE) corresponding to each district.</p></dd>
+
+<dt>municipalities_mitma</dt>
+<dd><p>A string with semicolon-separated identifiers of municipalities, as assigned by the data provider, that correspond to each district.</p></dd>
+
+<dt>luas_mitma</dt>
+<dd><p>A string with semicolon-separated identifiers of LUAs (Local Urban Areas) from the provider, associated with each district.</p></dd>
+
+<dt>district_ids_in_v1/municipality_ids_in_v1</dt>
+<dd><p>A string with semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, it is marked as <code>NA</code>.</p></dd>
+
+<dt>geometry</dt>
+<dd><p>A <code>MULTIPOLYGON</code> column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.</p></dd>
 
 
 </dl></div>

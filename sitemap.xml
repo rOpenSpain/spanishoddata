@@ -24,11 +24,13 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_convert.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_dates_argument_to_dates_seq.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_disconnect.html</loc></url>
-<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_download_data.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_download.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_download_zones_v1.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_filter_by_dates.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_limit_resources.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_number_of_trips.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_od.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_overnight_stays.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_set_temp.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_expand_dates_from_regex.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_files_sizes.html</loc></url>
@@ -50,5 +52,6 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_subfolder_clean_data_cache.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_subfolder_metadata_cache.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_subfolder_raw_data_cache.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_unique_separated_ids.html</loc></url>
 </urlset>
 

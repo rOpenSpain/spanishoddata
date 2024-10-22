@@ -73,7 +73,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/main/vignettes/convert.qmd" class="external-link"><code>vignettes/convert.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rOpenSpain/spanishoddata/blob/v2-codebook/vignettes/convert.qmd" class="external-link"><code>vignettes/convert.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -203,9 +203,9 @@ Setting data directory for advanced users
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2023-02-14"</span>, end <span class="op">=</span> <span class="st">"2023-02-17"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/spod_download_data.html">spod_download_data</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="va">dates_2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/spod_download.html">spod_download</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="va">dates_2</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>After that, you can convert any downloaded data (including the files that might have been downloaded previosly by running <code><a href="../reference/spod_get.html">spod_get()</a></code> or <code><a href="../reference/spod_download_data.html">spod_download_data()</a></code> with other dates or date intervals) into <code>DuckDB</code> like so (<code>dates = "cached_v2"</code> means use <em>all</em> downloaded files):</p>
+<p>After that, you can convert any downloaded data (including the files that might have been downloaded previosly by running <code><a href="../reference/spod_get.html">spod_get()</a></code> or <code><a href="../reference/spod_download.html">spod_download()</a></code> with other dates or date intervals) into <code>DuckDB</code> like so (<code>dates = "cached_v2"</code> means use <em>all</em> downloaded files):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_convert.html">spod_convert</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="st">"cached_v2"</span>, save_format <span class="op">=</span> <span class="st">"duckdb"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -288,7 +288,14 @@ Setting data directory for advanced users
 <code class="sourceCode R"><span><span class="va">dates_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">dates_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Due to mobile network outages, some dates are missing, so do not assume that a simple interval between two dates will just work. Currently <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" target="_blank" class="external-link">known outages</a> are: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. This is why it is adviseable to use <code><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates()</a></code> function to get all possible dates from available data.</p>
+<div>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p>Due to mobile network outages, the data on certain dates is missing. Kindly keep this in mind when calculating mean monthly or weekly flows.</p>
+<p><br></p>
+<p>Please check the <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" target="_blank" class="external-link">original data page</a> for currently known missing dates. At the time of writing, the following dates are missing: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. You can use <code><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates()</a></code> function to get all available dates.</p>
+</blockquote>
+</div>
 <section class="level2" data-number="8.1"><h3 data-number="8.1" id="download-all-data">
 <span class="header-section-number">8.1</span> Download all data<a class="anchor" aria-label="anchor" href="#download-all-data"></a>
 </h3>
@@ -297,11 +304,11 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">type</span> <span class="op">&lt;-</span> <span class="st">"origin-destination"</span></span>
 <span><span class="va">zones</span> <span class="op">&lt;-</span> <span class="st">"districts"</span></span>
-<span><span class="fu"><a href="../reference/spod_download_data.html">spod_download_data</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="../reference/spod_download.html">spod_download</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="va">type</span>,</span>
 <span>  zones <span class="op">=</span> <span class="va">zones</span>,</span>
 <span>  dates <span class="op">=</span> <span class="va">dates_v1</span>,</span>
-<span>  return_output <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># to avoid getting all downloaded files printed to console</span></span>
+<span>  return_local_file_paths <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># to avoid getting all downloaded file paths printed to console</span></span>
 <span>  max_download_size_gb <span class="op">=</span> <span class="fl">50</span> <span class="co"># in Gb, this should be well over the actual download size for v1 data</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
