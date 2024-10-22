@@ -193,7 +193,7 @@ dates_1 <- c(start = "2020-02-17", end = "2020-02-19")
 db_2 <- spod_convert(type = "od", zones = "distr", dates = dates_1, overwrite = TRUE)
 ```
 
-In this case, any missing data that has now yet been downloaded will be automatically downloaded, while 2020-02-17 will not be redownloaded, as we already requsted it when creating `db_1`. Then the requested dates will be converted into `DuckDB`, overwriting the file with `db_1`. Once again, we save the path to the output `DuckDB` database file into `db_2` variable.
+In this case, any missing data that has not yet been downloaded will be automatically downloaded, while 2020-02-17 will not be redownloaded, as we already requsted it when creating `db_1`. Then the requested dates will be converted into `DuckDB`, overwriting the file with `db_1`. Once again, we save the path to the output `DuckDB` database file into `db_2` variable.
 
 ## Load the converted `DuckDB` {#load-converted-duckdb}
 
