@@ -111,7 +111,7 @@ spod_get_latest_v2_file_list <- function(
     data_dir = spod_get_data_dir(),
     xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
 ) {
-  if (!fs::dir_exists(data_dir)) {
+  if (!dir.exists(data_dir)) {
     fs::dir_create(data_dir)
   }
 
@@ -119,7 +119,7 @@ spod_get_latest_v2_file_list <- function(
   current_filename <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}/data_links_v2_{current_date}.xml")
 
   # ensure dir exists
-  if (!fs::dir_exists(dirname(current_filename))) {
+  if (!dir.exists(dirname(current_filename))) {
     fs::dir_create(dirname(current_filename), recurse = TRUE)
   }
 
@@ -155,7 +155,7 @@ spod_available_data_v2 <- function(
 ) {
   
   metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
-  if(!fs::dir_exists(metadata_folder)){
+  if(!dir.exists(metadata_folder)){
     fs::dir_create(metadata_folder)
   }
 
@@ -340,7 +340,7 @@ spod_get_zones_v2 <- function(
   metadata_zones_for_download <- metadata_zones[metadata_zones$downloaded == FALSE, ]
   if (nrow(metadata_zones_for_download) > 0){
     dir_names <- unique(fs::path_dir(metadata_zones_for_download$local_path))
-    if (any(!fs::dir_exists(dir_names))) {
+    if (any(!dir.exists(dir_names))) {
       fs::dir_create(dir_names, recurse = TRUE)
     }
     if (isFALSE(quiet)) {
