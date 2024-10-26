@@ -48,7 +48,7 @@ spod_get_temp_dir <- function(
   data_dir = spod_get_data_dir()
 ) {
   temp_dir <- fs::path(data_dir, "temp")
-  if (!fs::dir_exists(temp_dir)) {
+  if (!dir.exists(temp_dir)) {
     fs::dir_create(temp_dir)
   }
   return(temp_dir)

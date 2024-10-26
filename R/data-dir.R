@@ -15,7 +15,7 @@ spod_set_data_dir <- function(
   
   tryCatch({
     # Check if the directory exists; if not, attempt to create it
-    if (!fs::dir_exists(data_dir_abs_path)) {
+    if (!dir.exists(data_dir_abs_path)) {
       if(quiet == FALSE){
         message("Data directory ", data_dir_abs_path, " does not exist. Attempting to create it.")
       }
@@ -62,7 +62,7 @@ spod_get_data_dir <- function(quiet = FALSE) {
   }
   # check if dir exists and create it if it doesn't
   data_dir_env_abs <- fs::path_abs(data_dir_env)
-  if (!fs::dir_exists(data_dir_env_abs)) {
+  if (!dir.exists(data_dir_env_abs)) {
     fs::dir_create(data_dir_env_abs, recurse = TRUE)
   }
   data_dir_env_real <- fs::path_real(data_dir_env_abs)

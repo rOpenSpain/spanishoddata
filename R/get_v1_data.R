@@ -13,7 +13,7 @@ spod_get_latest_v1_file_list <- function(
     data_dir = spod_get_data_dir(),
     xml_url = "https://opendata-movilidad.mitma.es/RSS.xml"
 ) {
-  if (!fs::dir_exists(data_dir)) {
+  if (!dir.exists(data_dir)) {
     fs::dir_create(data_dir)
   }
 
@@ -21,7 +21,7 @@ spod_get_latest_v1_file_list <- function(
   current_filename <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}/data_links_v1_{current_date}.xml")
 
   # ensure dir exists
-  if (!fs::dir_exists(dirname(current_filename))) {
+  if (!dir.exists(dirname(current_filename))) {
     fs::dir_create(dirname(current_filename), recurse = TRUE)
   }
 
@@ -57,7 +57,7 @@ spod_available_data_v1 <- function(
     quiet = FALSE) {
   
   metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
-  if(!fs::dir_exists(metadata_folder)){
+  if(!dir.exists(metadata_folder)){
     fs::dir_create(metadata_folder)
   }
   
@@ -208,7 +208,7 @@ regex <- glue::glue("zonificacion_{zones}\\.")
 sel_zones <- stringr::str_detect(metadata$target_url, regex)
 metadata_zones <- metadata[sel_zones, ]
 dir_name <- fs::path_dir(metadata_zones$local_path[1])
-if (!fs::dir_exists(dir_name)) {
+if (!dir.exists(dir_name)) {
   fs::dir_create(dir_name, recurse = TRUE)
 }
 
@@ -222,14 +222,14 @@ if (!fs::file_exists(metadata_zones$local_path)) {
 }
 
 if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
-if (!fs::dir_exists(fs::path_dir(downloaded_file))){
+if (!dir.exists(fs::path_dir(downloaded_file))){
   fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
 }
 utils::unzip(downloaded_file, exdir = paste0(fs::path_dir(downloaded_file), "/"))
 
 # remove artifacts (remove __MACOSX if exists)
 junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
-if (fs::dir_exists(junk_path)) fs::dir_delete(junk_path)
+if (dir.exists(junk_path)) fs::dir_delete(junk_path)
 
 return(metadata_zones$local_path)
 }

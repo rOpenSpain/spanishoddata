@@ -129,7 +129,7 @@ spod_convert <- function(
     duckdb_target <- save_path
   }
 
-  if (!fs::dir_exists(save_dir)) {
+  if (!dir.exists(save_dir)) {
     fs::dir_create(save_dir, recurse = TRUE)
   }
 
