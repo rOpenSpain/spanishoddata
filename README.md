@@ -140,8 +140,21 @@ library(spanishoddata)
 ## Set the data directory
 
 Choose where `{spanishoddata}` should download (and convert) the data by
-setting the `SPANISH_OD_DATA_DIR` environment variable with the
-following command:
+setting the data directory following command:
+
+``` r
+spod_set_data_dir(data_dir = "~/spanish_od_data")
+```
+
+The function above will also ensure that the directory is created and
+that you have sufficient permissions to write to it.
+
+<details>
+<summary>
+Setting data directory for advanced users
+</summary>
+
+You can also set the data directory with an environment variable:
 
 ``` r
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
@@ -149,11 +162,6 @@ Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 
 The package will create this directory if it does not exist on the first
 run of any function that downloads the data.
-
-<details>
-<summary>
-Setting data directory for advanced users
-</summary>
 
 To permanently set the directory for all projects, you can specify the
 data directory globally by setting the `SPANISH_OD_DATA_DIR` environment

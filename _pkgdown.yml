@@ -51,4 +51,5 @@ reference:
       - spod_codebook
       - spod_available_data
       - spod_get_valid_dates
+      - spod_set_data_dir
       - spod_get_data_dir
