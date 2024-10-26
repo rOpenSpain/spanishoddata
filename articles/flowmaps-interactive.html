@@ -102,24 +102,30 @@
 <section class="level2" data-number="1.1"><h3 data-number="1.1" id="set-data-folder">
 <span class="header-section-number">1.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
 </h3>
-<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
+<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/spod_set_data_dir.html">spod_set_data_dir</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The function above will also ensure that the directory is created and that you have sufficient permissions to write to it.</p>
+<details><summary>
+Setting data directory for advanced users
+</summary><p>You can also set the data directory with an environment variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The package will create this directory if it does not exist on the first run of any function that downloads the data.</p>
-<details><summary>
-Setting data directory for advanced users
-</summary><p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
+<p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Then set the data directory globally, by typing this line in the file:</span></span></code></pre></div>
 </div>
 <pre><code><span><span class="va">SPANISH_OD_DATA_DIR</span> <span class="op">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre>
 <p>You can also set the data directory locally, just for the current project. Set the ‘envar’ in the working directory by editing <code>.Renviron</code> file in the root of the project:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </details></section></section><section class="section level2" data-number="2"><h2 data-number="2" id="simple-example">
@@ -133,7 +139,7 @@ Setting data directory for advanced users
 </h4>
 <p>Let us get the flows between <code>districts</code> for a tipycal working day <code>2021-04-07</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span><span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="st">"2021-04-07"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">od_20210407</span><span class="op">)</span></span></code></pre></div>
@@ -153,7 +159,7 @@ Setting data directory for advanced users
 </h4>
 <p>We also get the district zones polygons to mathch the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant <a href="v1-2020-2021-mitma-data-codebook.qmd">codebook</a>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"dist"</span>, ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">districts_v1</span><span class="op">)</span></span></code></pre></div>
@@ -182,7 +188,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p><strong>Locations</strong></p>
 <p>A <code>data.frame</code> with <code>id</code>, optional <code>name</code>, as well as <code>lat</code> and <code>lon</code> for coordinates of the locations in WGS84 (EPSG: 4326) coordinate reference system.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">flowmapblue</span><span class="fu">::</span><span class="va"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/ch_locations.html" class="external-link">ch_locations</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <pre><code>'data.frame':   26 obs. of  4 variables:
@@ -193,7 +199,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p><strong>Flows</strong></p>
 <p>A <code>data.frame</code> with <code>origin</code>, <code>dest</code>, and <code>count</code> for the flows between locations, where <code>origin</code> and <code>dest</code> must match with <code>id</code>’s of the locations <code>data.frame</code> from above, and <code>count</code> is the number of trips between them.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">flowmapblue</span><span class="fu">::</span><span class="va"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/ch_flows.html" class="external-link">ch_flows</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <pre><code>str(flowmapblue::ch_flows)
@@ -205,7 +211,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span class="header-section-number">2.2.2</span> Aggregate data - count total flows<a class="anchor" aria-label="anchor" href="#aggregate-data---count-total-flows"></a>
 </h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_total</span> <span class="op">&lt;-</span> <span class="va">od_20210407</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span>origin <span class="op">=</span> <span class="va">id_origin</span>, dest <span class="op">=</span> <span class="va">id_destination</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -227,7 +233,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h3>
 <p>We need the coordinates for each origin and destination. We can use the centroids of <code>districts_v1</code> polygons for that.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts_v1_centroids</span> <span class="op">&lt;-</span> <span class="va">districts_v1</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -251,7 +257,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>Remember, what for the map to have a basemap, you need to have setup your Mapbox access token in the <a href="#setup">setup</a> section of this vignette.</p>
 <p>Create the interactive flowmap with the <code>flowmapblue</code> function. In the example below we use the <code>darkMode</code> and <code>clustering</code>, and we disable the <code>animation</code>. We do not recommend disabling the <code>clustering</code> when plotting the flows between hundreds and thousands of locations, as this will reduce the redability of the map.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flowmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/flowmapblue.html" class="external-link">flowmapblue</a></span><span class="op">(</span></span>
 <span>  locations <span class="op">=</span> <span class="va">districts_v1_centroids</span>,</span>
 <span>  flows <span class="op">=</span> <span class="va">od_20210407_total</span>,</span>
@@ -270,7 +276,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p><img src="../reference/figures/flowmapblue-standard-01.png" style="width:45.0%" alt="Screenshot demonstrating the standard interactive flowmap"><img src="../reference/figures/flowmapblue-standard-02.png" style="width:45.0%" alt="Screenshot demonstrating the standard interactive flowmap"></p>
 <p>You can play around with the arguments of the <code>flowmapblue</code> function. For example, you can turn on the <code>animation</code> mode:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flowmap_anim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/flowmapblue.html" class="external-link">flowmapblue</a></span><span class="op">(</span></span>
 <span>  locations <span class="op">=</span> <span class="va">districts_v1_centroids</span>,</span>
 <span>  flows <span class="op">=</span> <span class="va">od_20210407_total</span>,</span>
@@ -299,7 +305,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h3>
 <p>Just like before, we aggregate the data and rename some columns. This time we will keep combine the <code>date</code> and <code>time_slot</code> (which corresponds to the hour of the day) to procude timestamps, so that the flows can be interactively filtered by time of day.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_time</span> <span class="op">&lt;-</span> <span class="va">od_20210407</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">date</span>, <span class="st">"T"</span>, <span class="va">time_slot</span>, <span class="st">":00:00"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span>origin <span class="op">=</span> <span class="va">id_origin</span>, dest <span class="op">=</span> <span class="va">id_destination</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -323,7 +329,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>Because we are now using the flows for each hour of the day, there are 24 times more rows in this data, than in the simple example. Therefore it will take longer to generate the plot and the resulting visualisation may work slower. To create a more manageable example, let us only filter the data to Madrid and surrounding areas.</p>
 <p>Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the <code>district_names_in_v2</code> column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zones_barcelona</span> <span class="op">&lt;-</span> <span class="va">districts_v1</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Barcelona"</span>, <span class="va">district_names_in_v2</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -344,7 +350,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </div>
 <p>Now we prepare the table with coordinates for the flowmap:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zones_barcelona_fua_coords</span> <span class="op">&lt;-</span> <span class="va">zones_barcelona_fua</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -367,7 +373,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h5>
 <p>Now we can use the zone <code>id</code>s from the <code>zones_barcelona_fua</code> data to select the flows that correspond to Barcelona and the 10 km radius around it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_time_barcelona</span> <span class="op">&lt;-</span> <span class="va">od_20210407_time</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">origin</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span> <span class="op">&amp;</span> <span class="va">dest</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -376,7 +382,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </h5>
 <p>Now, we can create a new plot with this data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flowmap_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://flowmapblue.github.io/flowmapblue.R/reference/flowmapblue.html" class="external-link">flowmapblue</a></span><span class="op">(</span></span>
 <span>  locations <span class="op">=</span> <span class="va">zones_barcelona_fua_coords</span>,</span>
 <span>  flows <span class="op">=</span> <span class="va">od_20210407_time_barcelona</span>,</span>

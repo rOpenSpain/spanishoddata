@@ -152,24 +152,30 @@ You can see the query we used for measuring the speed here
 <section class="level2" data-number="4.1"><h3 data-number="4.1" id="set-data-folder">
 <span class="header-section-number">4.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
 </h3>
-<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
+<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/spod_set_data_dir.html">spod_set_data_dir</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The function above will also ensure that the directory is created and that you have sufficient permissions to write to it.</p>
+<details><summary>
+Setting data directory for advanced users
+</summary><p>You can also set the data directory with an environment variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The package will create this directory if it does not exist on the first run of any function that downloads the data.</p>
-<details><summary>
-Setting data directory for advanced users
-</summary><p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
+<p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Then set the data directory globally, by typing this line in the file:</span></span></code></pre></div>
 </div>
 <pre><code><span><span class="va">SPANISH_OD_DATA_DIR</span> <span class="op">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre>
 <p>You can also set the data directory locally, just for the current project. Set the ‘envar’ in the working directory by editing <code>.Renviron</code> file in the root of the project:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </details></section></section><section class="section level2" data-number="5"><h2 data-number="5" id="spod-get">
@@ -178,7 +184,7 @@ Setting data directory for advanced users
 </h2>
 <p>As you might have seen in the codebooks for <a href="v1-2020-2021-mitma-data-codebook.html">v1</a> and <a href="v2-2022-onwards-mitma-data-codebook.html">v2</a> data, you can get a single day’s worth of data as an in-memory object with <code><a href="../reference/spod_get.html">spod_get()</a></code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2024-03-01"</span><span class="op">)</span></span>
 <span><span class="va">d_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">d_1</span><span class="op">)</span></span></code></pre></div>
@@ -201,20 +207,20 @@ Setting data directory for advanced users
 </h3>
 <p>You can download and convert the data into <code>DuckDB</code> database in two steps. For example, you select a few dates, and download the data manually (note: we use <code>dates_2</code> to refer to the fact that we are using v2 data):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2023-02-14"</span>, end <span class="op">=</span> <span class="st">"2023-02-17"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/spod_download.html">spod_download</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="va">dates_2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>After that, you can convert any downloaded data (including the files that might have been downloaded previosly by running <code><a href="../reference/spod_get.html">spod_get()</a></code> or <code><a href="../reference/spod_download.html">spod_download()</a></code> with other dates or date intervals) into <code>DuckDB</code> like so (<code>dates = "cached_v2"</code> means use <em>all</em> downloaded files):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_convert.html">spod_convert</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="st">"cached_v2"</span>, save_format <span class="op">=</span> <span class="st">"duckdb"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">db_2</span> <span class="co"># check the path to the saved `DuckDB` database</span></span></code></pre></div>
 </div>
 <p>The <code>dates = "cached_v2"</code> (which can also be <code>dates = "cached_v1"</code> for v1 data) argument instructs the function to only work with already-downloaded files. By default this resulting <code>DuckDB</code> database for v2 origin-destination data for districts will be saved in the <code>SPANISH_OD_DATA_DIR</code> directory under <code>v2/tabular/duckdb/</code> with filename <code>od_distritos.duckdb</code> (you can change this file path with the <code>save_path</code> argument). The function returns the full path to the database file, which we save into <code>db_2</code> variable. You can also any desired save location with the <code>save_path</code> argument of <code><a href="../reference/spod_convert.html">spod_convert()</a></code>.</p>
 <p>You can also convert any dates range or dates list to <code>DuckDB</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2020-02-17"</span>, end <span class="op">=</span> <span class="st">"2020-02-19"</span><span class="op">)</span></span>
 <span><span class="va">db_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_convert.html">spod_convert</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="va">dates_1</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -225,13 +231,13 @@ Setting data directory for advanced users
 </h3>
 <p>You can read the introductory information on how to connect to <code>DuckDB</code> files <a href="https://duckdb.org/docs/api/r" target="_blank" class="external-link">here</a>, however to simplify things for you we created a helper function. So to connect to the data stored in at path <code>db_1</code> and <code>db_2</code> you can do the following:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_od_data_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_connect.html">spod_connect</a></span><span class="op">(</span><span class="va">db_2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Just like before, with <code><a href="../reference/spod_get.html">spod_get()</a></code> funciton that we used to download raw CSV.gz files and analyse them without any conversion, the resulting object <code>my_od_data_2</code> is also a <code>tbl_duckdb_connection</code>. So, you can treat it as regular <code>data.frame</code> or <code>tibble</code> and use <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>, etc. For analysis, please refer to the recommended external tutorials and our own vignettes in the <a href="#analysing-large-datasets">Analysing large datasets</a> section.</p>
 <p>After finishing working with <code>my_od_data_2</code> we advise that you “disconnect” this data using:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spod_disconnect.html">spod_disconnect</a></span><span class="op">(</span><span class="va">my_od_data_2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>This is useful to free-up memory and is neccessary if you would like to run <code><a href="../reference/spod_convert.html">spod_convert()</a></code> again and save the data to the same location. Otherwise, it is also helpful to avoid unnecessary possible warnings in terminal for garbage collected connections.</p>
@@ -248,7 +254,7 @@ Setting data directory for advanced users
 <p>The advantage of this format is that you can “update” it quickly. For example, if you first downloaded the data for March and April 2020, converted this period into <code>parquet</code> format, and then downloaded the data for May and June 2020, when you run the convertion function again, it will only convert the data for May and June 2020 and add it to the existing <code>parquet</code> files. So you will save time and will not have to wait for March and April 2020 to be converted again.</p>
 <p>Let us convert a few dates to <code>parquet</code> format:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">type</span> <span class="op">&lt;-</span> <span class="st">"od"</span></span>
 <span><span class="va">zones</span> <span class="op">&lt;-</span> <span class="st">"distr"</span></span>
 <span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2020-02-14"</span>, end <span class="op">=</span> <span class="st">"2020-02-17"</span><span class="op">)</span></span>
@@ -256,7 +262,7 @@ Setting data directory for advanced users
 </div>
 <p>If we now request additional dates that overlap with the already converted data like so and specifiy argument <code>overwrite = 'update'</code> we will update the existing <code>parquet</code> files with the new data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2020-02-16"</span>, end <span class="op">=</span> <span class="st">"2020-02-19"</span><span class="op">)</span></span>
 <span><span class="va">od_parquet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_convert.html">spod_convert</a></span><span class="op">(</span>type <span class="op">=</span> <span class="va">type</span>, zones <span class="op">=</span> <span class="va">zones</span>, dates <span class="op">=</span> <span class="va">dates</span>, save_format <span class="op">=</span> <span class="st">"parquet"</span>, overwrite <span class="op">=</span> <span class="st">'update'</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -267,13 +273,13 @@ Setting data directory for advanced users
 </h3>
 <p>Working with these <code>parquet</code> files is exactly the same as with <code>DuckDB</code> and <code>Arrow</code> files. Just like before, you can use the same helper function <code><a href="../reference/spod_connect.html">spod_connect()</a></code> to connect to the <code>parquet</code> files:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_od_data_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_connect.html">spod_connect</a></span><span class="op">(</span><span class="va">od_parquet</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Mind you though, because we have first converted the data for a period between 14 and 17 February 2020, and then converted the data for a period between 16 and 19 February 2020 into the save default location, the <code>od_parquet</code> contains the path to all this data, and therefore <code>my_od_data_3</code> will connect you to all data.</p>
 <p>You can check this like so:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_od_data_3</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span></code></pre></div>
@@ -284,7 +290,7 @@ Setting data directory for advanced users
 </h2>
 <p>To prepare origin-destination data v1 (2020-2021) for analysis over the whole period of data availability, please follow the steps below:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">dates_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -301,7 +307,7 @@ Setting data directory for advanced users
 </h3>
 <p>Here the example is for origin-destination on district level for v1 data. You can change the <code>type</code> to “number_of_trips” and the <code>zones</code> to “municipalities” for v1 data. For v2 data, just use <code>dates</code> starting with 2022-01-01 or the <code>dates_v2</code> from above. Use all other function arguments for v2 in the same way as shown for v1, but also consult the <a href="v2-2022-onwards-mitma-data-codebook.html">v2 data codebook</a>, as it has many more datasets in addition to “origin-destination” and “number_of_trips”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">type</span> <span class="op">&lt;-</span> <span class="st">"origin-destination"</span></span>
 <span><span class="va">zones</span> <span class="op">&lt;-</span> <span class="st">"districts"</span></span>
 <span><span class="fu"><a href="../reference/spod_download.html">spod_download</a></span><span class="op">(</span></span>
@@ -316,7 +322,7 @@ Setting data directory for advanced users
 <span class="header-section-number">8.2</span> Convert all data into analysis ready format<a class="anchor" aria-label="anchor" href="#convert-all-data-into-analysis-ready-format"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">save_format</span> <span class="op">&lt;-</span> <span class="st">"duckdb"</span></span>
 <span></span>
 <span><span class="va">analysis_data_storage</span> <span class="op">&lt;-</span> <span class="fu">spod_convert_data</span><span class="op">(</span></span>
@@ -340,7 +346,7 @@ Setting data directory for advanced users
 </h3>
 <p>You can pass the <code>analysis_data_storage</code> path to <code><a href="../reference/spod_connect.html">spod_connect()</a></code> function, whether it is <code>DuckDB</code> or <code>Parquet</code>. The function will determine the data type automatically and give you back a <code>tbl_duckdb_connection</code><a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For reference: this object also has classes: &lt;code&gt;tbl_dbi&lt;/code&gt; ,&lt;code&gt;tbl_sql&lt;/code&gt;, &lt;code&gt;tbl_lazy&lt;/code&gt; ,and &lt;code&gt;tbl&lt;/code&gt; .&lt;/p&gt;"><sup>1</sup></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_connect.html">spod_connect</a></span><span class="op">(</span></span>
 <span>  data_path <span class="op">=</span> <span class="va">analysis_data_storage</span>, </span>
 <span>  max_mem_gb <span class="op">=</span> <span class="fl">16</span></span>
@@ -351,7 +357,7 @@ Setting data directory for advanced users
 <p>You can manipulate <code>my_data</code> using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>, etc. In the end of any sequence of commands you will need to add <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code> to execute the whole chain of data manipulations and load the results into memory in an R <code>data.frame</code>/<code>tibble</code>. For analysis, please refer to the recommended external tutorials and our own vignettes in the <a href="#analysing-large-datasets">Analysing large datasets</a> section.</p>
 <p>After finishing working with <code>my_data</code> we advise that you “disconnect” to free up memory:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spod_disconnect.html">spod_disconnect</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">

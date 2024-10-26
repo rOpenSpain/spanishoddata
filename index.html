@@ -130,19 +130,23 @@ Alternative installation and developemnt
 <div class="section level2">
 <h2 id="set-the-data-directory">Set the data directory<a class="anchor" aria-label="anchor" href="#set-the-data-directory"></a>
 </h2>
-<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
+<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
-<p>The package will create this directory if it does not exist on the first run of any function that downloads the data.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/spod_set_data_dir.html">spod_set_data_dir</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
+<p>The function above will also ensure that the directory is created and that you have sufficient permissions to write to it.</p>
 <details><summary>
 Setting data directory for advanced users
-</summary><p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
+</summary><p>You can also set the data directory with an environment variable:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
+<p>The package will create this directory if it does not exist on the first run of any function that downloads the data.</p>
+<p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Then set the data directory globally, by typing this line in the file:</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>SPANISH_OD_DATA_DIR <span class="ot">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>SPANISH_OD_DATA_DIR <span class="ot">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre></div>
 <p>You can also set the data directory locally, just for the current project. Set the ‘envar’ in the working directory by editing <code>.Renviron</code> file in the root of the project:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </details>
 </div>
@@ -161,34 +165,34 @@ Setting data directory for advanced users
 <h1 id="showcase">Showcase<a class="anchor" aria-label="anchor" href="#showcase"></a>
 </h1>
 <p>To run the code in this README we will use the following setup:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html" class="external-link">sf_use_s2</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Get metadata for the datasets as follows (we are using version 2 data covering years 2022 and onwards):</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spod_available_data.html">spod_available_data</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># for version 2 of the data</span></span>
 <span><span class="va">metadata</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># A tibble: 9,442 × 6</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>   target_url           pub_ts              file_extension data_ym data_ymd  </span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>                <span class="er">&lt;</span>dttm<span class="sc">&gt;</span>              <span class="er">&lt;</span>chr<span class="sc">&gt;</span>          <span class="er">&lt;</span>date<span class="sc">&gt;</span>  <span class="er">&lt;</span>date<span class="sc">&gt;</span>    </span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a> <span class="dv">1</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">54</span><span class="sc">:</span><span class="dv">08</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-23</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a> <span class="dv">2</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-22</span></span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a> <span class="dv">3</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">47</span><span class="sc">:</span><span class="dv">52</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-20</span></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a> <span class="dv">4</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">14</span><span class="sc">:</span><span class="dv">55</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-18</span></span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a> <span class="dv">5</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">11</span><span class="sc">:</span><span class="dv">58</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-17</span></span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a> <span class="dv">6</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">09</span><span class="sc">:</span><span class="dv">03</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-12</span></span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a> <span class="dv">7</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">05</span><span class="sc">:</span><span class="dv">57</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-07</span></span>
-<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a> <span class="dv">8</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">02</span><span class="sc">:</span><span class="dv">12</span> gz             <span class="cn">NA</span>      <span class="dv">2022-08-07</span></span>
-<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a> <span class="dv">9</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">09</span><span class="sc">:</span><span class="dv">58</span><span class="sc">:</span><span class="dv">34</span> gz             <span class="cn">NA</span>      <span class="dv">2022-08-06</span></span>
-<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="dv">10</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">09</span><span class="sc">:</span><span class="dv">54</span><span class="sc">:</span><span class="dv">30</span> gz             <span class="cn">NA</span>      <span class="dv">2022-08-05</span></span>
-<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co"># ℹ 9,432 more rows</span></span>
-<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co"># ℹ 1 more variable: local_path &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># A tibble: 9,442 × 6</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>   target_url           pub_ts              file_extension data_ym data_ymd  </span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>                <span class="er">&lt;</span>dttm<span class="sc">&gt;</span>              <span class="er">&lt;</span>chr<span class="sc">&gt;</span>          <span class="er">&lt;</span>date<span class="sc">&gt;</span>  <span class="er">&lt;</span>date<span class="sc">&gt;</span>    </span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a> <span class="dv">1</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">54</span><span class="sc">:</span><span class="dv">08</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-23</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a> <span class="dv">2</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">51</span><span class="sc">:</span><span class="dv">07</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-22</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a> <span class="dv">3</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">47</span><span class="sc">:</span><span class="dv">52</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-20</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a> <span class="dv">4</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">14</span><span class="sc">:</span><span class="dv">55</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-18</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a> <span class="dv">5</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">11</span><span class="sc">:</span><span class="dv">58</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-17</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a> <span class="dv">6</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">09</span><span class="sc">:</span><span class="dv">03</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-12</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a> <span class="dv">7</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">05</span><span class="sc">:</span><span class="dv">57</span> gz             <span class="cn">NA</span>      <span class="dv">2022-10-07</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a> <span class="dv">8</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">02</span><span class="sc">:</span><span class="dv">12</span> gz             <span class="cn">NA</span>      <span class="dv">2022-08-07</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a> <span class="dv">9</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">09</span><span class="sc">:</span><span class="dv">58</span><span class="sc">:</span><span class="dv">34</span> gz             <span class="cn">NA</span>      <span class="dv">2022-08-06</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="dv">10</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">09</span><span class="sc">:</span><span class="dv">54</span><span class="sc">:</span><span class="dv">30</span> gz             <span class="cn">NA</span>      <span class="dv">2022-08-05</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co"># ℹ 9,432 more rows</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co"># ℹ 1 more variable: local_path &lt;chr&gt;</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="zones">Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
 </h2>
 <p>Zones can be downloaded as follows:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distritos</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"distritos"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">distritos_wgs84</span> <span class="op">&lt;-</span> <span class="va">distritos</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_simplify</a></span><span class="op">(</span>dTolerance <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -199,29 +203,29 @@ Setting data directory for advanced users
 <div class="section level2">
 <h2 id="od-data">OD data<a class="anchor" aria-label="anchor" href="#od-data"></a>
 </h2>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_db</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spod_get.html">spod_get</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"origin-destination"</span>,</span>
 <span>  zones <span class="op">=</span> <span class="st">"districts"</span>,</span>
 <span>  dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2024-03-01"</span>, end <span class="op">=</span> <span class="st">"2024-03-07"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">od_db</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"tbl_duckdb_connection"</span> <span class="st">"tbl_dbi"</span>               <span class="st">"tbl_sql"</span>              </span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>[<span class="dv">4</span>] <span class="st">"tbl_lazy"</span>              <span class="st">"tbl"</span>                  </span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"tbl_duckdb_connection"</span> <span class="st">"tbl_dbi"</span>               <span class="st">"tbl_sql"</span>              </span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>[<span class="dv">4</span>] <span class="st">"tbl_lazy"</span>              <span class="st">"tbl"</span>                  </span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">od_db</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a> [<span class="dv">1</span>] <span class="st">"full_date"</span>                   <span class="st">"time_slot"</span>                  </span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a> [<span class="dv">3</span>] <span class="st">"id_origin"</span>                   <span class="st">"id_destination"</span>             </span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a> [<span class="dv">5</span>] <span class="st">"distance"</span>                    <span class="st">"activity_origin"</span>            </span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a> [<span class="dv">7</span>] <span class="st">"activity_destination"</span>        <span class="st">"study_possible_origin"</span>      </span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a> [<span class="dv">9</span>] <span class="st">"study_possible_destination"</span>  <span class="st">"residence_province_ine_code"</span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>[<span class="dv">11</span>] <span class="st">"residence_province"</span>          <span class="st">"income"</span>                     </span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>[<span class="dv">13</span>] <span class="st">"age"</span>                         <span class="st">"sex"</span>                        </span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>[<span class="dv">15</span>] <span class="st">"n_trips"</span>                     <span class="st">"trips_total_length_km"</span>      </span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>[<span class="dv">17</span>] <span class="st">"year"</span>                        <span class="st">"month"</span>                      </span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>[<span class="dv">19</span>] <span class="st">"day"</span>                        </span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a> [<span class="dv">1</span>] <span class="st">"full_date"</span>                   <span class="st">"time_slot"</span>                  </span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a> [<span class="dv">3</span>] <span class="st">"id_origin"</span>                   <span class="st">"id_destination"</span>             </span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a> [<span class="dv">5</span>] <span class="st">"distance"</span>                    <span class="st">"activity_origin"</span>            </span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a> [<span class="dv">7</span>] <span class="st">"activity_destination"</span>        <span class="st">"study_possible_origin"</span>      </span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a> [<span class="dv">9</span>] <span class="st">"study_possible_destination"</span>  <span class="st">"residence_province_ine_code"</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>[<span class="dv">11</span>] <span class="st">"residence_province"</span>          <span class="st">"income"</span>                     </span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>[<span class="dv">13</span>] <span class="st">"age"</span>                         <span class="st">"sex"</span>                        </span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>[<span class="dv">15</span>] <span class="st">"n_trips"</span>                     <span class="st">"trips_total_length_km"</span>      </span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>[<span class="dv">17</span>] <span class="st">"year"</span>                        <span class="st">"month"</span>                      </span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>[<span class="dv">19</span>] <span class="st">"day"</span>                        </span></code></pre></div>
 <p>The result is an R database interface object (<code>tbl_dbi</code>) that can be used with dplyr functions and SQL queries ‘lazily’, meaning that the data is not loaded into memory until it is needed. Let’s do an aggregation to find the total number trips per hour over the 7 days:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_per_hour</span> <span class="op">&lt;-</span> <span class="va">od_db</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">time_slot</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, Trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -257,7 +261,7 @@ Setting data directory for advanced users
 <h1 id="desire-lines">Desire lines<a class="anchor" aria-label="anchor" href="#desire-lines"></a>
 </h1>
 <p>We’ll use the same input data to pick-out the most important flows in Spain, with a focus on longer trips for visualisation:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_national_aggregated</span> <span class="op">&lt;-</span> <span class="va">od_db</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id_origin</span>, <span class="va">id_destination</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>Trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -265,26 +269,26 @@ Setting data directory for advanced users
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">Trips</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">od_national_aggregated</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># A tibble: 96,404 × 3</span></span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>   id_origin id_destination    Trips</span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>   <span class="sc">&lt;</span>fct<span class="sc">&gt;</span>     <span class="er">&lt;</span>fct<span class="sc">&gt;</span>             <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a> <span class="dv">1</span> <span class="dv">2807908</span>   <span class="dv">2807908</span>        <span class="fl">2441404.</span></span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a> <span class="dv">2</span> <span class="dv">0801910</span>   <span class="dv">0801910</span>        <span class="fl">2112188.</span></span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a> <span class="dv">3</span> <span class="dv">0801902</span>   <span class="dv">0801902</span>        <span class="fl">2013618.</span></span>
-<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a> <span class="dv">4</span> <span class="dv">2807916</span>   <span class="dv">2807916</span>        <span class="fl">1821504.</span></span>
-<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a> <span class="dv">5</span> <span class="dv">2807911</span>   <span class="dv">2807911</span>        <span class="fl">1785981.</span></span>
-<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a> <span class="dv">6</span> <span class="dv">04902</span>     <span class="dv">04902</span>          <span class="fl">1690606.</span></span>
-<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a> <span class="dv">7</span> <span class="dv">2807913</span>   <span class="dv">2807913</span>        <span class="fl">1504484.</span></span>
-<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a> <span class="dv">8</span> <span class="dv">2807910</span>   <span class="dv">2807910</span>        <span class="fl">1299586.</span></span>
-<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a> <span class="dv">9</span> <span class="dv">0704004</span>   <span class="dv">0704004</span>        <span class="fl">1287122.</span></span>
-<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="dv">10</span> <span class="dv">28106</span>     <span class="dv">28106</span>          <span class="fl">1286058.</span></span>
-<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co"># ℹ 96,394 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># A tibble: 96,404 × 3</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>   id_origin id_destination    Trips</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>   <span class="sc">&lt;</span>fct<span class="sc">&gt;</span>     <span class="er">&lt;</span>fct<span class="sc">&gt;</span>             <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a> <span class="dv">1</span> <span class="dv">2807908</span>   <span class="dv">2807908</span>        <span class="fl">2441404.</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a> <span class="dv">2</span> <span class="dv">0801910</span>   <span class="dv">0801910</span>        <span class="fl">2112188.</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a> <span class="dv">3</span> <span class="dv">0801902</span>   <span class="dv">0801902</span>        <span class="fl">2013618.</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a> <span class="dv">4</span> <span class="dv">2807916</span>   <span class="dv">2807916</span>        <span class="fl">1821504.</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a> <span class="dv">5</span> <span class="dv">2807911</span>   <span class="dv">2807911</span>        <span class="fl">1785981.</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a> <span class="dv">6</span> <span class="dv">04902</span>     <span class="dv">04902</span>          <span class="fl">1690606.</span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a> <span class="dv">7</span> <span class="dv">2807913</span>   <span class="dv">2807913</span>        <span class="fl">1504484.</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a> <span class="dv">8</span> <span class="dv">2807910</span>   <span class="dv">2807910</span>        <span class="fl">1299586.</span></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a> <span class="dv">9</span> <span class="dv">0704004</span>   <span class="dv">0704004</span>        <span class="fl">1287122.</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a><span class="dv">10</span> <span class="dv">28106</span>     <span class="dv">28106</span>          <span class="fl">1286058.</span></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a><span class="co"># ℹ 96,394 more rows</span></span></code></pre></div>
 <p>The results show that the largest flows are intra-zonal. Let’s keep only the inter-zonal flows:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_national_interzonal</span> <span class="op">&lt;-</span> <span class="va">od_national_aggregated</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id_origin</span> <span class="op">!=</span> <span class="va">id_destination</span><span class="op">)</span></span></code></pre></div>
 <p>We can convert these to geographic data with the {od} package (Lovelace and Morgan 2024):</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_national_sf</span> <span class="op">&lt;-</span> <span class="fu">od</span><span class="fu">::</span><span class="fu">od_to_sf</span><span class="op">(</span></span>
 <span>  <span class="va">od_national_interzonal</span>,</span>
 <span>  z <span class="op">=</span> <span class="va">distritos_wgs84</span></span>
@@ -298,20 +302,20 @@ Setting data directory for advanced users
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-desire-lines-1.png"></p>
 <p>Let’s focus on trips in and around a particular area (Salamanca):</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">salamanca_zones</span> <span class="op">&lt;-</span> <span class="fu">zonebuilder</span><span class="fu">::</span><span class="fu">zb_zone</span><span class="op">(</span><span class="st">"Salamanca"</span><span class="op">)</span></span>
 <span><span class="va">distritos_salamanca</span> <span class="op">&lt;-</span> <span class="va">distritos_wgs84</span><span class="op">[</span><span class="va">salamanca_zones</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">distritos_salamanca</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-salamanca-zones-1.png"></p>
 <p>We will use this information to subset the rows, to capture all movement within the study area:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ids_salamanca</span> <span class="op">&lt;-</span> <span class="va">distritos_salamanca</span><span class="op">$</span><span class="va">id</span></span>
 <span><span class="va">od_salamanca</span> <span class="op">&lt;-</span> <span class="va">od_national_sf</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id_origin</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">ids_salamanca</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id_destination</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">ids_salamanca</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">Trips</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s plot the results:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_salamanca_sf</span> <span class="op">&lt;-</span> <span class="fu">od</span><span class="fu">::</span><span class="fu">od_to_sf</span><span class="op">(</span></span>
 <span>  <span class="va">od_salamanca</span>,</span>
 <span>  z <span class="op">=</span> <span class="va">distritos_salamanca</span></span>

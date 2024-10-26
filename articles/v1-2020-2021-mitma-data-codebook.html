@@ -140,24 +140,30 @@ Alternative installation and developemnt
 <p>Using the instructions below, set the data folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a <code>DuckDB</code> database file, or a folder of <code>parquet</code> files). You can find more info on this conversion in the <a href="convert.html">Download and convert OD datasets</a> vignette.</p>
 </section><section class="section level3"><h3 id="set-data-folder">Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
 </h3>
-<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable with the following command:</p>
+<p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/spod_set_data_dir.html">spod_set_data_dir</a></span><span class="op">(</span>data_dir <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The function above will also ensure that the directory is created and that you have sufficient permissions to write to it.</p>
+<details><summary>
+Setting data directory for advanced users
+</summary><p>You can also set the data directory with an environment variable:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>SPANISH_OD_DATA_DIR <span class="op">=</span> <span class="st">"~/spanish_od_data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The package will create this directory if it does not exist on the first run of any function that downloads the data.</p>
-<details><summary>
-Setting data directory for advanced users
-</summary><p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
+<p>To permanently set the directory for all projects, you can specify the data directory globally by setting the <code>SPANISH_OD_DATA_DIR</code> environment variable, e.g. with the following command:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Then set the data directory globally, by typing this line in the file:</span></span></code></pre></div>
 </div>
 <pre><code><span><span class="va">SPANISH_OD_DATA_DIR</span> <span class="op">=</span> <span class="st">"~/spanish_od_data"</span></span></code></pre>
 <p>You can also set the data directory locally, just for the current project. Set the ‘envar’ in the working directory by editing <code>.Renviron</code> file in the root of the project:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </details></section><section class="section level2"><h2 id="overall-approach-to-accessing-the-data">Overall approach to accessing the data<a class="anchor" aria-label="anchor" href="#overall-approach-to-accessing-the-data"></a>
@@ -181,7 +187,7 @@ Figure 1: The overview of how to use the pacakge functions to get the data
 <p><code>Districts</code> correspond to official census districts in cities; however, in those with lower population density, they are grouped together. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset. Therefore, there are 2850 ‘districts’ compared to the 10494 official census districts on which they are based.</p>
 <p>To access it:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"dist"</span>, ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The <code>districts_v1</code> object is of class <code>sf</code> consisting of polygons.</p>
@@ -223,7 +229,7 @@ Figure 1: The overview of how to use the pacakge functions to get the data
 <p><code>Municipalities</code> are made up of official municipalities in those of a certain size; however, they have also been aggregated in cases of lower population density. As a result, there are 2,205 municipalities compared to the 8,125 official municipalities on which they are based.</p>
 <p>To access it:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">municipalities_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"muni"</span>, ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The resulting <code>municipalities_v1</code> object is type <code>sf</code> consisting of polygons.</p>
@@ -383,7 +389,7 @@ Data transformation note
 </details><p><strong>Getting the data</strong></p>
 <p>To access the data, use the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. In this example we will use a short interval of dates:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2020-02-14"</span>, end <span class="op">=</span> <span class="st">"2020-02-17"</span><span class="op">)</span></span>
 <span><span class="va">od_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"dist"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span>
 <span><span class="va">od_muni</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"od"</span>, zones <span class="op">=</span> <span class="st">"muni"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></code></pre></div>
@@ -392,7 +398,7 @@ Data transformation note
 <p><strong>Working with the data</strong></p>
 <p>The resulting objects <code>od_dist</code> and <code>od_muni</code> are of class <code>tbl_duckdb_connection</code><a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;For reference: this object also has classes: &lt;code&gt;tbl_dbi&lt;/code&gt; ,&lt;code&gt;tbl_sql&lt;/code&gt;, &lt;code&gt;tbl_lazy&lt;/code&gt; ,and &lt;code&gt;tbl&lt;/code&gt; .&lt;/p&gt;"><sup>1</sup></a>. Basically, you can treat these as regular <code>data.frame</code>s or <code>tibble</code>s. One important difference is that the data is not actually loaded into memory, because if you requested more dates, e.g. a whole month or a year, all that data would most likely not fit into your computer’s memory. A <code>tbl_duckdb_connection</code> is mapped to the downloaded CSV files that are cached on disk and the data is only loaded in small chunks as needed at the time of computation. You can manipulate <code>od_dist</code> and <code>od_muni</code> using <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>, etc. In the end of any sequence of commands you will need to add <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code> to execute the whole chain of data manipulations and load the results into memory in an R <code>data.frame</code>/<code>tibble</code> like so:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="va">od_mean_hourly_trips_over_the_4_days</span> <span class="op">&lt;-</span> <span class="va">od_dist</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time_slot</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -492,13 +498,13 @@ Data transformation note
 </details><p><strong>Getting the data</strong></p>
 <p>To access it use <code><a href="../reference/spod_get.html">spod_get()</a></code> with <code>type</code> set to “number_of_trips”, or just “nt”. We can also set <code>dates</code> to the maximum possible date range <code>2020-02-14</code> to <code>2021-05-09</code> to get all the data, as this data is relatively small (under 200 Mb).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>start <span class="op">=</span> <span class="st">"2020-02-14"</span>, end <span class="op">=</span> <span class="st">"2021-05-09"</span><span class="op">)</span></span>
 <span><span class="va">nt_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get.html">spod_get</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"number_of_trips"</span>, zones <span class="op">=</span> <span class="st">"dist"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Because this data is small, we can actually load it completely into memory:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nt_dist_tbl</span> <span class="op">&lt;-</span> <span class="va">nt_dist</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section></section><section class="section level2"><h2 id="advanced-use">Advanced use<a class="anchor" aria-label="anchor" href="#advanced-use"></a>
