@@ -38,7 +38,7 @@ Key sources for this codebook/cookbook include:
 
 - [homepage of the v1 study](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19){target="_blank"}
 
-- [homepage of the open mobility data project of the Ministry of Transport and Sustainable mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
+- [homepage of the open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
 
 
 **Note: Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.**
