@@ -208,11 +208,11 @@ package.
 
 <div id="fig-overall-flow">
 
-<img src="media/package-functions-overview.svg" style="width:78.0%" />
+<img src="man/figures/package-functions-overview.svg"
+style="width:78.0%" />
 
 
-Figure 4: The overview of how to use the pacakge functions to get the
-data
+Figure 4: The overview of package functions to get the data
 
 </div>
 

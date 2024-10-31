@@ -61,6 +61,7 @@ Using the instructions below, set the data folder for the package to download th
 
 {{< include ../inst/vignette-include/overall-approach.qmd >}}
 
+![The overview of package functions to get the data](../man/figures/package-functions-overview.svg){#fig-overall-flow width="78%"}
 
 # 1. Spatial data with zoning boundaries
 

@@ -64,6 +64,8 @@ Using the instructions below, set the data folder for the package to download th
 
 {{< include ../inst/vignette-include/overall-approach.qmd >}}
 
+![The overview of package functions to get the data](../man/figures/package-functions-overview.svg){#fig-overall-flow width="78%"}
+
 # 1. Spatial data with zoning boundaries
 
 The boundary data is provided at three geographic levels: [`Distrtics`](#districts), [`Municipalities`](#municipalities), and [`Large Urban Areas`](#lua). It's important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities".

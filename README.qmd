@@ -54,6 +54,8 @@ library(spanishoddata)
 
 {{< include inst/vignette-include/overall-approach.qmd >}}
 
+![The overview of package functions to get the data](man/figures/package-functions-overview.svg){#fig-overall-flow width="78%"}
+
 # Showcase
 
 To run the code in this README we will use the following setup:
