@@ -157,8 +157,8 @@ Setting data directory for advanced users
 <p>If you only want to analyse the data for a few days, you can use the <code><a href="reference/spod_get.html">spod_get()</a></code> function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.</p>
 <p>If you need longer periods (several months or years), you should use the <code><a href="reference/spod_convert.html">spod_convert()</a></code> and <code><a href="reference/spod_connect.html">spod_connect()</a></code> functions, which will convert the data into special format which is much faster for analysis, for this see the <a href="convert.qmd">Download and convert OD datasets</a> vignette. <code><a href="reference/spod_get_zones.html">spod_get_zones()</a></code> will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones ’id’s. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with <code>spod_codebook(ver = 1)</code> and <code>spod_codebook(ver = 2)</code>, or simply visit the package website at <a href="https://ropenspain.github.io/spanishoddata/" class="external-link uri">https://ropenspain.github.io/spanishoddata/</a>. The <a href="#fig-overall-flow" class="quarto-xref">Figure 4</a> presents the overall approach to accessing the data in the <code>spanishoddata</code> package.</p>
 <div id="fig-overall-flow">
-<p><img src="media/package-functions-overview.svg" style="width:78.0%"></p>
-<p>Figure 4: The overview of how to use the pacakge functions to get the data</p>
+<p><img src="reference/figures/package-functions-overview.svg" style="width:78.0%"></p>
+<p>Figure 4: The overview of package functions to get the data</p>
 </div>
 </div>
 <div class="section level1">
