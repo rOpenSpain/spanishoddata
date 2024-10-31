@@ -42,7 +42,7 @@ Key sources for this codebook/cookbook include:
 
 -   [original data license](https://movilidad-opendata.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf){target="_blank"}
 
--   [homepage of the v2 study and open mobility data project of the Ministry of Transport and Sustainable mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
+-   [homepage of the v2 study and open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
 
 ::: callout-note
 Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.

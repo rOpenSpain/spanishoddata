@@ -16,7 +16,7 @@ alt="Lifecycle: experimental" /></a>
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
-Ministry of Transport and Sustainable mobility of Spain (Secretaría de
+Ministry of Transport and Sustainable Mobility of Spain (Secretaría de
 Estado de Transportes y Movilidad Sostenible 2024).
 
 It supports the two versions of the Spanish mobility data that consists
