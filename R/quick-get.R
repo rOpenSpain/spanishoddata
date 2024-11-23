@@ -9,6 +9,7 @@
 #' @param id_destination A character vector specifying the target municipalities to retrieve. If not provided, all target municipalities will be included. Valid municipality IDs can be found in the dataset returned by `spod_get_zones(zones = "muni", ver = 2)`.
 #' @return A `tibble` containing the flows for the specified date, minimum number of journeys, distances and origin-destination pairs if specified. The columns are: 
 #' \describe{
+#'   \item{date}{The date of the trips.}
 #'   \item{id_origin}{The origin municipality ID.}
 #'   \item{id_destination}{The target municipality ID.}
 #'   \item{n_trips}{The number of trips between the origin and target municipality.}
@@ -179,7 +180,11 @@ spod_quick_get_od <- function(
       id_destination = .data$target_muni,
       n_trips = .data$journeys,
       trips_total_length_km = .data$journeys_km
-    )
+    ) |> 
+    dplyr::mutate(
+      date = lubridate::ymd(date)
+    ) |>
+    relocate(date, .before = id_origin)
   
   return(od)
 }

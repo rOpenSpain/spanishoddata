@@ -26,6 +26,7 @@ spod_quick_get_od(
 \value{
 A \code{tibble} containing the flows for the specified date, minimum number of journeys, distances and origin-destination pairs if specified. The columns are:
 \describe{
+\item{date}{The date of the trips.}
 \item{id_origin}{The origin municipality ID.}
 \item{id_destination}{The target municipality ID.}
 \item{n_trips}{The number of trips between the origin and target municipality.}
