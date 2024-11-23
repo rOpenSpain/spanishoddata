@@ -100,12 +100,18 @@ spod_quick_get_od <- function(
   )
 
   validate_muni_ids <- function(muni_ids, muni_ref) {
-    # Check which IDs are valid
+    # Handle cases where muni_ids is NULL, empty, or all NA
+    if (is.null(muni_ids) || length(muni_ids) == 0 || all(is.na(muni_ids))) {
+      return(TRUE) # Nothing to validate
+    }
+    
+    # Check which IDs are invalid
     invalid_ids <- setdiff(muni_ids, muni_ref$id)
     
     # If there are invalid IDs, return a message
     if (length(invalid_ids) > 0) {
-      stop("Invalid municipality IDs detected: ",
+      stop(
+        "Invalid municipality IDs detected: ",
         paste(invalid_ids, collapse = ", "),
         ". Please provide valid municipality IDs. Use `spod_get_zones(zones = 'muni', ver = 2)` to get valid municipality IDs."
       )
@@ -116,8 +122,13 @@ spod_quick_get_od <- function(
   }
 
   # Validate municipality IDs if provided
-  if (!is.na(id_origin)) validate_muni_ids(id_origin, muni_ref)
-  if (!is.na(id_destination)) validate_muni_ids(id_destination, muni_ref)
+  if (!is.null(id_origin) && length(id_origin) > 0 && !all(is.na(id_origin))) {
+    validate_muni_ids(id_origin, muni_ref)
+  }
+  if (!is.null(id_destination) && length(id_destination) > 0 && !all(is.na(id_destination))) {
+    validate_muni_ids(id_destination, muni_ref)
+  }
+  
   
   # Validate min_trips
   if (!is.numeric(min_trips) || min_trips < 0) {
@@ -142,8 +153,16 @@ spod_quick_get_od <- function(
   journeysMunCriteria$distances <- graphql_distances
   
   # Include origin_muni and target_muni only if they are not NA
-  if (!is.na(id_origin)) journeysMunCriteria$origin_muni <- id_origin
-  if (!is.na(id_destination)) journeysMunCriteria$target_muni <- id_destination
+  if (!is.null(id_origin) && length(id_origin) > 0 && !all(is.na(id_origin))) {
+    journeysMunCriteria$origin_muni <- id_origin
+  }
+
+  if (!is.null(id_destination) && length(id_destination) > 0 && !all(is.na(id_destination))) {
+  journeysMunCriteria$target_muni <- id_destination
+}
+  
+  if (length(id_origin) == 0) id_origin <- NULL
+  if (length(id_destination) == 0) id_destination <- NULL
   
   # Define the GraphQL endpoint
   graphql_endpoint <- "https://mapas-movilidad.transportes.gob.es/api/graphql"
