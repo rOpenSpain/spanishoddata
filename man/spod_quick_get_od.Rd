@@ -36,3 +36,13 @@ A \code{tibble} containing the flows for the specified date, minimum number of j
 \description{
 This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
 }
+\examples{
+\dontrun{
+od_1000 <- spod_quick_get_od(
+  date = "2022-01-01",
+  min_trips = 1000
+)
+}
+
+
+}

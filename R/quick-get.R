@@ -20,6 +20,15 @@
 #' 
 #' @export
 #' 
+#' @examples
+#' \dontrun{
+#' od_1000 <- spod_quick_get_od(
+#'   date = "2022-01-01",
+#'   min_trips = 1000
+#' )
+#' }
+#' 
+#' 
 spod_quick_get_od <- function(
   date = NA,
   min_trips = 100,
@@ -186,7 +195,10 @@ spod_quick_get_od <- function(
 
   # Send the POST request
   response <- httr2::request(graphql_endpoint) |>
-    httr2::req_headers("Content-Type" = "application/json") |>
+    httr2::req_headers(
+      "Content-Type" = "application/json",
+      "User-Agent" = "spanishoddata R package, https://github.com/rOpenSpain/spanishoddata/"
+    ) |>
     httr2::req_body_json(graphql_query) |>
     httr2::req_perform()
 
@@ -203,7 +215,7 @@ spod_quick_get_od <- function(
     dplyr::mutate(
       date = lubridate::ymd(date)
     ) |>
-    relocate(date, .before = id_origin)
+    dplyr::relocate(.data$date, .before = id_origin)
   
   return(od)
 }
