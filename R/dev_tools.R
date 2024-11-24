@@ -29,17 +29,23 @@ spod_files_sizes <- function(ver = 2) {
 
   if (any(ver %in% 2)){
     v2 <- spod_available_data(2)
+    if(all(v2$size_imputed == FALSE)){
+      stop("all file sizes are known")
+    }
+    v2_known_size <- v2[v2$size_imputed == FALSE, ]
+    v2_unknown_size <- v2[v2$size_imputed == TRUE, ]
 
-    # takes about 4 minutes
+    # takes about 5 minutes on full data set, but less when only updating the previously uknown files
     future::plan(future::multisession, workers = 6)
-    v2$remote_file_size_mb <- furrr::future_map_dbl(
-      .x = v2$target_url,
+    v2_unknown_size$remote_file_size_mb <- furrr::future_map_dbl(
+      .x = v2_unknown_size$target_url,
       .f = ~ spod_get_file_size_from_url(x_url = .x),
       .progress = TRUE
     )
     future::plan(future::sequential)
 
-    v2_url_file_sizes <- v2[, c("target_url", "remote_file_size_mb")]
+    v2_combined <- dplyr::bind_rows(v2_known_size, v2_unknown_size)
+    v2_url_file_sizes <- v2_combined[, c("target_url", "remote_file_size_mb")]
     readr::write_csv(
       x = v2_url_file_sizes,
       file = "inst/extdata/url_file_sizes_v2.txt.gz"
