@@ -276,7 +276,8 @@ spod_available_data_v2 <- function(
     # Impute missing file sizes
     files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
     if(length(files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)]) > 0){
-      files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- median(files_table$mean_file_size_mb)
+      files_table <- files_table |>
+        dplyr::mutate(remote_file_size_mb = ifelse(is.na(.data$remote_file_size_mb), .data$mean_file_size_mb, .data$remote_file_size_mb))
     }
     files_table$mean_file_size_mb <- NULL
     files_table$file_category <- NULL
