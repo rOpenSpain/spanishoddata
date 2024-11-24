@@ -91,3 +91,5 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
     ".*Invalid municipality IDs detected.*"
   )
 })
+
+unlink(test_data_dir, recursive = TRUE)
