@@ -7,6 +7,7 @@
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set.
 #' @param max_download_size_gb The maximum download size in gigabytes. Defaults to 1.
 #' @param return_local_file_paths Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.
+#' @param ignore_missing_dates Logical. If `TRUE`, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to `FALSE`.
 #' @inheritParams global_quiet_param
 #' 
 #' @return Nothing. If `return_local_file_paths = TRUE`, a `character` vector of the paths to the downloaded files.
@@ -48,7 +49,9 @@ spod_download <- function(
     max_download_size_gb = 1, # 1GB
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
-    return_local_file_paths = FALSE) {
+    return_local_file_paths = FALSE,
+    ignore_missing_dates = FALSE
+  ) {
   # convert english zone names to spanish words used in the default data paths
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
@@ -57,7 +60,7 @@ spod_download <- function(
 
 
   # check version
-  ver <- spod_infer_data_v_from_dates(dates_to_use)
+  ver <- spod_infer_data_v_from_dates(dates = dates_to_use, ignore_missing_dates = ignore_missing_dates)
   # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data(). This results in reading xml files with metadata for the second time. This is not optimal and should be fixed.
   
   if (isFALSE(quiet)) {
