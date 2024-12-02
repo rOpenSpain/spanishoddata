@@ -7,6 +7,7 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/articles/index.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/articles/quick-get.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/authors.html</loc></url>
@@ -47,6 +48,7 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_is_data_version_overlaps.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_match_data_type.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_match_data_type_for_local_folders.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_quick_get_od.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_read_sql.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_set_data_dir.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_sql_where_dates.html</loc></url>
