@@ -32,7 +32,7 @@ library(dplyr)
 {{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
 ::: callout-note
-Setting a local data directory in this case is optional, as the data is downloaded directly from API and there is no caching on disk. However, the metadata will be downloaded to check the range of valid dates available at the time of the request. So metadata will be downloaded to a temporary location by default, or to the data directory, if you do set it.
+Setting a local data directory in this case is optional, as the data is downloaded directly from the web API and there is no caching on disk. However, the metadata will be downloaded to check the range of valid dates available at the time of the request. So metadata will be downloaded to a temporary location by default, or to the data directory, if you do set it.
 :::
 
 
