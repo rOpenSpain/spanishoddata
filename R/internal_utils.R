@@ -51,7 +51,7 @@ spod_dates_argument_to_dates_seq <- function(dates) {
       # assume it is a regex pattern
     } else {
       dates <- spod_expand_dates_from_regex(dates)
-      # since spod_expand_dates_from_regex already uses the metadata to generate valid dates we can skip any checks that are required for other date formats and only check for datte overlap
+      # since spod_expand_dates_from_regex already uses the metadata to generate valid dates we can skip any checks that are required for other date formats and only check for date overlaps between data versions
       if (isFALSE(spod_is_data_version_overlaps(dates))) {
         return(dates)
       }
@@ -78,9 +78,7 @@ spod_dates_argument_to_dates_seq <- function(dates) {
   }
 
   # now that we have a clean sequence of dates, we can check for overlaps between data versions
-  if (isFALSE(spod_is_data_version_overlaps(dates)) &
-    spod_infer_data_v_from_dates(dates) %in% c(1, 2)
-  ) {
+  if (isFALSE(spod_is_data_version_overlaps(dates))) {
     return(dates)
   }
 }
@@ -99,12 +97,21 @@ spod_is_data_version_overlaps <- function(dates) {
   all_dates_v2 <- spod_get_valid_dates(ver = 2)
 
   if (any(dates %in% all_dates_v1) && any(dates %in% all_dates_v2)) {
-    stop(paste0("Dates found in both v1 and v2 data. The v1 and v2 data sets may not be comparable. Please see the respective codebooks and methodology documents.\nThe valid dates range for v1 is: ", paste0(min(all_dates_v1), " to ", max(all_dates_v1)), " and for v2 is: ", paste0(min(all_dates_v2), " to ", max(all_dates_v2))))
+    stop(paste0(
+      "Dates found in both v1 and v2 data. The v1 and v2 data sets may not be comparable. Please see the respective codebooks and methodology documents: run `spod_codebook(1)` and `spod_codebook(2)`.\nThe valid dates range for v1 is: ",
+        paste(spod_convert_dates_to_ranges(all_dates_v1), collapse = ", "),
+      "\nThe valid dates range for v2 is: ",
+      paste(spod_convert_dates_to_ranges(all_dates_v2), collapse = ", "),
+      "\n To get the list of valid dates, you can use `spod_get_valid_dates(1)` and `spod_get_valid_dates(2)`."
+    ))
   }
   return(FALSE)
 }
 
-spod_infer_data_v_from_dates <- function(dates) {
+spod_infer_data_v_from_dates <- function(
+  dates,
+  ignore_missing_dates = FALSE
+) {
   # check if user is requesting to just get all cached data
   if (length(dates) == 1){
     if (as.character(dates) %in% c("cached_v1", "cached_v2")) {
@@ -122,18 +129,60 @@ spod_infer_data_v_from_dates <- function(dates) {
     invisible(return(NULL))
   }
 
-  # of no overlap, compare with date ranges
+  # if no overlap identified above, compare with date ranges
   v1_dates <- spod_get_valid_dates(ver = 1)
   v2_dates <- spod_get_valid_dates(ver = 2)
+
+  # Check if all dates are missing
+  missing_dates <- dates[!dates %in% c(v1_dates, v2_dates)]
+  if (length(missing_dates) == length(dates)) {
+    stop(paste0(
+      "All requested dates are missing from the available data.\nThe valid dates range for v1 is: ",
+        paste(spod_convert_dates_to_ranges(v1_dates), collapse = ", "),
+      "\nThe valid dates range for v2 is: ",
+      paste(spod_convert_dates_to_ranges(v2_dates), collapse = ", "),
+      ".\nYou requested the following missing dates: ",
+      paste0(missing_dates, collapse = ", "),
+      "\nSome of these dates are missing 'naturally' because of the mobile network outages. You can check the up to date list of the missing dates on the source data page at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad",
+      "\nTo get the list of valid dates, you can use `spod_get_valid_dates(1)` and `spod_get_valid_dates(2)`.",
+      "\nConsider revising your date range or handling missing dates appropriately."
+    ))
+  }
 
   if (all(dates %in% v1_dates)) {
     return(1)
   } else if (all(dates %in% v2_dates)) {
     return(2)
   } else {
-    # if some dates did not match stop with a message showing which dates are missing
+    # Handle missing dates based on ignore_missing_dates argument
     missing_dates <- dates[!dates %in% c(v1_dates, v2_dates)]
-    stop(paste0("Some dates do not match the available data. The valid dates range for v1 is: ", paste0(min(v1_dates), " to ", max(v1_dates)), " and for v2 is: ", paste0(min(v2_dates), " to ", max(v2_dates), ".\nMissing dates: ", paste0(missing_dates, collapse = ", "))))
+    if (length(missing_dates) > 0) {
+      if (ignore_missing_dates == TRUE) {
+        # Filter out missing dates and infer version based on the remaining ones
+        valid_dates <- dates[dates %in% c(v1_dates, v2_dates)]
+        if (all(valid_dates %in% v1_dates)) {
+          return(1)
+        } else if (all(valid_dates %in% v2_dates)) {
+          return(2)
+        } else {
+          # If no valid dates remain, or none fully match a version
+          return(NULL)
+        }
+      } else if (ignore_missing_dates == FALSE) {
+        # Stop with an error if ignore_missing_dates is FALSE
+        stop(paste0(
+          "Some dates do not match the available data.\nThe valid dates range for v1 is: ",
+            paste(spod_convert_dates_to_ranges(v1_dates), collapse = ", "),
+          "\nThe valid dates range for v2 is: ",
+          paste(spod_convert_dates_to_ranges(v2_dates), collapse = ", "),
+          ".\nYou requested the following missing dates: ",
+          paste0(missing_dates, collapse = ", "),
+          "\nSome of these dates are missing 'naturally' because of the mobile network outages. You can check the up to date list of the missing dates on the source data page at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad",
+          "\nTo get the list of valid dates, you can use `spod_get_valid_dates(1)` and `spod_get_valid_dates(2)`.",
+          "\nYou can also set `ignore_missing_dates` argument when using `spod_get()`, `spod_convert()`, or `spod_download()` to TRUE to ignore missing dates in your requested date range. Use that with caution, as skipping the missing dates may lead to misleading results if you then intend to calculate monthly or weekly flows including the periods with missing data. Consider using imputation methods to fill in the missing data from the available dates."
+        ))
+      }
+    }
   }
 }
 
@@ -299,4 +348,35 @@ spod_unique_separated_ids <- function(column) {
     unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
     stringr::str_c(unique_ids, collapse = "; ")  # Join them back with semicolons
   })
+}
+
+#' Convert dates to ranges
+#' 
+#' This internal helper function reduces a vector of dates to a vector of date ranges to shorten the warning and error messages that mention the valid date ranges.
+#' @param dates A `character` vector of dates.
+#' @importFrom rlang .data
+#' @keywords internal
+#' 
+spod_convert_dates_to_ranges <- function(dates) {
+  # TODO: remove the `convert_to_ranges` function from `spod_quick_get_od()` when both branches are merged into main and use this `spod_convert_dates_to_ranges()` instead
+  dates <- as.Date(dates) # Ensure dates are in Date format
+  ranges <- tibble::tibble(date = dates) |>
+    dplyr::arrange(date) |> 
+      dplyr::mutate(
+      diff = c(0, diff(date)), # Calculate differences
+      group = cumsum(diff != 1) # Create groups for consecutive ranges
+    ) |>
+    dplyr::group_by(.data$group) |>
+    dplyr::summarise(
+      start = dplyr::first(date),
+      end = dplyr::last(date),
+      .groups = "drop"
+    )
+
+  # Create a character vector of ranges
+  range_strings <- ranges |>
+    dplyr::mutate(range = paste(.data$start, "to", .data$end)) |>
+    dplyr::pull(range)
+
+  return(range_strings)
 }

@@ -1,0 +1,252 @@
+---
+title: "Quicky get daily data"
+vignette: >
+  %\VignetteIndexEntry{Quicky get daily data}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+number-sections: true
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-overflow: wrap
+execute: 
+  eval: false
+---
+
+# Introduction {#intro}
+
+This vignette demonstrates how to get minimal daily aggregated data on the number of trips between municipalities using the `spod_quick_get_od()` function. With this function, you only get total trips for a single day, and no additional variables that are available in the full [v2 (2022 onwards) data set](v2-2022-onwards-mitma-data-codebook.html). The advantage of this function is that it is much faster than downloading the full data from source CSV files using `spod_get()`, as each CSV file for a single day is about 200 MB in size. Also, this way of getting the data is much less demanding on your computer as you are only getting a small table from the internet (less than 1 MB), and no data processing (such as aggregation from more detailed hourly data with extra columns that is happening when you use `spod_get()` function) is required on your computer.
+
+# Setup {#setup}
+
+Make sure you have loaded the package:
+
+```{r}
+library(spanishoddata)
+library(dplyr)
+```
+
+
+{{< include ../inst/vignette-include/setup-data-directory.qmd >}}
+
+::: callout-note
+Setting a local data directory in this case is optional, as the data is downloaded directly from the web API and there is no caching on disk. However, the metadata will be downloaded to check the range of valid dates available at the time of the request. So metadata will be downloaded to a temporary location by default, or to the data directory, if you do set it.
+:::
+
+
+# Get the data {#get-data}
+
+## Get all flows with at least 1000 trips
+
+To get the data, use the `spod_quick_get_od()` function. There is no need to specify whether you need municipalities or districts, as the only municipal level data can be accessed with this function. The `min_trips` argument specifies the minimum number of trips to include in the data. If you set `min_trips` to 0, you will get all data for all origin-destination pairs for the specified date.
+
+```{r}
+od_1000 <- spod_quick_get_od(
+  date = "2022-01-01",
+  min_trips = 1000
+)
+```
+
+The data is returned as a tibble and only contanes the requested date, the identifiers of the origin and destination municipalities, the number of trips, and the total length of trips in kilometers.
+
+```{r}
+glimpse(od_1000)
+```
+
+```
+glimpse(od_1000)
+Rows: 8,524
+Columns: 5
+$ date                  <date> 2022-01-01, 2022-01-01, 2022-01-01, 2022…
+$ id_origin             <chr> "01001", "01002", "01002", "01002", "0100…
+$ id_destination        <chr> "01059", "01036", "01002", "01054_AM", "0…
+$ n_trips               <int> 2142, 1215, 8899, 1105, 2250, 4621, 1992,…
+$ trips_total_length_km <int> 27130, 13743, 26700, 10603, 12228, 69999,…
+```
+
+
+```{r}
+od_1000
+```
+
+```
+# A tibble: 8,524 × 5
+   date       id_origin id_destination n_trips trips_total_length_km
+   <date>     <chr>     <chr>            <int>                 <int>
+ 1 2022-01-01 01001     01059             2142                 27130
+ 2 2022-01-01 01002     01036             1215                 13743
+ 3 2022-01-01 01002     01002             8899                 26700
+ 4 2022-01-01 01002     01054_AM          1105                 10603
+ 5 2022-01-01 01002     01010             2250                 12228
+ 6 2022-01-01 01009_AM  01059             4621                 69999
+ 7 2022-01-01 01009_AM  01009_AM          1992                 16395
+ 8 2022-01-01 01009_AM  01051             2680                 18554
+ 9 2022-01-01 01010     01002             2147                 11578
+10 2022-01-01 01017_AM  01017_AM          1847                 12695
+# ℹ 8,514 more rows
+# ℹ Use `print(n = ...)` to see more rows
+```
+
+## Get only trips of certain length
+
+To get only trips of a certain length, use the `distances` argument.
+
+```{r}
+od_long <- spod_quick_get_od(
+  date = "2022-01-01",
+  min_trips = 0,
+  distances = c("10-50km", "50+km")
+)
+```
+
+
+```{r}
+glimpse(od_long)
+```
+
+
+```
+Rows: 247,208
+Columns: 5
+$ date                  <date> 2022-01-01, 2022-01-01, 2022-01-01, 2022…
+$ id_origin             <chr> "08015", "08015", "08015", "08015", "0801…
+$ id_destination        <chr> "08285", "17902_AM", "43014", "08007", "0…
+$ n_trips               <int> 5, 1, 5, 165, 210, 111, 1486, 39, 52, 166…
+$ trips_total_length_km <int> 339, 161, 924, 5052, 2955, 2453, 29630, 1…
+```
+
+
+```{r}
+od_long
+```
+
+```
+# A tibble: 247,208 × 5
+   date       id_origin id_destination n_trips trips_total_length_km
+   <date>     <chr>     <chr>            <int>                 <int>
+ 1 2022-01-01 08015     08285                5                   339
+ 2 2022-01-01 08015     17902_AM             1                   161
+ 3 2022-01-01 08015     43014                5                   924
+ 4 2022-01-01 08015     08007              165                  5052
+ 5 2022-01-01 08015     08030              210                  2955
+ 6 2022-01-01 08015     08051              111                  2453
+ 7 2022-01-01 08015     08121             1486                 29630
+ 8 2022-01-01 08015     08122_AM            39                  1886
+ 9 2022-01-01 08015     08300_AM            52                  1301
+10 2022-01-01 08015     08902              166                  2042
+# ℹ 247,198 more rows
+# ℹ Use `print(n = ...)` to see more rows
+```
+
+## Get only trips between certain municipalities
+
+
+To get only trips between certain municipalities, use the `id_origin` and `id_destination` arguments.
+
+You can get all valid munincipality identifiers with the `spod_get_zones("muni", ver = 2)` function. This function will need to download some spatial data, so it might take some time and you might want to [setup the data download folder](#setup) with `spod_setup_cache()` if you have not done so before.
+
+
+```{r}
+municipalities <- spod_get_zones("muni", ver = 2)
+head(municipalities)
+```
+
+### All trips from Madrid
+
+Let us select all locations with Madrid in the name:
+
+```{r}
+madrid_muni_ids <- municipalities |> 
+  filter(str_detect(name, "Madrid")) |> 
+  pull(id)
+
+madrid_muni_ids
+```
+
+```
+[1] "28073" "28079" "28127" "45087"
+```
+
+Now let use use these IDs as origins to gett all trips from Madrid to the rest of Spain:
+
+```{r}
+flows_from_Madrid <- spod_quick_get_od(
+  date = "2022-01-01",
+  min_trips = 0,
+  id_origin = madrid_muni_ids
+)
+```
+
+
+```{r}
+glimpse(flows_from_Madrid)
+```
+
+```
+Rows: 2,232
+Columns: 5
+$ date                  <date> 2022-01-01, 2022-01-01, 2022-01-01, 2022…
+$ id_origin             <chr> "28073", "28073", "28073", "28073", "2807…
+$ id_destination        <chr> "28007", "28066", "28079", "45081", "FR10…
+$ n_trips               <int> 1239, 1505, 3730, 237, 2, 10, 11, 5, 9, 2…
+$ trips_total_length_km <int> 11120, 7268, 75798, 3385, 82, 296, 1036, …
+```
+
+```
+# A tibble: 2,232 × 5
+   date       id_origin id_destination n_trips trips_total_length_km
+   <date>     <chr>     <chr>            <int>                 <int>
+ 1 2022-01-01 28073     28007             1239                 11120
+ 2 2022-01-01 28073     28066             1505                  7268
+ 3 2022-01-01 28073     28079             3730                 75798
+ 4 2022-01-01 28073     45081              237                  3385
+ 5 2022-01-01 28073     FR102                2                    82
+ 6 2022-01-01 28073     28177               10                   296
+ 7 2022-01-01 28073     45165               11                  1036
+ 8 2022-01-01 28073     46011_AM             5                  1621
+ 9 2022-01-01 28073     21076_AM             9                  4102
+10 2022-01-01 28073     46120_AM             2                   631
+# ℹ 2,222 more rows
+# ℹ Use `print(n = ...)` to see more rows
+```
+
+### All trips from Madrid to Barcelona
+
+Similarly, you can set limits on the destination municipalities:
+
+```{r}
+barcelona_muni_ids <- municipalities |> 
+  filter(str_detect(name, "Barcelona")) |> 
+  pull(id)
+barcelona_muni_ids
+```
+
+
+```{r}
+madrid_barcelona_od <- spod_quick_get_od(
+  date = "2022-01-01",
+  min_trips = 0,
+  id_origin = madrid_muni_ids,
+  id_destination = barcelona_muni_ids
+)
+```
+
+
+```{r}
+madrid_barcelona_od
+```
+
+
+```
+# A tibble: 4 × 5
+  date       id_origin id_destination n_trips trips_total_length_km
+  <date>     <chr>     <chr>            <int>                 <int>
+1 2022-01-01 28073     08019                2                  1334
+2 2022-01-01 28079     08019             1661                838281
+3 2022-01-01 28127     08019               26                 13699
+4 2022-01-01 45087     08019                2                  1184
+```
+
+You can now proceed to analyse these flows or visualise them as in the [static](flowmaps-static.html) and [interactive](flowmaps-interactive.html) flow maps tutorials.

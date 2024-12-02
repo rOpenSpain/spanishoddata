@@ -19,6 +19,7 @@ articles:
   contents:
   - v1-2020-2021-mitma-data-codebook
   - v2-2022-onwards-mitma-data-codebook
+  - quick-get
   - convert
   - disaggregation
   - flowmaps-static
@@ -46,6 +47,11 @@ reference:
       - spod_convert
       - spod_connect
       - spod_disconnect
+  - title: "Analysing up to 1 day of trips with no extra variables"
+    desc: >
+      Quickly get a single day of flows between municipalities (without hourly data or any other attributes) for 2022 and onwards
+    contents:
+      - spod_quick_get_od
   - title: "Helper functions"
     contents:
       - spod_codebook

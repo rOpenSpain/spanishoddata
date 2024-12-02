@@ -485,10 +485,11 @@ spod_get <- function(
   max_n_cpu = parallelly::availableCores() - 1,
   max_download_size_gb = 1,
   duckdb_target = ":memory:",
-  temp_path = spod_get_temp_dir()
+  temp_path = spod_get_temp_dir(),
+  ignore_missing_dates = FALSE
 ) {
   if (is.null(dates)) {
-    message("No period specified in the `dates` argument. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion.")
+    message("`dates` argument is undefined. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion.")
   }
   
   
@@ -505,7 +506,9 @@ spod_get <- function(
   
   if (isFALSE(cached_data_requested)) {
     dates <- spod_dates_argument_to_dates_seq(dates = dates)
-    ver <- spod_infer_data_v_from_dates(dates)
+    ver <- spod_infer_data_v_from_dates(
+      dates = dates, ignore_missing_dates = ignore_missing_dates
+    )
     # use the spot_download_data() function to download any missing data
     spod_download(
       type = type,
@@ -513,7 +516,9 @@ spod_get <- function(
       dates = dates,
       max_download_size_gb = max_download_size_gb,
       data_dir = data_dir,
-      return_local_file_paths = FALSE
+      quiet = quiet,
+      return_local_file_paths = FALSE,
+      ignore_missing_dates = ignore_missing_dates
     )
   } else if (isTRUE(cached_data_requested)) {
     ver <- as.numeric(stringr::str_extract(dates, "(1|2)$"))

@@ -33,6 +33,7 @@ Imports:
     fs,
     glue,
     here,
+    httr2,
     lubridate,
     memuse,
     parallelly,

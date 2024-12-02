@@ -41,15 +41,16 @@ spod_convert <- function(
   quiet = FALSE,
   max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1,
-  max_download_size_gb = 1
+  max_download_size_gb = 1,
+  ignore_missing_dates = FALSE
 ) {
   
   if (is.null(dates)) {
     message("No period specified in the `dates` argument. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion.")
   }
 
-  spod_dates_argument_to_dates_seq(dates = dates)
-  ver <- spod_infer_data_v_from_dates(dates)
+  dates <- spod_dates_argument_to_dates_seq(dates = dates)
+  ver <- spod_infer_data_v_from_dates(dates = dates, ignore_missing_dates = ignore_missing_dates)
   
   # check if user is requesting to just get all cached data
   cached_data_requested <- length(dates) == 1 &&
@@ -170,7 +171,8 @@ spod_convert <- function(
     max_mem_gb = max_mem_gb,
     max_n_cpu = max_n_cpu,
     max_download_size_gb = max_download_size_gb,
-    duckdb_target = duckdb_target
+    duckdb_target = duckdb_target,
+    ignore_missing_dates = ignore_missing_dates
   )
 
   # resolve the actual database connection from the returned table
