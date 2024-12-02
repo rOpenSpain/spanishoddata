@@ -52,7 +52,8 @@
 <span>  max_download_size_gb <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  data_dir <span class="op">=</span> <span class="fu"><a href="spod_get_data_dir.html">spod_get_data_dir</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  return_local_file_paths <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  return_local_file_paths <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignore_missing_dates <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,6 +95,10 @@
 
 <dt id="arg-return-local-file-paths">return_local_file_paths<a class="anchor" aria-label="anchor" href="#arg-return-local-file-paths"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, the function returns a character vector of the paths to the downloaded files. If <code>FALSE</code>, the function returns <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-ignore-missing-dates">ignore_missing_dates<a class="anchor" aria-label="anchor" href="#arg-ignore-missing-dates"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
