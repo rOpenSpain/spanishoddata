@@ -16,7 +16,8 @@ spod_convert(
   quiet = FALSE,
   max_mem_gb = max(4, spod_available_ram() - 4),
   max_n_cpu = parallelly::availableCores() - 1,
-  max_download_size_gb = 1
+  max_download_size_gb = 1,
+  ignore_missing_dates = FALSE
 )
 }
 \arguments{
@@ -61,6 +62,8 @@ You can also set \code{save_path}. If it ends with ".duckdb", will save to \code
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 
 \item{max_download_size_gb}{The maximum download size in gigabytes. Defaults to 1.}
+
+\item{ignore_missing_dates}{Logical. If \code{TRUE}, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to \code{FALSE}.}
 }
 \value{
 Path to saved DuckDB file.
