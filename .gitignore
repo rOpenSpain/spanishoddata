@@ -24,3 +24,4 @@ vignettes/.quarto
 ._.DS_Store
 **/.DS_Store
 **/._.DS_Store
+.Rprofile
