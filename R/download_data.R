@@ -56,6 +56,11 @@ spod_download <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
+  # simple null check is enough here, as spod_dates_arugument_to_dates_seq will do additional checks anyway
+  if (is.null(dates)) {
+    message("`dates` argument is undefined. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion. For more details on the dates argument, see ?spod_download.")
+  }
+
   dates_to_use <- spod_dates_argument_to_dates_seq(dates = dates)
 
 
