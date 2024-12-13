@@ -51,7 +51,6 @@ download only the files that are not already present.
 
 ![](vignettes/media/flows_plot.svg)
 
-
 Figure 1: Example of the data available through the package: daily flows
 in Barcelona
 
@@ -66,15 +65,14 @@ To create static maps like that see our vignette
 
 ![](https://ropenspain.github.io/spanishoddata/media/spain-folding-flows.gif)
 
-
 Figure 2: Example of the data available through the package: interactive
 daily flows in Spain
 
 </div>
+
 <div id="fig-spain-flows">
 
 ![](https://ropenspain.github.io/spanishoddata/media/barcelona-time.gif)
-
 
 Figure 3: Example of the data available through the package: interactive
 daily flows in Barcelona with time filter
@@ -98,7 +96,9 @@ install.packages("spanishoddata",
 ```
 
 <details>
+
 <summary>
+
 Alternative installation and developemnt
 </summary>
 
@@ -150,7 +150,9 @@ The function above will also ensure that the directory is created and
 that you have sufficient permissions to write to it.
 
 <details>
+
 <summary>
+
 Setting data directory for advanced users
 </summary>
 
@@ -210,7 +212,6 @@ package.
 
 <img src="man/figures/package-functions-overview.svg"
 style="width:78.0%" />
-
 
 Figure 4: The overview of package functions to get the data
 
@@ -469,9 +470,13 @@ For more information on the package, see:
 # References
 
 <!-- metadata for better search engine indexing -->
+
 <!-- should be picked up by pkgdown -->
+
 <!-- update metadata before release with  -->
+
 <!-- cffr::cff_write() -->
+
 <!-- codemetar::write_codemeta(write_minimeta = T) -->
 
 <div id="refs" class="references csl-bib-body hanging-indent"
@@ -481,7 +486,7 @@ entry-spacing="0">
 
 Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
 Origin-Destination Data,” August.
-<https://cran.r-project.org/web/packages/od/od.pdf>.
+<https://doi.org/10.32614/CRAN.package.od>.
 
 </div>
 
