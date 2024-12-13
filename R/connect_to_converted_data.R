@@ -110,7 +110,14 @@ spod_connect <- function(
 #' spod_disconnect(od_distr)
 #' }
 #' 
-spod_disconnect <- function(tbl_con, free_mem = TRUE) {
+spod_disconnect <- function(
+  tbl_con,
+  free_mem = TRUE
+) {
+  # Validate imputs
+  checkmate::assert_class(tbl_con, "tbl_duckdb_connection")
+  checkmate::assert_flag(free_mem)
+
   DBI::dbDisconnect(tbl_con$src$con, shutdown = TRUE)
   if (free_mem){
     gc()
