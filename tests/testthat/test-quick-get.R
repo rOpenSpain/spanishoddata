@@ -61,7 +61,7 @@ test_that("spod_quick_get_od fails on negarive min_trips", {
       date = "2022-01-01",
       min_trips = -1
     ),
-    ".*Invalid minimum number of trips.*"
+    ".*Assertion.*failed.*"
   )
 })
 

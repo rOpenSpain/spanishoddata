@@ -37,8 +37,23 @@ spod_quick_get_od <- function(
   id_destination = NA
 ){
   # Validate inputs
-  checkmate::assert_integerish(min_trips, lower = 0, null.ok = FALSE)
-  checkmate::assert_subset(distances, choices = c("500m-2km", "2-10km", "10-50km", "50+km"))
+  checkmate::assert_integerish(min_trips, lower = 0, null.ok = FALSE, max.len = 1)
+
+  # Mapping user-friendly distances to GraphQL expected values
+  distance_mapping <- c(
+    "500m-2km" = "D_05_2",
+    "2-10km" = "D_2_10",
+    "10-50km" = "D_10_50",
+    "50+km" = "D_50"
+  )
+  # Translate user-friendly distances into GraphQL distances
+  graphql_distances <- unname(distance_mapping[distances])
+
+  if (any(is.na(graphql_distances))) {
+    stop("Invalid distance value. Allowed values are: ", 
+          paste(names(distance_mapping), collapse = ", "))
+  }
+
   checkmate::assert_character(id_origin, null.ok = TRUE)
   checkmate::assert_character(id_destination, null.ok = TRUE)
 
@@ -100,14 +115,6 @@ spod_quick_get_od <- function(
       )
     )
   }
-
-  # Mapping user-friendly distances to GraphQL expected values
-  distance_mapping <- c(
-    "500m-2km" = "D_05_2",
-    "2-10km" = "D_2_10",
-    "10-50km" = "D_10_50",
-    "50+km" = "D_50"
-  )
   
   # Municipalities checks
   muni_ref <- readRDS(
@@ -144,19 +151,8 @@ spod_quick_get_od <- function(
     validate_muni_ids(id_destination, muni_ref)
   }
   
-  
-  # Validate min_trips
-  if (!is.numeric(min_trips) || min_trips < 0) {
-    stop("Invalid minimum number of trips. Must be a non-negative integer.")
-  }
 
-  # Translate user-friendly distances into GraphQL distances
-  graphql_distances <- unname(distance_mapping[distances])
-  
-  if (any(is.na(graphql_distances))) {
-    stop("Invalid distance value. Allowed values are: ", 
-         paste(names(distance_mapping), collapse = ", "))
-  }
+
   
   # Construct the `journeysMunCriteria` part of the query
   journeysMunCriteria <- list(
