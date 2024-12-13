@@ -294,13 +294,14 @@ ggplot() +
 For more information on the package, see:
 
 - The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
-  - Information on the [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
+  - [Functions reference](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
   - [v1 data (2020-2021) codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html)
   - [v2 data (2022 onwards) codebook (work in progress)](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.html)
   - [Download and convert data](https://rOpenSpain.github.io/spanishoddata/articles/convert.html)
   - The [OD disaggregation vignette](https://rOpenSpain.github.io/spanishoddata/articles/disaggregation.html) showcases flows disaggregation
   - [Making static flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html) vignette shows how to create flowmaps using the data acquired with `{spanishoddata}`
   - [Making interactive flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html) shows how to create an interactive flowmap using the data acquired with `{spanishoddata}`
+  - [Quickly getting daily aggregated 2022+ data at municipality level](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
 
 
 ```{r}

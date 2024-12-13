@@ -447,8 +447,8 @@ ggplot() +
 For more information on the package, see:
 
 - The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
-  - Information on the
-    [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
+  - [Functions
+    reference](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
   - [v1 data (2020-2021)
     codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html)
   - [v2 data (2022 onwards) codebook (work in
@@ -466,6 +466,8 @@ For more information on the package, see:
     flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html)
     shows how to create an interactive flowmap using the data acquired
     with `{spanishoddata}`
+  - [Quickly getting daily aggregated 2022+ data at municipality
+    level](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
 
 # References
 
