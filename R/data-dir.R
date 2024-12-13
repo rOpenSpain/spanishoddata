@@ -13,7 +13,7 @@ spod_set_data_dir <- function(
 ){
   checkmate::assert_character(data_dir, len = 1, null.ok = FALSE)
   checkmate::assert_flag(quiet)
-  
+
   data_dir_abs_path <- fs::path_abs(data_dir)
   
   tryCatch({
@@ -58,6 +58,7 @@ spod_set_data_dir <- function(
 #' @export
 #' @keywords internal
 spod_get_data_dir <- function(quiet = FALSE) {
+  checkmate::assert_flag(quiet)
   data_dir_env <- Sys.getenv("SPANISH_OD_DATA_DIR")
   if (data_dir_env == "") {
     if (isFALSE(quiet)) warning("Warning: SPANISH_OD_DATA_DIR is not set. Using the temporary directory, which is not recommended, as the data will be deleted when the session ends.\n\n To set the data directory, use `Sys.setenv(SPANISH_OD_DATA_DIR = '/path/to/data')` or set SPANISH_OD_DATA_DIR permanently in the environment by editing the `.Renviron` file locally for current project with `usethis::edit_r_environ('project')` or `file.edit('.Renviron')` or globally for all projects with `usethis::edit_r_environ('user')` or `file.edit('~/.Renviron')`.")
