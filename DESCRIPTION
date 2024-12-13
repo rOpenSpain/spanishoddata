@@ -10,7 +10,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-5199-4103"))
   )
 Description: Enables access to origin-destination (OD) provided by the
-    Spanish Minstry of Transport, hosted at
+    Spanish Ministry of Transport, hosted at
     <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
     It contains functions for downloading zone boundaries and associated
     origin-destination data.  The OD datasets are large.  The package
