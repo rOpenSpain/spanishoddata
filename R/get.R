@@ -95,10 +95,14 @@ spod_available_data <- function(
   quiet = FALSE,
   data_dir = spod_get_data_dir()
 ) {
-  ver <- as.integer(ver) # todo: add type safety check
+  # Validate input
+  checkmate::assertIntegerish(ver, max.len = 1)
   if (!ver %in% c(1, 2)) {
-    stop("Invalid version number. Must be 1 or 2.")
+    stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
   }
+  checkmate::assert_flag(check_local_files)
+  checkmate::assert_flag(quiet)
+  checkmate::assert_directory_exists(data_dir, access = "rw")
 
   if (ver == 1) {
     return(spod_available_data_v1(data_dir = data_dir, check_local_files = check_local_files, quiet = quiet))
