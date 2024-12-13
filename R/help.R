@@ -9,8 +9,13 @@
 #' @importFrom utils vignette
 #' @export
 #' 
-spod_codebook = function(ver = 1) {
-  ver <- as.integer(ver)
+spod_codebook <- function(ver = 1) {
+  # Validate input
+  checkmate::assertIntegerish(ver, max.len = 1)
+  if (!ver %in% c(1, 2)) {
+    stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
+  }
+
   if (ver == 1){
     help <- vignette(
       topic = "v1-2020-2021-mitma-data-codebook",

@@ -51,7 +51,6 @@ spod_get_zones <- function(
   ))
 
   checkmate::assertIntegerish(ver, max.len = 1)
-  ver <- as.integer(ver) # todo: add type safety check
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
   }
