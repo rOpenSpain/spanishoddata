@@ -206,7 +206,11 @@ spod_expand_dates_from_regex <- function(date_regex) {
   if (length(matching_dates_v1) == 0 && length(matching_dates_v2) == 0) {
     stop(paste0(
       "No matching dates found in the available data.",
-      "The valid dates range for v1 is: ", paste0(min(all_dates_v1), " to ", max(all_dates_v1)), " and for v2 is: ", paste0(min(all_dates_v2), " to ", max(all_dates_v2))
+      "\nThe valid dates range for v1 is: ",
+        paste(spod_convert_dates_to_ranges(all_dates_v1), collapse = ", "),
+      "\nThe valid dates range for v2 is: ",
+          paste(spod_convert_dates_to_ranges(all_dates_v2), collapse = ", "),
+          "."
     ))
   }
   # If checks above have passed, we can combine the matching dates as only one contains dates and the other is empty
@@ -221,11 +225,11 @@ spod_expand_dates_from_regex <- function(date_regex) {
 #' @return A vector of type `Date` with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
 #' @export
 spod_get_valid_dates <- function(ver = NULL) {
-  ver <- as.integer(ver) # todo: add type safety check
+  # Validate input
+  checkmate::assertIntegerish(ver, max.len = 1)
   if (!ver %in% c(1, 2)) {
-    stop("Invalid version number. Must be 1 or 2.")
+    stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
   }
-
 
   if (ver == 1) {
     # available_data <- spod_available_data_v1(check_local_files = FALSE, quiet = TRUE)

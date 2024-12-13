@@ -18,6 +18,14 @@ spod_connect <- function(
   max_n_cpu = parallelly::availableCores() - 1,
   temp_path = spod_get_temp_dir()
 ){
+  # Validate imputs
+  checkmate::assert_access(data_path, access = 'r')
+  checkmate::assert_character(target_table_name, null.ok = TRUE)
+  checkmate::assert_flag(quiet)
+  checkmate::assert_number(max_mem_gb, lower = 1)
+  checkmate::assert_integerish(max_n_cpu, lower = 1, upper = parallelly::availableCores())
+  checkmate::assert_directory_exists(temp_path, access = "rw")
+
   # determine if data_path is a folder or a duckdb file
   if (grepl("\\.duckdb$", data_path)) {
     duckdb_path <- data_path
@@ -102,7 +110,14 @@ spod_connect <- function(
 #' spod_disconnect(od_distr)
 #' }
 #' 
-spod_disconnect <- function(tbl_con, free_mem = TRUE) {
+spod_disconnect <- function(
+  tbl_con,
+  free_mem = TRUE
+) {
+  # Validate imputs
+  checkmate::assert_class(tbl_con, "tbl_duckdb_connection")
+  checkmate::assert_flag(free_mem)
+
   DBI::dbDisconnect(tbl_con$src$con, shutdown = TRUE)
   if (free_mem){
     gc()

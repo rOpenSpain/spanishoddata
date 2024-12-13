@@ -52,9 +52,27 @@ spod_download <- function(
     return_local_file_paths = FALSE,
     ignore_missing_dates = FALSE
   ) {
-  # convert english zone names to spanish words used in the default data paths
-  zones <- match.arg(zones)
+  
+  # Validate inputs
+  checkmate::assert_choice(type, choices = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"))
+  checkmate::assert_choice(zones, choices = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ))
+  checkmate::assert_number(max_download_size_gb, lower = 0.1)
+  checkmate::assert_directory_exists(data_dir, access = "rw")
+  checkmate::assert_flag(quiet)
+  checkmate::assert_flag(return_local_file_paths)
+  checkmate::assert_flag(ignore_missing_dates)
+
+  # normalise zones
   zones <- spod_zone_names_en2es(zones)
+
+  # simple null check is enough here, as spod_dates_arugument_to_dates_seq will do additional checks anyway
+  if (is.null(dates)) {
+    message("`dates` argument is undefined. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion. For more details on the dates argument, see ?spod_download.")
+  }
 
   dates_to_use <- spod_dates_argument_to_dates_seq(dates = dates)
 
