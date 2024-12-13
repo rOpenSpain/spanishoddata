@@ -311,7 +311,7 @@ analysis_data_storage <- spod_convert_data(
 )
 ```
 
-This will convert all downloaded data to `DuckDB` format for lightning fast analysis. You can change the `save_format` to `parquet` if you want to save the data in `Parquet` format. For comparison overview of the two formats please see the [Converting the data to DuckDB/Parquet for faster analysis](https://ropenspain.github.io/spanishoddata/articles/converting-the-data-for-faster-analysis.html).
+This will convert all downloaded data to `DuckDB` format for lightning fast analysis. You can change the `save_format` to `parquet` if you want to save the data in `Parquet` format. For comparison overview of the two formats please see the [Converting the data to DuckDB/Parquet for faster analysis](https://ropenspain.github.io/spanishoddata/articles/convert.html).
 
 By default, `spod_convert_data()` will save the converted data in the `SPANISH_OD_DATA_DIR` directory. You can change the `save_path` argument of `spod_convert_data()` if you want to save the data in a different location.
 
