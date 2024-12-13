@@ -1,5 +1,6 @@
 # before release
 # usethis::use_version("patch")
+# usethis::use_version("minor")
 cffr::cff_write()
 codemetar::write_codemeta(write_minimeta = T)
 usethis::use_tidy_description()
