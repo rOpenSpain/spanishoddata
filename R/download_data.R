@@ -52,8 +52,21 @@ spod_download <- function(
     return_local_file_paths = FALSE,
     ignore_missing_dates = FALSE
   ) {
-  # convert english zone names to spanish words used in the default data paths
-  zones <- match.arg(zones)
+  
+  # Validate inputs
+  checkmate::assert_choice(type, choices = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"))
+  checkmate::assert_choice(zones, choices = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ))
+  checkmate::assert_number(max_download_size_gb, lower = 0.1)
+  checkmate::assert_directory_exists(data_dir, access = "rw")
+  checkmate::assert_flag(quiet)
+  checkmate::assert_flag(return_local_file_paths)
+  checkmate::assert_flag(ignore_missing_dates)
+
+  # normalise zones
   zones <- spod_zone_names_en2es(zones)
 
   # simple null check is enough here, as spod_dates_arugument_to_dates_seq will do additional checks anyway
