@@ -36,6 +36,12 @@ spod_quick_get_od <- function(
   id_origin = NA,
   id_destination = NA
 ){
+  # Validate inputs
+  checkmate::assert_integerish(min_trips, lower = 0, null.ok = FALSE)
+  checkmate::assert_subset(distances, choices = c("500m-2km", "2-10km", "10-50km", "50+km"))
+  checkmate::assert_character(id_origin, null.ok = TRUE)
+  checkmate::assert_character(id_destination, null.ok = TRUE)
+
   # Convert the date into YYYYMMDD format
   if (is.character(date)) {
     # Check for "YYYY-MM-DD" format
