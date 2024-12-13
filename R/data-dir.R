@@ -11,6 +11,9 @@ spod_set_data_dir <- function(
   data_dir,
   quiet = FALSE
 ){
+  checkmate::assert_character(data_dir, len = 1, null.ok = FALSE)
+  checkmate::assert_flag(quiet)
+  
   data_dir_abs_path <- fs::path_abs(data_dir)
   
   tryCatch({
