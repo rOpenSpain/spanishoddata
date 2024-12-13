@@ -43,14 +43,26 @@ spod_get_zones <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE
 ) {
+  # Validate inputs
+  checkmate::assert_choice(zones, choices = c(
+    "districts", "dist", "distr", "distritos",
+    "municipalities", "muni", "municip", "municipios",
+    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
+  ))
+
+  checkmate::assertIntegerish(ver, max.len = 1)
   ver <- as.integer(ver) # todo: add type safety check
   if (!ver %in% c(1, 2)) {
-    stop("Invalid version number. Must be 1 or 2.")
+    stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
   }
-
-  zones <- match.arg(zones)
+  
+  
+  checkmate::assert_directory_exists(data_dir, access = "rw")
+  checkmate::assert_flag(quiet)
+  
+  # normalise zones
   zones <- spod_zone_names_en2es(zones)
-
+  
   if (ver == 1) {
     zones_sf <- spod_get_zones_v1(zones = zones, data_dir = data_dir, quiet = quiet)
   } else if (ver == 2) {
