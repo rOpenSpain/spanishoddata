@@ -29,3 +29,4 @@ README.qmd
 ^man/figures/card\.png$
 ^man/figures/.*flowmapblue.*
 ^cran-comments\.md$
+^CRAN-SUBMISSION$
