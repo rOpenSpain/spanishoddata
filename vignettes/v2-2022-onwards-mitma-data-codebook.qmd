@@ -36,7 +36,7 @@ In v2 data, the datasets comparable to the [v1 (2020-2021) data](v1-2020-2021-mi
 
 Key sources for this codebook/cookbook include:
 
--   [original data collection methodology and codebook in Spanish](https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_resumen_v7.pdf){target="_blank"} + [automatically translated English version of methodology and codebook](https://rOpenSpain.github.io/spanishoddata/codebooks/a3_informe_metodologico_resumen_v7_en.pdf){target="_blank"}
+-   [original data collection methodology and codebook in Spanish](https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_resumen_v7.pdf){target="_blank"} + [automatically translated English version of methodology and codebook](https://rOpenSpain.github.io/spanishoddata/codebooks/a3_informe_metodologico_estudio_movilidad_mitms_v8_en.pdf){target="_blank"}
 
 -   [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"}
 
