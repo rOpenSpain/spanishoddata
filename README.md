@@ -195,7 +195,9 @@ file.edit(".Renviron")
 If you only need flows data aggregated by day at municipal level, you
 can use the `spod_quick_get_od()` function. This will download the data
 directly from the web API and let you analyse it in-memory. More on this
-in the [Quickly get daily data](quick-get.html) vignette.
+in the [Quickly get daily
+data](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
+vignette.
 
 If you only want to analyse the data for a few days, you can use the
 `spod_get()` function. It will download the raw data in CSV format and
@@ -205,13 +207,14 @@ page.
 If you need longer periods (several months or years), you should use the
 `spod_convert()` and `spod_connect()` functions, which will convert the
 data into special format which is much faster for analysis, for this see
-the [Download and convert OD datasets](convert.qmd) vignette.
-`spod_get_zones()` will give you spatial data with zones that can be
-matched with the origin-destination flows from the functions above using
-zones ’id’s. Please see a simple example below, and also consult the
-vignettes with detailed data description and instructions in the package
-vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or
-simply visit the package website at
+the [Download and convert OD
+datasets](https://ropenspain.github.io/spanishoddata/articles/convert.html)
+vignette. `spod_get_zones()` will give you spatial data with zones that
+can be matched with the origin-destination flows from the functions
+above using zones ’id’s. Please see a simple example below, and also
+consult the vignettes with detailed data description and instructions in
+the package vignettes with `spod_codebook(ver = 1)` and
+`spod_codebook(ver = 2)`, or simply visit the package website at
 <https://ropenspain.github.io/spanishoddata/>. The
 <a href="#fig-overall-flow" class="quarto-xref">Figure 4</a> presents
 the overall approach to accessing the data in the `spanishoddata`
