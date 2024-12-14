@@ -192,6 +192,11 @@ file.edit(".Renviron")
 
 # Overall approach to accessing the data
 
+If you only need flows data aggregated by day at municipal level, you
+can use the `spod_quick_get_od()` function. This will download the data
+directly from the web API and let you analyse it in-memory. More on this
+in the [Quickly get daily data](quick-get.html) vignette.
+
 If you only want to analyse the data for a few days, you can use the
 `spod_get()` function. It will download the raw data in CSV format and
 let you analyse it in-memory. This is what we cover in the steps on this
