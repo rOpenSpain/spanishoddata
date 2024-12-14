@@ -28,7 +28,7 @@ spod_codebook <- function(ver = 1) {
     }
   } else if (ver == 2) {
     help <- vignette(
-      topic = "v2-2022-onwards-mitma-data-codebook.qmd",
+      topic = "v2-2022-onwards-mitma-data-codebook",
       package = "spanishoddata"
     ) 
     if( inherits(help, what = "vignette") ){
