@@ -8,15 +8,17 @@ message: 'To cite package "spanishoddata" in publications use:'
 type: software
 license: MIT
 title: 'spanishoddata: Get Spanish Origin-Destination Data'
-version: 0.0.1
+version: 0.1.0
 doi: 10.32614/CRAN.package.spanishoddata
-abstract: Enables access to origin-destination (OD) provided by the Spanish Minstry
+abstract: Gain seamless access to origin-destination (OD) data from the Spanish Ministry
   of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
-  It contains functions for downloading zone boundaries and associated origin-destination
-  data. The OD datasets are large. The package eases working with them by using the
-  database interface package 'duckdb', using an optional environment variable 'SPANISH_OD_DATA_DIR'
-  to avoid repeated downloads, and by providing documentation demonstrating how to
-  collect subsets of the resulting databases into memory.
+  This package simplifies the management of these large datasets by providing tools
+  to download zone boundaries, handle associated origin-destination data, and process
+  it efficiently with the 'duckdb' database interface. Local caching minimizes repeated
+  downloads, streamlining workflows for researchers and analysts. Extensive documentation
+  is available at <https://ropenspain.github.io/spanishoddata/index.html>, offering
+  guides on creating static and dynamic mobility flow visualizations and transforming
+  large datasets into analysis-ready formats.
 authors:
 - family-names: Kotov
   given-names: Egor
@@ -60,6 +62,18 @@ keywords:
 - origin-destination
 - rstats
 references:
+- type: report
+  title: Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología
+    Big Data. Informe metodológico (Study of National Traveler mobility Using Big
+    Data Technology. Methodological Report)
+  authors:
+  - name: MITMS
+  institution:
+    name: Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de
+      Transportes, Movilidad y Agenda Urbana
+  year: '2024'
+  url: https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data
+  date-accessed: '2024-12-11'
 - type: software
   title: 'R: A Language and Environment for Statistical Computing'
   notes: Depends
@@ -72,6 +86,18 @@ references:
   year: '2024'
   version: '>= 3.5.0'
 - type: software
+  title: checkmate
+  abstract: 'checkmate: Fast and Versatile Argument Checks'
+  notes: Imports
+  url: https://mllg.github.io/checkmate/
+  repository: https://CRAN.R-project.org/package=checkmate
+  authors:
+  - family-names: Lang
+    given-names: Michel
+    email: michellang@gmail.com
+    orcid: https://orcid.org/0000-0001-9754-0393
+  year: '2024'
+- type: software
   title: curl
   abstract: 'curl: A Modern and Flexible Web Client for R'
   notes: Imports
@@ -80,9 +106,10 @@ references:
   authors:
   - family-names: Ooms
     given-names: Jeroen
-    email: jeroen@berkeley.edu
+    email: jeroenooms@gmail.com
     orcid: https://orcid.org/0000-0002-4035-0289
   year: '2024'
+  version: '>= 5.0.0'
 - type: software
   title: DBI
   abstract: 'DBI: R Database Interface'
@@ -138,6 +165,7 @@ references:
     email: mark.raasveldt@cwi.nl
     orcid: https://orcid.org/0000-0001-5005-6844
   year: '2024'
+  version: '>= 0.5.0'
 - type: software
   title: fs
   abstract: 'fs: Cross-Platform File System Operations Based on ''libuv'''
@@ -180,6 +208,17 @@ references:
     given-names: Kirill
     email: krlmlr+r@mailbox.org
     orcid: https://orcid.org/0000-0002-1416-3412
+  year: '2024'
+- type: software
+  title: httr2
+  abstract: 'httr2: Perform HTTP Requests and Process the Responses'
+  notes: Imports
+  url: https://httr2.r-lib.org
+  repository: https://CRAN.R-project.org/package=httr2
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
   year: '2024'
 - type: software
   title: lubridate
@@ -329,17 +368,31 @@ references:
     given-names: Jeroen
   year: '2024'
 - type: software
+  title: flowmapblue
+  abstract: 'flowmapblue: Flow Map Rendering'
+  notes: Suggests
+  url: https://flowmapblue.github.io/flowmapblue.R/
+  repository: https://CRAN.R-project.org/package=flowmapblue
+  authors:
+  - family-names: Boyandin
+    given-names: Ilya
+    email: ilya@boyandin.me
+    orcid: https://orcid.org/0000-0001-5585-7587
+  year: '2024'
+- type: software
   title: flowmapper
   abstract: 'flowmapper: Draw Flows (Migration, Goods, Money, Information) on ''ggplot2''
     Plots'
   notes: Suggests
   url: https://github.com/JohMast/flowmapper
+  repository: https://CRAN.R-project.org/package=flowmapper
   authors:
   - family-names: Mast
     given-names: Johannes
     email: johannes.mast@dlr.de
     orcid: https://orcid.org/0000-0001-6595-5834
   year: '2024'
+  version: '>= 0.1.2'
 - type: software
   title: furrr
   abstract: 'furrr: Apply Mapping Functions in Parallel using Futures'
@@ -407,6 +460,44 @@ references:
     orcid: https://orcid.org/0000-0003-4474-2498
   year: '2024'
 - type: software
+  title: remotes
+  abstract: 'remotes: R Package Installation from Remote Repositories, Including ''GitHub'''
+  notes: Suggests
+  url: https://remotes.r-lib.org
+  repository: https://CRAN.R-project.org/package=remotes
+  authors:
+  - family-names: Csárdi
+    given-names: Gábor
+    email: csardi.gabor@gmail.com
+  - family-names: Hester
+    given-names: Jim
+  - family-names: Wickham
+    given-names: Hadley
+  - family-names: Chang
+    given-names: Winston
+  - family-names: Morgan
+    given-names: Martin
+  - family-names: Tenenbaum
+    given-names: Dan
+  year: '2024'
+- type: software
+  title: scales
+  abstract: 'scales: Scale Functions for Visualization'
+  notes: Suggests
+  url: https://scales.r-lib.org
+  repository: https://CRAN.R-project.org/package=scales
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  - family-names: Pedersen
+    given-names: Thomas Lin
+    email: thomas.pedersen@posit.co
+    orcid: https://orcid.org/0000-0002-5147-4711
+  - family-names: Seidel
+    given-names: Dana
+  year: '2024'
+- type: software
   title: testthat
   abstract: 'testthat: Unit Testing for R'
   notes: Suggests
@@ -418,3 +509,15 @@ references:
     email: hadley@posit.co
   year: '2024'
   version: '>= 3.0.0'
+- type: software
+  title: tidyverse
+  abstract: 'tidyverse: Easily Install and Load the ''Tidyverse'''
+  notes: Suggests
+  url: https://tidyverse.tidyverse.org
+  repository: https://CRAN.R-project.org/package=tidyverse
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2024'
+

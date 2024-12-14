@@ -2,19 +2,19 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "spanishoddata",
-  "description": "Enables access to origin-destination (OD) provided by the Spanish Minstry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. It contains functions for downloading zone boundaries and associated origin-destination data. The OD datasets are large. The package eases working with them by using the database interface package 'duckdb', using an optional environment variable 'SPANISH_OD_DATA_DIR' to avoid repeated downloads, and by providing documentation demonstrating how to collect subsets of the resulting databases into memory.",
+  "description": "Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Extensive documentation is available at <https://ropenspain.github.io/spanishoddata/index.html>, offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.",
   "name": "spanishoddata: Get Spanish Origin-Destination Data",
   "relatedLink": "https://rOpenSpain.github.io/spanishoddata/",
   "codeRepository": "https://github.com/rOpenSpain/spanishoddata",
   "issueTracker": "https://github.com/rOpenSpain/spanishoddata/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.4.1 (2024-06-14)",
+  "runtimePlatform": "R version 4.4.2 (2024-10-31)",
   "author": [
     {
       "@type": "Person",
@@ -51,8 +51,28 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "flowmapblue",
+      "name": "flowmapblue",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=flowmapblue"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "flowmapper",
-      "name": "flowmapper"
+      "name": "flowmapper",
+      "version": ">= 0.1.2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=flowmapper"
     },
     {
       "@type": "SoftwareApplication",
@@ -116,6 +136,30 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "remotes",
+      "name": "remotes",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=remotes"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "scales",
+      "name": "scales",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=scales"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "testthat",
       "name": "testthat",
       "version": ">= 3.0.0",
@@ -126,6 +170,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=testthat"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "tidyverse",
+      "name": "tidyverse",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=tidyverse"
     }
   ],
   "softwareRequirements": {
@@ -137,8 +193,21 @@
     },
     "2": {
       "@type": "SoftwareApplication",
+      "identifier": "checkmate",
+      "name": "checkmate",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=checkmate"
+    },
+    "3": {
+      "@type": "SoftwareApplication",
       "identifier": "curl",
       "name": "curl",
+      "version": ">= 5.0.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -147,7 +216,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=curl"
     },
-    "3": {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "DBI",
       "name": "DBI",
@@ -159,7 +228,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=DBI"
     },
-    "4": {
+    "5": {
       "@type": "SoftwareApplication",
       "identifier": "dplyr",
       "name": "dplyr",
@@ -171,10 +240,11 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=dplyr"
     },
-    "5": {
+    "6": {
       "@type": "SoftwareApplication",
       "identifier": "duckdb",
       "name": "duckdb",
+      "version": ">= 0.5.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -183,7 +253,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=duckdb"
     },
-    "6": {
+    "7": {
       "@type": "SoftwareApplication",
       "identifier": "fs",
       "name": "fs",
@@ -195,7 +265,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=fs"
     },
-    "7": {
+    "8": {
       "@type": "SoftwareApplication",
       "identifier": "glue",
       "name": "glue",
@@ -207,7 +277,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=glue"
     },
-    "8": {
+    "9": {
       "@type": "SoftwareApplication",
       "identifier": "here",
       "name": "here",
@@ -219,7 +289,19 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=here"
     },
-    "9": {
+    "10": {
+      "@type": "SoftwareApplication",
+      "identifier": "httr2",
+      "name": "httr2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=httr2"
+    },
+    "11": {
       "@type": "SoftwareApplication",
       "identifier": "lubridate",
       "name": "lubridate",
@@ -231,7 +313,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lubridate"
     },
-    "10": {
+    "12": {
       "@type": "SoftwareApplication",
       "identifier": "memuse",
       "name": "memuse",
@@ -243,7 +325,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=memuse"
     },
-    "11": {
+    "13": {
       "@type": "SoftwareApplication",
       "identifier": "parallelly",
       "name": "parallelly",
@@ -255,7 +337,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=parallelly"
     },
-    "12": {
+    "14": {
       "@type": "SoftwareApplication",
       "identifier": "purrr",
       "name": "purrr",
@@ -267,7 +349,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=purrr"
     },
-    "13": {
+    "15": {
       "@type": "SoftwareApplication",
       "identifier": "readr",
       "name": "readr",
@@ -279,7 +361,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=readr"
     },
-    "14": {
+    "16": {
       "@type": "SoftwareApplication",
       "identifier": "rlang",
       "name": "rlang",
@@ -291,7 +373,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rlang"
     },
-    "15": {
+    "17": {
       "@type": "SoftwareApplication",
       "identifier": "sf",
       "name": "sf",
@@ -303,12 +385,12 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sf"
     },
-    "16": {
+    "18": {
       "@type": "SoftwareApplication",
       "identifier": "stats",
       "name": "stats"
     },
-    "17": {
+    "19": {
       "@type": "SoftwareApplication",
       "identifier": "stringr",
       "name": "stringr",
@@ -320,7 +402,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=stringr"
     },
-    "18": {
+    "20": {
       "@type": "SoftwareApplication",
       "identifier": "tibble",
       "name": "tibble",
@@ -332,7 +414,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=tibble"
     },
-    "19": {
+    "21": {
       "@type": "SoftwareApplication",
       "identifier": "xml2",
       "name": "xml2",
@@ -346,7 +428,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1390.489KB",
+  "fileSize": "1654.952KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -372,8 +454,22 @@
       "url": "https://github.com/rOpenSpain/spanishoddata",
       "@id": "https://doi.org/10.32614/CRAN.package.spanishoddata",
       "sameAs": "https://doi.org/10.32614/CRAN.package.spanishoddata"
+    },
+    {
+      "datePublished": "2024",
+      "author": [
+        {
+          "@type": "Organization",
+          "name": "MITMS"
+        }
+      ],
+      "name": "Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)",
+      "url": "https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data"
     }
   ],
+  "releaseNotes": "https://github.com/rOpenSpain/spanishoddata/blob/master/NEWS.md",
   "readme": "https://github.com/rOpenSpain/spanishoddata/blob/main/README.md",
+  "contIntegration": "https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml",
+  "developmentStatus": "https://www.repostatus.org/#active",
   "keywords": ["cdr", "data", "data-package", "mobility", "origin-destination", "rstats", "mobile-telephone-data"]
 }

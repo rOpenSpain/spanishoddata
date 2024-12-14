@@ -4,20 +4,24 @@
 
 <!-- badges: start -->
 
-<a href="https://www.repostatus.org/#wip" target="_blank"><img
-src="https://www.repostatus.org/badges/latest/wip.svg"
-alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a>
-<a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"
+[![Project Status:
+Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+<a href="https://lifecycle.r-lib.org/articles/stages.html#stable"
 target="_blank"><img
-src="https://img.shields.io/badge/lifecycle-experimental-red.svg"
-alt="Lifecycle: experimental" /></a>
+src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg"
+alt="Lifecycle: stable" /></a>
+<a href="https://CRAN.R-project.org/package=rJavaEnv"
+target="_blank"><img
+src="https://www.r-pkg.org/badges/version/rJavaEnv.png"
+alt="CRAN status" /></a>
 [![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
+[![DOI](https://zenodo.org/badge/DOI/10.32614/CRAN.package.spanishoddata.svg)](https://doi.org/10.32614/CRAN.package.spanishoddata)
 <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
-Ministry of Transport and Sustainable Mobility of Spain (Secretaría de
-Estado de Transportes y Movilidad Sostenible 2024).
+Ministry of Transport and Sustainable Mobility of Spain
+(**mitma-mobility-2024-v7?**).
 
 It supports the two versions of the Spanish mobility data that consists
 of origin-destination matrices and some additional data sets. [The first
@@ -25,21 +29,21 @@ version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios
 covers data from 2020 and 2021, including the period of the COVID-19
 pandemic. [The second
 version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
-contains data from January 2022 onwards and is updated monthly on the
-fifteenth of each month. Both versions of the data primarily consist of
-mobile phone positioning data, and include matrices for overnight stays,
-individual movements, and trips of Spanish residents at different
-geographical levels. See the [package
-website](https://rOpenSpain.github.io/spanishoddata/) and vignettes for
+contains data from January 2022 onwards and is regularly updated. Both
+versions of the data primarily consist of mobile phone positioning data,
+and include matrices for overnight stays, individual movements, and
+trips of Spanish residents at different geographical levels. See the
+[package website](https://rOpenSpain.github.io/spanishoddata/) and
+vignettes for
 [v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook)
 and
 [v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook)
 data for more details.
 
-**spanishoddata** is designed to save people time by providing the data
-in analysis-ready formats. Automating the process of downloading,
-cleaning, and importing the data can also reduce the risk of errors in
-the laborious process of data preparation. It also reduces computational
+**spanishoddata** is designed to save time by providing the data in
+analysis-ready formats. Automating the process of downloading, cleaning,
+and importing the data can also reduce the risk of errors in the
+laborious process of data preparation. It also reduces computational
 resources by using computationally efficient packages behind the scenes.
 To effectively work with multiple data files, it’s recommended you set
 up a data directory where the package can search for the data and
@@ -188,6 +192,13 @@ file.edit(".Renviron")
 
 # Overall approach to accessing the data
 
+If you only need flows data aggregated by day at municipal level, you
+can use the `spod_quick_get_od()` function. This will download the data
+directly from the web API and let you analyse it in-memory. More on this
+in the [Quickly get daily
+data](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
+vignette.
+
 If you only want to analyse the data for a few days, you can use the
 `spod_get()` function. It will download the raw data in CSV format and
 let you analyse it in-memory. This is what we cover in the steps on this
@@ -196,13 +207,14 @@ page.
 If you need longer periods (several months or years), you should use the
 `spod_convert()` and `spod_connect()` functions, which will convert the
 data into special format which is much faster for analysis, for this see
-the [Download and convert OD datasets](convert.qmd) vignette.
-`spod_get_zones()` will give you spatial data with zones that can be
-matched with the origin-destination flows from the functions above using
-zones ’id’s. Please see a simple example below, and also consult the
-vignettes with detailed data description and instructions in the package
-vignettes with `spod_codebook(ver = 1)` and `spod_codebook(ver = 2)`, or
-simply visit the package website at
+the [Download and convert OD
+datasets](https://ropenspain.github.io/spanishoddata/articles/convert.html)
+vignette. `spod_get_zones()` will give you spatial data with zones that
+can be matched with the origin-destination flows from the functions
+above using zones ’id’s. Please see a simple example below, and also
+consult the vignettes with detailed data description and instructions in
+the package vignettes with `spod_codebook(ver = 1)` and
+`spod_codebook(ver = 2)`, or simply visit the package website at
 <https://ropenspain.github.io/spanishoddata/>. The
 <a href="#fig-overall-flow" class="quarto-xref">Figure 4</a> presents
 the overall approach to accessing the data in the `spanishoddata`
@@ -447,8 +459,8 @@ ggplot() +
 For more information on the package, see:
 
 - The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
-  - Information on the
-    [functions](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
+  - [Functions
+    reference](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
   - [v1 data (2020-2021)
     codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html)
   - [v2 data (2022 onwards) codebook (work in
@@ -466,6 +478,44 @@ For more information on the package, see:
     flowmaps](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html)
     shows how to create an interactive flowmap using the data acquired
     with `{spanishoddata}`
+  - [Quickly getting daily aggregated 2022+ data at municipality
+    level](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
+
+## Citation
+
+To cite spanishoddata R package and data in publications use:
+
+Kotov E, Lovelace R, Vidal-Tortosa E (2024). *spanishoddata*.
+doi:10.32614/CRAN.package.spanishoddata
+<https://doi.org/10.32614/CRAN.package.spanishoddata>,
+<https://github.com/rOpenSpain/spanishoddata>.
+
+MITMS (2024). “Estudio de movilidad de viajeros de ámbito nacional
+aplicando la tecnología Big Data. Informe metodológico (Study of
+National Traveler mobility Using Big Data Technology. Methodological
+Report).” Secretaría de Estado de Transportes y Movilidad Sostenible;
+Ministerio de Transportes, Movilidad y Agenda Urbana.
+<https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
+
+BibTeX:
+
+    @Manual{spanishoddata,
+      title = {spanishoddata},
+      author = {Egor Kotov and Robin Lovelace and Eugeni Vidal-Tortosa},
+      year = {2024},
+      url = {https://github.com/rOpenSpain/spanishoddata},
+      doi = {10.32614/CRAN.package.spanishoddata},
+    }
+
+    @TechReport{mitma_mobility_2024_v8,
+      title = {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
+      author = {{MITMS}},
+      institution = {Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes, Movilidad y Agenda Urbana},
+      year = {2024},
+      url = {https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data},
+      urldate = {2024-12-11},
+      annotation = {https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf},
+    }
 
 # References
 
@@ -487,16 +537,6 @@ entry-spacing="0">
 Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
 Origin-Destination Data,” August.
 <https://doi.org/10.32614/CRAN.package.od>.
-
-</div>
-
-<div id="ref-mitma-mobility-2024-v7" class="csl-entry">
-
-Secretaría de Estado de Transportes y Movilidad Sostenible. 2024.
-“Estudio de movilidad de viajeros de ámbito nacional aplicando la
-tecnología Big Data. Informe metodológico (Study of National Traveler
-mobility Using Big Data Technology. Methodological Report).”
-<https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 </div>
 

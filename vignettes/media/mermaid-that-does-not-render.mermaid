@@ -1,20 +1,28 @@
 flowchart TB
-    A["For quick analysis of few dates\nwork with raw CSV.gz data"] -->|"spod_get(
+    M["For daily aggregated flows at munucipal level (2022 onwards)
+    get data from GraphQL API directly"] -->|"spod_quick_get_od(
+    date = '2022-03-15')"
+    | F["'tbl' object with 'id' for origins and destinations and trip counts"]
+    
+    A["Houlry flows and other data for a few days starting in 2020
+    get data from raw CSV.gz files"] -->|"spod_get(
     type = 'origin-destination',
     zones = 'districts',
-    dates = c(start = '2020-02-14', end = '2020-03-14') )"
-    | F["'tbl' object with 'id' for origins and destinations"]
+    dates = c(start = '2020-02-14', end = '2020-02-21') )"
+    | F
     
-    C["Analyse longer periods (several months)\nor even the whole dataset over several years"]
+    C["Analyse longer periods (several months)
+    or even the whole dataset over several years"]
     -->|"spod_convert(
 type = 'origin-destination',
     zones = 'districts',
     dates = c(start = '2020-02-14', end = '2021-05-09') )"| D["path to converted data"]
-    D -->|"spod_connect()" | F["'tbl' object with 'id' for origins and destinations"]
+    D -->|"spod_connect()" | F
     
     F -->|"dplyr functions: select(), filter(), mutate(), group_by(), summarise(), etc..."| G["dplyr::collect()"]
-    G --> H["Result: data.frame / tibble"] --> R[spatial data matched by 'id' with aggegated mobility flows]
+    G --> H["**flows_data** - data.frame / tibble"] --> R["left_join(**zones**, **flows_data**)"] --> XX["spatial data matched by 'id' with aggegated mobility flows"]
 
     X["spatial data with zones"] --> |"spod_get_zones(
     zones = 'districts',
-    ver = 1 )"| Y["polygons with zones in sf object\nwith 'id' that match with origins and destinations"] --> R
+    ver = 1 )"| Y["**zones** - polygons with zones in sf object
+    with 'id' that match with origins and destinations"] --> R

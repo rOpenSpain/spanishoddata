@@ -1,535 +1,166 @@
-#' Get zones
+#' Get tabular data
 #' 
-#' @description
-#' Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
+#' @description This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary. The connnection is made to the raw CSV files in gzip archives, so analysing the data through this connection may be slow if you select more than a few days. You can manipulate this object using `{dplyr}` functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. See codebooks for v1 and v2 data in vignettes with `spod_codebook(1)` and `spod_codebook(2)` (\link{spod_codebook}).
 #' 
+#' If you want to analyse longer periods of time (especiially several months or even the whole data over several years), consider using the \link{spod_convert} and then \link{spod_connect}.
+#' 
+#' @param duckdb_target (Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the `spod_convert` function. If not specified, it will be set to ":memory:" and the data will be stored in memory.
 #' @inheritParams spod_download
-#' @inheritParams spod_available_data
-#' @return An `sf` object (Simple Feature collection).
-#' 
-#' The columns for v1 (2020-2021) data include:
-#' \describe{
-#'   \item{id}{A character vector containing the unique identifier for each district, assigned by the data provider. This `id` matches the `id_origin`, `id_destination`, and `id` in district-level origin-destination and number of trips data.}
-#'   \item{census_districts}{A string with semicolon-separated identifiers of census districts classified by the Spanish Statistical Office (INE) that are spatially bound within the polygons for each `id`.}
-#'   \item{municipalities_mitma}{A string with semicolon-separated municipality identifiers (as assigned by the data provider) corresponding to each district `id`.}
-#'   \item{municipalities}{A string with semicolon-separated municipality identifiers classified by the Spanish Statistical Office (INE) corresponding to each `id`.}
-#'   \item{district_names_in_v2/municipality_names_in_v2}{A string with semicolon-separated district names (from the v2 version of this data) corresponding to each district `id` in v1.}
-#'   \item{district_ids_in_v2/municipality_ids_in_v2}{A string with semicolon-separated district identifiers (from the v2 version of this data) corresponding to each district `id` in v1.}
-#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
-#' }
-#' 
-#' The columns for v2 (2022 onwards) data include:
-#' \describe{
-#'   \item{id}{A character vector containing the unique identifier for each zone, assigned by the data provider.}
-#'   \item{name}{A character vector with the name of each district.}
-#'   \item{population}{A numeric vector representing the population of each district (as of 2022).}
-#'   \item{census_sections}{A string with semicolon-separated identifiers of census sections corresponding to each district.}
-#'   \item{census_districts}{A string with semicolon-separated identifiers of census districts as classified by the Spanish Statistical Office (INE) corresponding to each district.}
-#'   \item{municipalities}{A string with semicolon-separated identifiers of municipalities classified by the Spanish Statistical Office (INE) corresponding to each district.}
-#'   \item{municipalities_mitma}{A string with semicolon-separated identifiers of municipalities, as assigned by the data provider, that correspond to each district.}
-#'   \item{luas_mitma}{A string with semicolon-separated identifiers of LUAs (Local Urban Areas) from the provider, associated with each district.}
-#'   \item{district_ids_in_v1/municipality_ids_in_v1}{A string with semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, it is marked as `NA`.}
-#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
-#' }
-#' 
+#' @inheritParams spod_duckdb_limit_resources
+#' @inheritParams spod_duckdb_set_temp
+#' @inheritParams global_quiet_param
+#' @return A DuckDB lazy table connection object of class `tbl_duckdb_connection`.
 #' @export
-spod_get_zones <- function(
+#' @examples
+#' \dontrun{
+#' 
+#' # create a connection to the v1 data
+#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
+#' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
+#' od_dist <- spod_get(type = "od", zones = "distr", dates = dates)
+#'
+#' # od dist is a table view filtered to the specified dates
+#'
+#' # access the source connection with all dates
+#' # list tables
+#' DBI::dbListTables(od_dist$src$con)
+#' }
+#' 
+spod_get <- function(
+  type = c(
+    "od", "origin-destination",
+    "os", "overnight_stays",
+    "nt", "number_of_trips"
+  ),
   zones = c(
     "districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios",
     "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
   ),
-  ver = NULL,
+  dates = NULL,
   data_dir = spod_get_data_dir(),
-  quiet = FALSE
+  quiet = FALSE,
+  max_mem_gb = max(4, spod_available_ram() - 4),
+  max_n_cpu = parallelly::availableCores() - 1,
+  max_download_size_gb = 1,
+  duckdb_target = ":memory:",
+  temp_path = spod_get_temp_dir(),
+  ignore_missing_dates = FALSE
 ) {
+
   # Validate inputs
+  checkmate::assert_choice(type, choices = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"))
   checkmate::assert_choice(zones, choices = c(
     "districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios",
     "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
   ))
-
-  checkmate::assertIntegerish(ver, max.len = 1)
-  if (!ver %in% c(1, 2)) {
-    stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
+  checkmate::assert_flag(quiet)
+  checkmate::assert_number(max_mem_gb, lower = 1)
+  checkmate::assert_integerish(max_n_cpu, lower = 1, upper = parallelly::availableCores())
+  checkmate::assert_number(max_download_size_gb, lower = 0.1)
+  checkmate::assert_string(duckdb_target)
+  checkmate::assert_directory_exists(data_dir, access = "rw")
+  checkmate::assert_directory_exists(temp_path, access = "rw")
+  checkmate::assert_flag(ignore_missing_dates)
+  
+  # simple null check is enough here, as spod_dates_arugument_to_dates_seq will do additional checks anyway
+  if (is.null(dates)) {
+    message("`dates` argument is undefined. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion. For more details on the dates argument, see ?spod_get.")
   }
   
-  
-  checkmate::assert_directory_exists(data_dir, access = "rw")
-  checkmate::assert_flag(quiet)
-  
+  # normalise type
+  type <- spod_match_data_type(type = type)
   # normalise zones
   zones <- spod_zone_names_en2es(zones)
   
-  if (ver == 1) {
-    zones_sf <- spod_get_zones_v1(zones = zones, data_dir = data_dir, quiet = quiet)
-  } else if (ver == 2) {
-    zones_sf <- spod_get_zones_v2(zones = zones, data_dir = data_dir, quiet = quiet)
-  }
-
-  return(zones_sf)
-}
-
-#' Get available data list
-#' 
-#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable or a custom path specified with `data_dir` argument.
-#' 
-#' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
-#' @inheritParams spod_available_data_v1
-#' @inheritParams global_quiet_param
-#' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
-#' \describe{
-#'   \item{target_url}{\code{character}. The URL link to the data file.}
-#'   \item{pub_ts}{\code{POSIXct}. The timestamp of when the file was published.}
-#'   \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
-#'   \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
-#'   \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
-#'   \item{local_path}{\code{character}. The local file path where the data is stored.}
-#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
-#' }
-#' @export
-spod_available_data <- function(
-  ver = 2,
-  check_local_files = FALSE,
-  quiet = FALSE,
-  data_dir = spod_get_data_dir()
-) {
-  # Validate input
-  checkmate::assertIntegerish(ver, max.len = 1)
-  if (!ver %in% c(1, 2)) {
-    stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
-  }
-  checkmate::assert_flag(check_local_files)
-  checkmate::assert_flag(quiet)
-  checkmate::assert_directory_exists(data_dir, access = "rw")
-
-  if (ver == 1) {
-    return(spod_available_data_v1(data_dir = data_dir, check_local_files = check_local_files, quiet = quiet))
-  } else if (ver == 2) {
-    return(spod_available_data_v2(data_dir = data_dir, check_local_files = check_local_files, quiet = quiet))
-  }
-}
-
-#' Get latest file list from the XML for MITMA open mobility data v2 (2022 onwards)
-#'
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
-#' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
-#'
-#' @return The path to the downloaded XML file.
-#' @examples
-#' if (FALSE) {
-#'   spod_get_latest_v2_file_list()
-#' }
-#' @keywords internal
-spod_get_latest_v2_file_list <- function(
-    data_dir = spod_get_data_dir(),
-    xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
-) {
-  if (!dir.exists(data_dir)) {
-    fs::dir_create(data_dir)
-  }
-
-  current_date <- format(Sys.Date(), format = "%Y-%m-%d")
-  current_filename <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}/data_links_v2_{current_date}.xml")
-
-  # ensure dir exists
-  if (!dir.exists(dirname(current_filename))) {
-    fs::dir_create(dirname(current_filename), recurse = TRUE)
-  }
-
-  message("Saving the file to: ", current_filename)
-  xml_requested <- curl::multi_download(
-    urls = xml_url,
-    destfiles = current_filename
-  )
-  return(current_filename)
-}
-
-#' Get the data dictionary
-#'
-#' This function retrieves the data dictionary for the specified data directory.
-#'
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
-#' @inheritParams spod_available_data_v1
-#' @inheritParams global_quiet_param
-#' @inherit spod_available_data return
-#' @importFrom rlang .data
-#' @examples
-#' # Get the data dictionary for the default data directory
-#' if (FALSE) {
-#'   metadata <- spod_available_data_v2()
-#'   names(metadata)
-#'   head(metadata)
-#' }
-#' @keywords internal
-spod_available_data_v2 <- function(
-  data_dir = spod_get_data_dir(),
-  check_local_files = FALSE,
-  quiet = FALSE
-) {
-  
-  metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
-  if(!dir.exists(metadata_folder)){
-    fs::dir_create(metadata_folder)
-  }
-
-  xml_files_list <- fs::dir_ls(metadata_folder, type = "file", regexp = "data_links_v2") |> sort()
-  if (length(xml_files_list) == 0) {
-    if (isFALSE(quiet)) {
-      message("No data links xml files found, getting latest v2 data links xml.")
-    }
-    latest_data_links_xml_path <- spod_get_latest_v2_file_list(data_dir = data_dir)
-  } else {
-    latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
-  }
-
-  # Check if the XML file is 1 day old or older from its name
-  file_date <- stringr::str_extract(latest_data_links_xml_path, "[0-9]{4}-[0-9]{2}-[0-9]{2}")
-  
-  if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-    if (isFALSE(quiet)) {
-      message("File list xml is 1 day old or older, getting latest data links xml")
-    }
-    latest_data_links_xml_path <- spod_get_latest_v2_file_list(data_dir = data_dir)
-  } else {
-    if (isFALSE(quiet)) {
-      message("Using existing data links xml: ", latest_data_links_xml_path)
-    }
-  }
-
-  if (length(latest_data_links_xml_path) == 0) {
-    if (isFALSE(quiet)) {
-      message("Getting latest data links xml")
-    }
-    latest_data_links_xml_path <- spod_get_latest_v2_file_list(data_dir = data_dir)
-  }
+  # check if user is requesting to just get all cached data
+  cached_data_requested <- length(dates) == 1 &&
+    all(as.character(dates) %in% c("cached_v1", "cached_v2"))
   
   
-  x_xml <- xml2::read_xml(latest_data_links_xml_path)
-
-  files_table <- tibble::tibble(
-    target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |> xml2::xml_text(),
-    pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |> xml2::xml_text()
-  )
-
-  files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
-  files_table$file_extension <- tools::file_ext(files_table$target_url)
-  files_table <- files_table[files_table$file_extension != "", ]
-  files_table$pub_date <- NULL
-
-  files_table$data_ym <- lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{4}-[0-9]{2}"))
-  files_table$data_ymd <- lubridate::ymd(stringr::str_extract(files_table$target_url, "[0-9]{8}"))
-  # order by pub_ts
-  files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
-  files_table$local_path <- file.path(
-    data_dir,
-    stringr::str_replace(files_table$target_url, ".*mitma.es/",
-      spod_subfolder_raw_data_cache(ver = 2))
-  )
-  files_table$local_path <- stringr::str_replace_all(files_table$local_path, "\\/\\/\\/|\\/\\/", "/")
-
-  # change path for daily data files to be in hive-style format
-  # TODO: check if this is needed for estudios completo and rutas
-  files_table$local_path <- gsub("([0-9]{4})-([0-9]{2})\\/[0-9]{6}([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
-
-  # replace 2 digit month with 1 digit month
-  files_table$local_path <- gsub("month=0([1-9])", "month=\\1", files_table$local_path)
-
-  # replace 2 digit day with 1 digit day
-  files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
-
-  # lowercase GAU to avoid problems with case-sensitive matching
-  files_table$local_path <- gsub("GAU", "gau", files_table$local_path)
-
-  # now check if any of local files exist
-  if( check_local_files == TRUE){
-    files_table$downloaded <- fs::file_exists(files_table$local_path)
-  }
-
-  # add known file sizes from cached data
-  file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v2.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
-  files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
-
-  # if there are files with missing sizes, impute them
-  if (any(is.na(files_table$remote_file_size_mb))) {
-    # impute uknown file sizes
-    # primitive file categorisation 
-    files_table <- files_table |>
-      dplyr::mutate(
-        cleaned_url = stringr::str_remove_all(.data$target_url, "/[0-9]{4}[-_][0-9]{2}[-_][0-9]{2}|/[0-9]{6,8}") |> 
-                      stringr::str_remove("/[^/]+$"),
-        file_category = dplyr::case_when(
-          stringr::str_detect(.data$cleaned_url, "calidad") ~ "quality",
-          stringr::str_detect(.data$cleaned_url, "rutas") ~ "routes",
-          stringr::str_detect(.data$cleaned_url, "estudios_basicos") ~ paste0(
-            "basic_studies_",
-            dplyr::case_when(
-              stringr::str_detect(.data$cleaned_url, "por-distritos") ~ "district_",
-              stringr::str_detect(.data$cleaned_url, "por-municipios") ~ "municipal_",
-              stringr::str_detect(.data$cleaned_url, "por-GAU") ~ "GAU_",
-              TRUE ~ "unknown_"
-            ),
-            dplyr::case_when(
-              stringr::str_detect(.data$cleaned_url, "viajes") ~ "trips_",
-              stringr::str_detect(.data$cleaned_url, "personas") ~ "people_",
-              stringr::str_detect(.data$cleaned_url, "pernoctaciones") ~ "overnight_",
-              TRUE ~ "unknown_"
-            ),
-            ifelse(stringr::str_detect(.data$cleaned_url, "ficheros-diarios"), "daily", "monthly")
-          ),
-          TRUE ~ "other"
-        )
-      ) |>
-      dplyr::select(-"cleaned_url")
-
-    # Calculate mean file sizes by category
-    size_by_file_category <- files_table |>
-      dplyr::group_by(.data$file_category) |>
-      dplyr::summarise(mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE))
-
-    # Impute missing file sizes
-    files_table <- dplyr::left_join(files_table, size_by_file_category, by = "file_category")
-    files_table <- files_table |>
-      dplyr::mutate(size_imputed = ifelse(is.na(.data$remote_file_size_mb), TRUE, FALSE))
-    if(length(files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)]) > 0){
-      files_table <- files_table |>
-        dplyr::mutate(remote_file_size_mb = ifelse(is.na(.data$remote_file_size_mb), .data$mean_file_size_mb, .data$remote_file_size_mb))
-    }
-    files_table$mean_file_size_mb <- NULL
-    files_table$file_category <- NULL
-  } else {
-    files_table$size_imputed <- FALSE
-  }
-
-  return(files_table)
-}
-
-#' retrieves the zones data
-#'
-#' This function retrieves the zones data from the specified data directory.
-#' It can retrieve either "distritos" or "municipios" zones data.
-#'
-#' @param data_dir The directory where the data is stored.
-#' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
-#' @inheritParams global_quiet_param
-#' @return An `sf` object (Simple Feature collection) with 4 fields:
-#' \describe{
-#'   \item{id}{A character vector containing the unique identifier for each zone, to be matched with identifiers in the tabular data.}
-#'   \item{name}{A character vector with the name of the zone.}
-#'   \item{population}{A numeric vector representing the population of each zone (as of 2022).}
-#'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
-#'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
-#' }
-#' @examples
-#' if (FALSE) {
-#'   zones <- spod_get_zones_v2()
-#' }
-#' @keywords internal
-spod_get_zones_v2 <- function(
-  zones = c(
-    "districts", "dist", "distr", "distritos",
-    "municipalities", "muni", "municip", "municipios",
-    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
-  ),
-  data_dir = spod_get_data_dir(),
-  quiet = FALSE
-) {
-  zones <- match.arg(zones)
-  zones <- spod_zone_names_en2es(zones)
-
-  # check if gpkg files are already saved and load them if available
-  expected_gpkg_path <- fs::path(
-    data_dir,
-    glue::glue(spod_subfolder_clean_data_cache(ver = 2),
-      "/zones/{zones}_mitma.gpkg"
+  if (isFALSE(cached_data_requested)) {
+    dates <- spod_dates_argument_to_dates_seq(dates = dates)
+    ver <- spod_infer_data_v_from_dates(
+      dates = dates, ignore_missing_dates = ignore_missing_dates
     )
-  )
-  if (fs::file_exists(expected_gpkg_path)) {
-    if (isFALSE(quiet)) {
-      message("Loading .gpkg file that already exists in data dir: ", expected_gpkg_path)
-    }
-    return(sf::read_sf(expected_gpkg_path))
+    # use the spot_download_data() function to download any missing data
+    spod_download(
+      type = type,
+      zones = zones,
+      dates = dates,
+      max_download_size_gb = max_download_size_gb,
+      data_dir = data_dir,
+      quiet = quiet,
+      return_local_file_paths = FALSE,
+      ignore_missing_dates = ignore_missing_dates
+    )
+  } else if (isTRUE(cached_data_requested)) {
+    ver <- as.numeric(stringr::str_extract(dates, "(1|2)$"))
   }
   
-  # if no existing gpkg found above, continue here with download and data cleanup
-  metadata <- spod_available_data_v2(data_dir, check_local_files = TRUE)
-  zones_regex <- glue::glue("(zonificacion_{zones}\\.*)|(poblacion\\.csv)|(relacion_ine_zonificacionMitma\\.csv)")
-  sel_zones <- stringr::str_detect(metadata$local_path, zones_regex)
-  metadata_zones <- metadata[sel_zones, ]
-  metadata_zones_for_download <- metadata_zones[metadata_zones$downloaded == FALSE, ]
-  if (nrow(metadata_zones_for_download) > 0){
-    dir_names <- unique(fs::path_dir(metadata_zones_for_download$local_path))
-    if (any(!dir.exists(dir_names))) {
-      fs::dir_create(dir_names, recurse = TRUE)
-    }
-    if (isFALSE(quiet)) {
-      message("Downloading missing zones data...")
-    }
-    curl::multi_download(
-      urls = metadata_zones_for_download$target_url,
-      destfiles = metadata_zones_for_download$local_path,
-      resume = TRUE,
-      progress = TRUE
+  
+  # create in memory duckdb connection
+  drv <- duckdb::duckdb()
+  con <- DBI::dbConnect(drv, dbdir = duckdb_target, read_only = FALSE)
+
+  # define memory and threads limits
+  con <- spod_duckdb_limit_resources(
+    con = con,
+    max_mem_gb = max_mem_gb,
+    max_n_cpu = max_n_cpu
+  )
+
+  # attach the folder with csv.gz files with predefined and cleaned up data types
+  if (type == "od") {
+    con <- spod_duckdb_od(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
+    )
+  } else if (type == "nt") {
+    con <- spod_duckdb_number_of_trips(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
+    )
+  } else if (type == "os") {
+    con <- spod_duckdb_overnight_stays(
+      con = con,
+      zones = zones,
+      ver = ver,
+      data_dir = data_dir
     )
   }
   
-  zones_path <- fs::dir_ls(
-    path = fs::path(data_dir, spod_subfolder_raw_data_cache(ver = 2)),
-    regexp = glue::glue("zonificacion_{tolower(zones)}s?\\.shp$"),
-    recurse = TRUE
-  )
+  clean_csv_view_name <- glue::glue("{type}_csv_clean")
+  clean_filtered_csv_view_name <- glue::glue("{type}_csv_clean_filtered")
 
-  zones_sf <- spod_clean_zones_v2(zones_path)
-  fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
-  sf::st_write(
-    zones_sf,
-    expected_gpkg_path,
-    delete_dsn = TRUE,
-    delete_layer = TRUE
-  )
-
-  return(zones_sf)
+  # filter by date, unless cached data requested
+  if (isFALSE(cached_data_requested)) {
+    con <- spod_duckdb_filter_by_dates(
+      con,
+      clean_csv_view_name,
+      clean_filtered_csv_view_name,
+      dates
+    )
   }
 
-#' Fixes common issues in the zones data and cleans up variable names
-#'
-#' This function fixes any invalid geometries in the zones data and renames the "ID" column to "id". It also attacches the population counts and zone names provided in the csv files supplied by the original data provider.
-#'
-#' @param zones_path The path to the zones spatial data file.
-#' @return A spatial object containing the cleaned zones data. 
-#' @importFrom stats median
-#' @keywords internal
-#'
-spod_clean_zones_v2 <- function(zones_path) {
-  # detect what kind of zones find out if it is distritos, municipios or GAU
-  zones <- stringr::str_extract(zones_path, "distritos|municipios|gaus")
-
-  if(fs::file_exists(zones_path) == FALSE) {
-    stop("File does not exist: ", zones_path)
-  }
-  suppressWarnings({
-    zones_sf <- sf::read_sf(zones_path)
-  })
-
-  # fix geometry
-  invalid_geometries <- !sf::st_is_valid(zones_sf)
-  if (sum(invalid_geometries) > 0) {
-    fixed_zones_sf <- sf::st_make_valid(zones_sf[invalid_geometries, ])
-    zones_sf <- rbind(zones_sf[!invalid_geometries, ], fixed_zones_sf)
+  # if working with in-memory database
+  # set temp path for intermediate spilling
+  # https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling
+  # if target were set as a database file, temp would be created at the same path
+  # however, when the working in-memory on folder of CSV files, temp is created in the root of R working directory, which may be undesirable
+  if ( duckdb_target == ":memory:" ) {
+    con <- spod_duckdb_set_temp(con, temp_path = temp_path)
   }
 
-  # lowercase id column name
-  names(zones_sf)[names(zones_sf) == "ID"] <- "id"
-
-  population <- readr::read_delim(
-    glue::glue(fs::path_dir(zones_path), "/poblacion_{zones}.csv"),
-    delim = "|",
-    col_names = c("id", "population"),
-    col_types = c("c", "i")
-  )
-
-  if (zones %in% c("distritos","gaus")) {
-    zone_names <- readr::read_delim(
-      glue::glue(fs::path_dir(zones_path), "/nombres_{zones}.csv"),
-      skip = 1,
-      delim = "|",
-      col_names = c("id", "name"),
-      col_types = c("c", "i")
-    )
-  } else if (zones == "municipios") {
-    zone_names <- readr::read_delim(
-      glue::glue(fs::path_dir(zones_path), "/nombres_{zones}.csv"),
-      skip = 1,
-      delim = "|",
-      col_names = c("row", "id", "name"),
-      col_types = c("i", "c", "i")
-    ) |> 
-      dplyr::select(-"row")
+  # return either a full view of all available data (dates = "cached") or a view filtered to the specified dates
+  if (isFALSE(cached_data_requested)) {
+    return(dplyr::tbl(con, clean_filtered_csv_view_name))
+  } else if (isTRUE(cached_data_requested)) {
+    return(dplyr::tbl(con, clean_csv_view_name))
   }
- 
-  # zones reference
-  zones_ref <- readr::read_delim(
-    glue::glue(spod_get_data_dir(quiet = TRUE), "/", spod_subfolder_raw_data_cache(ver = 2), "zonificacion/relacion_ine_zonificacionMitma.csv"),
-    delim = "|",
-    col_types = rep("c", 6)
-  )
-
-  zone_mitma <- glue::glue("{gsub('s$', '', zones)}_mitma")
-  
-  zones_ref_renamed <- zones_ref |>
-    dplyr::rename(
-      census_sections = "seccion_ine",
-      census_districts = "distrito_ine",
-      municipalities = "municipio_ine",
-      districts_mitma = "distrito_mitma",
-      municipalities_mitma = "municipio_mitma",
-      luas_mitma = "gau_mitma",
-      id = zone_mitma
-    )
-  
-  zones_ref_aggregated <- zones_ref_renamed |>
-  dplyr::group_by(.data$id) |>
-  dplyr::summarise(
-    dplyr::across(
-    .cols = dplyr::everything(),
-    .fns = ~ paste(.x, collapse = "; "),
-    .names = "{.col}"
-  ))
-
-  # cleanup duplacate ids in zones_ref_aggregated
-  zones_ref_aggregated <- zones_ref_aggregated |>
-    dplyr::mutate(
-      dplyr::across(
-        .cols = dplyr::everything(),
-        .fns = spod_unique_separated_ids
-      )
-    )
-
-  # combine zones with population, names, and zones reference
-  zones_sf <- zones_sf |>
-    dplyr::left_join(zone_names, by = "id") |> 
-    dplyr::left_join(population, by = "id") |> 
-    dplyr::left_join(zones_ref_aggregated, by = "id") |>
-    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
-
-
-  # load v1 zones to join ids, unless it's gau zones
-  if(zones != "gaus") {
-    spod_download_zones_v1(zones = zones, quiet = TRUE)
-    zones_v1_path <- fs::dir_ls(
-      path = fs::path(spod_get_data_dir(), spod_subfolder_raw_data_cache(ver = 1)),
-      glob = glue::glue("*v1**{zones}/*.shp"),
-      recurse = TRUE
-    )
-    suppressWarnings({
-      zones_v1_sf <- sf::read_sf(zones_v1_path)
-    })
-    invalid_geometries <- !sf::st_is_valid(zones_v1_sf)
-    if (sum(invalid_geometries) > 0) {
-      fixed_zones_v1_sf <- sf::st_make_valid(zones_v1_sf[invalid_geometries, ])
-      zones_v1_sf <- rbind(zones_v1_sf[!invalid_geometries, ], fixed_zones_sf)
-    }
-    
-    names(zones_v1_sf)[names(zones_v1_sf) == "ID"] <- "id_in_v1"
-
-    suppressWarnings(
-      zones_v2_sf_centroids <- zones_sf |> sf::st_point_on_surface()
-    )
-    v2_to_v1 <- sf::st_join(zones_v1_sf, zones_v2_sf_centroids, left = TRUE) |> 
-      sf::st_drop_geometry()
-    v2_v_1ref <- v2_to_v1 |>
-      dplyr::group_by(.data$id) |> 
-        dplyr::summarize(
-        ids_in_v1_data = paste(.data$id_in_v1, collapse = "; ")
-      )
-    eng_zones <- dplyr::if_else(zones == "distritos", true = "district", false = "municipality")
-    names(v2_v_1ref)[names(v2_v_1ref) == "ids_in_v1_data"] <- glue::glue("{eng_zones}_ids_in_v1")
-
-    zones_sf <- zones_sf |> 
-      dplyr::left_join(v2_v_1ref, by = "id") |> 
-      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
-  }
-  
-  return(zones_sf)
 }

@@ -28,7 +28,7 @@ spod_codebook <- function(ver = 1) {
     }
   } else if (ver == 2) {
     help <- vignette(
-      topic = "v2-2022-onwards-mitma-data-codebook.qmd",
+      topic = "v2-2022-onwards-mitma-data-codebook",
       package = "spanishoddata"
     ) 
     if( inherits(help, what = "vignette") ){
@@ -36,7 +36,5 @@ spod_codebook <- function(ver = 1) {
     } else {
       message("For some reason the codebook was not installed with the package. Please refer to the online version at: https://rOpenSpain.github.io/spanishoddata/articles/codebook-v2.html")
     }
-  } else {
-    message("Version must be 1 or 2.")
   }
 }

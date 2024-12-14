@@ -249,4 +249,4 @@ madrid_barcelona_od
 4 2022-01-01 45087     08019                2                  1184
 ```
 
-You can now proceed to analyse these flows or visualise them as in the [static](flowmaps-static.html) and [interactive](flowmaps-interactive.html) flow maps tutorials.
+You can now proceed to analyse these flows or visualise them as in the [static](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html) and [interactive](https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html) flow maps tutorials.
