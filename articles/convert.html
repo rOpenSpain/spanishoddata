@@ -36,7 +36,7 @@
   <a class="navbar-brand me-2" href="../index.html">
     <img src="../apple-touch-icon-180x180.png" alt="spanishoddata logo" height="40" class="d-inline-block me-1">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -57,6 +57,7 @@
     <li><a class="dropdown-item" href="../articles/flowmaps-interactive.html">Making interactive flow maps</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -101,7 +102,7 @@
 <span class="header-section-number">3</span> Analysing large datasets<a class="anchor" aria-label="anchor" href="#analysing-large-datasets"></a>
 </h2>
 <p>The mobility datasets available through <code>{spanishiddata}</code> are very large. Particularly the origin-destination data, which contains millions of rows. These data sets may not fit into the memory of your computer, especially if you plan to run the analysis over multiple days, weeks, months, or even years.</p>
-<p>To work with these datasets, we highly recommend using <code>DuckDB</code> and <code>Parquet</code>. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar <code>data.frame</code>/<code>tibble</code> object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: <a href="https://arrow-user2022.netlify.app/" target="_blank" class="external-link">website</a>, <a href="https://arrow-user2022.netlify.app/slides" target="_blank" class="external-link">slides</a>, and <a href="https://www.youtube.com/watch?v=YZMuFavEgA4" target="_blank" class="external-link">the video tutorial</a>. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on <a href="flowmaps-static.html">static</a> and <a href="flowmaps-interactive.html">interactive</a> flows visualisation.</p>
+<p>To work with these datasets, we highly recommend using <code>DuckDB</code> and <code>Parquet</code>. These are systems for efficiently processing larger-than-memory datasets, while being user-firendly by presenting the data in a familiar <code>data.frame</code>/<code>tibble</code> object (almost). For a great intoroduction to both, we recommend materials by Danielle Navarro, Jonathan Keane, and Stephanie Hazlitt: <a href="https://arrow-user2022.netlify.app/" target="_blank" class="external-link">website</a>, <a href="https://arrow-user2022.netlify.app/slides" target="_blank" class="external-link">slides</a>, and <a href="https://www.youtube.com/watch?v=YZMuFavEgA4" target="_blank" class="external-link">the video tutorial</a>. You can also find examples of aggregating origin-destination data for flows analysis and visualisation in our vignettes on <a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html">static</a> and <a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html">interactive</a> flows visualisation.</p>
 <p>Learning to use <code>DuckDB</code> and <code>Parquet</code> is easy for anyone who have ever worked with <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> functions such as <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code>, etc. However, since there is some learning curve to master these new tools, we provide some helper functions for novices to get started and easily open the datasets from <code>DuckDB</code> and <code>Parquet</code>. Please read the relevant sections below, where we first show how to convert the data, and then how to use it.</p>
 <section class="level2" data-number="3.1"><h3 data-number="3.1" id="duckdb-vs-parquet-csv">
 <span class="header-section-number">3.1</span> How to choose between DuckDB, Parquet, and CSV<a class="anchor" aria-label="anchor" href="#duckdb-vs-parquet-csv"></a>
@@ -300,7 +301,7 @@ Setting data directory for advanced users
 <p><strong>Warning</strong></p>
 <p>Due to mobile network outages, the data on certain dates is missing. Kindly keep this in mind when calculating mean monthly or weekly flows.</p>
 <p><br></p>
-<p>Please check the <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" target="_blank" class="external-link">original data page</a> for currently known missing dates. At the time of writing, the following dates are missing: 26, 27, 30, 31 October, 1, 2 and 3 November 2023 and 4, 18, 19 April 2024. You can use <code><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates()</a></code> function to get all available dates.</p>
+<p>Please check the <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" target="_blank" class="external-link">original data page</a> for currently known missing dates. At the time of writing, the following dates are missing: 26, 27, 30, 31 October; 1, 2 and 3 November 2023; 4, 18, 19 April 2024, 10 and 11 November 2024. You can use <code><a href="../reference/spod_get_valid_dates.html">spod_get_valid_dates()</a></code> function to get all available dates.</p>
 </blockquote>
 </div>
 <section class="level2" data-number="8.1"><h3 data-number="8.1" id="download-all-data">
@@ -334,7 +335,7 @@ Setting data directory for advanced users
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>This will convert all downloaded data to <code>DuckDB</code> format for lightning fast analysis. You can change the <code>save_format</code> to <code>parquet</code> if you want to save the data in <code>Parquet</code> format. For comparison overview of the two formats please see the <a href="converting-the-data-for-faster-analysis.html">Converting the data to DuckDB/Parquet for faster analysis</a>.</p>
+<p>This will convert all downloaded data to <code>DuckDB</code> format for lightning fast analysis. You can change the <code>save_format</code> to <code>parquet</code> if you want to save the data in <code>Parquet</code> format. For comparison overview of the two formats please see the <a href="https://ropenspain.github.io/spanishoddata/articles/convert.html" class="external-link">Converting the data to DuckDB/Parquet for faster analysis</a>.</p>
 <p>By default, <code>spod_convert_data()</code> will save the converted data in the <code>SPANISH_OD_DATA_DIR</code> directory. You can change the <code>save_path</code> argument of <code>spod_convert_data()</code> if you want to save the data in a different location.</p>
 <p>For this conversion, 4 GB or operating memory should be enough, the speed of the process depends on the number of processor cores and the speed of your disk storage. SSD is preferred. By default, the <code>spod_convert_data()</code> will use all except one processor cores on your computer. You can adjust this with the <code>max_n_cpu</code> argument of <code>spod_convert_data()</code>. You can also increase the maximum amount of memory used with the <code>max_mem_gb</code> argument, but this makes more difference during the analysis stage.</p>
 <p>Finally, <code>analysis_data_storage</code> will simply store the path to the converted data. Either a path to the <code>DuckDB</code> database file or a path to the folder with <code>Parquet</code> files.</p>

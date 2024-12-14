@@ -36,7 +36,7 @@
   <a class="navbar-brand me-2" href="../index.html">
     <img src="../apple-touch-icon-180x180.png" alt="spanishoddata logo" height="40" class="d-inline-block me-1">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -57,6 +57,7 @@
     <li><a class="dropdown-item" href="../articles/flowmaps-interactive.html">Making interactive flow maps</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -169,8 +170,9 @@ Setting data directory for advanced users
 </div>
 </details></section><section class="section level2"><h2 id="overall-approach-to-accessing-the-data">Overall approach to accessing the data<a class="anchor" aria-label="anchor" href="#overall-approach-to-accessing-the-data"></a>
 </h2>
+<p>If you only need flows data aggregated by day at municipal level, you can use the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. This will download the data directly from the web API and let you analyse it in-memory. More on this in the <a href="https://ropenspain.github.io/spanishoddata/articles/quick-get.html" class="external-link">Quickly get daily data</a> vignette.</p>
 <p>If you only want to analyse the data for a few days, you can use the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.</p>
-<p>If you need longer periods (several months or years), you should use the <code><a href="../reference/spod_convert.html">spod_convert()</a></code> and <code><a href="../reference/spod_connect.html">spod_connect()</a></code> functions, which will convert the data into special format which is much faster for analysis, for this see the <a href="convert.qmd">Download and convert OD datasets</a> vignette. <code><a href="../reference/spod_get_zones.html">spod_get_zones()</a></code> will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones ’id’s. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with <code>spod_codebook(ver = 1)</code> and <code>spod_codebook(ver = 2)</code>, or simply visit the package website at <a href="https://ropenspain.github.io/spanishoddata/" class="external-link">https://ropenspain.github.io/spanishoddata/</a>. The <a href="#fig-overall-flow" class="quarto-xref">Figure 1</a> presents the overall approach to accessing the data in the <code>spanishoddata</code> package.</p>
+<p>If you need longer periods (several months or years), you should use the <code><a href="../reference/spod_convert.html">spod_convert()</a></code> and <code><a href="../reference/spod_connect.html">spod_connect()</a></code> functions, which will convert the data into special format which is much faster for analysis, for this see the <a href="https://ropenspain.github.io/spanishoddata/articles/convert.html" class="external-link">Download and convert OD datasets</a> vignette. <code><a href="../reference/spod_get_zones.html">spod_get_zones()</a></code> will give you spatial data with zones that can be matched with the origin-destination flows from the functions above using zones ’id’s. Please see a simple example below, and also consult the vignettes with detailed data description and instructions in the package vignettes with <code>spod_codebook(ver = 1)</code> and <code>spod_codebook(ver = 2)</code>, or simply visit the package website at <a href="https://ropenspain.github.io/spanishoddata/" class="external-link">https://ropenspain.github.io/spanishoddata/</a>. The <a href="#fig-overall-flow" class="quarto-xref">Figure 1</a> presents the overall approach to accessing the data in the <code>spanishoddata</code> package.</p>
 <div id="fig-overall-flow" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-overall-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../reference/figures/package-functions-overview.svg" style="width:78.0%">
