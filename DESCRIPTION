@@ -14,7 +14,7 @@ Description: Gain seamless access to origin-destination (OD) data from the
     <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
     This package simplifies the management of these large datasets by
     providing tools to download zone boundaries, handle associated
-    origin-destiantion data, and process it efficiently with the duckdb
+    origin-destination data, and process it efficiently with the 'duckdb'
     database interface.  Local caching minimizes repeated downloads,
     streamlining workflows for researchers and analysts. Extensive
     documentation is available at
@@ -65,9 +65,5 @@ VignetteBuilder:
 Config/Needs/website: rmarkdown
 Config/testthat/edition: 3
 Encoding: UTF-8
-Extensive documentation is available at https: 
-    //ropenspain.github.io/spanishoddata/index.html, offering guides on
-    creating static and dynamic mobility flow visualizations and
-    transforming large datasets into analysis-ready formats.
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

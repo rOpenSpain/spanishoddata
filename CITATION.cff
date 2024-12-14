@@ -13,8 +13,8 @@ doi: 10.32614/CRAN.package.spanishoddata
 abstract: Gain seamless access to origin-destination (OD) data from the Spanish Ministry
   of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
   This package simplifies the management of these large datasets by providing tools
-  to download zone boundaries, handle associated origin-destiantion data, and process
-  it efficiently with the duckdb database interface. Local caching minimizes repeated
+  to download zone boundaries, handle associated origin-destination data, and process
+  it efficiently with the 'duckdb' database interface. Local caching minimizes repeated
   downloads, streamlining workflows for researchers and analysts. Extensive documentation
   is available at <https://ropenspain.github.io/spanishoddata/index.html>, offering
   guides on creating static and dynamic mobility flow visualizations and transforming
