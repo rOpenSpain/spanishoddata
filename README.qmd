@@ -330,6 +330,29 @@ styler::style_pkg()
 usethis::use_tidy_description()
 ```
 
+
+## Citation
+
+```{r}
+#| eval: true
+#| echo: false
+#| results: 'asis'
+print(citation("spanishoddata"), bibtex = FALSE)
+```
+
+BibTeX:
+
+```
+```{r}
+#| eval: true
+#| echo: false
+#| results: 'asis'
+toBibtex(citation("spanishoddata"))
+```
+```
+
+
+
 # References
 
 <!-- metadata for better search engine indexing -->

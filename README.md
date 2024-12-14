@@ -20,8 +20,8 @@ alt="CRAN status" /></a>
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
-Ministry of Transport and Sustainable Mobility of Spain (Secretaría de
-Estado de Transportes y Movilidad Sostenible 2024).
+Ministry of Transport and Sustainable Mobility of Spain
+(**mitma-mobility-2024-v7?**).
 
 It supports the two versions of the Spanish mobility data that consists
 of origin-destination matrices and some additional data sets. [The first
@@ -473,6 +473,42 @@ For more information on the package, see:
   - [Quickly getting daily aggregated 2022+ data at municipality
     level](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
 
+## Citation
+
+To cite spanishoddata R package and data in publications use:
+
+Kotov E, Lovelace R, Vidal-Tortosa E (2024). *spanishoddata*.
+doi:10.32614/CRAN.package.spanishoddata
+<https://doi.org/10.32614/CRAN.package.spanishoddata>,
+<https://github.com/rOpenSpain/spanishoddata>.
+
+MITMS (2024). “Estudio de movilidad de viajeros de ámbito nacional
+aplicando la tecnología Big Data. Informe metodológico (Study of
+National Traveler mobility Using Big Data Technology. Methodological
+Report).” Secretaría de Estado de Transportes y Movilidad Sostenible;
+Ministerio de Transportes, Movilidad y Agenda Urbana.
+<https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
+
+BibTeX:
+
+    @Manual{spanishoddata,
+      title = {spanishoddata},
+      author = {Egor Kotov and Robin Lovelace and Eugeni Vidal-Tortosa},
+      year = {2024},
+      url = {https://github.com/rOpenSpain/spanishoddata},
+      doi = {10.32614/CRAN.package.spanishoddata},
+    }
+
+    @TechReport{mitma_mobility_2024_v8,
+      title = {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
+      author = {{MITMS}},
+      institution = {Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes, Movilidad y Agenda Urbana},
+      year = {2024},
+      url = {https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data},
+      urldate = {2024-12-11},
+      annotation = {https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf},
+    }
+
 # References
 
 <!-- metadata for better search engine indexing -->
@@ -493,16 +529,6 @@ entry-spacing="0">
 Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
 Origin-Destination Data,” August.
 <https://doi.org/10.32614/CRAN.package.od>.
-
-</div>
-
-<div id="ref-mitma-mobility-2024-v7" class="csl-entry">
-
-Secretaría de Estado de Transportes y Movilidad Sostenible. 2024.
-“Estudio de movilidad de viajeros de ámbito nacional aplicando la
-tecnología Big Data. Informe metodológico (Study of National Traveler
-mobility Using Big Data Technology. Methodological Report).”
-<https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 </div>
 
