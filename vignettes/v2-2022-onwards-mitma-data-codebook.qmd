@@ -20,7 +20,7 @@ You can view this vignette any time by running:
 spanishoddata::spod_codebook(ver = 2)
 ```
 
-The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitma-mobility-2024-v7].
+The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitma_mobility_2024_v8].
 
 The dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology).
 
@@ -36,11 +36,13 @@ In v2 data, the datasets comparable to the [v1 (2020-2021) data](v1-2020-2021-mi
 
 Key sources for this codebook/cookbook include:
 
--   [original data collection methodology and codebook in Spanish](https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_resumen_v7.pdf){target="_blank"} + [automatically translated English version of methodology and codebook](https://rOpenSpain.github.io/spanishoddata/codebooks/a3_informe_metodologico_estudio_movilidad_mitms_v8_en.pdf){target="_blank"}
+-   [original data collection methodology and codebook in Spanish](https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf){target="_blank"} + [automatically translated English version of methodology and codebook](https://rOpenSpain.github.io/spanishoddata/codebooks/a3_informe_metodologico_estudio_movilidad_mitms_v8_en.pdf){target="_blank"}
+
+- [original quality assessment](https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/20241024_validaciones_estudios_basicos_bigdata_v1.0.pdf){target="_blank"} + [automatically translated English version of quality assessment](https://rOpenSpain.github.io/spanishoddata/codebooks/20241024_validaciones_estudios_basicos_bigdata_v1.0_en.pdf){target="_blank"}
 
 -   [original data download page](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad){target="_blank"}
 
--   [original data license](https://movilidad-opendata.mitma.es/LICENCIA%20de%20datos%20abiertos%20del%20MITMA%2020201203.pdf){target="_blank"}
+-   [original data license](https://www.transportes.gob.es/el-ministerio/buen-gobierno/licencia_datos){target="_blank"}
 
 -   [homepage of the v2 study and open mobility data project of the Ministry of Transport and Sustainable Mobility of Spain](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data){target="_blank"}
 

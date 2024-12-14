@@ -4,14 +4,18 @@
 
 <!-- badges: start -->
 
-<a href="https://www.repostatus.org/#wip" target="_blank"><img
-src="https://www.repostatus.org/badges/latest/wip.svg"
-alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a>
-<a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"
+[![Project Status:
+Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+<a href="https://lifecycle.r-lib.org/articles/stages.html#stable"
 target="_blank"><img
-src="https://img.shields.io/badge/lifecycle-experimental-red.svg"
-alt="Lifecycle: experimental" /></a>
+src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg"
+alt="Lifecycle: stable" /></a>
+<a href="https://CRAN.R-project.org/package=rJavaEnv"
+target="_blank"><img
+src="https://www.r-pkg.org/badges/version/rJavaEnv.png"
+alt="CRAN status" /></a>
 [![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
+[![DOI](https://zenodo.org/badge/DOI/10.32614/CRAN.package.spanishoddata.svg)](https://doi.org/10.32614/CRAN.package.spanishoddata)
 <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for
@@ -25,21 +29,21 @@ version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios
 covers data from 2020 and 2021, including the period of the COVID-19
 pandemic. [The second
 version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad)
-contains data from January 2022 onwards and is updated monthly on the
-fifteenth of each month. Both versions of the data primarily consist of
-mobile phone positioning data, and include matrices for overnight stays,
-individual movements, and trips of Spanish residents at different
-geographical levels. See the [package
-website](https://rOpenSpain.github.io/spanishoddata/) and vignettes for
+contains data from January 2022 onwards and is regularly updated. Both
+versions of the data primarily consist of mobile phone positioning data,
+and include matrices for overnight stays, individual movements, and
+trips of Spanish residents at different geographical levels. See the
+[package website](https://rOpenSpain.github.io/spanishoddata/) and
+vignettes for
 [v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook)
 and
 [v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook)
 data for more details.
 
-**spanishoddata** is designed to save people time by providing the data
-in analysis-ready formats. Automating the process of downloading,
-cleaning, and importing the data can also reduce the risk of errors in
-the laborious process of data preparation. It also reduces computational
+**spanishoddata** is designed to save time by providing the data in
+analysis-ready formats. Automating the process of downloading, cleaning,
+and importing the data can also reduce the risk of errors in the
+laborious process of data preparation. It also reduces computational
 resources by using computationally efficient packages behind the scenes.
 To effectively work with multiple data files, it’s recommended you set
 up a data directory where the package can search for the data and
