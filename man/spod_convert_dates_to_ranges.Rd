@@ -9,6 +9,9 @@ spod_convert_dates_to_ranges(dates)
 \arguments{
 \item{dates}{A \code{character} vector of dates.}
 }
+\value{
+A \code{character} vector of date ranges.
+}
 \description{
 This internal helper function reduces a vector of dates to a vector of date ranges to shorten the warning and error messages that mention the valid date ranges.
 }

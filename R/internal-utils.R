@@ -21,7 +21,7 @@
 #' * A regular expression to match dates in the format `YYYYMMDD`. `character` object. For example, `^202002` will match all dates in February 2020.
 #'
 #'
-#' @return A character vector of dates in ISO format (YYYY-MM-DD).
+#' @return A `character` vector of dates in ISO format (YYYY-MM-DD).
 #' @keywords internal
 spod_dates_argument_to_dates_seq <- function(dates) {
   if (is.null(dates) || (!is.character(dates) && !inherits(dates, "Date"))) {
@@ -89,8 +89,8 @@ spod_dates_argument_to_dates_seq <- function(dates) {
 #'
 #' This function checks if the specified dates or date ranges span both v1 and v2 data versions.
 #'
-#' @param dates A Dates vector of dates to check.
-#' @return TRUE if the dates span both data versions, FALSE otherwise.
+#' @param dates A `Dates` vector of dates to check.
+#' @return `TRUE` if the dates span both data versions, `FALSE` otherwise.
 #' @keywords internal
 spod_is_data_version_overlaps <- function(dates) {
   all_dates_v1 <- spod_get_valid_dates(ver = 1)
@@ -108,6 +108,12 @@ spod_is_data_version_overlaps <- function(dates) {
   return(FALSE)
 }
 
+#' Infer data version from dates
+#' 
+#' @inheritParams spod_download
+#' @inheritParams spod_dates_argument_to_dates_seq
+#' @return An `integer` indicating the inferred data version.
+#' @keywords internal
 spod_infer_data_v_from_dates <- function(
   dates,
   ignore_missing_dates = FALSE
@@ -188,11 +194,10 @@ spod_infer_data_v_from_dates <- function(
 
 #' Function to expand dates from a regex
 #'
-#' This function generates a sequence of dates from a regular expression pattern.
-#' based on the provided regular expression.
+#' This function generates a sequence of dates from a regular expression pattern based on the provided regular expression.
 #'
-#' @param date_regex A regular expression to match dates in the format yyyymmdd.
-#' @return A character vector of dates matching the regex.
+#' @param date_regex A regular expression to match dates in the format 'yyyymmdd'.
+#' @return A `character` vector of dates matching the regex.
 #' @keywords internal
 spod_expand_dates_from_regex <- function(date_regex) {
   all_dates_v1 <- spod_get_valid_dates(ver = 1)
@@ -224,6 +229,15 @@ spod_expand_dates_from_regex <- function(date_regex) {
 #' @inheritParams spod_available_data
 #' @return A vector of type `Date` with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
 #' @export
+#' @examples
+#' \donttest{
+#' # Get all valid dates for v1 (2020-2021) data
+#' spod_get_valid_dates(ver = 1)
+#' 
+#' # Get all valid dates for v2 (2020 onwards) data
+#' spod_get_valid_dates(ver = 2)
+#' }
+#' 
 spod_get_valid_dates <- function(ver = NULL) {
   # Validate input
   checkmate::assertIntegerish(ver, max.len = 1)
@@ -246,13 +260,17 @@ spod_get_valid_dates <- function(ver = NULL) {
 # TODO: currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
 
 
-
+#' Translate zone names from English to Spanish
+#' @inheritParams spod_download
+#' @return A `character` string with the translated zone name. Or `NULL` if the zone name is not recognized.
+#' @keywords internal
 spod_zone_names_en2es <- function(
     zones = c(
       "districts", "dist", "distr", "distritos",
       "municipalities", "muni", "municip", "municipios",
       "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
-    )) {
+    )
+  ) {
   zones <- tolower(zones)
   zones <- match.arg(zones)
   if (zones %in% c("districts", "dist", "distr", "distritos")) {
@@ -266,6 +284,7 @@ spod_zone_names_en2es <- function(
 
 #' Match data types to folders
 #' @inheritParams spod_available_data
+#' @return A `character` string with the folder name for the specified data type. Or `NULL` if the data type is not recognized.
 #' @keywords internal
 spod_match_data_type_for_local_folders <- function(
     type = c(
@@ -306,6 +325,7 @@ spod_match_data_type_for_local_folders <- function(
 
 #' Match data types for normalisation
 #' @param type The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "nt", "number_of_trips".
+#' @return A `character` string with the folder name for the specified data type. Or `NULL` if the type is not recognized.
 #' @keywords internal
 spod_match_data_type <- function(
     type = c(
@@ -359,6 +379,7 @@ spod_unique_separated_ids <- function(column) {
 #' This internal helper function reduces a vector of dates to a vector of date ranges to shorten the warning and error messages that mention the valid date ranges.
 #' @param dates A `character` vector of dates.
 #' @importFrom rlang .data
+#' @return A `character` vector of date ranges.
 #' @keywords internal
 #' 
 spod_convert_dates_to_ranges <- function(dates) {

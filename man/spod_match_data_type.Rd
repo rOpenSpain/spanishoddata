@@ -12,6 +12,9 @@ spod_match_data_type(
 \arguments{
 \item{type}{The type of data to match. Can be "od", "origin-destination", "os", "overnight_stays", or "nt", "number_of_trips".}
 }
+\value{
+A \code{character} string with the folder name for the specified data type. Or \code{NULL} if the type is not recognized.
+}
 \description{
 Match data types for normalisation
 }

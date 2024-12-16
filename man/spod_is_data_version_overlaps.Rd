@@ -7,10 +7,10 @@
 spod_is_data_version_overlaps(dates)
 }
 \arguments{
-\item{dates}{A Dates vector of dates to check.}
+\item{dates}{A \code{Dates} vector of dates to check.}
 }
 \value{
-TRUE if the dates span both data versions, FALSE otherwise.
+\code{TRUE} if the dates span both data versions, \code{FALSE} otherwise.
 }
 \description{
 This function checks if the specified dates or date ranges span both v1 and v2 data versions.

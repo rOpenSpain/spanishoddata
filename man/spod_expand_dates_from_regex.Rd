@@ -7,13 +7,12 @@
 spod_expand_dates_from_regex(date_regex)
 }
 \arguments{
-\item{date_regex}{A regular expression to match dates in the format yyyymmdd.}
+\item{date_regex}{A regular expression to match dates in the format 'yyyymmdd'.}
 }
 \value{
-A character vector of dates matching the regex.
+A \code{character} vector of dates matching the regex.
 }
 \description{
-This function generates a sequence of dates from a regular expression pattern.
-based on the provided regular expression.
+This function generates a sequence of dates from a regular expression pattern based on the provided regular expression.
 }
 \keyword{internal}
