@@ -7,9 +7,33 @@
 #' @return No return value, called for side effect of disconnecting from the database and freeing up memory.
 #' @export
 #' @examples
-#' \dontrun{
-#' od_distr <- spod_get("od", zones = "distr", dates <- c("2020-01-01", "2020-01-02"))
+#' \donttest{
+#' # basic example
+#' # create a connection to the v1 data without converting
+#' # this creates a duckdb database connection to CSV files
+#' od_distr <- spod_get(
+#'  "od",
+#'  zones = "distr",
+#'  dates = c("2020-01-01", "2020-01-02")
+#' )
+#' # disconnect from the database connection
 #' spod_disconnect(od_distr)
+#' 
+#' # Advanced example
+#' # download and convert data
+#' dates_1 <- c(start = "2020-02-17", end = "2020-02-19")
+#' db_2 <- spod_convert(
+#'  type = "od",
+#'  zones = "distr",
+#'  dates = dates_1,
+#'  overwrite = TRUE
+#' )
+#' 
+#' # now connect to the converted data
+#' my_od_data_2 <- spod_connect(db_2)
+#' 
+#' # disconnect from the database
+#' spod_disconnect(my_od_data_2)
 #' }
 #' 
 spod_disconnect <- function(

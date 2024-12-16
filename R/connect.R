@@ -10,6 +10,25 @@
 #' @inheritParams global_quiet_param
 #' @export
 #' @return a DuckDB table connection object.
+#' 
+#' @examples
+#' \donttest{
+#' # download and convert data
+#' dates_1 <- c(start = "2020-02-17", end = "2020-02-19")
+#' db_2 <- spod_convert(
+#'  type = "od",
+#'  zones = "distr",
+#'  dates = dates_1,
+#'  overwrite = TRUE
+#' )
+#' 
+#' # now connect to the converted data
+#' my_od_data_2 <- spod_connect(db_2)
+#' 
+#' # disconnect from the database
+#' spod_disconnect(my_od_data_2)
+#' }
+#' 
 spod_connect <- function(
   data_path,
   target_table_name = NULL,
