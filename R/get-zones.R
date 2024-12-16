@@ -33,6 +33,15 @@
 #' }
 #' 
 #' @export
+#' @examples
+#' \donttest{
+#' # get polygons for municipalities for the v2 data
+#' municip_v2 <- spod_get_zones(zones = "municipalities", ver = 2)
+#' 
+#' # get polygons for the districts for the v1 data
+#' distr_v1 <- spod_get_zones(zones = "districts", ver = 1)
+#' }
+#' 
 spod_get_zones <- function(
   zones = c(
     "districts", "dist", "distr", "distritos",
@@ -278,7 +287,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 #' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
 #' @param data_dir The directory where the data is stored.
 #' @param quiet Boolean flag to control the display of messages.
-#' @return The path to the downloaded and extracted file.
+#' @return A `character` string containing the path to the downloaded and extracted file.
 #' @keywords internal
 spod_download_zones_v1 <- function(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni", "municip", "municipios"),
@@ -416,7 +425,7 @@ spod_get_zones_v2 <- function(
 #' This function fixes any invalid geometries in the zones data and renames the "ID" column to "id". It also attacches the population counts and zone names provided in the csv files supplied by the original data provider.
 #'
 #' @param zones_path The path to the zones spatial data file.
-#' @return A spatial object containing the cleaned zones data. 
+#' @return A spatial `sf`` object containing the cleaned zones data. 
 #' @importFrom stats median
 #' @keywords internal
 #'
