@@ -19,10 +19,29 @@
 #' @inheritParams spod_download
 #' @inheritParams spod_get
 #' @inheritParams spod_duckdb_limit_resources
-#' @param overwrite A `logical` or a `character` vector of length 1`. If `TRUE`, overwrites existing `DuckDB` or `parquet` files. Defaults to `FALSE`. For parquet files can also be set to 'update', so that only parquet files are only created for the dates that have not yet been converted.
+#' @param overwrite A `logical` or a `character` vector of length 1. If `TRUE`, overwrites existing `DuckDB` or `parquet` files. Defaults to `FALSE`. For parquet files can also be set to 'update', so that only parquet files are only created for the dates that have not yet been converted.
 #' @inheritParams global_quiet_param
-#' @return Path to saved DuckDB file.
+#' @return Path to saved `DuckDB` database file or to a folder with `parquet` files in hive-style directory structure.
 #' @export
+#' 
+#' @examples
+#' \donttest{
+#' # download and convert data
+#' dates_1 <- c(start = "2020-02-17", end = "2020-02-19")
+#' db_2 <- spod_convert(
+#'  type = "od",
+#'  zones = "distr",
+#'  dates = dates_1,
+#'  overwrite = TRUE
+#' )
+#' 
+#' # now connect to the converted data
+#' my_od_data_2 <- spod_connect(db_2)
+#' 
+#' # disconnect from the database
+#' spod_disconnect(my_od_data_2)
+#' }
+#' 
 spod_convert <- function(
   type = c(
     "od", "origin-destination",
