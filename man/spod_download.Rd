@@ -53,7 +53,7 @@ Nothing. If \code{return_local_file_paths = TRUE}, a \code{character} vector of 
 This function downloads the data files of the specified type, zones, dates and data version.
 }
 \examples{
-\dontrun{
+\donttest{
 # Download the origin-destination on district level for the a date range in March 2020
 spod_download(
   type = "od", zones = "districts",
@@ -73,4 +73,5 @@ spod_download(
   dates = "2020032[0-4]"
 )
 }
+
 }

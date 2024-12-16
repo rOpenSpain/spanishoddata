@@ -14,7 +14,7 @@
 #'
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Download the origin-destination on district level for the a date range in March 2020
 #' spod_download(
 #'   type = "od", zones = "districts",
@@ -34,6 +34,7 @@
 #'   dates = "2020032[0-4]"
 #' )
 #' }
+#' 
 spod_download <- function(
     type = c(
       "od", "origin-destination",
