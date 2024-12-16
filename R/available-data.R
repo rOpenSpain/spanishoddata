@@ -44,10 +44,6 @@ spod_available_data <- function(
 #' @param xml_url The URL of the XML file to download. Defaults to "https://opendata-movilidad.mitma.es/RSS.xml".
 #'
 #' @return The path to the downloaded XML file.
-#' @examples
-#' if (FALSE) {
-#'   spod_get_latest_v1_file_list()
-#' }
 #' @keywords internal
 spod_get_latest_v1_file_list <- function(
   data_dir = spod_get_data_dir(),
@@ -82,13 +78,6 @@ return(current_filename)
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
 #' @importFrom rlang .data
-#' @examples
-#' # Get the available v1 data list for the default data directory
-#' if (FALSE) {
-#'   metadata <- spod_available_data_v1()
-#'   names(metadata)
-#'   head(metadata)
-#' }
 #' @keywords internal
 spod_available_data_v1 <- function(
   data_dir = spod_get_data_dir(),
@@ -224,10 +213,6 @@ return(files_table)
 #' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
 #'
 #' @return The path to the downloaded XML file.
-#' @examples
-#' if (FALSE) {
-#'   spod_get_latest_v2_file_list()
-#' }
 #' @keywords internal
 spod_get_latest_v2_file_list <- function(
     data_dir = spod_get_data_dir(),
@@ -262,13 +247,6 @@ spod_get_latest_v2_file_list <- function(
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
 #' @importFrom rlang .data
-#' @examples
-#' # Get the data dictionary for the default data directory
-#' if (FALSE) {
-#'   metadata <- spod_available_data_v2()
-#'   names(metadata)
-#'   head(metadata)
-#' }
 #' @keywords internal
 spod_available_data_v2 <- function(
   data_dir = spod_get_data_dir(),

@@ -32,12 +32,4 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \description{
 This function provides a table of the available data list of MITMA v1 (2020-2021), both remote and local.
 }
-\examples{
-# Get the available v1 data list for the default data directory
-if (FALSE) {
-  metadata <- spod_available_data_v1()
-  names(metadata)
-  head(metadata)
-}
-}
 \keyword{internal}

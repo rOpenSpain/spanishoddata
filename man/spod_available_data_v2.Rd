@@ -32,12 +32,4 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \description{
 This function retrieves the data dictionary for the specified data directory.
 }
-\examples{
-# Get the data dictionary for the default data directory
-if (FALSE) {
-  metadata <- spod_available_data_v2()
-  names(metadata)
-  head(metadata)
-}
-}
 \keyword{internal}

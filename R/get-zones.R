@@ -85,10 +85,6 @@ spod_get_zones <- function(
 #'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
 #'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 #' }
-#' @examples
-#' if (FALSE) {
-#'   zones <- spod_get_zones_v1()
-#' }
 #' @keywords internal
 spod_get_zones_v1 <- function(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni", "municip", "municipios"),
@@ -347,10 +343,6 @@ return(metadata_zones$local_path)
 #'   \item{population}{A numeric vector representing the population of each zone (as of 2022).}
 #'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each zone, stored as an sf object.
 #'   The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
-#' }
-#' @examples
-#' if (FALSE) {
-#'   zones <- spod_get_zones_v2()
 #' }
 #' @keywords internal
 spod_get_zones_v2 <- function(
