@@ -21,7 +21,7 @@
 #' @export
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' od_1000 <- spod_quick_get_od(
 #'   date = "2022-01-01",
 #'   min_trips = 1000
