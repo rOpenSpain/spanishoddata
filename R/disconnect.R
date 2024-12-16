@@ -4,7 +4,7 @@
 #' This function is to ensure that `DuckDB` connections to CSV.gz files (created via `spod_get()`), as well as to `DuckDB` files or folders of `parquet` files (created via `spod_convert()`) are closed properly to prevent conflicting connections. Essentially this is just a wrapper around `DBI::dbDisconnect()` that reaches out into the `.$src$con` object of the `tbl_duckdb_connection` connection object that is returned to the user via `spod_get()` and `spod_connect()`. After disonnecting the database, it also frees up memory by running `gc()`.
 #' @param tbl_con A `tbl_duckdb_connection` connection object that you get from either `spod_get()` or `spod_connect()`.
 #' @param free_mem A `logical`. Whether to free up memory by running `gc()`. Defaults to `TRUE`.
-#' @return NULL
+#' @return No return value, called for side effect of disconnecting from the database and freeing up memory.
 #' @export
 #' @examples
 #' \dontrun{
