@@ -20,7 +20,7 @@ eval: false
 [![DOI](https://zenodo.org/badge/DOI/10.32614/CRAN.package.spanishoddata.svg)](https://doi.org/10.32614/CRAN.package.spanishoddata)
 <!-- badges: end -->
 
-**spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable Mobility of Spain [@mitma-mobility-2024-v7].
+**spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable Mobility of Spain [@mitma_mobility_2024_v8].
 
 It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. [The first version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad) covers data from 2020 and 2021, including the period of the COVID-19 pandemic. [The second version](https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad) contains data from January 2022 onwards and is regularly updated. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the [package website](https://rOpenSpain.github.io/spanishoddata/) and vignettes for [v1](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook) and [v2](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook) data for more details.
 

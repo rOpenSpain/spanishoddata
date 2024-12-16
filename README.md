@@ -20,8 +20,7 @@ alt="CRAN status" /></a>
 
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
-Ministry of Transport and Sustainable Mobility of Spain
-(**mitma-mobility-2024-v7?**).
+Ministry of Transport and Sustainable Mobility of Spain (MITMS 2024).
 
 It supports the two versions of the Spanish mobility data that consists
 of origin-destination matrices and some additional data sets. [The first
@@ -537,6 +536,17 @@ entry-spacing="0">
 Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
 Origin-Destination Data,” August.
 <https://doi.org/10.32614/CRAN.package.od>.
+
+</div>
+
+<div id="ref-mitma_mobility_2024_v8" class="csl-entry">
+
+MITMS. 2024. “Estudio de Movilidad de Viajeros de Ámbito Nacional
+Aplicando La Tecnología Big Data. Informe Metodológico (Study of
+National Traveler Mobility Using Big Data Technology. Methodological
+Report).” Secretaría de Estado de Transportes y Movilidad Sostenible;
+Ministerio de Transportes, Movilidad y Agenda Urbana.
+<https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 </div>
 
