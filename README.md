@@ -10,9 +10,9 @@ Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repost
 target="_blank"><img
 src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg"
 alt="Lifecycle: stable" /></a>
-<a href="https://CRAN.R-project.org/package=rJavaEnv"
+<a href="https://CRAN.R-project.org/package=spanishoddata"
 target="_blank"><img
-src="https://www.r-pkg.org/badges/version/rJavaEnv.png"
+src="https://www.r-pkg.org/badges/version/spanishoddata.png"
 alt="CRAN status" /></a>
 [![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
 [![DOI](https://zenodo.org/badge/DOI/10.32614/CRAN.package.spanishoddata.svg)](https://doi.org/10.32614/CRAN.package.spanishoddata)
