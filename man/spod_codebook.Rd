@@ -10,8 +10,17 @@ spod_codebook(ver = 1)
 \item{ver}{An \code{integer} or \code{numeric} value. The version of the data. Defaults to 1. Can be \code{1} for v1 (2020-2021) data and 2 for v2 (2022 onwards) data.}
 }
 \value{
-Nothing, calls relevant vignette.
+Nothing, opens vignette if it is installed. If vignette is missing, prints a message with a link to a webpage with the codebook.
 }
 \description{
-Opens relevant vignette.
+Opens relevant vignette with a codebook for v1 (2020-2021) and v2 (2022 onwards) data or provide a webpage if vignette is missing.
+}
+\examples{
+
+# View codebook for v1 (2020-2021) data
+spod_codebook(ver = 1)
+
+# View codebook for v2 (2022 onwards) data
+spod_codebook(ver = 2)
+
 }
