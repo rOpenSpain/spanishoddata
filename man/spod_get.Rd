@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{spod_get}
 \alias{spod_get}
-\title{Get tabular data}
+\title{Get tabular mobility data}
 \usage{
 spod_get(
   type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"),
@@ -64,7 +64,7 @@ This function creates a DuckDB lazy table connection object from the specified t
 If you want to analyse longer periods of time (especiially several months or even the whole data over several years), consider using the \link{spod_convert} and then \link{spod_connect}.
 }
 \examples{
-\dontrun{
+\donttest{
 
 # create a connection to the v1 data
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")

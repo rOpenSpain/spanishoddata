@@ -1,4 +1,4 @@
-#' Get tabular data
+#' Get tabular mobility data
 #' 
 #' @description This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary. The connnection is made to the raw CSV files in gzip archives, so analysing the data through this connection may be slow if you select more than a few days. You can manipulate this object using `{dplyr}` functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. See codebooks for v1 and v2 data in vignettes with `spod_codebook(1)` and `spod_codebook(2)` (\link{spod_codebook}).
 #' 
@@ -12,7 +12,7 @@
 #' @return A DuckDB lazy table connection object of class `tbl_duckdb_connection`.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' 
 #' # create a connection to the v1 data
 #' Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
