@@ -185,15 +185,9 @@ base_plot_districts <- ggplot() +
     panel.background = element_rect(fill='transparent'),
     plot.background = element_rect(fill='transparent', color=NA),
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill='transparent', colour = NA),
-    legend.box.background = element_rect(fill='transparent', colour = NA),
-    legend.key = element_blank(),  # Remove legend key border
-    legend.title = element_text(size = 12),  # Adjust title size
-    legend.text = element_text(size = 10),  # Adjust text size
-    legend.key.height = unit(1, "cm"),  # Increase the height of legend keys
-    legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm")  # Remove margin
-  )
+    panel.grid.minor = element_blank()
+  ) +
+  guides(fill = "none")
 
 # flows_by_ca_twoway_coords |> arrange(desc(flow_ab))
 # add the flows
@@ -208,6 +202,7 @@ flows_plot_all_districts <- base_plot_districts |>
     outline_col = "grey80",
     add_legend = "bottom",
     legend_col = "gray20",
+    legend_gradient = TRUE,
     k_node = 20 # play around with this parameter to aggregate nodes and flows
   )
 
@@ -314,15 +309,9 @@ base_plot_barcelona <- ggplot() +
     panel.background = element_rect(fill='transparent'),
     plot.background = element_rect(fill='transparent', color=NA),
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill='transparent', colour = NA),
-    legend.box.background = element_rect(fill='transparent', colour = NA),
-    legend.key = element_blank(),  # Remove legend key border
-    legend.title = element_text(size = 12),  # Adjust title size
-    legend.text = element_text(size = 10),  # Adjust text size
-    legend.key.height = unit(1, "cm"),  # Increase the height of legend keys
-    legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm")  # Remove margin
-  )
+    panel.grid.minor = element_blank()
+  ) +
+  guides(fill = 'none')
 
 # flows_by_ca_twoway_coords |> arrange(desc(flow_ab))
 # add the flows
@@ -337,6 +326,7 @@ flows_plot_barcelona <- base_plot_barcelona |>
     outline_col = "grey80",
     add_legend = "bottom",
     legend_col = "gray20",
+    legend_gradient = TRUE,
     k_node = 30 # play around with this parameter to aggregate nodes and flows
   )
 
@@ -611,10 +601,9 @@ base_plot <- ggplot() +
     panel.background = element_rect(fill='transparent'),
     plot.background = element_rect(fill='transparent', color=NA),
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.background = element_rect(fill='transparent'),
-    legend.box.background = element_rect(fill='transparent')
-  )
+    panel.grid.minor = element_blank()
+  ) +
+  guides(fill = 'none')
 
 # flows_by_ca_twoway_coords |> arrange(desc(flow_ab))
 # add the flows
