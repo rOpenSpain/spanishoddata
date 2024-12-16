@@ -13,9 +13,21 @@
 #'   \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
 #'   \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
 #'   \item{local_path}{\code{character}. The local file path where the data is stored.}
-#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
+#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if `check_local_files` is `TRUE`.}
 #' }
 #' @export
+#' @examples
+#' \donttest{
+#' # Get available data list for v1 (2020-2021) data
+#' spod_available_data(ver = 1)
+#' 
+#' # Get available data list for v2 (2022 onwards) data
+#' spod_available_data(ver = 2)
+#' 
+#' # Get available data list for v2 (2022 onwards) data while also checking for local files that are already downloaded
+#' spod_available_data(ver = 2, check_local_files = TRUE)
+#' }
+#' 
 spod_available_data <- function(
   ver = 2,
   check_local_files = FALSE,
