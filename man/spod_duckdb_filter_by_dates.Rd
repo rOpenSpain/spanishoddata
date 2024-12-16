@@ -28,6 +28,9 @@ The possible values can be any of the following:
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 }
+\value{
+A \code{duckdb} connection with original views and a new filtered view.
+}
 \description{
 IMPORTANT: This function assumes that the table or view that is being filtered has separate \code{year}, \code{month} and \code{day} columns with integer values. This is done so that the filtering is faster on CSV files that are stored in a folder structure with hive-style \verb{/year=2020/month=2/day=14/}.
 }

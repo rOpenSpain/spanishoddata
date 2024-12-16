@@ -22,7 +22,11 @@ spod_duckdb_overnight_stays(
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
 }
 \value{
-A duckdb connection with 2 views.
+A \code{duckdb} connection object with 2 views:
+\itemize{
+\item \code{od_csv_raw} - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+\item \code{od_csv_clean} - a cleaned-up table view of \code{od_csv_raw} with column names and values translated and mapped to English. This still includes all cached data.
+}
 }
 \description{
 This function creates a duckdb connection to the overnight stays data stored in a folder of CSV.gz files.
