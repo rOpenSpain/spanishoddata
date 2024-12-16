@@ -10,7 +10,7 @@ spod_get_temp_dir(data_dir = spod_get_data_dir())
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
 }
 \value{
-The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling}.
+A \code{character} string with the path to the temp folder for \code{DuckDB} for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling}.
 }
 \description{
 Get the The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling} in case the set memory limit and/or physical memory of the computer is too low to perform the query.
