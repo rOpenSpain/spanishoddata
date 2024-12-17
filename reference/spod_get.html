@@ -130,15 +130,13 @@ If you want to quickly get the origin-destination data with flows aggregated for
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># interactive()</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create a connection to the v1 data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="spod_set_data_dir.html">spod_set_data_dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Data directory is writeable.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Data directory successfully set to: /tmp/RtmpZbiBKx</span>
 <span class="r-in"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-02-14"</span>, <span class="st">"2020-03-14"</span>, <span class="st">"2021-02-14"</span>, <span class="st">"2021-02-14"</span>, <span class="st">"2021-02-15"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nt_dist</span> <span class="op">&lt;-</span> <span class="fu">spod_get</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"number_of_trips"</span>, zones <span class="op">=</span> <span class="st">"distr"</span>, dates <span class="op">=</span> <span class="va">dates</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in read_xml.character(latest_data_links_xml_path):</span> EntityRef: expecting ';' [23]</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># nt_dist is a table view filtered to the specified dates</span></span></span>
 <span class="r-in"><span></span></span>
@@ -146,13 +144,11 @@ If you want to quickly get the origin-destination data with flows aggregated for
 <span class="r-in"><span><span class="co"># access the source connection with all dates</span></span></span>
 <span class="r-in"><span><span class="co"># list tables</span></span></span>
 <span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbListTables.html" class="external-link">dbListTables</a></span><span class="op">(</span><span class="va">nt_dist</span><span class="op">$</span><span class="va">src</span><span class="op">$</span><span class="va">con</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'dbListTables': object 'nt_dist' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># disconnect</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="spod_disconnect.html">spod_disconnect</a></span><span class="op">(</span><span class="va">nt_dist</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'nt_dist' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
