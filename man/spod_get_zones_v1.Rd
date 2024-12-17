@@ -30,9 +30,4 @@ The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference syst
 This function retrieves the zones data from the specified data directory.
 It can retrieve either "distritos" or "municipios" zones data.
 }
-\examples{
-if (FALSE) {
-  zones <- spod_get_zones_v1()
-}
-}
 \keyword{internal}

@@ -10,10 +10,13 @@ spod_get_data_dir(quiet = FALSE)
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
-The data directory.
+A \code{character} vector of length 1 containing the path to the data directory where the package will download and convert the data.
 }
 \description{
 This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
 If the environment variable is not set, it returns the temporary directory.
 }
-\keyword{internal}
+\examples{
+spod_get_data_dir()
+
+}

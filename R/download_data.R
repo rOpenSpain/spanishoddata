@@ -4,7 +4,7 @@
 #' @param type The type of data to download. Can be `"origin-destination"` (or ust `"od"`), or `"number_of_trips"` (or just `"nt"`) for v1 data. For v2 data `"overnight_stays"` (or just `"os"`) is also available. More data types to be supported in the future. See codebooks for v1 and v2 data in vignettes with `spod_codebook(1)` and `spod_codebook(2)` (\link{spod_codebook}).
 #' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`) for both data versions. Additionaly, these can be `"large_urban_areas"` (or `"lua"`, or the original Spanish `"grandes_areas_urbanas"`, or `"gau"`) for v2 data (2022 onwards).
 #' @inheritParams spod_dates_argument_to_dates_seq
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set.
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set. To set the data directory, use \link{spod_set_data_dir}.
 #' @param max_download_size_gb The maximum download size in gigabytes. Defaults to 1.
 #' @param return_local_file_paths Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.
 #' @param ignore_missing_dates Logical. If `TRUE`, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to `FALSE`.
@@ -14,26 +14,31 @@
 #'
 #' @export
 #' @examples
-#' \dontrun{
-#' # Download the origin-destination on district level for the a date range in March 2020
+#' \donttest{
+#' 
+#' # Set data dir for file downloads
+#' spod_set_data_dir(tempdir())
+#' 
+#' # Download the number of trips on district level for the a date range in March 2020
 #' spod_download(
-#'   type = "od", zones = "districts",
-#'   dates = c(start = "2020-03-20", end = "2020-03-24")
+#'   type = "number_of_trips", zones = "districts",
+#'   dates = c(start = "2020-03-20", end = "2020-03-21")
 #' )
 #'
-#' # Download the origin-destination on district level for select dates in 2020 and 2021
+#' # Download the number of trips on district level for select dates in 2020 and 2021
 #' spod_download(
-#'   type = "od", zones = "dist",
+#'   type = "number_of_trips", zones = "dist",
 #'   dates = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24")
 #' )
 #'
-#' # Download the origin-destination on municipality level using regex for a date range in March 2020
+#' # Download the number of trips on municipality level using regex for a date range in March 2020
 #' # (the regex will capture the dates 2020-03-20 to 2020-03-24)
 #' spod_download(
-#'   type = "od", zones = "municip",
+#'   type = "number_of_trips", zones = "municip",
 #'   dates = "2020032[0-4]"
 #' )
 #' }
+#' 
 spod_download <- function(
     type = c(
       "od", "origin-destination",

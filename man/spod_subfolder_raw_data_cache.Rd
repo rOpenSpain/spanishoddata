@@ -10,7 +10,7 @@ spod_subfolder_raw_data_cache(ver = 1)
 \item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
 }
 \value{
-Character string with the subfolder name for the raw data cache.
+A \code{character} string with the subfolder name for the raw data cache.
 }
 \description{
 Change subfolder name in the code of this function for raw data cache here to apply globally, as all functions in the package should use this function to get the raw data cache path.

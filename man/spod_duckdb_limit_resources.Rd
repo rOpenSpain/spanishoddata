@@ -2,7 +2,7 @@
 % Please edit documentation in R/duckdb-helpers.R
 \name{spod_duckdb_limit_resources}
 \alias{spod_duckdb_limit_resources}
-\title{Set maximum memory and number of threads for a DuckDB connection}
+\title{Set maximum memory and number of threads for a \code{DuckDB} connection}
 \usage{
 spod_duckdb_limit_resources(
   con,
@@ -11,16 +11,16 @@ spod_duckdb_limit_resources(
 )
 }
 \arguments{
-\item{con}{A duckdb connection}
+\item{con}{A \code{duckdb} connection}
 
-\item{max_mem_gb}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
+\item{max_mem_gb}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to \code{DuckDB} form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in \code{DuckDB} or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
 
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 }
 \value{
-The duckdb connection.
+A \code{duckdb} connection.
 }
 \description{
-Set maximum memory and number of threads for a DuckDB connection
+Set maximum memory and number of threads for a \code{DuckDB} connection
 }
 \keyword{internal}

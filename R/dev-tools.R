@@ -2,9 +2,10 @@
 
 #' Get files sizes for remote files of v1 and v2 data and save them into a csv.gz file in the inst/extdata folder.
 #' @param ver The version of the data (1 or 2). Can be both. Defaults to 2, as v1 data is not being updated since 2021.
-#' @return NULL
+#' @return Nothing. Only saves a csv.gz file with up to date file sizes in the inst/extdata folder.
 #' 
 #' @keywords internal
+#' 
 spod_files_sizes <- function(ver = 2) {
   data_dir = spod_get_data_dir()
   

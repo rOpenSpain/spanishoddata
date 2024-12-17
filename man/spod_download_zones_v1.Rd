@@ -19,7 +19,7 @@ spod_download_zones_v1(
 \item{quiet}{Boolean flag to control the display of messages.}
 }
 \value{
-The path to the downloaded and extracted file.
+A \code{character} string containing the path to the downloaded and extracted file.
 }
 \description{
 This function ensures that the necessary v1 raw data for zones files are downloaded and extracted from the specified data directory.

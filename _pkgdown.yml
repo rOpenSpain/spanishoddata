@@ -35,6 +35,7 @@ reference:
     desc: >
       Quickly download and analyse just a few days of mobility data
     contents:
+      - spod_available_data
       - spod_get_zones
       - spod_get
       - spod_disconnect
@@ -42,6 +43,7 @@ reference:
     desc: >
       Download data for longer periods, convert them into analysis ready format such as `DuckDB` or `Parquet` for out-of-memory analysis of this large data
     contents:
+      - spod_available_data
       - spod_get_zones
       - spod_download
       - spod_convert

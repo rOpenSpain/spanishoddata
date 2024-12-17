@@ -1,6 +1,6 @@
 #' Get available data list
 #' 
-#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable or a custom path specified with `data_dir` argument.
+#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with `data_dir` argument.
 #' 
 #' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
 #' @inheritParams spod_available_data_v1
@@ -13,9 +13,26 @@
 #'   \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
 #'   \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
 #'   \item{local_path}{\code{character}. The local file path where the data is stored.}
-#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
+#'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if `check_local_files` is `TRUE`.}
 #' }
 #' @export
+#' @examples
+#' \donttest{
+#' 
+#' # Set data dir for file downloads
+#' spod_set_data_dir(tempdir())
+#' 
+#' # Get available data list for v1 (2020-2021) data
+#' spod_available_data(ver = 1)
+#' 
+#' # Get available data list for v2 (2022 onwards) data
+#' spod_available_data(ver = 2)
+#' 
+#' # Get available data list for v2 (2022 onwards) data
+#' # while also checking for local files that are already downloaded
+#' spod_available_data(ver = 2, check_local_files = TRUE)
+#' }
+#' 
 spod_available_data <- function(
   ver = 2,
   check_local_files = FALSE,
@@ -44,10 +61,6 @@ spod_available_data <- function(
 #' @param xml_url The URL of the XML file to download. Defaults to "https://opendata-movilidad.mitma.es/RSS.xml".
 #'
 #' @return The path to the downloaded XML file.
-#' @examples
-#' if (FALSE) {
-#'   spod_get_latest_v1_file_list()
-#' }
 #' @keywords internal
 spod_get_latest_v1_file_list <- function(
   data_dir = spod_get_data_dir(),
@@ -82,13 +95,6 @@ return(current_filename)
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
 #' @importFrom rlang .data
-#' @examples
-#' # Get the available v1 data list for the default data directory
-#' if (FALSE) {
-#'   metadata <- spod_available_data_v1()
-#'   names(metadata)
-#'   head(metadata)
-#' }
 #' @keywords internal
 spod_available_data_v1 <- function(
   data_dir = spod_get_data_dir(),
@@ -224,10 +230,6 @@ return(files_table)
 #' @param xml_url The URL of the XML file to download. Defaults to "https://movilidad-opendata.mitma.es/RSS.xml".
 #'
 #' @return The path to the downloaded XML file.
-#' @examples
-#' if (FALSE) {
-#'   spod_get_latest_v2_file_list()
-#' }
 #' @keywords internal
 spod_get_latest_v2_file_list <- function(
     data_dir = spod_get_data_dir(),
@@ -262,13 +264,6 @@ spod_get_latest_v2_file_list <- function(
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
 #' @importFrom rlang .data
-#' @examples
-#' # Get the data dictionary for the default data directory
-#' if (FALSE) {
-#'   metadata <- spod_available_data_v2()
-#'   names(metadata)
-#'   head(metadata)
-#' }
 #' @keywords internal
 spod_available_data_v2 <- function(
   data_dir = spod_get_data_dir(),

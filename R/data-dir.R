@@ -6,7 +6,9 @@
 #' @inheritParams global_quiet_param
 #' @return Nothing. If quiet is `FALSE`, prints a message with the path and confirmation that the path exists.
 #' @export
-#' @keywords internal
+#' @examples
+#' spod_set_data_dir(tempdir())
+#' 
 spod_set_data_dir <- function(
   data_dir,
   quiet = FALSE
@@ -54,9 +56,11 @@ spod_set_data_dir <- function(
 #' This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
 #' If the environment variable is not set, it returns the temporary directory.
 #' @inheritParams global_quiet_param
-#' @return The data directory.
+#' @return A `character` vector of length 1 containing the path to the data directory where the package will download and convert the data.
 #' @export
-#' @keywords internal
+#' @examples
+#' spod_get_data_dir()
+#' 
 spod_get_data_dir <- function(quiet = FALSE) {
   checkmate::assert_flag(quiet)
   data_dir_env <- Sys.getenv("SPANISH_OD_DATA_DIR")

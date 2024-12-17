@@ -1,3 +1,16 @@
+This is a resubmission.
+
+* R CMD check on winbuilder does not do 'checking examples with --run-donttest', so if you do check with `--run-donttest`, it may fail, as downloading of critical xml files that are required for all data downloading functions may fail from some hosts.
+
+* all exported functions have the returned value specified
+
+* all non-exported functions do not have examples
+
+* all examples are that download data are wrapped into donttest instead of dontrun
+
+* `if(FALSE)` removed from all examples
+
+
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note

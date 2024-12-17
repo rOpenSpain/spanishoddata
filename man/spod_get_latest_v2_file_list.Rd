@@ -20,9 +20,4 @@ The path to the downloaded XML file.
 \description{
 Get latest file list from the XML for MITMA open mobility data v2 (2022 onwards)
 }
-\examples{
-if (FALSE) {
-  spod_get_latest_v2_file_list()
-}
-}
 \keyword{internal}

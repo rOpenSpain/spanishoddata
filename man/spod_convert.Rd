@@ -40,7 +40,7 @@ The possible values can be any of the following:
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 
-\item{save_format}{A \code{character} vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')}). So for v1 data that path would be \verb{<data_dir>/clean_data/v1/tabular/duckdb/} or \verb{<data_dir>/clean_data/v1/tabular/parquet/}.
+\item{save_format}{A \code{character} vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')} or \link{spod_set_data_dir}\code{(path = 'path/to/your/cache/dir')}. So for v1 data that path would be \verb{<data_dir>/clean_data/v1/tabular/duckdb/} or \verb{<data_dir>/clean_data/v1/tabular/parquet/}.
 
 You can also set \code{save_path}. If it ends with ".duckdb", will save to \code{DuckDB} database format, if \code{save_path} does not end with ".duckdb", will save to \code{parquet} format and will treat the \code{save_path} as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like \code{year=2020/month=2/day=14} and inside each such directory there will be a \code{data_0.parquet} file that contains the data for that day.}
 
@@ -48,16 +48,16 @@ You can also set \code{save_path}. If it ends with ".duckdb", will save to \code
 \itemize{
 \item If \code{save_path} ends with \code{.duckdb}, it will be saved as a DuckDB database file. The format argument will be automatically set to \code{save_format='duckdb'}.
 \item If \code{save_path} ends with a folder name (e.g. \verb{/data_dir/clean_data/v1/tabular/parquet/od_distr} for origin-destination data for district level), the data will be saved as a collection of \code{parquet} files in a hive-style directory structure. So the subfolders of \code{od_distr} will be \code{year=2020/month=2/day=14} and inside each of these folders a single \code{parquet} file will be placed containing the data for that day.
-\item If \code{NULL}, uses the default location in \code{data_dir} (set by the \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')}). Therefore, the default relative path for \code{DuckDB} is \verb{<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb} and for \code{parquet} files is \verb{<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/}, where \code{type} is the type of data (e.g. 'od', 'os', 'nt', that correspoind to 'origin-destination', 'overnight-stays', 'number-of-trips', etc.) and \code{zones} is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
+\item If \code{NULL}, uses the default location in \code{data_dir} (set by the \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')} or or \link{spod_set_data_dir}\code{(path = 'path/to/your/cache/dir')}. Therefore, the default relative path for \code{DuckDB} is \verb{<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb} and for \code{parquet} files is \verb{<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/}, where \code{type} is the type of data (e.g. 'od', 'os', 'nt', that correspoind to 'origin-destination', 'overnight-stays', 'number-of-trips', etc.) and \code{zones} is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
 }}
 
-\item{overwrite}{A \code{logical} or a \code{character} vector of length 1\verb{. If }TRUE\verb{, overwrites existing }DuckDB\code{or}parquet\verb{files. Defaults to}FALSE`. For parquet files can also be set to 'update', so that only parquet files are only created for the dates that have not yet been converted.}
+\item{overwrite}{A \code{logical} or a \code{character} vector of length 1. If \code{TRUE}, overwrites existing \code{DuckDB} or \code{parquet} files. Defaults to \code{FALSE}. For parquet files can also be set to 'update', so that only parquet files are only created for the dates that have not yet been converted.}
 
-\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
+\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set. To set the data directory, use \link{spod_set_data_dir}.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
-\item{max_mem_gb}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
+\item{max_mem_gb}{The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to \code{DuckDB} form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in \code{DuckDB} or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.}
 
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 
@@ -66,8 +66,30 @@ You can also set \code{save_path}. If it ends with ".duckdb", will save to \code
 \item{ignore_missing_dates}{Logical. If \code{TRUE}, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to \code{FALSE}.}
 }
 \value{
-Path to saved DuckDB file.
+Path to saved \code{DuckDB} database file or to a folder with \code{parquet} files in hive-style directory structure.
 }
 \description{
-Converts data for faster analysis into either \code{DuckDB} file or into \code{parquet} files in a hive-style directory structure. Running analysis on these files is sometimes 100x times faster than working with raw CSV files, espetially when these are in gzip archives. To connect to converted data, please use \code{mydata <- spod_connect()} passing the path to where the data was saved. The connected \code{mydata} can be analysed using \code{dplyr} functions such as \code{select()}, \code{filter()}, \code{mutate()}, \code{group_by()}, \code{summarise()}, etc. In the end of any sequence of commands you will need to add \code{collect()} to execute the whole chain of data manipulations and load the results into memory in an R \code{data.frame}/\code{tibble}. For more in-depth usage of such data, please refer to DuckDB documentation and examples at \url{https://duckdb.org/docs/api/r#dbplyr} . Some more useful examples can be found here \url{https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb} . You may also use \code{arrow} package to work with parquet files \url{https://arrow.apache.org/docs/r/}.
+Converts data for faster analysis into either \code{DuckDB} file or into \code{parquet} files in a hive-style directory structure. Running analysis on these files is sometimes 100x times faster than working with raw CSV files, espetially when these are in gzip archives. To connect to converted data, please use 'mydata <- \link{spod_connect}(data_path = path_returned_by_spod_convert)' passing the path to where the data was saved. The connected \code{mydata} can be analysed using \code{dplyr} functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R \code{data.frame}/\code{tibble}. For more in-depth usage of such data, please refer to DuckDB documentation and examples at \url{https://duckdb.org/docs/api/r#dbplyr} . Some more useful examples can be found here \url{https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb} . You may also use \code{arrow} package to work with parquet files \url{https://arrow.apache.org/docs/r/}.
+}
+\examples{
+\donttest{
+# Set data dir for file downloads
+spod_set_data_dir(tempdir())
+
+# download and convert data
+dates_1 <- c(start = "2020-02-17", end = "2020-02-18")
+db_2 <- spod_convert(
+ type = "number_of_trips",
+ zones = "distr",
+ dates = dates_1,
+ overwrite = TRUE
+)
+
+# now connect to the converted data
+my_od_data_2 <- spod_connect(db_2)
+
+# disconnect from the database
+spod_disconnect(my_od_data_2)
+}
+
 }

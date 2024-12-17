@@ -10,7 +10,7 @@ spod_clean_zones_v2(zones_path)
 \item{zones_path}{The path to the zones spatial data file.}
 }
 \value{
-A spatial object containing the cleaned zones data.
+A spatial `sf`` object containing the cleaned zones data.
 }
 \description{
 This function fixes any invalid geometries in the zones data and renames the "ID" column to "id". It also attacches the population counts and zone names provided in the csv files supplied by the original data provider.

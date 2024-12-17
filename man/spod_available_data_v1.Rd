@@ -26,18 +26,10 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
 \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
 \item{local_path}{\code{character}. The local file path where the data is stored.}
-\item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
+\item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if \code{check_local_files} is \code{TRUE}.}
 }
 }
 \description{
 This function provides a table of the available data list of MITMA v1 (2020-2021), both remote and local.
-}
-\examples{
-# Get the available v1 data list for the default data directory
-if (FALSE) {
-  metadata <- spod_available_data_v1()
-  names(metadata)
-  head(metadata)
-}
 }
 \keyword{internal}

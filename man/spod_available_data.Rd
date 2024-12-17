@@ -29,9 +29,27 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
 \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
 \item{local_path}{\code{character}. The local file path where the data is stored.}
-\item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally.}
+\item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if \code{check_local_files} is \code{TRUE}.}
 }
 }
 \description{
-Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable or a custom path specified with \code{data_dir} argument.
+Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with \code{data_dir} argument.
+}
+\examples{
+\donttest{
+
+# Set data dir for file downloads
+spod_set_data_dir(tempdir())
+
+# Get available data list for v1 (2020-2021) data
+spod_available_data(ver = 1)
+
+# Get available data list for v2 (2022 onwards) data
+spod_available_data(ver = 2)
+
+# Get available data list for v2 (2022 onwards) data
+# while also checking for local files that are already downloaded
+spod_available_data(ver = 2, check_local_files = TRUE)
+}
+
 }

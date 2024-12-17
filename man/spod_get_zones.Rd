@@ -17,7 +17,7 @@ spod_get_zones(
 
 \item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
 
-\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
+\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set. To set the data directory, use \link{spod_set_data_dir}.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
@@ -51,4 +51,14 @@ The columns for v2 (2022 onwards) data include:
 }
 \description{
 Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
+}
+\examples{
+\donttest{
+# get polygons for municipalities for the v2 data
+municip_v2 <- spod_get_zones(zones = "municipalities", ver = 2)
+
+# get polygons for the districts for the v1 data
+distr_v1 <- spod_get_zones(zones = "districts", ver = 1)
+}
+
 }

@@ -17,4 +17,7 @@ Nothing. If quiet is \code{FALSE}, prints a message with the path and confirmati
 \description{
 This function sets the data directory in the environment variable SPANISH_OD_DATA_DIR, so that all other functions in the package can access the data. It also creates the directory if it doesn't exist.
 }
-\keyword{internal}
+\examples{
+spod_set_data_dir(tempdir())
+
+}

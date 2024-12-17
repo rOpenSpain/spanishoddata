@@ -5,7 +5,7 @@
 #' @param con A duckdb connection object. If not specified, a new in-memory connection will be created.
 #' @inheritParams spod_available_data
 #' @inheritParams spod_download
-#' @return A duckdb connection object with 2 views:
+#' @return A `duckdb` connection object with 2 views:
 #'
 #'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
 #'
@@ -193,7 +193,11 @@ spod_duckdb_od <- function(
 #' @inheritParams spod_available_data
 #' @inheritParams spod_download
 #' 
-#' @return A duckdb connection with 2 views.
+#' @return A `duckdb` connection object with 2 views:
+#'
+#'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+#'
+#'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
 #' 
 #' @keywords internal
 spod_duckdb_number_of_trips <- function(
@@ -320,7 +324,11 @@ if (ver == 2) {
 #' @inheritParams spod_available_data
 #' @inheritParams spod_download
 #' 
-#' @return A duckdb connection with 2 views.
+#' @return A `duckdb` connection object with 2 views:
+#'
+#'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+#'
+#'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
 #' 
 #' @keywords internal
 spod_duckdb_overnight_stays <- function(
@@ -423,6 +431,8 @@ spod_duckdb_overnight_stays <- function(
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files)
 #' @keywords internal
+#' @return A `duckdb` connection with original views and a new filtered view.
+#' 
 spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, dates) {
   # prepare query to filter by dates
   query <- dplyr::sql(
@@ -439,6 +449,11 @@ spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, da
   return(con)
 }
 
+#' Create province names ENUM in a duckdb connection
+#' @param con A `duckdb` connection.
+#' @return A `duckdb` connection with `INE_PROV_NAME_ENUM` and `INE_PROV_CODE_ENUM` created.
+#' @keywords internal
+#' 
 spod_duckdb_create_province_enum <- function(con) {
   # LOAD SQL STATEMENT to create province names ENUM
   province_names_enum_sql <- readLines(
@@ -508,11 +523,11 @@ spod_sql_where_dates <- function(dates) {
   return(sql_query)
 }
 
-#' Set maximum memory and number of threads for a DuckDB connection
-#' @param con A duckdb connection
-#' @param max_mem_gb The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to DuckDB form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in DuckDB or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
+#' Set maximum memory and number of threads for a `DuckDB` connection
+#' @param con A `duckdb` connection
+#' @param max_mem_gb The maximum memory to use in GB. A conservative default is 3 GB, which should be enough for resaving the data to `DuckDB` form a folder of CSV.gz files while being small enough to fit in memory of most even old computers. For data analysis using the already converted data (in `DuckDB` or Parquet format) or with the raw CSV.gz data, it is recommended to increase it according to available resources.
 #' @param max_n_cpu The maximum number of threads to use. Defaults to the number of available cores minus 1.
-#' @return The duckdb connection.
+#' @return A `duckdb` connection.
 #' @keywords internal
 spod_duckdb_limit_resources <- function(
   con,
@@ -558,7 +573,7 @@ spod_read_sql <- function(sql_file_name) {
 #' Set temp file for DuckDB connection
 #' @param con A duckdb connection
 #' @param temp_path The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling} in case the set memory limit and/or physical memory of the computer is too low to perform the query. By default this is set to the `temp` directory in the data folder defined by SPANISH_OD_DATA_DIR environment variable. Otherwise, for queries on folders of CSV files or parquet files, the temporary path would be set to the current R working directory, which probably is undesirable, as the current working directory can be on a slow storage, or storage that may have limited space, compared to the data folder.
-#' @return A duckdb connection.
+#' @return A `duckdb` connection.
 #' @keywords internal
 spod_duckdb_set_temp <- function(
   con,
