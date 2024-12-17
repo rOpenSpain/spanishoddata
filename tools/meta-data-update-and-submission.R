@@ -6,6 +6,7 @@ codemetar::write_codemeta(write_minimeta = T)
 usethis::use_tidy_description()
 # urlchecker::url_check()
 # devtools::check(remote = TRUE, manual = TRUE)
+# devtools::check(cran = TRUE)
 # devtools::check_win_devel()
 # revdepcheck::revdep_check(num_workers = 4)
 
