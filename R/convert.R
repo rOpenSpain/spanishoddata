@@ -3,7 +3,7 @@
 #' @description
 #' Converts data for faster analysis into either `DuckDB` file or into `parquet` files in a hive-style directory structure. Running analysis on these files is sometimes 100x times faster than working with raw CSV files, espetially when these are in gzip archives. To connect to converted data, please use `mydata <- spod_connect()` passing the path to where the data was saved. The connected `mydata` can be analysed using `dplyr` functions such as `select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, etc. In the end of any sequence of commands you will need to add `collect()` to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. For more in-depth usage of such data, please refer to DuckDB documentation and examples at [https://duckdb.org/docs/api/r#dbplyr](https://duckdb.org/docs/api/r#dbplyr) . Some more useful examples can be found here [https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb](https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb) . You may also use `arrow` package to work with parquet files [https://arrow.apache.org/docs/r/](https://arrow.apache.org/docs/r/).
 #' 
-#' @param save_format A `character` vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If `NULL` automatically inferred from the `save_path` argument. If only `save_format` is provided, `save_path` will be set to the default location set in `SPANISH_OD_DATA_DIR` environment variable using `Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')`). So for v1 data that path would be `<data_dir>/clean_data/v1/tabular/duckdb/` or `<data_dir>/clean_data/v1/tabular/parquet/`.
+#' @param save_format A `character` vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If `NULL` automatically inferred from the `save_path` argument. If only `save_format` is provided, `save_path` will be set to the default location set in `SPANISH_OD_DATA_DIR` environment variable using `Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')` or `spod_set_data_dir(path = 'path/to/your/cache/dir`)`. So for v1 data that path would be `<data_dir>/clean_data/v1/tabular/duckdb/` or `<data_dir>/clean_data/v1/tabular/parquet/`.
 #' 
 #' You can also set `save_path`. If it ends with ".duckdb", will save to `DuckDB` database format, if `save_path` does not end with ".duckdb", will save to `parquet` format and will treat the `save_path` as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like `year=2020/month=2/day=14` and inside each such directory there will be a `data_0.parquet` file that contains the data for that day.
 #' 
@@ -13,7 +13,7 @@
 #' 
 #' * If `save_path` ends with a folder name (e.g. `/data_dir/clean_data/v1/tabular/parquet/od_distr` for origin-destination data for district level), the data will be saved as a collection of `parquet` files in a hive-style directory structure. So the subfolders of `od_distr` will be `year=2020/month=2/day=14` and inside each of these folders a single `parquet` file will be placed containing the data for that day.
 #' 
-#' * If `NULL`, uses the default location in `data_dir` (set by the `SPANISH_OD_DATA_DIR` environment variable using `Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')`). Therefore, the default relative path for `DuckDB` is `<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb` and for `parquet` files is `<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/`, where `type` is the type of data (e.g. 'od', 'os', 'nt', that correspoind to 'origin-destination', 'overnight-stays', 'number-of-trips', etc.) and `zones` is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
+#' * If `NULL`, uses the default location in `data_dir` (set by the `SPANISH_OD_DATA_DIR` environment variable using `Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')` or `spod_set_data_dir(path = 'path/to/your/cache/dir')`). Therefore, the default relative path for `DuckDB` is `<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb` and for `parquet` files is `<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/`, where `type` is the type of data (e.g. 'od', 'os', 'nt', that correspoind to 'origin-destination', 'overnight-stays', 'number-of-trips', etc.) and `zones` is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
 #' 
 #' @inheritParams spod_get_zones
 #' @inheritParams spod_download
@@ -27,9 +27,9 @@
 #' @examples
 #' \donttest{
 #' # download and convert data
-#' dates_1 <- c(start = "2020-02-17", end = "2020-02-19")
+#' dates_1 <- c(start = "2020-02-17", end = "2020-02-18")
 #' db_2 <- spod_convert(
-#'  type = "od",
+#'  type = "number_of_trips",
 #'  zones = "distr",
 #'  dates = dates_1,
 #'  overwrite = TRUE

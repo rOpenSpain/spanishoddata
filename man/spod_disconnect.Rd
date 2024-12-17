@@ -25,7 +25,7 @@ This function is to ensure that \code{DuckDB} connections to CSV.gz files (creat
 od_distr <- spod_get(
  "od",
  zones = "distr",
- dates = c("2020-01-01", "2020-01-02")
+ dates = c("2020-03-01", "2020-03-02")
 )
 # disconnect from the database connection
 spod_disconnect(od_distr)

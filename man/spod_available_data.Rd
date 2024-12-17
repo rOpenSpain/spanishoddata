@@ -43,7 +43,8 @@ spod_available_data(ver = 1)
 # Get available data list for v2 (2022 onwards) data
 spod_available_data(ver = 2)
 
-# Get available data list for v2 (2022 onwards) data while also checking for local files that are already downloaded
+# Get available data list for v2 (2022 onwards) data
+# while also checking for local files that are already downloaded
 spod_available_data(ver = 2, check_local_files = TRUE)
 }
 

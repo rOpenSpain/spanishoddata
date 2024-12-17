@@ -54,22 +54,22 @@ This function downloads the data files of the specified type, zones, dates and d
 }
 \examples{
 \donttest{
-# Download the origin-destination on district level for the a date range in March 2020
+# Download the number of trips on district level for the a date range in March 2020
 spod_download(
-  type = "od", zones = "districts",
-  dates = c(start = "2020-03-20", end = "2020-03-24")
+  type = "number_of_trips", zones = "districts",
+  dates = c(start = "2020-03-20", end = "2020-03-21")
 )
 
-# Download the origin-destination on district level for select dates in 2020 and 2021
+# Download the number of trips on district level for select dates in 2020 and 2021
 spod_download(
-  type = "od", zones = "dist",
+  type = "number_of_trips", zones = "dist",
   dates = c("2020-03-20", "2020-03-24", "2021-03-20", "2021-03-24")
 )
 
-# Download the origin-destination on municipality level using regex for a date range in March 2020
+# Download the number of trips on municipality level using regex for a date range in March 2020
 # (the regex will capture the dates 2020-03-20 to 2020-03-24)
 spod_download(
-  type = "od", zones = "municip",
+  type = "number_of_trips", zones = "municip",
   dates = "2020032[0-4]"
 )
 }

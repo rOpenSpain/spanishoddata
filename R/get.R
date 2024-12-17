@@ -15,15 +15,19 @@
 #' \donttest{
 #' 
 #' # create a connection to the v1 data
-#' Sys.setenv(SPANISH_OD_DATA_DIR = "~/path/to/your/cache/dir")
+#' spod_set_data_dir(tempdir())
 #' dates <- c("2020-02-14", "2020-03-14", "2021-02-14", "2021-02-14", "2021-02-15")
-#' od_dist <- spod_get(type = "od", zones = "distr", dates = dates)
+#' nt_dist <- spod_get(type = "number_of_trips", zones = "distr", dates = dates)
 #'
-#' # od dist is a table view filtered to the specified dates
+#' # nt_dist is a table view filtered to the specified dates
 #'
+#' # for advanced users only
 #' # access the source connection with all dates
 #' # list tables
-#' DBI::dbListTables(od_dist$src$con)
+#' DBI::dbListTables(nt_dist$src$con)
+#' 
+#' # disconnect
+#' spod_disconnect(nt_dist)
 #' }
 #' 
 spod_get <- function(

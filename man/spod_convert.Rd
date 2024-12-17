@@ -40,7 +40,7 @@ The possible values can be any of the following:
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 
-\item{save_format}{A \code{character} vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')}). So for v1 data that path would be \verb{<data_dir>/clean_data/v1/tabular/duckdb/} or \verb{<data_dir>/clean_data/v1/tabular/parquet/}.
+\item{save_format}{A \code{character} vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')} or \verb{spod_set_data_dir(path = 'path/to/your/cache/dir})\verb{. So for v1 data that path would be }<data_dir>/clean_data/v1/tabular/duckdb/\code{or}<data_dir>/clean_data/v1/tabular/parquet/`.
 
 You can also set \code{save_path}. If it ends with ".duckdb", will save to \code{DuckDB} database format, if \code{save_path} does not end with ".duckdb", will save to \code{parquet} format and will treat the \code{save_path} as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like \code{year=2020/month=2/day=14} and inside each such directory there will be a \code{data_0.parquet} file that contains the data for that day.}
 
@@ -48,7 +48,7 @@ You can also set \code{save_path}. If it ends with ".duckdb", will save to \code
 \itemize{
 \item If \code{save_path} ends with \code{.duckdb}, it will be saved as a DuckDB database file. The format argument will be automatically set to \code{save_format='duckdb'}.
 \item If \code{save_path} ends with a folder name (e.g. \verb{/data_dir/clean_data/v1/tabular/parquet/od_distr} for origin-destination data for district level), the data will be saved as a collection of \code{parquet} files in a hive-style directory structure. So the subfolders of \code{od_distr} will be \code{year=2020/month=2/day=14} and inside each of these folders a single \code{parquet} file will be placed containing the data for that day.
-\item If \code{NULL}, uses the default location in \code{data_dir} (set by the \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')}). Therefore, the default relative path for \code{DuckDB} is \verb{<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb} and for \code{parquet} files is \verb{<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/}, where \code{type} is the type of data (e.g. 'od', 'os', 'nt', that correspoind to 'origin-destination', 'overnight-stays', 'number-of-trips', etc.) and \code{zones} is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
+\item If \code{NULL}, uses the default location in \code{data_dir} (set by the \code{SPANISH_OD_DATA_DIR} environment variable using \code{Sys.setenv(SPANISH_OD_DATA_DIR = 'path/to/your/cache/dir')} or \code{spod_set_data_dir(path = 'path/to/your/cache/dir')}). Therefore, the default relative path for \code{DuckDB} is \verb{<data_dir>/clean_data/v1/tabular/duckdb/<type>_<zones>.duckdb} and for \code{parquet} files is \verb{<data_dir>/clean_data/v1/tabular/parquet/<type>_<zones>/}, where \code{type} is the type of data (e.g. 'od', 'os', 'nt', that correspoind to 'origin-destination', 'overnight-stays', 'number-of-trips', etc.) and \code{zones} is the name of the geographic zones (e.g. 'distr', 'muni', etc.). See the details below in the function arguments description.
 }}
 
 \item{overwrite}{A \code{logical} or a \code{character} vector of length 1. If \code{TRUE}, overwrites existing \code{DuckDB} or \code{parquet} files. Defaults to \code{FALSE}. For parquet files can also be set to 'update', so that only parquet files are only created for the dates that have not yet been converted.}
@@ -74,9 +74,9 @@ Converts data for faster analysis into either \code{DuckDB} file or into \code{p
 \examples{
 \donttest{
 # download and convert data
-dates_1 <- c(start = "2020-02-17", end = "2020-02-19")
+dates_1 <- c(start = "2020-02-17", end = "2020-02-18")
 db_2 <- spod_convert(
- type = "od",
+ type = "number_of_trips",
  zones = "distr",
  dates = dates_1,
  overwrite = TRUE
