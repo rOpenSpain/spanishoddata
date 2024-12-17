@@ -59,6 +59,7 @@ spod_set_data_dir <- function(
 #' @return A `character` vector of length 1 containing the path to the data directory where the package will download and convert the data.
 #' @export
 #' @examples
+#' spod_set_data_dir(tempdir())
 #' spod_get_data_dir()
 #' 
 spod_get_data_dir <- function(quiet = FALSE) {

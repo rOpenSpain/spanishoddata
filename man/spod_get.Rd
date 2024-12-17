@@ -66,6 +66,7 @@ If you want to analyse longer periods of time (especiially several months or eve
 If you want to quickly get the origin-destination data with flows aggregated for a single day at municipal level and without any extra socio-economic variables, consider using the \link[spanishoddata]{spod_quick_get_od} function.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 
 # create a connection to the v1 data
@@ -83,5 +84,5 @@ DBI::dbListTables(nt_dist$src$con)
 # disconnect
 spod_disconnect(nt_dist)
 }
-
+\dontshow{\}) # examplesIf}
 }

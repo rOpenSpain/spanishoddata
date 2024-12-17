@@ -20,7 +20,7 @@
 #' 
 #' @export
 #' 
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' od_1000 <- spod_quick_get_od(
 #'   date = "2022-01-01",

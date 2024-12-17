@@ -16,6 +16,7 @@ A vector of type \code{Date} with all possible valid dates for the specified dat
 Get valid dates for the specified data version
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 # Get all valid dates for v1 (2020-2021) data
 spod_get_valid_dates(ver = 1)
@@ -23,5 +24,5 @@ spod_get_valid_dates(ver = 1)
 # Get all valid dates for v2 (2020 onwards) data
 spod_get_valid_dates(ver = 2)
 }
-
+\dontshow{\}) # examplesIf}
 }

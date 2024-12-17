@@ -6,7 +6,7 @@
 #' @param free_mem A `logical`. Whether to free up memory by running `gc()`. Defaults to `TRUE`.
 #' @return No return value, called for side effect of disconnecting from the database and freeing up memory.
 #' @export
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' # Set data dir for file downloads
 #' spod_set_data_dir(tempdir())

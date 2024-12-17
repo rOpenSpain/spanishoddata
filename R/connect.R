@@ -11,7 +11,7 @@
 #' @export
 #' @return a `DuckDB` table connection object.
 #' 
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' # Set data dir for file downloads
 #' spod_set_data_dir(tempdir())

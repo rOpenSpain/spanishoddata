@@ -72,6 +72,7 @@ Path to saved \code{DuckDB} database file or to a folder with \code{parquet} fil
 Converts data for faster analysis into either \code{DuckDB} file or into \code{parquet} files in a hive-style directory structure. Running analysis on these files is sometimes 100x times faster than working with raw CSV files, espetially when these are in gzip archives. To connect to converted data, please use 'mydata <- \link{spod_connect}(data_path = path_returned_by_spod_convert)' passing the path to where the data was saved. The connected \code{mydata} can be analysed using \code{dplyr} functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R \code{data.frame}/\code{tibble}. For more in-depth usage of such data, please refer to DuckDB documentation and examples at \url{https://duckdb.org/docs/api/r#dbplyr} . Some more useful examples can be found here \url{https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb} . You may also use \code{arrow} package to work with parquet files \url{https://arrow.apache.org/docs/r/}.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 # Set data dir for file downloads
 spod_set_data_dir(tempdir())
@@ -91,5 +92,5 @@ my_od_data_2 <- spod_connect(db_2)
 # disconnect from the database
 spod_disconnect(my_od_data_2)
 }
-
+\dontshow{\}) # examplesIf}
 }

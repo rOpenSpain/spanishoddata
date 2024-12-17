@@ -18,6 +18,7 @@ No return value, called for side effect of disconnecting from the database and f
 This function is to ensure that \code{DuckDB} connections to CSV.gz files (created via \code{spod_get()}), as well as to \code{DuckDB} files or folders of \code{parquet} files (created via \code{spod_convert()}) are closed properly to prevent conflicting connections. Essentially this is just a wrapper around \code{DBI::dbDisconnect()} that reaches out into the \code{.$src$con} object of the \code{tbl_duckdb_connection} connection object that is returned to the user via \code{spod_get()} and \code{spod_connect()}. After disonnecting the database, it also frees up memory by running \code{gc()}.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 # Set data dir for file downloads
 spod_set_data_dir(tempdir())
@@ -49,5 +50,5 @@ my_od_data_2 <- spod_connect(db_2)
 # disconnect from the database
 spod_disconnect(my_od_data_2)
 }
-
+\dontshow{\}) # examplesIf}
 }

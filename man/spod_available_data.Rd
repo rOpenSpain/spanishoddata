@@ -36,6 +36,7 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with \code{data_dir} argument.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 
 # Set data dir for file downloads
@@ -51,5 +52,5 @@ spod_available_data(ver = 2)
 # while also checking for local files that are already downloaded
 spod_available_data(ver = 2, check_local_files = TRUE)
 }
-
+\dontshow{\}) # examplesIf}
 }

@@ -24,7 +24,7 @@
 #' @return Path to saved `DuckDB` database file or to a folder with `parquet` files in hive-style directory structure.
 #' @export
 #' 
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' # Set data dir for file downloads
 #' spod_set_data_dir(tempdir())
