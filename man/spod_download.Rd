@@ -38,7 +38,7 @@ The possible values can be any of the following:
 
 \item{max_download_size_gb}{The maximum download size in gigabytes. Defaults to 1.}
 
-\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set.}
+\item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set. To set the data directory, use \link{spod_set_data_dir}.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
@@ -54,6 +54,10 @@ This function downloads the data files of the specified type, zones, dates and d
 }
 \examples{
 \donttest{
+
+# Set data dir for file downloads
+spod_set_data_dir(tempdir())
+
 # Download the number of trips on district level for the a date range in March 2020
 spod_download(
   type = "number_of_trips", zones = "districts",

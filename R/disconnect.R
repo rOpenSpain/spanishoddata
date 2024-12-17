@@ -8,6 +8,9 @@
 #' @export
 #' @examples
 #' \donttest{
+#' # Set data dir for file downloads
+#' spod_set_data_dir(tempdir())
+#' 
 #' # basic example
 #' # create a connection to the v1 data without converting
 #' # this creates a duckdb database connection to CSV files

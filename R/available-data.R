@@ -1,6 +1,6 @@
 #' Get available data list
 #' 
-#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable or a custom path specified with `data_dir` argument.
+#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with `data_dir` argument.
 #' 
 #' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
 #' @inheritParams spod_available_data_v1
@@ -18,6 +18,10 @@
 #' @export
 #' @examples
 #' \donttest{
+#' 
+#' # Set data dir for file downloads
+#' spod_set_data_dir(tempdir())
+#' 
 #' # Get available data list for v1 (2020-2021) data
 #' spod_available_data(ver = 1)
 #' 

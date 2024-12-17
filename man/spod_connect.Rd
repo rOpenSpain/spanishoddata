@@ -2,7 +2,7 @@
 % Please edit documentation in R/connect.R
 \name{spod_connect}
 \alias{spod_connect}
-\title{Connect to data converted to DuckDB}
+\title{Connect to data converted to \code{DuckDB} or hive-style \code{parquet} files}
 \usage{
 spod_connect(
   data_path,
@@ -14,7 +14,7 @@ spod_connect(
 )
 }
 \arguments{
-\item{data_path}{a path to the \code{DuckDB} database file with '.duckdb' extension, or a path to the folder with \code{parquet} files. Eigher one should have been created with the \code{spod_convert()} function.}
+\item{data_path}{a path to the \code{DuckDB} database file with '.duckdb' extension, or a path to the folder with \code{parquet} files. Eigher one should have been created with the \link{spod_convert} function.}
 
 \item{target_table_name}{Default is \code{NULL}. When connecting to a folder of \code{parquet} files, this argument is ignored. When connecting to a \code{DuckDB} database, a \code{character} vector of length 1 with the table name to open from the database file. If not specified, it will be guessed from the \code{data_path} argument and from table names that are available in the database. If you have not manually interfered with the database, this should be guessed automatically and you do not need to specify it.}
 
@@ -27,13 +27,16 @@ spod_connect(
 \item{temp_path}{The path to the temp folder for DuckDB for \href{https://duckdb.org/2024/07/09/memory-management.html#intermediate-spilling}{intermediate spilling} in case the set memory limit and/or physical memory of the computer is too low to perform the query. By default this is set to the \code{temp} directory in the data folder defined by SPANISH_OD_DATA_DIR environment variable. Otherwise, for queries on folders of CSV files or parquet files, the temporary path would be set to the current R working directory, which probably is undesirable, as the current working directory can be on a slow storage, or storage that may have limited space, compared to the data folder.}
 }
 \value{
-a DuckDB table connection object.
+a \code{DuckDB} table connection object.
 }
 \description{
-This function allows the user to quickly connect to the data converted to DuckDB with the \code{spod_convert_to_duckdb()} function. This function is a simplificaiton of the connection process. It uses
+This function allows the user to quickly connect to the data converted to DuckDB with the \link{spod_convert} function. This function simplifies the connection process. The user is free to use the \code{DBI} and \code{DuckDB} packages to connect to the data manually, or to use the \code{arrow} package to connect to the \code{parquet} files folder.
 }
 \examples{
 \donttest{
+# Set data dir for file downloads
+spod_set_data_dir(tempdir())
+
 # download and convert data
 dates_1 <- c(start = "2020-02-17", end = "2020-02-18")
 db_2 <- spod_convert(
