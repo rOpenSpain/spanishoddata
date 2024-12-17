@@ -1,3 +1,13 @@
+This is a resubmission.
+
+* all exported functions have the returned value specified
+
+* all non-exported functions do not have examples
+
+* all examples are that download data are wrapped into donttest instead of dontrun
+
+* `if(FALSE)` removed from all examples
+
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
