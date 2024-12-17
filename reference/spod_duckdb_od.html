@@ -76,7 +76,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A duckdb connection object with 2 views:</p><ul><li><p><code>od_csv_raw</code> - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR</p></li>
+    <p>A <code>duckdb</code> connection object with 2 views:</p><ul><li><p><code>od_csv_raw</code> - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR</p></li>
 <li><p><code>od_csv_clean</code> - a cleaned-up table view of <code>od_csv_raw</code> with column names and values translated and mapped to English. This still includes all cached data.</p></li>
 </ul><p>The structure of the cleaned-up views <code>od_csv_clean</code> is as follows:</p>
 <dl><dt>date</dt>

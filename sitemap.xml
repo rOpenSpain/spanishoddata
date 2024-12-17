@@ -29,6 +29,7 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_disconnect.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_download.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_download_zones_v1.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_create_province_enum.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_filter_by_dates.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_limit_resources.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_number_of_trips.html</loc></url>
@@ -47,6 +48,7 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_zones.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_zones_v1.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_zones_v2.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_infer_data_v_from_dates.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_is_data_version_overlaps.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_match_data_type.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_match_data_type_for_local_folders.html</loc></url>
@@ -58,5 +60,6 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_subfolder_metadata_cache.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_subfolder_raw_data_cache.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_unique_separated_ids.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_zone_names_en2es.html</loc></url>
 </urlset>
 

@@ -100,12 +100,13 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">od_1000</span> <span class="op">&lt;-</span> <span class="fu">spod_quick_get_od</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  date <span class="op">=</span> <span class="st">"2022-01-01"</span>,</span></span>
 <span class="r-in"><span>  min_trips <span class="op">=</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in read_xml.character(latest_data_links_xml_path):</span> EntityRef: expecting ';' [23]</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

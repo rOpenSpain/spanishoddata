@@ -67,7 +67,7 @@
 
 
 <dt id="arg-data-dir">data_dir<a class="anchor" aria-label="anchor" href="#arg-data-dir"></a></dt>
-<dd><p>The directory where the data is stored. Defaults to the value returned by <code><a href="spod_get_data_dir.html">spod_get_data_dir()</a></code> which returns the value of the environment variable <code>SPANISH_OD_DATA_DIR</code> or a temporary directory if the variable is not set.</p></dd>
+<dd><p>The directory where the data is stored. Defaults to the value returned by <code><a href="spod_get_data_dir.html">spod_get_data_dir()</a></code> which returns the value of the environment variable <code>SPANISH_OD_DATA_DIR</code> or a temporary directory if the variable is not set. To set the data directory, use <a href="spod_set_data_dir.html">spod_set_data_dir</a>.</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
@@ -132,6 +132,22 @@
 
 </dl></div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># get polygons for municipalities for the v2 data</span></span></span>
+<span class="r-in"><span><span class="va">municip_v2</span> <span class="op">&lt;-</span> <span class="fu">spod_get_zones</span><span class="op">(</span>zones <span class="op">=</span> <span class="st">"municipalities"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using existing data links xml: /tmp/RtmpZbiBKx/metadata_cache/data_links_v2_2024-12-17.xml</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in read_xml.character(latest_data_links_xml_path):</span> EntityRef: expecting ';' [23]</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get polygons for the districts for the v1 data</span></span></span>
+<span class="r-in"><span><span class="va">distr_v1</span> <span class="op">&lt;-</span> <span class="fu">spod_get_zones</span><span class="op">(</span>zones <span class="op">=</span> <span class="st">"districts"</span>, ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using existing data links xml: /tmp/RtmpZbiBKx/metadata_cache/data_links_v1_2024-12-17.xml</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in read_xml.character(latest_data_links_xml_path):</span> EntityRef: expecting ';' [23]</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
