@@ -53,6 +53,7 @@ The columns for v2 (2022 onwards) data include:
 Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 # get polygons for municipalities for the v2 data
 municip_v2 <- spod_get_zones(zones = "municipalities", ver = 2)
@@ -60,5 +61,5 @@ municip_v2 <- spod_get_zones(zones = "municipalities", ver = 2)
 # get polygons for the districts for the v1 data
 distr_v1 <- spod_get_zones(zones = "districts", ver = 1)
 }
-
+\dontshow{\}) # examplesIf}
 }

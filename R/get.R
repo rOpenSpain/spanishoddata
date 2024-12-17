@@ -13,7 +13,7 @@
 #' @inheritParams global_quiet_param
 #' @return A DuckDB lazy table connection object of class `tbl_duckdb_connection`.
 #' @export
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' 
 #' # create a connection to the v1 data

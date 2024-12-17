@@ -13,7 +13,7 @@
 #' @return Nothing. If `return_local_file_paths = TRUE`, a `character` vector of the paths to the downloaded files.
 #'
 #' @export
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' 
 #' # Set data dir for file downloads

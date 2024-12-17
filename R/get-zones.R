@@ -33,7 +33,7 @@
 #' }
 #' 
 #' @export
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' # get polygons for municipalities for the v2 data
 #' municip_v2 <- spod_get_zones(zones = "municipalities", ver = 2)

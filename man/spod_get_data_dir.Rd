@@ -17,6 +17,7 @@ This function retrieves the data directory from the environment variable SPANISH
 If the environment variable is not set, it returns the temporary directory.
 }
 \examples{
+spod_set_data_dir(tempdir())
 spod_get_data_dir()
 
 }

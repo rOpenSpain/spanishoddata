@@ -16,7 +16,7 @@
 #'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if `check_local_files` is `TRUE`.}
 #' }
 #' @export
-#' @examples
+#' @examplesIf interactive()
 #' \donttest{
 #' 
 #' # Set data dir for file downloads

@@ -53,6 +53,7 @@ Nothing. If \code{return_local_file_paths = TRUE}, a \code{character} vector of 
 This function downloads the data files of the specified type, zones, dates and data version.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 
 # Set data dir for file downloads
@@ -77,5 +78,5 @@ spod_download(
   dates = "2020032[0-4]"
 )
 }
-
+\dontshow{\}) # examplesIf}
 }
