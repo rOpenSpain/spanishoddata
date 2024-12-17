@@ -1,6 +1,7 @@
-This is a resubmission.
+## Resubmission
+This is a resubmission. In this version:
 
-* R CMD check on winbuilder does not do 'checking examples with --run-donttest', so if you do check with `--run-donttest`, it may fail, as downloading of critical xml files that are required for all data downloading functions may fail from some hosts.
+* R CMD check on winbuilder does not do 'checking examples with --run-donttest', so if you do check with `--run-donttest`, it may fail (e.g. it fails in GitHub actions, but works on my local machine), as downloading of critical xml files that are required for all data downloading functions may fail from some hosts because of the website owner blocking certain requests. To address this, most examples are now conditional on interactive() being TRUE.
 
 * all exported functions have the returned value specified
 
