@@ -502,7 +502,7 @@ MITMS (2024). “Estudio de movilidad de viajeros de ámbito nacional
 aplicando la tecnología Big Data. Informe metodológico (Study of
 National Traveler mobility Using Big Data Technology. Methodological
 Report).” Secretaría de Estado de Transportes y Movilidad Sostenible;
-Ministerio de Transportes, Movilidad y Agenda Urbana.
+Ministerio de Transportes y Movilidad Sostenible.
 <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 BibTeX:
@@ -518,7 +518,7 @@ BibTeX:
     @TechReport{mitma_mobility_2024_v8,
       title = {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
       author = {{MITMS}},
-      institution = {Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes, Movilidad y Agenda Urbana},
+      institution = {Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes y Movilidad Sostenible},
       year = {2024},
       url = {https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data},
       urldate = {2024-12-11},

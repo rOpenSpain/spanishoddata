@@ -15,6 +15,12 @@
     "url": "https://r-project.org"
   },
   "runtimePlatform": "R version 4.4.2 (2024-10-31)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
   "author": [
     {
       "@type": "Person",
@@ -428,7 +434,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1670.591KB",
+  "fileSize": "1709.051KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",

@@ -46,6 +46,7 @@ preferred-citation:
   year: '2024'
   url: https://github.com/rOpenSpain/spanishoddata
   doi: 10.32614/CRAN.package.spanishoddata
+repository: https://CRAN.R-project.org/package=spanishoddata
 repository-code: https://github.com/rOpenSpain/spanishoddata
 url: https://rOpenSpain.github.io/spanishoddata/
 contact:
@@ -70,7 +71,7 @@ references:
   - name: MITMS
   institution:
     name: Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de
-      Transportes, Movilidad y Agenda Urbana
+      Transportes y Movilidad Sostenible
   year: '2024'
   url: https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data
   date-accessed: '2024-12-11'
