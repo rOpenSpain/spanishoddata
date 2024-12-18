@@ -16,8 +16,12 @@ eval: false
 <!-- badges: start -->
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable){target="_blank"} [![CRAN status](https://www.r-pkg.org/badges/version/spanishoddata)](https://CRAN.R-project.org/package=spanishoddata){target="_blank"}
+[![CRAN/METACRAN Total downloads](https://cranlogs.r-pkg.org/badges/grand-total/spanishoddata?color=blue)](https://CRAN.R-project.org/package=spanishoddata){target="_blank"}
+[![CRAN/METACRAN Downloads per month](https://cranlogs.r-pkg.org/badges/spanishoddata?color=blue)](https://CRAN.R-project.org/package=spanishoddata){target="_blank"}
 [![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
 [![DOI](https://zenodo.org/badge/DOI/10.32614/CRAN.package.spanishoddata.svg)](https://doi.org/10.32614/CRAN.package.spanishoddata)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14516104.svg)](https://doi.org/10.5281/zenodo.14516104)
+<!-- 10.5281/zenodo.14516104 -->
 <!-- badges: end -->
 
 **spanishoddata** is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable Mobility of Spain [@mitma_mobility_2024_v8].
