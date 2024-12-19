@@ -96,15 +96,10 @@ To create interactive maps see our vignette
 
 ## Install the package
 
-The package is not yet available on CRAN.
-
-You can install the latest version of the package from rOpenSpain R
-universe:
+Install from CRAN:
 
 ``` r
-install.packages("spanishoddata",
-  repos = c("https://ropenspain.r-universe.dev",
-    "https://cloud.r-project.org"))
+install.packages("spanishoddata")
 ```
 
 <details>
@@ -113,6 +108,15 @@ install.packages("spanishoddata",
 
 Alternative installation and developemnt
 </summary>
+
+You can also install the latest version of the package from rOpenSpain R
+universe:
+
+``` r
+install.packages("spanishoddata",
+  repos = c("https://ropenspain.r-universe.dev",
+    "https://cloud.r-project.org"))
+```
 
 Alternative way to install the package from GitHub:
 
