@@ -12,15 +12,15 @@ src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg"
 alt="Lifecycle: stable" /></a>
 <a href="https://CRAN.R-project.org/package=spanishoddata"
 target="_blank"><img
-src="https://www.r-pkg.org/badges/version/spanishoddata.png"
+src="https://www.r-pkg.org/badges/version/spanishoddata"
 alt="CRAN status" /></a>
 <a href="https://CRAN.R-project.org/package=spanishoddata"
 target="_blank"><img
-src="https://cranlogs.r-pkg.org/badges/grand-total/spanishoddata?color=blue.png"
+src="https://cranlogs.r-pkg.org/badges/grand-total/spanishoddata?color=blue"
 alt="CRAN/METACRAN Total downloads" /></a>
 <a href="https://CRAN.R-project.org/package=spanishoddata"
 target="_blank"><img
-src="https://cranlogs.r-pkg.org/badges/spanishoddata?color=blue.png"
+src="https://cranlogs.r-pkg.org/badges/spanishoddata?color=blue"
 alt="CRAN/METACRAN Downloads per month" /></a>
 [![R-CMD-check](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml)
 [![DOI](https://zenodo.org/badge/DOI/10.32614/CRAN.package.spanishoddata.svg)](https://doi.org/10.32614/CRAN.package.spanishoddata)
