@@ -109,8 +109,8 @@ install.packages("spanishoddata")
 Alternative installation and developemnt
 </summary>
 
-You can also install the latest version of the package from rOpenSpain R
-universe:
+You can also install the latest development version of the package from
+rOpenSpain R universe:
 
 ``` r
 install.packages("spanishoddata",
@@ -118,7 +118,7 @@ install.packages("spanishoddata",
     "https://cloud.r-project.org"))
 ```
 
-Alternative way to install the package from GitHub:
+Alternative way to install the development version from GitHub:
 
 ``` r
 if (!require("remotes")) install.packages("remotes")
