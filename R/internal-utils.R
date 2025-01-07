@@ -455,5 +455,5 @@ spod_graphql_valid_dates <- function(){
   # Flatten the list of date sequences into a single vector and remove duplicates
   dates <- as.Date(unique(unlist(date_sequences)))
   
-  dates
+  return(dates)
 }
