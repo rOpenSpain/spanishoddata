@@ -207,6 +207,12 @@ spod_quick_get_od <- function(
   # Parse the response
   response_data <- httr2::resp_body_json(response, simplifyVector = TRUE)
 
+  # check if data is empty
+  
+  if (length(response_data$data[[1]]) == 0) {
+    stop("You have selected a date that is reported by the remote server as valid, but in fact there is no data. Please select a different date.")
+  }
+
   od <- tibble::as_tibble(response_data$data[[1]]) |> 
     dplyr::select(
       id_origin = .data$origin_muni,
