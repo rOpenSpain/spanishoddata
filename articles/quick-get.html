@@ -70,7 +70,7 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1></h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Quicky get daily data</h1>
 
 
 
@@ -84,7 +84,7 @@
 
 
 
-    <header id="title-block-header" class="quarto-title-block"><h1 class="title">Quicky get daily data</h1></header><section class="section level2" data-number="1"><h2 data-number="1" id="intro">
+    <section class="section level2" data-number="1"><h2 data-number="1" id="intro">
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h2>
 <p>This vignette demonstrates how to get minimal daily aggregated data on the number of trips between municipalities using the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. With this function, you only get total trips for a single day, and no additional variables that are available in the full <a href="v2-2022-onwards-mitma-data-codebook.html">v2 (2022 onwards) data set</a>. The advantage of this function is that it is much faster than downloading the full data from source CSV files using <code><a href="../reference/spod_get.html">spod_get()</a></code>, as each CSV file for a single day is about 200 MB in size. Also, this way of getting the data is much less demanding on your computer as you are only getting a small table from the internet (less than 1 MB), and no data processing (such as aggregation from more detailed hourly data with extra columns that is happening when you use <code><a href="../reference/spod_get.html">spod_get()</a></code> function) is required on your computer.</p>

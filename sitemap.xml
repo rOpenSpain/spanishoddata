@@ -48,6 +48,7 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_zones.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_zones_v1.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_zones_v2.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_graphql_valid_dates.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_infer_data_v_from_dates.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_is_data_version_overlaps.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_match_data_type.html</loc></url>
