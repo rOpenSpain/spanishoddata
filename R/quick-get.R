@@ -176,7 +176,7 @@ spod_quick_get_od <- function(
   if (length(id_destination) == 0) id_destination <- NULL
   
   # Define the GraphQL endpoint
-  graphql_endpoint <- "https://mapas-movilidad.transportes.gob.es/api/graphql"
+  graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
   
   # Construct the GraphQL query
   graphql_query <- list(
@@ -199,7 +199,7 @@ spod_quick_get_od <- function(
   response <- httr2::request(graphql_endpoint) |>
     httr2::req_headers(
       "Content-Type" = "application/json",
-      "User-Agent" = "spanishoddata R package, https://github.com/rOpenSpain/spanishoddata/"
+      "User-Agent" = getOption("spanishoddata.user_agent")
     ) |>
     httr2::req_body_json(graphql_query) |>
     httr2::req_perform()
