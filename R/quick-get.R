@@ -106,7 +106,7 @@ spod_quick_get_od <- function(
   }
 
   # check if date is within valid range
-  valid_dates <- spod_get_valid_dates(ver = 2)
+  valid_dates <- spod_graphql_valid_dates()
   is_valid_date <- lubridate::ymd(date) %in% valid_dates
   if (!is_valid_date) {
     stop(
