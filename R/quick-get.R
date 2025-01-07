@@ -106,7 +106,7 @@ spod_quick_get_od <- function(
   }
 
   # check if date is within valid range
-  valid_dates <- spod_get_valid_dates(ver = 2)
+  valid_dates <- spod_graphql_valid_dates()
   is_valid_date <- lubridate::ymd(date) %in% valid_dates
   if (!is_valid_date) {
     stop(
@@ -176,7 +176,7 @@ spod_quick_get_od <- function(
   if (length(id_destination) == 0) id_destination <- NULL
   
   # Define the GraphQL endpoint
-  graphql_endpoint <- "https://mapas-movilidad.transportes.gob.es/api/graphql"
+  graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
   
   # Construct the GraphQL query
   graphql_query <- list(
@@ -199,13 +199,19 @@ spod_quick_get_od <- function(
   response <- httr2::request(graphql_endpoint) |>
     httr2::req_headers(
       "Content-Type" = "application/json",
-      "User-Agent" = "spanishoddata R package, https://github.com/rOpenSpain/spanishoddata/"
+      "User-Agent" = getOption("spanishoddata.user_agent")
     ) |>
     httr2::req_body_json(graphql_query) |>
     httr2::req_perform()
 
   # Parse the response
   response_data <- httr2::resp_body_json(response, simplifyVector = TRUE)
+
+  # check if data is empty
+  
+  if (length(response_data$data[[1]]) == 0) {
+    stop("You have selected a date that is reported by the remote server as valid, but in fact there is no data. Please select a different date.")
+  }
 
   od <- tibble::as_tibble(response_data$data[[1]]) |> 
     dplyr::select(
