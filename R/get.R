@@ -110,6 +110,12 @@ spod_get <- function(
   drv <- duckdb::duckdb()
   con <- DBI::dbConnect(drv, dbdir = duckdb_target, read_only = FALSE)
 
+  # enable progress bar for the DuckDB connection
+  # this will work for both analytics on this conneciton, and also on the saving progress in spod_convert
+  DBI::dbSendQuery(con, "SET enable_progress_bar = true")
+  DBI::dbSendQuery(con, "SET enable_progress_bar_print = true")
+
+
   # define memory and threads limits
   con <- spod_duckdb_limit_resources(
     con = con,
