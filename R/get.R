@@ -112,9 +112,10 @@ spod_get <- function(
 
   # enable progress bar for the DuckDB connection
   # this will work for both analytics on this conneciton, and also on the saving progress in spod_convert
-  DBI::dbSendQuery(con, "SET enable_progress_bar = true")
-  DBI::dbSendQuery(con, "SET enable_progress_bar_print = true")
-
+  DBI::dbSendQuery(con, "SET enable_progress_bar = true ;")
+  DBI::dbSendQuery(con, "SET enable_progress_bar_print = true ;")
+  # invoke progress bar for operations that take more than 1 second
+  DBI::dbSendQuery(con, "SET progress_bar_time = 1000 ;")
 
   # define memory and threads limits
   con <- spod_duckdb_limit_resources(
@@ -122,6 +123,9 @@ spod_get <- function(
     max_mem_gb = max_mem_gb,
     max_n_cpu = max_n_cpu
   )
+
+  # enable progress bar
+  con <- spod_duckdb_enable_progress_bar(con)
 
   # attach the folder with csv.gz files with predefined and cleaned up data types
   if (type == "od") {

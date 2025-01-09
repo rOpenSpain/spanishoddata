@@ -588,3 +588,40 @@ spod_duckdb_set_temp <- function(
 
   return(con)
 }
+
+#' Enable progress bar for a `DuckDB` connection
+#' @param con A `duckdb` connection
+#' @param progress_bar_delay_ms The delay in milliseconds between progress bar updates. Defaults to 1000.
+#' @return A `duckdb` connection.
+#' @keywords internal
+#' 
+spod_duckdb_enable_progress_bar <- function(
+  con,
+  progress_bar_delay_ms = 1000
+) {
+  
+  # enable progress bar for the DuckDB connection
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      "SET enable_progress_bar = true;"
+    )
+  )
+
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      "SET enable_progress_bar_print = true;"
+    )
+  )
+
+  # invoke progress bar for operations that take more than 1 second
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      glue::glue("SET progress_bar_delay_ms = {progress_bar_delay_ms};")
+    )
+  )
+  
+  return(con)
+}

@@ -69,6 +69,9 @@ spod_connect <- function(
     max_n_cpu = max_n_cpu
   )
 
+  # enable progress bar
+  con <- spod_duckdb_enable_progress_bar(con)
+
   if (target_format == "duckdb") {
     # try to guess the table name if not provided
     
