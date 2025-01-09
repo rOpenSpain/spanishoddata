@@ -619,7 +619,7 @@ spod_duckdb_enable_progress_bar <- function(
   DBI::dbExecute(
     con,
     dplyr::sql(
-      glue::glue("SET progress_bar_delay_ms = {progress_bar_delay_ms};")
+      glue::glue("SET progress_bar_time = {progress_bar_delay_ms};")
     )
   )
   
