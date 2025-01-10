@@ -292,7 +292,7 @@ spod_download(
   type = type,
   zones = zones,
   dates = dates_v1,
-  return_local_file_paths = FALSE, # to avoid getting all downloaded file paths printed to console
+  output = NULL, # set to 'download_report' to get a report one the downloaded files including links and local file paths
   max_download_size_gb = 50 # in Gb, this should be well over the actual download size for v1 data
 )
 ```
