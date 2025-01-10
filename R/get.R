@@ -98,7 +98,8 @@ spod_get <- function(
       max_download_size_gb = max_download_size_gb,
       data_dir = data_dir,
       quiet = quiet,
-      return_local_file_paths = FALSE,
+      # return_local_file_paths = FALSE, # TODO: remove becasuse of deprecation
+      output = NULL,
       ignore_missing_dates = ignore_missing_dates
     )
   } else if (isTRUE(cached_data_requested)) {

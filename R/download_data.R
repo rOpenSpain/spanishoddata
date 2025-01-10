@@ -6,7 +6,8 @@
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()` which returns the value of the environment variable `SPANISH_OD_DATA_DIR` or a temporary directory if the variable is not set. To set the data directory, use \link{spod_set_data_dir}.
 #' @param max_download_size_gb The maximum download size in gigabytes. Defaults to 1.
-#' @param return_local_file_paths Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.
+#' @param output A `character` vector of length 1 - either "file_paths" or "download_report". Default is `NULL` and the function does not return anything.
+#' @param return_local_file_paths Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`. This is to be deprecated at some point, please use the `output` argument instead.
 #' @param ignore_missing_dates Logical. If `TRUE`, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to `FALSE`.
 #' @inheritParams global_quiet_param
 #' 
@@ -54,8 +55,9 @@ spod_download <- function(
     max_download_size_gb = 1, # 1GB
     data_dir = spod_get_data_dir(),
     quiet = FALSE,
-    return_local_file_paths = FALSE,
-    ignore_missing_dates = FALSE
+    output = NULL,
+    ignore_missing_dates = FALSE,
+    return_local_file_paths = FALSE # TODO: remove? deprecate?
   ) {
   
   # Validate inputs
@@ -68,8 +70,9 @@ spod_download <- function(
   checkmate::assert_number(max_download_size_gb, lower = 0.1)
   checkmate::assert_directory_exists(data_dir, access = "rw")
   checkmate::assert_flag(quiet)
-  checkmate::assert_flag(return_local_file_paths)
+  checkmate::assert_flag(return_local_file_paths) # TODO: remove? deprecate?
   checkmate::assert_flag(ignore_missing_dates)
+  checkmate::assert_choice(output, choices = c("file_paths", "download_report"), null.ok = TRUE)
 
   # normalise zones
   zones <- spod_zone_names_en2es(zones)
@@ -120,9 +123,13 @@ spod_download <- function(
     ]
   }
 
-  files_to_download <- requested_files[!requested_files$downloaded, ]
+  # TODO: remove this later before merging
+  # files_to_download <- requested_files[!requested_files$downloaded, ]
+  # for now let's just assume that all files are missing
+  files_to_download <- requested_files
 
   # only download files if some are missing
+  # TODO: will need to revise this, as this will now think that even the already downloaded files count towards the total download size
   if (nrow(files_to_download) > 0) {
     total_size_to_download_gb <- round(sum(files_to_download$remote_file_size_mb / 1024, na.rm = TRUE), 4)
     # warn if more than 1 GB is to be downloaded
@@ -148,6 +155,7 @@ spod_download <- function(
     )
 
     # download the missing files
+    # TODO: let's just see how curl deals with incomplete downloads
     downloaded_files <- curl::multi_download(
       urls = files_to_download$target_url,
       destfiles = files_to_download$local_path,
@@ -156,14 +164,34 @@ spod_download <- function(
     )
 
     # set download status for downloaded files as TRUE in requested_files
-    requested_files$downloaded[requested_files$local_path %in% downloaded_files$destfile] <- TRUE
+    # TODO: does this also need revision?
+    # requested_files$downloaded[requested_files$local_path %in% downloaded_files$destfile] <- TRUE
+    requested_files <- requested_files |> 
+        dplyr::left_join(downloaded_files |> dplyr::select(-"destfile"),
+          by = c("target_url" = "url"))
 
     if (isFALSE(quiet)) {
       message("Retrieved data for requested dates.")
     }
   }
 
-  if (return_local_file_paths) {
+  # if (return_local_file_paths) {
+  #   return(requested_files$local_path)
+  # }
+
+  # TODO: add compatibility with old `return_local_file_paths` argument?
+  # override output if user uses legacy argument
+  # TODO: stop using `return_local_file_paths` internally in the package
+  if (return_local_file_paths == TRUE){
+    output <- "file_paths"
+    message("The `return_local_file_paths` argument is deprecated and will be removed in a future version. Please use the `output` argument instead. Currently if you set both arguments, the `output` argument will be ignored.")
+  }
+
+  if (!is.null(output) && output == "file_paths") {
     return(requested_files$local_path)
+  } else if (!is.null(output) && output == "download_report") {
+    return(requested_files)
+  } else {
+    output(invisible(NULL))
   }
 }

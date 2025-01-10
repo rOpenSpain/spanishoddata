@@ -12,8 +12,9 @@ spod_download(
   max_download_size_gb = 1,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  return_local_file_paths = FALSE,
-  ignore_missing_dates = FALSE
+  output = NULL,
+  ignore_missing_dates = FALSE,
+  return_local_file_paths = FALSE
 )
 }
 \arguments{
@@ -42,9 +43,11 @@ The possible values can be any of the following:
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
-\item{return_local_file_paths}{Logical. If \code{TRUE}, the function returns a character vector of the paths to the downloaded files. If \code{FALSE}, the function returns \code{NULL}.}
+\item{output}{A \code{character} vector of length 1 - either "file_paths" or "download_report". Default is \code{NULL} and the function does not return anything.}
 
 \item{ignore_missing_dates}{Logical. If \code{TRUE}, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to \code{FALSE}.}
+
+\item{return_local_file_paths}{Logical. If \code{TRUE}, the function returns a character vector of the paths to the downloaded files. If \code{FALSE}, the function returns \code{NULL}. This is to be deprecated at some point, please use the \code{output} argument instead.}
 }
 \value{
 Nothing. If \code{return_local_file_paths = TRUE}, a \code{character} vector of the paths to the downloaded files.
