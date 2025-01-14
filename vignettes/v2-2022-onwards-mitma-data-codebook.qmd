@@ -235,15 +235,15 @@ od_mean_trips_by_ses_over_the_4_days
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-In this example above, becaus the data is with hourly intervals within each day, we first summed the number of trips for each day by age, sex, and income groups. We then grouped the data again dropping the day variable and calculated the mean number of trips per day by age, sex, and income groups. The full data for all 4 days was probably never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. If you were doing the same opearation on 100 or even more days, it would work in the same way and would be possible even with limited memory. This is done transparantly to the user with the help of [`DuckDB`](https://duckdb.org/){target="_blank"} (specifically, with [{duckdb} R package](https://r.duckdb.org/index.html){target="_blank"} @duckdb-r).
+In this example above, because the data is with hourly intervals within each day, we first summed the number of trips for each day by age, sex, and income groups. We then grouped the data again dropping the day variable and calculated the mean number of trips per day by age, sex, and income groups. The full data for all 4 days was probably never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. If you were doing the same opearation on 100 or even more days, it would work in the same way and would be possible even with limited memory. This is done transparently to the user with the help of [`DuckDB`](https://duckdb.org/){target="_blank"} (specifically, with [{duckdb} R package](https://r.duckdb.org/index.html){target="_blank"} @duckdb-r).
 
-The same summary operation as provided in the example above can be done with the entire dataset for multiple years worth of data on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, please also see the [vignette on converting the data](convert.qmd) into formats that will increase the analsysis performance.
+The same summary operation as provided in the example above can be done with the entire dataset for multiple years worth of data on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, please also see the [vignette on converting the data](convert.qmd) into formats that will increase the analysis performance.
 
 {{< include ../inst/vignette-include/csv-date-filter-note.qmd >}}
 
-## 2.2. Number of trips data {#nt-data}
+## 2.2. Population by trip count data {#ptc-data}
 
-For each location, the "number of trips" data provides the number of individuals who spent the night there, with breakdown by the number of trips made, age, and sex.
+The population by trip count data shows the number of individuals in each district or municipality, categorized by the trips they make (0, 1, 2, or more than 2), age, and sex.
 
 | **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
 |-----------------|-----------------|-----------------|----------------------|
@@ -272,7 +272,7 @@ Because this data is small, we can actually load it completely into memory:
 nt_dist_tbl <- nt_dist |> dplyr::collect()
 ```
 
-## 2.3. Overnight stays {#os-data}
+## 2.3. Population by overnight stay data {#pos-data}
 
 This dataset provides the number of people who spend the night in each location, also identifying their place of residence down to the census district level according to the [INE encoding](https://www.ine.es/ss/Satellite?c=Page&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout&cid=1259952026632&L=1){target="_blank"}.
 

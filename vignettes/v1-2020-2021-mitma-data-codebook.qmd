@@ -83,7 +83,7 @@ Data structure:
 
 | Variable Name | **Description** |
 |------------------------------------|------------------------------------|
-| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#pop-tc). |
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#ptc-data). |
 | `census_districts` | A string with semicolon-separated list of census district semicolon-separated identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
 | `municipalities_mitma` | A string with semicolon-separated list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` . |
 | `municipalities` | A string with semicolon-separated list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
@@ -203,7 +203,7 @@ The same summary operation as provided in the example above can be done with the
 
 {{< include ../inst/vignette-include/csv-date-filter-note.qmd >}}
 
-## 2.2. Population by trip count data {#pop-tc}
+## 2.2. Population by trip count data {#ptc-data}
 
 The population by trip count data shows the number of individuals in each district or municipality, categorized by the trips they make: 0, 1, 2, or more than 2.
 
@@ -211,7 +211,7 @@ The population by trip count data shows the number of individuals in each distri
 |----------------|----------------|----------------|------------------------|
 | `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
 | `id` | `distrito` | `factor` | The identifier of the `district` or `municipality` zone. |
-| `n_trips` | `numero_viajes` | `factor` | The number of trips grouped into four categories `0`, `1`, `2`, or `2+`. |
+| `n_trips` | `numero_viajes` | `factor` | The number of individuals who made trips, categorized by `0`, `1`, `2`, or `2+` trips. |
 | `n_persons` | `personas` | `factor` | The number of individuals making the trips from `district` or `municipality` with zone `id`. |
 | `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
 | `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
