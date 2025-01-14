@@ -163,6 +163,9 @@ spod_download <- function(
       resume = TRUE
     )
 
+    # TODO: restart download if there are errors in the downloaded_files?
+    # infitinte loop with download retries? and tell the user that they can stop it if the want?
+
     # set download status for downloaded files as TRUE in requested_files
     # TODO: does this also need revision?
     # requested_files$downloaded[requested_files$local_path %in% downloaded_files$destfile] <- TRUE
