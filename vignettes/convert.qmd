@@ -58,7 +58,7 @@ In our tests (see @fig-csv-duckdb-parquet-speed), we found that conducting an an
 For reference, here is a simple query we used for speed comparison in @fig-csv-duckdb-parquet-speed:
 
 ```r
-# data represents either CSV files acquired from `spod_get()`, a `DuckDB` database or a folder of Parquet files connceted with `spod_connect()`
+# data represents either CSV files acquired from `spod_get()`, a `DuckDB` database or a folder of Parquet files connected with `spod_connect()`
 data |>
   group_by(id_origin, id_destination, time_slot) |> 
   summarise(mean_hourly_trips = mean(n_trips, na.rm = TRUE),
