@@ -47,7 +47,7 @@ head(od_20210407)
 ```
 # Source:   SQL [6 x 14]
 # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
-  date       id_origin id_destination activity_origin activity_destination residence_province_in…¹ residence_province_n…² time_slot distance n_trips trips_total_length_km  year month
+  date       id_origin id_destination activity_origin activity_destination residence_province_in…¹ residence_province_n…² hour distance n_trips trips_total_length_km  year month
   <date>     <fct>     <fct>          <fct>           <fct>                <fct>                   <fct>                      <int> <fct>      <dbl>                 <dbl> <int> <int>
 1 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 005-010     10.5                  68.9  2021     4
 2 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 010-050     12.6                 127.   2021     4

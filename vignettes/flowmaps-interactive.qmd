@@ -58,7 +58,7 @@ head(od_20210407)
 ```
 # Source:   SQL [6 x 14]
 # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
-  date       id_origin id_destination activity_origin activity_destination residence_province_ine_code residence_province_name time_slot distance n_trips trips_total_length_km  year month   day
+  date       id_origin id_destination activity_origin activity_destination residence_province_ine_code residence_province_name hour distance n_trips trips_total_length_km  year month   day
   <date>     <fct>     <fct>          <fct>           <fct>                <fct>                       <fct>                       <int> <fct>      <dbl>                 <dbl> <int> <int> <int>
 1 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     0 005-010     10.5                  68.9  2021     4     7
 2 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     0 010-050     12.6                 127.   2021     4     7
@@ -236,11 +236,11 @@ After following the simple example, let us now add a time filter to the flows. W
 
 ## Prepare data for visualization
 
-Just like before, we aggregate the data and rename some columns. This time we will keep combine the `date` and `time_slot` (which corresponds to the hour of the day) to procude timestamps, so that the flows can be interactively filtered by time of day.
+Just like before, we aggregate the data and rename some columns. This time we will keep combine the `date` and `hour` (which corresponds to the hour of the day) to procude timestamps, so that the flows can be interactively filtered by time of day.
 
 ```{r}
 od_20210407_time <- od_20210407 |>
-  mutate(time = as.POSIXct(paste0(date, "T", time_slot, ":00:00"))) |>
+  mutate(time = as.POSIXct(paste0(date, "T", hour, ":00:00"))) |>
   group_by(origin = id_origin, dest = id_destination, time) |>
   summarise(count = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
   collect()

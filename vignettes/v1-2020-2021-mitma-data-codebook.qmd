@@ -136,7 +136,7 @@ Here are the variables you can find in both the `district` and `municipality` le
 | `activity_destination` | `actividad_destino` | `factor` | The type of activity at the destination zone, similarly recoded as for `activity_origin` above. |
 | `residence_province_ine_code` | `residencia` | `factor` | The province code of residence if individuals who were making the trips in `n_trips`, encoded as province codes as classified by the Spanish Statistical Office (INE). |
 | `residence_province_name` | Derived from `residencia` | `factor` | The full name of the residence province, derived from the province code above. |
-| `time_slot` | `periodo` | `integer` | The time slot during which the trips occurred. |
+| `hour` | `periodo` | `integer` | The time slot during which the trips occurred. |
 | `distance` | `distancia` | `factor` | The distance range of the trip, categorized into specific intervals such as `0005-002` (500 m to 2 km), `002-005` (2-5 km), `005-010` (5-10km), `010-050` (10-50 km), `050-100` (50-100 km), and `100+` (more than 100 km). |
 | `n_trips` | `viajes` | `numeric` | The number of trips for that specific origin-destination pair and time slot. |
 | `trips_total_length_km` | `viajes_km` | `numeric` | The total length of trips in kilometers, summing up all trips between the origin and destination zones. |
@@ -171,7 +171,7 @@ The resulting objects `od_dist` and `od_muni` are of class `tbl_duckdb_connectio
 ```{r}
 library(dplyr)
 od_mean_hourly_trips_over_the_4_days <- od_dist |>
-  group_by(time_slot) |>
+  group_by(hour) |>
   summarise(
     mean_hourly_trips = mean(n_trips, na.rm = TRUE),
     .groups = "drop") |> 
@@ -181,7 +181,7 @@ od_mean_hourly_trips_over_the_4_days
 
 ```         
 # A tibble: 24 × 2
-   time_slot mean_hourly_trips
+   hour mean_hourly_trips
        <int>             <dbl>
  1        18              21.4
  2        10              19.3

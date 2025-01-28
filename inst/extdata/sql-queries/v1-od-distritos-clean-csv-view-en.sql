@@ -75,7 +75,7 @@ CREATE VIEW od_csv_clean AS SELECT
         WHEN '51' THEN 'Ceuta'
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM) AS residence_province_name,
-    periodo AS time_slot,
+    periodo AS hour,
     CAST(distancia AS DISTANCE_ENUM) AS distance,
     viajes AS n_trips,
     viajes_km AS trips_total_length_km,

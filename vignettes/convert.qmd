@@ -60,7 +60,7 @@ For reference, here is a simple query we used for speed comparison in @fig-csv-d
 ```r
 # data represents either CSV files acquired from `spod_get()`, a `DuckDB` database or a folder of Parquet files connceted with `spod_connect()`
 data |>
-  group_by(id_origin, id_destination, time_slot) |> 
+  group_by(id_origin, id_destination, hour) |> 
   summarise(mean_hourly_trips = mean(n_trips, na.rm = TRUE),
     .groups = "drop")
 ```
@@ -109,7 +109,7 @@ The output should look like this:
 ```
 # Source:   table<od_csv_clean_filtered> [?? x 19]
 # Database: DuckDB v1.0.0 [... 6.5.0-45-generic:R 4.4.1/:memory:]
-   date       time_slot id_origin id_destination distance activity_origin  
+   date       hour id_origin id_destination distance activity_origin  
    <date>         <int> <fct>     <fct>          <fct>    <fct>            
  1 2024-03-01        19 01009_AM  01001          0.5-2    frequent_activity
  2 2024-03-01        15 01002     01001          10-50    frequent_activity

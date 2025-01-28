@@ -165,7 +165,7 @@ Here are the variables you can find in the `district`, `municipality` and `large
 | **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
 |---------|---------|---------|---------------------------------------------|
 | `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
-| `time_slot` | `periodo` | `integer` | The time slot during which the trips occurred. |
+| `hour` | `periodo` | `integer` | The time slot during which the trips occurred. |
 | `id_origin` | `origen` | `factor` | The origin zone `id` of `district`, `municipality`, or `large urban area`. |
 | `id_destination` | `destino` | `factor` | The destination zone `id` of `district`, `municipality`, or `large urban area`. |
 | `distance` | `distancia` | `factor` | The distance range of the trip, categorized into specific intervals such as `0.5-2` (500 m to 2 km), `2-10` (2-10 km), `10-50` (10-50km), and `>50` (50 or more km). |

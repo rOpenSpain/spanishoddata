@@ -310,7 +310,7 @@ class(od_db)
 colnames(od_db)
 ```
 
-     [1] "full_date"                   "time_slot"                  
+     [1] "full_date"                   "hour"                  
      [3] "id_origin"                   "id_destination"             
      [5] "distance"                    "activity_origin"            
      [7] "activity_destination"        "study_possible_origin"      
@@ -328,10 +328,10 @@ aggregation to find the total number trips per hour over the 7 days:
 
 ``` r
 n_per_hour <- od_db |>
-  group_by(date, time_slot) |>
+  group_by(date, hour) |>
   summarise(n = n(), Trips = sum(n_trips)) |>
   collect() |>
-  mutate(Time = lubridate::ymd_h(paste0(date, time_slot, sep = " "))) |>
+  mutate(Time = lubridate::ymd_h(paste0(date, hour, sep = " "))) |>
   mutate(Day = lubridate::wday(Time, label = TRUE))
 n_per_hour |>
   ggplot(aes(x = Time, y = Trips)) +
