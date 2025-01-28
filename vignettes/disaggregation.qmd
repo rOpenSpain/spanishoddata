@@ -32,13 +32,13 @@ library(sf)
 library(tmap)
 ```
 
-# Introduction
+## Introduction
 
 This vignette demonstrates origin-destination (OD) data disaggregation using the `{odjitter}` package.
 The package is an implementation of the method described in the paper "Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data" [@lovelace2022jittering] for adding value to OD data by disaggregating desire lines.
 This can be especially useful for transport planning purposes in which high levels of geographic resolution are required (see also the [`od2net`](https://od2net.org/){target="_blank"} for direct network generation from OD data).
 
-# Data preparation
+## Data preparation
 
 We'll start by loading a week's worth of origin-destination data for the city of Salamanca, building on the example in the README (note: these chunks are not evaluated):
 
@@ -75,7 +75,7 @@ od_salamanca_sf <- od::od_to_sf(
 ```
 
 
-# Disaggregating desire lines
+## Disaggregating desire lines
 
 For this you'll need some additional dependencies:
 

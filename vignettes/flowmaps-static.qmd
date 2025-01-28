@@ -19,7 +19,7 @@ execute:
 
 This tutorial shows how to make static 'flow maps' with data from `{spanishoddata}` and the `{flowmapper}` [@flowmapper-r] data visualisation package. We cover two examples. [First](#simple-example), we only use the origin-destination flows and district zones that you can get using the `{spanishoddata}` package. In the [second](#advanced-example) more advanced example we also use `{mapSpain}` and `{hexSticker}` packages to re-create the `{spanishoddata}` logo. For both examples, make sure you first go though the initial [setup steps](#setup). To make interactive flow maps, please see the [interactive flow maps](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html) tutorial.
 
-# Setup {#setup}
+## Setup {#setup}
 
 ```{r}
 library(spanishoddata)
@@ -30,11 +30,11 @@ library(sf)
 
 {{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
-# Simple example - plot flows data as it is {#simple-example}
+## Simple example - plot flows data as it is {#simple-example}
 
-## Get data
+### Get data
 
-### Flows
+#### Flows
 
 Let us get the flows between `districts` for a typical working day `2021-04-07`:
 
@@ -59,7 +59,7 @@ head(od_20210407)
 # ℹ 1 more variable: day <int>
 ```
 
-### Zones
+#### Zones
 
 We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.html)).
 
@@ -86,7 +86,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 6 2305005  2305005                                                       23050                23050                  Jaén distrito 05     2305005            (((430022.7 4181101, 429…
 ```
 
-## Aggregate data - count total flows
+### Aggregate data - count total flows
 
 ```{r}
 od_20210407_total <- od_20210407 |>
@@ -96,7 +96,7 @@ od_20210407_total <- od_20210407 |>
   arrange(o, d, value)
 ```
 
-## Reshape flows for visualization
+### Reshape flows for visualization
 
 The `{flowmapper}` package was developed to visualise origin-destination 'flow' data [@flowmapper-r]. This package expects the data to be in the following format:
 
@@ -117,7 +117,7 @@ Another `data.frame` with the node `id`s or names and their coorindates. The coo
 `y`: The y coordinate of the node;
 
 
-### Prepare the flows table
+#### Prepare the flows table
 
 The previous code chunk created `od_20210407_total` with the column names expected by `{flowmapper}`.
 
@@ -137,7 +137,7 @@ head(od_20210407_total)
 6 2408910 4718608     4.75 
 ```
 
-### Prepare the nodes table with coordinates
+#### Prepare the nodes table with coordinates
 
 We need the coordinates for each origin and destination. We can use the centroids of `districts_v1` polygons for that.
 
@@ -162,9 +162,9 @@ head(districts_v1_coords)
 6  428302.1 4190937  2305005
 ```
 
-## Plot the flows
+### Plot the flows
 
-### Plot the entire country
+#### Plot the entire country
 
 Now we have the data structure that match the `{flowmapper}`'s expected data format we can plot a sample of the data (a plot containing all flows would be very 'busy' and world resemble a haystack!). The `k_node` argument in the `add_flowmap` function can be used to reduce this business.
 
@@ -226,11 +226,11 @@ ggsave("./man/figures/flows_plot_all_districts.png", plot = flows_plot_all_distr
 
 ![](../man/figures/flows_plot_all_districts.png)
 
-### Zoom in to the city level
+#### Zoom in to the city level
 
 Let us filter the flows and zones data to just a specific functional urban area to take a closer look at the flows.
 
-#### Filter the zones
+##### Filter the zones
 
 Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the `district_names_in_v2` column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.
 
@@ -281,7 +281,7 @@ head(zones_barcelona_fua_coords)
 6 930702.3 4597116 0801906
 ```
 
-#### Prepare the flows
+##### Prepare the flows
 
 Now we can use the zone `id`s from the `zones_barcelona_fua` data to select the flows that correspond to Barcelona and the 10 km radius around it.
 
@@ -290,7 +290,7 @@ od_20210407_total_barcelona <- od_20210407_total |>
   filter(o %in% zones_barcelona_fua$id & d %in% zones_barcelona_fua$id)
 ```
 
-#### Visualise the flows for Barcelona and surrounding areas
+##### Visualise the flows for Barcelona and surrounding areas
 
 Now, we can create a new plot with this data. Once again, we need the `k_node` argument to tweak the aggregation of nodes and flows. Feel free to tweak it yourself and see how the results change.
 
@@ -350,7 +350,7 @@ ggsave("./man/figures/flows_plot_barcelona.png", plot = flows_plot_barcelona, wi
 ![](../man/figures/flows_plot_barcelona.png)
 
 
-# Advanced example - aggregate flows for `{spanishoddata}` logo {#advanced-example}
+## Advanced example - aggregate flows for `{spanishoddata}` logo {#advanced-example}
 
 For the advanced example we will need two additional packages: `{mapSpain}` [@R-mapspain] and `{hexSticker}` [@R-hexSticker].
 
@@ -367,9 +367,9 @@ library(sf)
 ```
 
 
-## Get data
+### Get data
 
-### Flows
+#### Flows
 
 Just like in the simple example above, we will need the flows to visualise.
 
@@ -385,7 +385,7 @@ Also get the spatial data for the zones. We are using the version 2 of zones, be
 districts <- spod_get_zones("distr", ver = 2)
 ```
 
-### Map of Spain
+#### Map of Spain
 
 Ultimately, we would like to plot the flows on a map of Spain, so we will aggregate the flows for visualisation to avoid visual clutter. We therefore also need a nice map of Spain, which we will get using `{mapSpain}` [@R-mapspain] package:
 
@@ -397,9 +397,9 @@ spain_for_join <- esp_get_ccaa(moveCAN = FALSE)
 
 We are getting two sets of boundaries. First one is with Canary Islands moved closer to the mainland Spain, for nicer visualisation. Second one is with the original location of the islands, so that we can spatially join them to the zones `districts` data we got from `{spanishoddata}`.
 
-## Flows aggregation
+### Flows aggregation
 
-### Aggregate raw origin destination data by original `id`s
+#### Aggregate raw origin destination data by original `id`s
 
 Let us count the total number of trips made between all locations on our selected day of `2022-04-06`:
 
@@ -433,7 +433,7 @@ flows_by_district
 ```
 
 
-### Match `id`s of `districts` with autonomous communities
+#### Match `id`s of `districts` with autonomous communities
 
 Now we need to do a spatial join between `districts` and `spain_for_join` to find out which districts fall within which autonomous community. We use `spain_for_join`. If we used `spain_for_vis`, the `districts` in the Canary Islands would not match with the boundaries of the islands.
 
@@ -473,7 +473,7 @@ ca_distr
 
 This way we get a table with `districts` `id`s and their corresponding autonomous community names.
 
-### Count flows between pairs of autonomous communities
+#### Count flows between pairs of autonomous communities
 
 We can now add these ids to the total flows by `districts` `id` pairs and calculate total flows between autonomous communities:
 
@@ -513,7 +513,7 @@ flows_by_ca
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-## Reshape flows for visualization
+### Reshape flows for visualization
 
 We are going to use the `{flowmapper}` [@flowmapper-r] package to plot the flows. This package expects the data to be in the following format:
 
@@ -534,7 +534,7 @@ Another `data.frame` with the node `id`s or names and their coorindates. The coo
 `y`: The y coordinate of the node;
 
 
-### Prepare the flows table
+#### Prepare the flows table
 
 The data we have right now in `flows_by_ca` already has the correct format expected by `{flowmapper}`.
 
@@ -554,7 +554,7 @@ head(flows_by_ca)
 6 Andalusia Canary Islands       1899.
 ```
 
-### Prepare the nodes table with coordinates
+#### Prepare the nodes table with coordinates
 
 We need the coordinates for each origin and destination. We can use the centroids of `districts_v1` polygons for that.
 
@@ -581,7 +581,7 @@ head(spain_for_vis_coords)
 6  -4.0300438 43.19772        Cantabria
 ```
 
-## Plot the flows
+### Plot the flows
 
 Now we have the data structure that match the `{flowmapper}`'s expected data format:
 
@@ -637,7 +637,7 @@ ggsave("./man/figures/logo-before-hex.png", plot = flows_plot, width = 6, height
 
 The image may look a bit bleak, but when we put it on a sticker, it will look great.
 
-## Make the sticker
+### Make the sticker
 
 We make the sticker using the `{hexSticker}` [@hexSticker-r] package.
 

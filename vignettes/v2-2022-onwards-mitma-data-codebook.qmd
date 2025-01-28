@@ -68,11 +68,11 @@ Using the instructions below, set the data folder for the package to download th
 
 ![The overview of package functions to get the data](../man/figures/package-functions-overview.svg){#fig-overall-flow width="78%"}
 
-# 1. Spatial data with zoning boundaries
+## 1. Spatial data with zoning boundaries
 
 The boundary data is provided at three geographic levels: [`Distrtics`](#districts), [`Municipalities`](#municipalities), and [`Large Urban Areas`](#lua). It's important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities".
 
-## 1.1 `Districts` {#districts}
+### 1.1 `Districts` {#districts}
 
 `Districts` correspond to official census districts in cities; however, in those with lower population density, they are grouped together. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset. Therefore, there are 3792 'districts' compared to the 10494 official census districts on which they are based. There are also [NUTS3 statistical regions](https://ec.europa.eu/eurostat/web/nuts){target="_blank"} covering France (94 units) and Portugal (23 units). Therefore there is a total of 3909 zones in the `Districts` dataset.
 
@@ -99,7 +99,7 @@ Data structure:
 
 [^2]: This is likely the population as of end of 2021 or start of 2022. Population for a few districts is missing. Instead of population, residence and overnight stays data may be used as a proxy with caution. Also, newer population figures may be obtained and joined with the provided zones using the reference tables that match the zones ids with official municipal and census district ids from INE.
 
-## 1.2 `Municipalities` {#municipalities}
+### 1.2 `Municipalities` {#municipalities}
 
 `Municipalities` are made up of official municipalities in those of a certain size; however, they have also been aggregated in cases of lower population density. As a result, there are 2618 municipalities compared to the 8,125 official municipalities on which they are based. There are also [NUTS3 statistical regions](https://ec.europa.eu/eurostat/web/nuts){target="_blank"} covering France (94 units) and Portugal (23 units). Therefore there is a total of 2735 zones in the `Districts` dataset.
 
@@ -126,7 +126,7 @@ Data structure:
 
 [^3]: This is likely the population as of end of 2021 or start of 2022. Population for a few districts is missing. Instead of population, residence and overnight stays data may be used as a proxy with caution. Also, newer population figures may be obtained and joined with the provided zones using the reference tables that match the zones ids with official municipal and census district ids from INE.
 
-## 1.3 `LUAs (Large Urban Areas)` {#luas}
+### 1.3 `LUAs (Large Urban Areas)` {#luas}
 
 `Large Urban Areas (LUAs)` has essentially the same spatial units as [`Municipalities`](#municipalities), but are not aggregated. Therefore, there are 2086 locations in the `LUAs` dataset. There are also [NUTS3 statistical regions](https://ec.europa.eu/eurostat/web/nuts){target="_blank"} covering France (94 units) and Portugal (23 units). Therefore there is a total of 2203 zones in the `LUAs` dataset.
 
@@ -152,11 +152,11 @@ Data structure:
 
 [^4]: This is likely the population as of end of 2021 or start of 2022. Population for a few districts is missing. Instead of population, residence and overnight stays data may be used as a proxy with caution. Also, newer population figures may be obtained and joined with the provided zones using the reference tables that match the zones ids with official municipal and census district ids from INE.
 
-# 2. Mobility data
+## 2. Mobility data
 
 All mobility data is referenced via `id_origin`, `id_destination`, or other location identifiers (mostly labelled as `id`) with the two sets of zones described above.
 
-## 2.1. Origin-destination data {#od-data}
+### 2.1. Origin-destination data {#od-data}
 
 The origin-destination data contain the number of trips between `districts`, `municipalities`, or `large urban areas (LUAs)` in Spain for every hour of every day between 2022-02-01 and whichever currently available latest data (2024-06-30 at the time of writing). Each flow also has attributes such as the trip purpose (composed of the type of activity (`home`/`work_or_study`/`frequent_activity`/`infrequent_activity`) at both the origin and destination, but also age, sex, and income of each group of individuals traveling between the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table.
 
@@ -241,7 +241,7 @@ The same summary operation as provided in the example above can be done with the
 
 {{< include ../inst/vignette-include/csv-date-filter-note.qmd >}}
 
-## 2.2. Population by trip count data {#ptc-data}
+### 2.2. Population by trip count data {#ptc-data}
 
 The population by trip count data shows the number of individuals in each district or municipality, categorized by the trips they make (0, 1, 2, or more than 2), age, and sex.
 
@@ -272,7 +272,7 @@ Because this data is small, we can actually load it completely into memory:
 nt_dist_tbl <- nt_dist |> dplyr::collect()
 ```
 
-## 2.3. Population by overnight stay data {#pos-data}
+### 2.3. Population by overnight stay data {#pos-data}
 
 This dataset provides the number of people who spend the night in each location, also identifying their place of residence down to the census district level according to the [INE encoding](https://www.ine.es/ss/Satellite?c=Page&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout&cid=1259952026632&L=1){target="_blank"}.
 
@@ -304,3 +304,8 @@ Because this data is small, we can actually load it completely into memory:
 ```{r}
 os_dist_tbl <- os_dist |> dplyr::collect()
 ```
+
+
+## Advanced use
+
+For more advanced use, especially for analysing longer periods (months or even years), please see [Download and convert mobility datasets](convert.html).

@@ -63,11 +63,11 @@ Using the instructions below, set the data folder for the package to download th
 
 ![The overview of package functions to get the data](../man/figures/package-functions-overview.svg){#fig-overall-flow width="78%"}
 
-# 1. Spatial data with zoning boundaries
+## 1. Spatial data with zoning boundaries
 
 The boundary data is provided at two geographic levels: [`Districts`](#districts) and [`Municipalities`](#municipalities). It's important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities".
 
-## 1.1 `Districts` {#districts}
+### 1.1 `Districts` {#districts}
 
 `Districts` correspond to official census districts in cities; however, in those with lower population density, they are grouped together. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset. Therefore, there are 2850 'districts' compared to the 10494 official census districts on which they are based.
 
@@ -90,7 +90,7 @@ Data structure:
 | `district_names_in_v2` | A string with semicolon-separated list of names of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
 | `district_ids_in_v2` | A string with semicolon-separated list of identifiers of district polygons defined in the [v2 version of this data](v2-2022-onwards-mitma-data-codebook.html) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
 
-## 1.2 `Municipalities` {#municipalities}
+### 1.2 `Municipalities` {#municipalities}
 
 `Municipalities` are made up of official municipalities in those of a certain size; however, they have also been aggregated in cases of lower population density. As a result, there are 2,205 municipalities compared to the 8,125 official municipalities on which they are based.
 
@@ -115,11 +115,11 @@ Data structure:
 
 The spatial data you get via `spanishoddata` package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in `id` column. Apart from that `id` column, the original zones files do not have any metadata. However, as seen above, using the `spanishoddata` package you get many additional columns that provide a semantic connection between official statistical zones used by the Spanish government and the zones you can get for the v2 data (for 2022 onward).
 
-# 2. Mobility data
+## 2. Mobility data
 
 All mobility data is referenced via `id_origin`, `id_destination`, or other location identifiers (mostly labelled as `id`) with the two sets of zones described above.
 
-## 2.1. Origin-Destination data {#od-data}
+### 2.1. Origin-Destination data {#od-data}
 
 The origin-destination data contain the number of trips and distance travelled between `districts` or `municipalities` in Spain for every hour of every day between 2020-02-14 and 2021-05-09. Each flow also has attributes such as the trip purpose (composed of the type of activity (`home`/`work_or_study`/`other`) at both the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table. @fig-flows-barcelona shows an example of total flows in the province of Barcelona on Feb 14th, 2020.
 
@@ -203,7 +203,7 @@ The same summary operation as provided in the example above can be done with the
 
 {{< include ../inst/vignette-include/csv-date-filter-note.qmd >}}
 
-## 2.2. Population by trip count data {#ptc-data}
+### 2.2. Population by trip count data {#ptc-data}
 
 The population by trip count data shows the number of individuals in each district or municipality, categorized by the trips they make: 0, 1, 2, or more than 2.
 
@@ -239,6 +239,6 @@ Because this data is small, we can actually load it completely into memory:
 nt_dist_tbl <- nt_dist |> dplyr::collect()
 ```
 
-# Advanced use
+## Advanced use
 
 For more advanced use, especially for analysing longer periods (months or even years), please see [Download and convert mobility datasets](convert.html).

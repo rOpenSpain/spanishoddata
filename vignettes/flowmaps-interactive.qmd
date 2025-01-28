@@ -19,7 +19,7 @@ execute:
 This tutorial shows how to make interactive 'flow maps' with data from `{spanishoddata}` and the `{flowmapblue}` [@flowmapblue_r] data visualisation package. We cover two examples. [First](#simple-example), we only visualise the total flows for a single day. In the [second](#advanced-example) more advanced example we also use the time component that allows you to interactively filter flows by time of day. For both examples, make sure you first go though the initial [setup steps](#setup). To make static flow maps, please see the [static flow maps](https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html) tutorial.
 
 
-# Setup {#setup}
+## Setup {#setup}
 
 For the basemap in the final visualisation you will need a free Mapbox access token. You can get one at [account.mapbox.com/access-tokens/](https://account.mapbox.com/access-tokens/){target='_blank'} (you need to have a Mapbox account, which is free). You may skip this step, but in this case your interative flowmap will have no basemap, and the flows will just flow on solid colour background.
 
@@ -40,11 +40,11 @@ library(sf)
 
 {{< include ../inst/vignette-include/setup-data-directory.qmd >}}
 
-# Simple example - plot flows data as it is {#simple-example}
+## Simple example - plot flows data as it is {#simple-example}
 
-## Get data
+### Get data
 
-### Flows
+#### Flows
 
 Let us get the flows between `districts` for a tipycal working day `2021-04-07`:
 
@@ -68,7 +68,7 @@ head(od_20210407)
 6 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     6 010-050     10.8                 119.   2021     4     7
 ```
 
-### Zones
+#### Zones
 
 We also get the district zones polygons to mathch the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant [codebook](v1-2020-2021-mitma-data-codebook.qmd)).
 
@@ -95,9 +95,9 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 6 2305005  2305005                                                       23050                23050                                                                                           Jaén distrito 05     2305005            (((430022.7 4181101, 429…
 ```
 
-## Prepare data for visualization
+### Prepare data for visualization
 
-### Expected data format
+#### Expected data format
 
 To visualise the flows, `{flowmapblue}` expects two `data.frame`s in the following format (we use the packages's built-in data on Switzerland for illustration):
 
@@ -135,7 +135,7 @@ str(flowmapblue::ch_flows)
 ```
 
 
-### Aggregate data - count total flows
+#### Aggregate data - count total flows
 
 ```{r}
 od_20210407_total <- od_20210407 |>
@@ -158,7 +158,7 @@ head(od_20210407_total)
 6 01001_AM 17033       9.61
 ```
 
-## Create locations table with coordinates {#create-locations-table}
+### Create locations table with coordinates {#create-locations-table}
 
 We need the coordinates for each origin and destination. We can use the centroids of `districts_v1` polygons for that.
 
@@ -185,7 +185,7 @@ head(districts_v1_centroids)
 6 -3.8151096 37.86309  2305005
 ```
 
-## Create the plot
+### Create the plot
 
 Remember, what for the map to have a basemap, you need to have setup your Mapbox access token in the [setup](#setup) section of this vignette.
 
@@ -230,11 +230,11 @@ flowmap_anim
 
 ![Screenshot demonstrating the animated interactive flowmap](../man/figures/flowmapblue-animated.png){width=80%}
 
-# Advanced example - time filter {#advanced-example}
+## Advanced example - time filter {#advanced-example}
 
 After following the simple example, let us now add a time filter to the flows. We will use the `flowmapblue` function to plot flows between `districts_v1_centroids` for a typical working day `2021-04-07`.
 
-## Prepare data for visualization
+### Prepare data for visualization
 
 Just like before, we aggregate the data and rename some columns. This time we will keep combine the `date` and `hour` (which corresponds to the hour of the day) to procude timestamps, so that the flows can be interactively filtered by time of day.
 
@@ -260,7 +260,7 @@ head(od_20210407_time)
 6 08054  0818403 2021-04-07 02:00:00  7.11
 ```
 
-#### Filter the zones
+### Filter the zones
 
 Because we are now using the flows for each hour of the day, there are 24 times more rows in this data, than in the simple example. Therefore it will take longer to generate the plot and the resulting visualisation may work slower. To create a more manageable example, let us only filter the data to Madrid and surrounding areas.
 
@@ -313,7 +313,7 @@ head(zones_barcelona_fua_coords)
 6 2.152419 41.41014 0801906
 ```
 
-#### Prepare the flows
+### Prepare the flows
 
 Now we can use the zone `id`s from the `zones_barcelona_fua` data to select the flows that correspond to Barcelona and the 10 km radius around it.
 
@@ -323,7 +323,7 @@ od_20210407_time_barcelona <- od_20210407_time |>
 ```
 
 
-#### Visualise the flows for Barcelona and surrounding areas
+### Visualise the flows for Barcelona and surrounding areas
 
 Now, we can create a new plot with this data.
 
