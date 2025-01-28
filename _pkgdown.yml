@@ -61,3 +61,4 @@ reference:
       - spod_get_valid_dates
       - spod_set_data_dir
       - spod_get_data_dir
+      - spod_cite
