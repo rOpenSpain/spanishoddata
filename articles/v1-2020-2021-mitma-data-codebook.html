@@ -89,7 +89,7 @@
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">spanishoddata</span><span class="fu">::</span><span class="fu"><a href="../reference/spod_codebook.html">spod_codebook</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The mobility data v1 (2020-2021) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now <a href="https://www.transportes.gob.es/" class="external-link">Ministerio de Transportes y Movilidad Sostenible (MITMS)</a> <span class="citation" data-cites="mitma_data_v1">(<a href="#ref-mitma_data_v1" role="doc-biblioref">Secretaría de Estado de Transportes, Movilidad y Agenda Urbana 2021</a>)</span>.</p>
+<p>The mobility data v1 (2020-2021) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now <a href="https://www.transportes.gob.es/" class="external-link">Ministerio de Transportes y Movilidad Sostenible (MITMS)</a> <span class="citation" data-cites="mitma_methodology_2020_v3">(<a href="#ref-mitma_methodology_2020_v3" role="doc-biblioref">Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) 2021</a>)</span>.</p>
 <p>The dataset is produced by <a href="https://www.nommon.es/" target="_blank" class="external-link">Nommon</a> using the raw data from <a href="https://www.orange.es/" target="_blank" class="external-link">Orange España</a>. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology).</p>
 <p>The tables in the data set provide hourly flows between zones across Spain for every day of the observation period (2020-02-14 to 2021-05-09), and the number of individuals making trips for each zone. This document will introduce you to the available data and provide brief code snippets on how to access it using the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> R package.</p>
 <p>Key sources for this codebook/cookbook include:</p>
@@ -518,11 +518,11 @@ Data transformation note
 </h2>
 <p>For more advanced use, especially for analysing longer periods (months or even years), please see <a href="convert.html">Download and convert mobility datasets</a>.</p>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-mitma_methodology_2020_v3" class="csl-entry" role="listitem">
+Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA). 2021. <em>Análisis de La Movilidad En España Con Tecnología Big Data Durante El Estado de Alarma Para La Gestión de La Crisis Del COVID-19 (Analysis of Mobility in Spain with Big Data Technology During the State of Alarm for COVID-19 Crisis Management)</em>. <a href="https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf" class="external-link">https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf</a>.
+</div>
 <div id="ref-duckdb-r" class="csl-entry" role="listitem">
 Mühleisen, Hannes, and Mark Raasveldt. 2024. <em>Duckdb: DBI Package for the DuckDB Database Management System</em>. <a href="https://doi.org/10.32614/CRAN.package.duckdb" class="external-link">https://doi.org/10.32614/CRAN.package.duckdb</a>.
-</div>
-<div id="ref-mitma_data_v1" class="csl-entry" role="listitem">
-Secretaría de Estado de Transportes, Movilidad y Agenda Urbana. 2021. <span>“Analysis of Mobility in <span>Spain</span> with <span>Big Data</span> Technology During the State of Alarm for <span>COVID-19</span> Crisis Management. (<span class="nocase">An<span class="nocase">á</span>lisis</span> de La Movilidad En <span class="nocase">Espa<span class="nocase">ñ</span>a</span> Con Tecnolog<span>í</span>a <span>Big Data</span> Durante El Estado de Alarma Para La Gesti<span>ó</span>n de La Crisis Del <span>COVID-19</span>).”</span> <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" class="external-link">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad</a>.
 </div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">

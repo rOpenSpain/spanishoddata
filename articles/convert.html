@@ -125,7 +125,7 @@ Figure 1: Data processing speed comparison: DuckDB engine running on CSV.gz fil
 You can see the query we used for measuring the speed here
 </summary><p>For reference, here is a simple query we used for speed comparison in <a href="#fig-csv-duckdb-parquet-speed" class="quarto-xref">Figure 1</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># data represents either CSV files acquired from `spod_get()`, a `DuckDB` database or a folder of Parquet files connceted with `spod_connect()`</span></span>
+<code class="sourceCode R"><span><span class="co"># data represents either CSV files acquired from `spod_get()`, a `DuckDB` database or a folder of Parquet files connected with `spod_connect()`</span></span>
 <span><span class="va">data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id_origin</span>, <span class="va">id_destination</span>, <span class="va">time_slot</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_hourly_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
