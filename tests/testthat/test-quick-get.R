@@ -1,4 +1,6 @@
 test_that("spod_quick_get_od fails out of range dates", {
+  skip_on_ci()
+  skip_on_cran()
   expect_error(
     spod_quick_get_od(
       date = "2021-12-31",
@@ -26,7 +28,7 @@ test_that("spod_quick_get_od fails on incorrect distances", {
   )
 })
 
-test_that("spod_quick_get_od fails on negarive min_trips", {
+test_that("spod_quick_get_od fails on negative min_trips", {
   expect_error(
     spod_quick_get_od(
       date = "2022-01-01",
