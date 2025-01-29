@@ -26,6 +26,7 @@ Make sure you have loaded the package:
 ```{r}
 library(spanishoddata)
 library(dplyr)
+library(stringr)
 ```
 
 
