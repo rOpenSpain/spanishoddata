@@ -53,7 +53,7 @@ spod_cite <- function(
   format <- setdiff(format, "all")
   
   # 4. Get the citation object
-  cit <- citation("spanishoddata")
+  cit <- utils::citation("spanishoddata")
   
   # 5. Function to get citation by key
   get_citation_by_key <- function(key) {
@@ -124,7 +124,7 @@ spod_cite <- function(
     } else if (f == "bibtex") {
       cat("\nBibTeX citations:\n-----------------\n")
       for (cit_item in citations_to_show) {
-        print(toBibtex(cit_item))
+        print(utils::toBibtex(cit_item))
         cat("\n")
       }
     }
