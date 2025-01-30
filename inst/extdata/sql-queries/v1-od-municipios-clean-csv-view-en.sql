@@ -84,7 +84,7 @@ SELECT
         WHEN '51' THEN 'Ceuta'
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM) AS residence_province_name,
-    d.periodo AS time_slot,
+    d.periodo AS hour,
     CAST(d.distancia AS DISTANCE_ENUM) AS distance,
     SUM(d.viajes) AS n_trips,
     SUM(d.viajes_km) AS trips_total_length_km,

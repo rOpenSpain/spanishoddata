@@ -1,5 +1,6 @@
 CREATE VIEW od_csv_clean AS SELECT
     fecha AS date,
+    periodo,
     CAST(origen AS ZONES_ENUM) AS origen,
     CAST(destino AS ZONES_ENUM) AS destino,
     CAST(CASE actividad_origen
@@ -12,6 +13,7 @@ CREATE VIEW od_csv_clean AS SELECT
         WHEN 'otros' THEN 'other'
         WHEN 'trabajo_estudio' THEN 'work_or_study'
         END AS ACTIV_ENUM) AS actividad_destino,
+    CAST(distancia AS DISTANCE_ENUM) AS distancia,
     CAST(residencia AS INE_PROV_CODE_ENUM) AS residencia,
     CAST (CASE residencia
         WHEN '01' THEN 'Araba/Álava'
@@ -67,8 +69,6 @@ CREATE VIEW od_csv_clean AS SELECT
         WHEN '51' THEN 'Ceuta'
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM) AS residencia_nombre,
-    periodo,
-    CAST(distancia AS DISTANCE_ENUM) AS distancia,
     viajes,
     viajes_km,
     CAST(year AS INTEGER) AS ano,
