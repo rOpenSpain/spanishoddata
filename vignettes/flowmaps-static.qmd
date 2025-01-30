@@ -108,7 +108,7 @@ A `data.frame` with origin-destination pairs and the flow counts between them wi
 
 - `value`: The intensity of flow between the origin and destination
 
-Another `data.frame` with the node `id`s or names and their coorindates. The coordinate reference system should match whichever other data you are planning to use in the plot.
+Another `data.frame` with the node `id`s or names and their coordinates. The coordinate reference system should match whichever other data you are planning to use in the plot.
 
 `name`: The unique `id` or `name` of the node, must match with `o` and `d` in the flows `data.frame` above;
 
@@ -525,7 +525,7 @@ A `data.frame` with origin-destination pairs and the flow counts between them wi
 
 - `value`: The intensity of flow between the origin and destination
 
-Another `data.frame` with the node `id`s or names and their coorindates. The coordinate reference system should match whichever other data you are planning to use in the plot.
+Another `data.frame` with the node `id`s or names and their coordinates. The coordinate reference system should match whichever other data you are planning to use in the plot.
 
 `name`: The unique `id` or `name` of the node, must match with `o` and `d` in the flows `data.frame` above;
 
