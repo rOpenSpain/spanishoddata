@@ -47,7 +47,7 @@ spod_get <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
   max_mem_gb = max(4, spod_available_ram() - 4),
-  max_n_cpu = parallelly::availableCores() - 1,
+  max_n_cpu = max(1, parallelly::availableCores() - 1),
   max_download_size_gb = 1,
   duckdb_target = ":memory:",
   temp_path = spod_get_temp_dir(),
