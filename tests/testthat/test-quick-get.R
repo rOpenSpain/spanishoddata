@@ -31,7 +31,7 @@ test_that("spod_quick_get_od fails on incorrect distances", {
 test_that("spod_quick_get_od fails on negative min_trips", {
   expect_error(
     spod_quick_get_od(
-      date = "2022-01-01",
+      date = "2022-01-02",
       min_trips = -1
     ),
     ".*Assertion.*failed.*"
@@ -41,7 +41,7 @@ test_that("spod_quick_get_od fails on negative min_trips", {
 test_that("spod_quick_get_od fails on invalid municipality IDs", {
   expect_error(
     spod_quick_get_od(
-      date = "2022-01-01",
+      date = "2022-01-03",
       id_origin = "invalid"
     ),
     ".*Invalid municipality IDs detected.*"
@@ -49,7 +49,7 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
   
   expect_error(
     spod_quick_get_od(
-      date = "2022-01-01",
+      date = "2022-01-04",
       id_destination = "invalid"
     ),
     ".*Invalid municipality IDs detected.*"
@@ -57,7 +57,7 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
   
   expect_error(
     spod_quick_get_od(
-      date = "2022-01-01",
+      date = "2022-01-05",
       id_origin = "invalid",
       id_destination = "invalid"
     ),
