@@ -130,7 +130,7 @@ Here are the variables you can find in both the `district` and `municipality` le
 | **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
 |----------------|----------------|----------------|------------------------|
 | `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
-| `hour` | `periodo` | `integer` | The time slot during which the trips occurred. |
+| `hour` | `periodo` | `integer` | The time slot during which the trips occurred. *Note*: this column used to be called `time_slot`, it is still going to be available in the output of package functions until the end of 2025, but going forward please use `hour` instead. |
 | `id_origin` | `origen` | `factor` | The origin zone `id` of `district` or `municipalitity`. |
 | `id_destination` | `destino` | `factor` | The destination zone `id` of `district` or `municipalitity`. |
 | `distance` | `distancia` | `factor` | The distance range of the trip, categorized into specific intervals such as `0005-002` (500 m to 2 km), `002-005` (2-5 km), `005-010` (5-10km), `010-050` (10-50 km), `050-100` (50-100 km), and `100+` (more than 100 km). |
