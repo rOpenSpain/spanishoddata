@@ -15,6 +15,8 @@ spod_disconnect(tbl_con, free_mem = TRUE)
 No return value, called for side effect of disconnecting from the database and freeing up memory.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function is to ensure that \code{DuckDB} connections to CSV.gz files (created via \code{spod_get()}), as well as to \code{DuckDB} files or folders of \code{parquet} files (created via \code{spod_convert()}) are closed properly to prevent conflicting connections. Essentially this is just a wrapper around \code{DBI::dbDisconnect()} that reaches out into the \code{.$src$con} object of the \code{tbl_duckdb_connection} connection object that is returned to the user via \code{spod_get()} and \code{spod_connect()}. After disonnecting the database, it also frees up memory by running \code{gc()}.
 }
 \examples{

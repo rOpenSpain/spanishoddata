@@ -1,6 +1,9 @@
 #' View codebooks for v1 and v2 open mobility data
 #' 
 #' @description
+#' 
+#' `r lifecycle::badge("stable")`
+#' 
 #' Opens relevant vignette with a codebook for v1 (2020-2021) and v2 (2022 onwards) data or provide a webpage if vignette is missing.
 #' 
 #' 

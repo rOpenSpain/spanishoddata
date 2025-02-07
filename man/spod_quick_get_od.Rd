@@ -34,6 +34,8 @@ A \code{tibble} containing the flows for the specified date, minimum number of j
 }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
 }
 \examples{

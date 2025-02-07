@@ -1,6 +1,9 @@
 #' Connect to data converted to `DuckDB` or hive-style `parquet` files
 #' 
 #' @description
+#' 
+#' `r lifecycle::badge("stable")`
+#' 
 #' This function allows the user to quickly connect to the data converted to DuckDB with the \link{spod_convert} function. This function simplifies the connection process. The user is free to use the `DBI` and `DuckDB` packages to connect to the data manually, or to use the `arrow` package to connect to the `parquet` files folder.
 #' 
 #' @param data_path a path to the `DuckDB` database file with '.duckdb' extension, or a path to the folder with `parquet` files. Eigher one should have been created with the \link{spod_convert} function.

@@ -33,6 +33,8 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with \code{data_dir} argument.
 }
 \examples{

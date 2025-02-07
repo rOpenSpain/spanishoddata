@@ -15,6 +15,8 @@ spod_set_data_dir(data_dir, quiet = FALSE)
 Nothing. If quiet is \code{FALSE}, prints a message with the path and confirmation that the path exists.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function sets the data directory in the environment variable SPANISH_OD_DATA_DIR, so that all other functions in the package can access the data. It also creates the directory if it doesn't exist.
 }
 \examples{

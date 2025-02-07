@@ -37,6 +37,7 @@ Imports:
     glue,
     here,
     httr2,
+    lifecycle,
     lubridate,
     memuse,
     parallelly,

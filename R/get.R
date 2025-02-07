@@ -1,6 +1,11 @@
 #' Get tabular mobility data
 #' 
-#' @description This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary. The connnection is made to the raw CSV files in gzip archives, so analysing the data through this connection may be slow if you select more than a few days. You can manipulate this object using `dplyr` functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. See codebooks for v1 and v2 data in vignettes with \link{spod_codebook}(1) and \link{spod_codebook}(2).
+#' 
+#' @description
+#' 
+#' `r lifecycle::badge("stable")`
+#' 
+#' This function creates a DuckDB lazy table connection object from the specified type and zones. It checks for missing data and downloads it if necessary. The connnection is made to the raw CSV files in gzip archives, so analysing the data through this connection may be slow if you select more than a few days. You can manipulate this object using `dplyr` functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R `data.frame`/`tibble`. See codebooks for v1 and v2 data in vignettes with \link{spod_codebook}(1) and \link{spod_codebook}(2).
 #' 
 #' If you want to analyse longer periods of time (especiially several months or even the whole data over several years), consider using the \link{spod_convert} and then \link{spod_connect}.
 #' 
@@ -69,7 +74,7 @@ spod_get <- function(
   checkmate::assert_directory_exists(data_dir, access = "rw")
   checkmate::assert_directory_exists(temp_path, access = "rw")
   checkmate::assert_flag(ignore_missing_dates)
-  
+
   # simple null check is enough here, as spod_dates_arugument_to_dates_seq will do additional checks anyway
   if (is.null(dates)) {
     message("`dates` argument is undefined. Please set `dates='cached_v1'` or `dates='cached_v2'` to convert all data that was previously downloaded. Alternatively, specify at least one date between 2020-02-14 and 2021-05-09 (for v1 data) or between 2022-01-01 onwards (for v2). Any missing data will be downloaded before conversion. For more details on the dates argument, see ?spod_get.")
@@ -77,6 +82,17 @@ spod_get <- function(
   
   # normalise type
   type <- spod_match_data_type(type = type)
+
+  # deprecation message for od time_slot column
+  if (type == "od") {
+    lifecycle::deprecate_warn(
+      when = "0.1.0.9000",
+      what = I("`time slot`"),
+      with = I("`hour`"),
+      details = "`time_slot` column in origin destination data is now called `hour`. `time_slot` will be available in addition to `hour` and contain the same data in the outputs of `spod_get()` and `spod_convert()` until the end of 2025."
+    )
+  }
+
   # normalise zones
   zones <- spod_zone_names_en2es(zones)
   

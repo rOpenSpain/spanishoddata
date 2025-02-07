@@ -50,6 +50,8 @@ The columns for v2 (2022 onwards) data include:
 }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 }
 \examples{

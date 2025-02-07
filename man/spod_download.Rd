@@ -50,6 +50,8 @@ The possible values can be any of the following:
 Nothing. If \code{return_local_file_paths = TRUE}, a \code{character} vector of the paths to the downloaded files.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function downloads the data files of the specified type, zones, dates and data version.
 }
 \examples{

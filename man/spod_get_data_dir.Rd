@@ -13,6 +13,8 @@ spod_get_data_dir(quiet = FALSE)
 A \code{character} vector of length 1 containing the path to the data directory where the package will download and convert the data.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
 If the environment variable is not set, it returns the temporary directory.
 }

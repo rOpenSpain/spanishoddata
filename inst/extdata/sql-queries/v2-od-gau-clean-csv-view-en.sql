@@ -1,6 +1,6 @@
 CREATE VIEW od_csv_clean AS SELECT
     fecha AS date,
-    periodo AS time_slot,
+    periodo AS hour,
     CAST (CASE origen
         WHEN 'externo' THEN 'external'
         ELSE origen

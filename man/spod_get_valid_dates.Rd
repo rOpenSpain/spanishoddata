@@ -13,7 +13,9 @@ spod_get_valid_dates(ver = NULL)
 A vector of type \code{Date} with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
 }
 \description{
-Get valid dates for the specified data version
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Get all metadata for requested data version and identify all dates available for download.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

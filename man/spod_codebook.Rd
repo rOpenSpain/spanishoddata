@@ -13,6 +13,8 @@ spod_codebook(ver = 1)
 Nothing, opens vignette if it is installed. If vignette is missing, prints a message with a link to a webpage with the codebook.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 Opens relevant vignette with a codebook for v1 (2020-2021) and v2 (2022 onwards) data or provide a webpage if vignette is missing.
 }
 \examples{
