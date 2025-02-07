@@ -45,7 +45,7 @@ spod_connect <- function(
   checkmate::assert_character(target_table_name, null.ok = TRUE)
   checkmate::assert_flag(quiet)
   checkmate::assert_number(max_mem_gb, lower = 1)
-  checkmate::assert_integerish(max_n_cpu, lower = 1, upper = parallelly::availableCores())
+  checkmate::assert_integerish(max_n_cpu, lower = 1)
   checkmate::assert_directory_exists(temp_path, access = "rw")
 
   # determine if data_path is a folder or a duckdb file

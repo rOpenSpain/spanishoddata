@@ -79,7 +79,7 @@ spod_convert <- function(
   checkmate::assert_directory_exists(data_dir, access = "rw")
   checkmate::assert_flag(quiet)
   checkmate::assert_number(max_mem_gb, lower = 0.1)
-  checkmate::assert_integerish(max_n_cpu, lower = 1, upper = parallelly::availableCores())
+  checkmate::assert_integerish(max_n_cpu, lower = 1)
   checkmate::assert_number(max_download_size_gb, lower = 0.1)
   checkmate::assert_flag(ignore_missing_dates)
 
