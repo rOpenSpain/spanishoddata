@@ -78,12 +78,11 @@
 <!-- badges: start -->
 
 <p><strong>spanishoddata</strong> is an R package that provides functions for downloading and formatting Spanish open mobility data released by the Ministry of Transport and Sustainable Mobility of Spain (Ministerio de Transportes y Movilidad Sostenible (MITMS) 2024).</p>
-<p>It supports the two versions of the Spanish mobility data that consists of origin-destination matrices and some additional data sets. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" class="external-link">The first version</a> covers data from 2020 and 2021, including the period of the COVID-19 pandemic. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" class="external-link">The second version</a> contains data from January 2022 onwards and is regularly updated. Both versions of the data primarily consist of mobile phone positioning data, and include matrices for overnight stays, individual movements, and trips of Spanish residents at different geographical levels. See the <a href="https://rOpenSpain.github.io/spanishoddata/">package website</a> and vignettes for <a href="https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook">v1</a> and <a href="https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook">v2</a> data for more details.</p>
+<p>It supports the two versions of the Spanish mobility data. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/estudios-de-movilidad-anteriores/covid-19/opendata-movilidad" class="external-link">The first version (2020 to 2021)</a>, covering the period of the COVID-19 pandemic, contains tables detailing trip numbers and distances, broken down by origin, destination, activity, residence province, time interval, distance interval, and date. It also provides tables of individual counts by location and trip frequency. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad" class="external-link">The second version (2022 onwards)</a> improves spatial resolution, adds trips to and from Portugal and France, and introduces new fields for study-related activities and sociodemographic factors (income, age, and sex) in the origin-destination tables, along with additional tables showing individual counts by overnight stay location, residence, and date. See the <a href="https://rOpenSpain.github.io/spanishoddata/">package website</a> and vignettes for <a href="https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook">v1</a> and <a href="https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook">v2</a> data for more details.</p>
 <p><strong>spanishoddata</strong> is designed to save time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.</p>
-</div>
-<div class="section level1">
-<h1 id="examples-of-available-data">Examples of available data<a class="anchor" aria-label="anchor" href="#examples-of-available-data"></a>
-</h1>
+<div class="section level2">
+<h2 id="examples-of-available-data">Examples of available data<a class="anchor" aria-label="anchor" href="#examples-of-available-data"></a>
+</h2>
 <div id="fig-barcelona-flows">
 <p><img src="articles/media/flows_plot.svg"></p>
 <p>Figure 1: Example of the data available through the package: daily flows in Barcelona</p>
@@ -99,6 +98,7 @@
 <p>Figure 3: Example of the data available through the package: interactive daily flows in Barcelona with time filter</p>
 </div>
 <p>To create interactive maps see our vignette <a href="https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html" class="external-link">here</a>.</p>
+</div>
 <div class="section level2">
 <h2 id="install-the-package">Install the package<a class="anchor" aria-label="anchor" href="#install-the-package"></a>
 </h2>
@@ -165,10 +165,9 @@ Setting data directory for advanced users
 <p><img src="reference/figures/package-functions-overview.svg" style="width:78.0%"></p>
 <p>Figure 4: The overview of package functions to get the data</p>
 </div>
-</div>
-<div class="section level1">
-<h1 id="showcase">Showcase<a class="anchor" aria-label="anchor" href="#showcase"></a>
-</h1>
+<div class="section level2">
+<h2 id="showcase">Showcase<a class="anchor" aria-label="anchor" href="#showcase"></a>
+</h2>
 <p>To run the code in this README we will use the following setup:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
@@ -193,9 +192,9 @@ Setting data directory for advanced users
 <span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="dv">10</span> https<span class="sc">:</span><span class="er">//</span>movilidad<span class="sc">-</span>o… <span class="dv">2024-07-30</span> <span class="dv">09</span><span class="sc">:</span><span class="dv">54</span><span class="sc">:</span><span class="dv">30</span> gz             <span class="cn">NA</span>      <span class="dv">2022-08-05</span></span>
 <span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co"># ℹ 9,432 more rows</span></span>
 <span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co"># ℹ 1 more variable: local_path &lt;chr&gt;</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="zones">Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
-</h2>
+<div class="section level3">
+<h3 id="zones">Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
+</h3>
 <p>Zones can be downloaded as follows:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distritos</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"distritos"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -205,9 +204,9 @@ Setting data directory for advanced users
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">distritos_wgs84</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-distritos-1.png"></p>
 </div>
-<div class="section level2">
-<h2 id="od-data">OD data<a class="anchor" aria-label="anchor" href="#od-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="od-data">OD data<a class="anchor" aria-label="anchor" href="#od-data"></a>
+</h3>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_db</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/spod_get.html">spod_get</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"origin-destination"</span>,</span>
@@ -219,7 +218,7 @@ Setting data directory for advanced users
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>[<span class="dv">4</span>] <span class="st">"tbl_lazy"</span>              <span class="st">"tbl"</span>                  </span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">od_db</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a> [<span class="dv">1</span>] <span class="st">"full_date"</span>                   <span class="st">"time_slot"</span>                  </span>
+<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a> [<span class="dv">1</span>] <span class="st">"full_date"</span>                   <span class="st">"hour"</span>                  </span>
 <span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a> [<span class="dv">3</span>] <span class="st">"id_origin"</span>                   <span class="st">"id_destination"</span>             </span>
 <span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a> [<span class="dv">5</span>] <span class="st">"distance"</span>                    <span class="st">"activity_origin"</span>            </span>
 <span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a> [<span class="dv">7</span>] <span class="st">"activity_destination"</span>        <span class="st">"study_possible_origin"</span>      </span>
@@ -232,10 +231,10 @@ Setting data directory for advanced users
 <p>The result is an R database interface object (<code>tbl_dbi</code>) that can be used with dplyr functions and SQL queries ‘lazily’, meaning that the data is not loaded into memory until it is needed. Let’s do an aggregation to find the total number trips per hour over the 7 days:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_per_hour</span> <span class="op">&lt;-</span> <span class="va">od_db</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">time_slot</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">hour</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, Trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_h</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">time_slot</span>, sep <span class="op">=</span> <span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_h</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">hour</span>, sep <span class="op">=</span> <span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Day <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html" class="external-link">wday</a></span><span class="op">(</span><span class="va">Time</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">n_per_hour</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Time</span>, y <span class="op">=</span> <span class="va">Trips</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -244,10 +243,10 @@ Setting data directory for advanced users
 <p><img src="reference/figures/README-trips-per-hour-1.png"></p>
 <p>The figure above summarises 925,874,012 trips over the 7 days associated with 135,866,524 records.</p>
 </div>
-<div class="section level2">
-<h2 id="spanishoddata-advantage-over-accessing-the-data-yourself">
+<div class="section level3">
+<h3 id="spanishoddata-advantage-over-accessing-the-data-yourself">
 <code>spanishoddata</code> advantage over accessing the data yourself<a class="anchor" aria-label="anchor" href="#spanishoddata-advantage-over-accessing-the-data-yourself"></a>
-</h2>
+</h3>
 <p>As we demonstrated above, you can perform very quick analysis using just a few lines of code.</p>
 <p>To highlight the benefits of the package, here is how you would do this manually:</p>
 <ul>
@@ -262,9 +261,9 @@ Setting data directory for advanced users
 <p>We did all of that for you and present you with a few simple functions that get you straight to the data in one line of code, and you are ready to run any analysis on it.</p>
 </div>
 </div>
-<div class="section level1">
-<h1 id="desire-lines">Desire lines<a class="anchor" aria-label="anchor" href="#desire-lines"></a>
-</h1>
+<div class="section level2">
+<h2 id="desire-lines">Desire lines<a class="anchor" aria-label="anchor" href="#desire-lines"></a>
+</h2>
 <p>We’ll use the same input data to pick-out the most important flows in Spain, with a focus on longer trips for visualisation:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_national_aggregated</span> <span class="op">&lt;-</span> <span class="va">od_db</span> <span class="op">|&gt;</span></span>
@@ -332,9 +331,9 @@ Setting data directory for advanced users
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-salamanca-plot-1.png"></p>
 </div>
-<div class="section level1">
-<h1 id="further-information">Further information<a class="anchor" aria-label="anchor" href="#further-information"></a>
-</h1>
+<div class="section level2">
+<h2 id="further-information">Further information<a class="anchor" aria-label="anchor" href="#further-information"></a>
+</h2>
 <p>For more information on the package, see:</p>
 <ul>
 <li>The <a href="https://rOpenSpain.github.io/spanishoddata/">pkgdown site</a>
@@ -354,13 +353,14 @@ Setting data directory for advanced users
 </ul>
 </li>
 </ul>
-<div class="section level2">
-<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
-</h2>
+<div class="section level3">
+<h3 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h3>
 <p>To cite the <code>spanishoddata</code> R package use:</p>
 <p>Kotov E, Lovelace R, Vidal-Tortosa E (2024). <em>spanishoddata</em>. <a href="doi:10.32614/CRAN.package.spanishoddata" class="uri">doi:10.32614/CRAN.package.spanishoddata</a> <a href="https://doi.org/10.32614/CRAN.package.spanishoddata" class="external-link uri">https://doi.org/10.32614/CRAN.package.spanishoddata</a>, <a href="https://github.com/rOpenSpain/spanishoddata" class="external-link uri">https://github.com/rOpenSpain/spanishoddata</a>.</p>
 <p>To cite the official website of the mobility study use:</p>
-<p>Ministerio de Transportes y Movilidad Sostenible (MITMS) (2024). “Estudio de la movilidad con Big Data (Study of mobility with Big Data).” <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" class="external-link uri">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data</a>.</p>
+<p>Ministerio de Transportes y Movilidad Sostenible (MITMS) (2024). “Estudio de la movilidad con Big Data (Study of mobility with Big Data).”</p>
+<p><a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" class="external-link uri">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data</a>.</p>
 <p>To cite the methodology for 2022 and onwards data use:</p>
 <p>Ministerio de Transportes y Movilidad Sostenible (MITMS) (2024). <em>Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)</em>. <a href="https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf" class="external-link uri">https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf</a>.</p>
 <p>To cite the methodology for 2020-2021 data use:</p>
@@ -397,9 +397,9 @@ Setting data directory for advanced users
 <span id="cb28-28"><a href="#cb28-28" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
-<div class="section level1">
-<h1 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
-</h1>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <!-- metadata for better search engine indexing -->
 <!-- should be picked up by pkgdown -->
 <!-- update metadata before release with  -->
@@ -411,6 +411,7 @@ Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map Origin-Dest
 </div>
 <div id="ref-mitms_mobility_web" class="csl-entry">
 Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. “Estudio de La Movilidad Con Big Data (Study of Mobility with Big Data).” <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" class="external-link uri">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data</a>.
+</div>
 </div>
 </div>
 </div>

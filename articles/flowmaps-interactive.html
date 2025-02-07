@@ -85,7 +85,7 @@
 
 
     <p>This tutorial shows how to make interactive ‘flow maps’ with data from <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> and the <a href="https://github.com/FlowmapBlue/flowmapblue.R" class="external-link">flowmapblue</a> <span class="citation" data-cites="flowmapblue_r">(<a href="#ref-flowmapblue_r" role="doc-biblioref">Boyandin 2024</a>)</span> data visualisation package. We cover two examples. <a href="#simple-example">First</a>, we only visualise the total flows for a single day. In the <a href="#advanced-example">second</a> more advanced example we also use the time component that allows you to interactively filter flows by time of day. For both examples, make sure you first go though the initial <a href="#setup">setup steps</a>. To make static flow maps, please see the <a href="https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html" class="external-link">static flow maps</a> tutorial.</p>
-<section class="section level2" data-number="1"><h2 data-number="1" id="setup">
+<section class="level2" data-number="1"><h2 data-number="1" id="setup">
 <span class="header-section-number">1</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <p>For the basemap in the final visualisation you will need a free Mapbox access token. You can get one at <a href="https://account.mapbox.com/access-tokens/" target="_blank" class="external-link">account.mapbox.com/access-tokens/</a> (you need to have a Mapbox account, which is free). You may skip this step, but in this case your interative flowmap will have no basemap, and the flows will just flow on solid colour background.</p>
@@ -101,9 +101,9 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<section class="level2" data-number="1.1"><h3 data-number="1.1" id="set-data-folder">
-<span class="header-section-number">1.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
-</h3>
+</section><section class="level2" data-number="2"><h2 data-number="2" id="set-data-folder">
+<span class="header-section-number">2</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h2>
 <p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
@@ -130,14 +130,14 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</details></section></section><section class="section level2" data-number="2"><h2 data-number="2" id="simple-example">
-<span class="header-section-number">2</span> Simple example - plot flows data as it is<a class="anchor" aria-label="anchor" href="#simple-example"></a>
+</details></section><section class="level2" data-number="3"><h2 data-number="3" id="simple-example">
+<span class="header-section-number">3</span> Simple example - plot flows data as it is<a class="anchor" aria-label="anchor" href="#simple-example"></a>
 </h2>
-<section class="level2" data-number="2.1"><h3 data-number="2.1" id="get-data">
-<span class="header-section-number">2.1</span> Get data<a class="anchor" aria-label="anchor" href="#get-data"></a>
+<section class="level3" data-number="3.1"><h3 data-number="3.1" id="get-data">
+<span class="header-section-number">3.1</span> Get data<a class="anchor" aria-label="anchor" href="#get-data"></a>
 </h3>
-<section class="level3" data-number="2.1.1"><h4 data-number="2.1.1" id="flows">
-<span class="header-section-number">2.1.1</span> Flows<a class="anchor" aria-label="anchor" href="#flows"></a>
+<section class="level4" data-number="3.1.1"><h4 data-number="3.1.1" id="flows">
+<span class="header-section-number">3.1.1</span> Flows<a class="anchor" aria-label="anchor" href="#flows"></a>
 </h4>
 <p>Let us get the flows between <code>districts</code> for a tipycal working day <code>2021-04-07</code>:</p>
 <div class="cell">
@@ -148,7 +148,7 @@ Setting data directory for advanced users
 </div>
 <pre><code># Source:   SQL [6 x 14]
 # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
-  date       id_origin id_destination activity_origin activity_destination residence_province_ine_code residence_province_name time_slot distance n_trips trips_total_length_km  year month   day
+  date       id_origin id_destination activity_origin activity_destination residence_province_ine_code residence_province_name hour distance n_trips trips_total_length_km  year month   day
   &lt;date&gt;     &lt;fct&gt;     &lt;fct&gt;          &lt;fct&gt;           &lt;fct&gt;                &lt;fct&gt;                       &lt;fct&gt;                       &lt;int&gt; &lt;fct&gt;      &lt;dbl&gt;                 &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
 1 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     0 005-010     10.5                  68.9  2021     4     7
 2 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     0 010-050     12.6                 127.   2021     4     7
@@ -156,8 +156,8 @@ Setting data directory for advanced users
 4 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     2 005-010     10.8                 102.   2021     4     7
 5 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     5 005-010     18.9                 156.   2021     4     7
 6 2021-04-07 01001_AM  01001_AM       home            other                01                          Araba/Álava                     6 010-050     10.8                 119.   2021     4     7</code></pre>
-</section><section class="level3" data-number="2.1.2"><h4 data-number="2.1.2" id="zones">
-<span class="header-section-number">2.1.2</span> Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
+</section><section class="level4" data-number="3.1.2"><h4 data-number="3.1.2" id="zones">
+<span class="header-section-number">3.1.2</span> Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
 </h4>
 <p>We also get the district zones polygons to mathch the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant <a href="v1-2020-2021-mitma-data-codebook.qmd">codebook</a>).</p>
 <div class="cell">
@@ -180,11 +180,11 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 07058_AM 0701901; 0702501; 0703401; 0705801; 0705802                   07058_AM             07019; 07025; 07034; 07058; 07019; 07025; 07034; 07058; 07019; 07025; 07034; 07058; 07019; 070… Selva agregacion de… 07058_AM           (((1000859 4415059, 1000…
 5 2305006  2305006                                                       23050                23050                                                                                           Jaén distrito 06     2305006            (((429795.1 4180957, 429…
 6 2305005  2305005                                                       23050                23050                                                                                           Jaén distrito 05     2305005            (((430022.7 4181101, 429…</code></pre>
-</section></section><section class="level2" data-number="2.2"><h3 data-number="2.2" id="prepare-data-for-visualization">
-<span class="header-section-number">2.2</span> Prepare data for visualization<a class="anchor" aria-label="anchor" href="#prepare-data-for-visualization"></a>
+</section></section><section class="level3" data-number="3.2"><h3 data-number="3.2" id="prepare-data-for-visualization">
+<span class="header-section-number">3.2</span> Prepare data for visualization<a class="anchor" aria-label="anchor" href="#prepare-data-for-visualization"></a>
 </h3>
-<section class="level3" data-number="2.2.1"><h4 data-number="2.2.1" id="expected-data-format">
-<span class="header-section-number">2.2.1</span> Expected data format<a class="anchor" aria-label="anchor" href="#expected-data-format"></a>
+<section class="level4" data-number="3.2.1"><h4 data-number="3.2.1" id="expected-data-format">
+<span class="header-section-number">3.2.1</span> Expected data format<a class="anchor" aria-label="anchor" href="#expected-data-format"></a>
 </h4>
 <p>To visualise the flows, <a href="https://github.com/FlowmapBlue/flowmapblue.R" class="external-link">flowmapblue</a> expects two <code>data.frame</code>s in the following format (we use the packages’s built-in data on Switzerland for illustration):</p>
 <p><strong>Locations</strong></p>
@@ -209,8 +209,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
  $ origin: chr  "ZH" "ZH" "ZH" "ZH" ...
  $ dest  : chr  "ZH" "BE" "LU" "UR" ...
  $ count : int  66855 1673 1017 84 1704 70 94 250 1246 173 ...</code></pre>
-</section><section class="level3" data-number="2.2.2"><h4 data-number="2.2.2" id="aggregate-data---count-total-flows">
-<span class="header-section-number">2.2.2</span> Aggregate data - count total flows<a class="anchor" aria-label="anchor" href="#aggregate-data---count-total-flows"></a>
+</section><section class="level4" data-number="3.2.2"><h4 data-number="3.2.2" id="aggregate-data---count-total-flows">
+<span class="header-section-number">3.2.2</span> Aggregate data - count total flows<a class="anchor" aria-label="anchor" href="#aggregate-data---count-total-flows"></a>
 </h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
@@ -230,8 +230,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 01001_AM 09363_AM    3.96
 5 01001_AM 09907_AM   32.6
 6 01001_AM 17033       9.61</code></pre>
-</section></section><section class="level2" data-number="2.3"><h3 data-number="2.3" id="create-locations-table">
-<span class="header-section-number">2.3</span> Create locations table with coordinates<a class="anchor" aria-label="anchor" href="#create-locations-table"></a>
+</section></section><section class="level3" data-number="3.3"><h3 data-number="3.3" id="create-locations-table">
+<span class="header-section-number">3.3</span> Create locations table with coordinates<a class="anchor" aria-label="anchor" href="#create-locations-table"></a>
 </h3>
 <p>We need the coordinates for each origin and destination. We can use the centroids of <code>districts_v1</code> polygons for that.</p>
 <div class="cell">
@@ -253,8 +253,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4  2.8542636 39.80672 07058_AM
 5 -3.8229513 37.77294  2305006
 6 -3.8151096 37.86309  2305005</code></pre>
-</section><section class="level2" data-number="2.4"><h3 data-number="2.4" id="create-the-plot">
-<span class="header-section-number">2.4</span> Create the plot<a class="anchor" aria-label="anchor" href="#create-the-plot"></a>
+</section><section class="level3" data-number="3.4"><h3 data-number="3.4" id="create-the-plot">
+<span class="header-section-number">3.4</span> Create the plot<a class="anchor" aria-label="anchor" href="#create-the-plot"></a>
 </h3>
 <p>Remember, what for the map to have a basemap, you need to have setup your Mapbox access token in the <a href="#setup">setup</a> section of this vignette.</p>
 <p>Create the interactive flowmap with the <code>flowmapblue</code> function. In the example below we use the <code>darkMode</code> and <code>clustering</code>, and we disable the <code>animation</code>. We do not recommend disabling the <code>clustering</code> when plotting the flows between hundreds and thousands of locations, as this will reduce the redability of the map.</p>
@@ -298,18 +298,18 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <figure><p><img src="../reference/figures/flowmapblue-animated.png" style="width:80.0%"></p>
 <figcaption>Screenshot demonstrating the animated interactive flowmap</figcaption></figure>
 </div>
-</section></section><section class="section level2" data-number="3"><h2 data-number="3" id="advanced-example">
-<span class="header-section-number">3</span> Advanced example - time filter<a class="anchor" aria-label="anchor" href="#advanced-example"></a>
+</section></section><section class="level2" data-number="4"><h2 data-number="4" id="advanced-example">
+<span class="header-section-number">4</span> Advanced example - time filter<a class="anchor" aria-label="anchor" href="#advanced-example"></a>
 </h2>
 <p>After following the simple example, let us now add a time filter to the flows. We will use the <code>flowmapblue</code> function to plot flows between <code>districts_v1_centroids</code> for a typical working day <code>2021-04-07</code>.</p>
-<section class="level2" data-number="3.1"><h3 data-number="3.1" id="prepare-data-for-visualization-1">
-<span class="header-section-number">3.1</span> Prepare data for visualization<a class="anchor" aria-label="anchor" href="#prepare-data-for-visualization-1"></a>
+<section class="level3" data-number="4.1"><h3 data-number="4.1" id="prepare-data-for-visualization-1">
+<span class="header-section-number">4.1</span> Prepare data for visualization<a class="anchor" aria-label="anchor" href="#prepare-data-for-visualization-1"></a>
 </h3>
-<p>Just like before, we aggregate the data and rename some columns. This time we will keep combine the <code>date</code> and <code>time_slot</code> (which corresponds to the hour of the day) to procude timestamps, so that the flows can be interactively filtered by time of day.</p>
+<p>Just like before, we aggregate the data and rename some columns. This time we will keep combine the <code>date</code> and <code>hour</code> (which corresponds to the hour of the day) to procude timestamps, so that the flows can be interactively filtered by time of day.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_time</span> <span class="op">&lt;-</span> <span class="va">od_20210407</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">date</span>, <span class="st">"T"</span>, <span class="va">time_slot</span>, <span class="st">":00:00"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">date</span>, <span class="st">"T"</span>, <span class="va">hour</span>, <span class="st">":00:00"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span>origin <span class="op">=</span> <span class="va">id_origin</span>, dest <span class="op">=</span> <span class="va">id_destination</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -325,9 +325,9 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 08054  0818403 2021-04-07 05:00:00 26.8
 5 08054  0818403 2021-04-07 07:00:00 44.9
 6 08054  0818403 2021-04-07 02:00:00  7.11</code></pre>
-<section class="level4" data-number="3.1.0.1"><h5 data-number="3.1.0.1" id="filter-the-zones">
-<span class="header-section-number">3.1.0.1</span> Filter the zones<a class="anchor" aria-label="anchor" href="#filter-the-zones"></a>
-</h5>
+</section><section class="level3" data-number="4.2"><h3 data-number="4.2" id="filter-the-zones">
+<span class="header-section-number">4.2</span> Filter the zones<a class="anchor" aria-label="anchor" href="#filter-the-zones"></a>
+</h3>
 <p>Because we are now using the flows for each hour of the day, there are 24 times more rows in this data, than in the simple example. Therefore it will take longer to generate the plot and the resulting visualisation may work slower. To create a more manageable example, let us only filter the data to Madrid and surrounding areas.</p>
 <p>Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the <code>district_names_in_v2</code> column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.</p>
 <div class="cell">
@@ -370,18 +370,18 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 2.118221 41.38697 0801904
 5 2.150536 41.42915 0801907
 6 2.152419 41.41014 0801906</code></pre>
-</section><section class="level4" data-number="3.1.0.2"><h5 data-number="3.1.0.2" id="prepare-the-flows">
-<span class="header-section-number">3.1.0.2</span> Prepare the flows<a class="anchor" aria-label="anchor" href="#prepare-the-flows"></a>
-</h5>
+</section><section class="level3" data-number="4.3"><h3 data-number="4.3" id="prepare-the-flows">
+<span class="header-section-number">4.3</span> Prepare the flows<a class="anchor" aria-label="anchor" href="#prepare-the-flows"></a>
+</h3>
 <p>Now we can use the zone <code>id</code>s from the <code>zones_barcelona_fua</code> data to select the flows that correspond to Barcelona and the 10 km radius around it.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_time_barcelona</span> <span class="op">&lt;-</span> <span class="va">od_20210407_time</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">origin</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span> <span class="op">&amp;</span> <span class="va">dest</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level4" data-number="3.1.0.3"><h5 data-number="3.1.0.3" id="visualise-the-flows-for-barcelona-and-surrounding-areas">
-<span class="header-section-number">3.1.0.3</span> Visualise the flows for Barcelona and surrounding areas<a class="anchor" aria-label="anchor" href="#visualise-the-flows-for-barcelona-and-surrounding-areas"></a>
-</h5>
+</section><section class="level3" data-number="4.4"><h3 data-number="4.4" id="visualise-the-flows-for-barcelona-and-surrounding-areas">
+<span class="header-section-number">4.4</span> Visualise the flows for Barcelona and surrounding areas<a class="anchor" aria-label="anchor" href="#visualise-the-flows-for-barcelona-and-surrounding-areas"></a>
+</h3>
 <p>Now, we can create a new plot with this data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
@@ -409,7 +409,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 Boyandin, Ilya. 2024. <em>Flowmap.blue Widget for r</em>. <a href="https://doi.org/10.32614/CRAN.package.flowmapblue" class="external-link">https://doi.org/10.32614/CRAN.package.flowmapblue</a>.
 </div>
 </div>
-</section></section></section><script id="quarto-html-after-body" type="application/javascript">
+</section></section><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

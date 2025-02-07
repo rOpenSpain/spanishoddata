@@ -85,7 +85,7 @@
 
 
     <p>This tutorial shows how to make static ‘flow maps’ with data from <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> and the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a> <span class="citation" data-cites="flowmapper-r">(<a href="#ref-flowmapper-r" role="doc-biblioref">Mast 2024</a>)</span> data visualisation package. We cover two examples. <a href="#simple-example">First</a>, we only use the origin-destination flows and district zones that you can get using the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> package. In the <a href="#advanced-example">second</a> more advanced example we also use <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> and <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> packages to re-create the <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> logo. For both examples, make sure you first go though the initial <a href="#setup">setup steps</a>. To make interactive flow maps, please see the <a href="https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html" class="external-link">interactive flow maps</a> tutorial.</p>
-<section class="section level2" data-number="1"><h2 data-number="1" id="setup">
+<section class="level2" data-number="1"><h2 data-number="1" id="setup">
 <span class="header-section-number">1</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <div class="cell">
@@ -95,9 +95,9 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<section class="level2" data-number="1.1"><h3 data-number="1.1" id="set-data-folder">
-<span class="header-section-number">1.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
-</h3>
+</section><section class="level2" data-number="2"><h2 data-number="2" id="set-data-folder">
+<span class="header-section-number">2</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h2>
 <p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
@@ -124,14 +124,14 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</details></section></section><section class="section level2" data-number="2"><h2 data-number="2" id="simple-example">
-<span class="header-section-number">2</span> Simple example - plot flows data as it is<a class="anchor" aria-label="anchor" href="#simple-example"></a>
+</details></section><section class="level2" data-number="3"><h2 data-number="3" id="simple-example">
+<span class="header-section-number">3</span> Simple example - plot flows data as it is<a class="anchor" aria-label="anchor" href="#simple-example"></a>
 </h2>
-<section class="level2" data-number="2.1"><h3 data-number="2.1" id="get-data">
-<span class="header-section-number">2.1</span> Get data<a class="anchor" aria-label="anchor" href="#get-data"></a>
+<section class="level3" data-number="3.1"><h3 data-number="3.1" id="get-data">
+<span class="header-section-number">3.1</span> Get data<a class="anchor" aria-label="anchor" href="#get-data"></a>
 </h3>
-<section class="level3" data-number="2.1.1"><h4 data-number="2.1.1" id="flows">
-<span class="header-section-number">2.1.1</span> Flows<a class="anchor" aria-label="anchor" href="#flows"></a>
+<section class="level4" data-number="3.1.1"><h4 data-number="3.1.1" id="flows">
+<span class="header-section-number">3.1.1</span> Flows<a class="anchor" aria-label="anchor" href="#flows"></a>
 </h4>
 <p>Let us get the flows between <code>districts</code> for a typical working day <code>2021-04-07</code>:</p>
 <div class="cell">
@@ -142,7 +142,7 @@ Setting data directory for advanced users
 </div>
 <pre><code># Source:   SQL [6 x 14]
 # Database: DuckDB v1.0.0 [root@Darwin 23.6.0:R 4.4.1/:memory:]
-  date       id_origin id_destination activity_origin activity_destination residence_province_in…¹ residence_province_n…² time_slot distance n_trips trips_total_length_km  year month
+  date       id_origin id_destination activity_origin activity_destination residence_province_in…¹ residence_province_n…² hour distance n_trips trips_total_length_km  year month
   &lt;date&gt;     &lt;fct&gt;     &lt;fct&gt;          &lt;fct&gt;           &lt;fct&gt;                &lt;fct&gt;                   &lt;fct&gt;                      &lt;int&gt; &lt;fct&gt;      &lt;dbl&gt;                 &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
 1 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 005-010     10.5                  68.9  2021     4
 2 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    0 010-050     12.6                 127.   2021     4
@@ -152,8 +152,8 @@ Setting data directory for advanced users
 6 2021-04-07 01001_AM  01001_AM       home            other                01                      Araba/Álava                    6 010-050     10.8                 119.   2021     4
 # ℹ abbreviated names: ¹​residence_province_ine_code, ²​residence_province_name
 # ℹ 1 more variable: day &lt;int&gt;</code></pre>
-</section><section class="level3" data-number="2.1.2"><h4 data-number="2.1.2" id="zones">
-<span class="header-section-number">2.1.2</span> Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
+</section><section class="level4" data-number="3.1.2"><h4 data-number="3.1.2" id="zones">
+<span class="header-section-number">3.1.2</span> Zones<a class="anchor" aria-label="anchor" href="#zones"></a>
 </h4>
 <p>We also get the district zones polygons to match the flows. We use version 1 for the polygons, because the selected date is in 2021, which corresponds to the v1 data (see the relevant <a href="v1-2020-2021-mitma-data-codebook.html">codebook</a>).</p>
 <div class="cell">
@@ -176,8 +176,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 07058_AM 0701901; 0702501; 0703401; 0705801; 0705802                   07058_AM             07019; 07025; 07034; … Selva agregacion de… 07058_AM           (((1000859 4415059, 1000…
 5 2305006  2305006                                                       23050                23050                  Jaén distrito 06     2305006            (((429795.1 4180957, 429…
 6 2305005  2305005                                                       23050                23050                  Jaén distrito 05     2305005            (((430022.7 4181101, 429…</code></pre>
-</section></section><section class="level2" data-number="2.2"><h3 data-number="2.2" id="aggregate-data---count-total-flows">
-<span class="header-section-number">2.2</span> Aggregate data - count total flows<a class="anchor" aria-label="anchor" href="#aggregate-data---count-total-flows"></a>
+</section></section><section class="level3" data-number="3.2"><h3 data-number="3.2" id="aggregate-data---count-total-flows">
+<span class="header-section-number">3.2</span> Aggregate data - count total flows<a class="anchor" aria-label="anchor" href="#aggregate-data---count-total-flows"></a>
 </h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
@@ -187,8 +187,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">o</span>, <span class="va">d</span>, <span class="va">value</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2" data-number="2.3"><h3 data-number="2.3" id="reshape-flows-for-visualization">
-<span class="header-section-number">2.3</span> Reshape flows for visualization<a class="anchor" aria-label="anchor" href="#reshape-flows-for-visualization"></a>
+</section><section class="level3" data-number="3.3"><h3 data-number="3.3" id="reshape-flows-for-visualization">
+<span class="header-section-number">3.3</span> Reshape flows for visualization<a class="anchor" aria-label="anchor" href="#reshape-flows-for-visualization"></a>
 </h3>
 <p>The <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a> package was developed to visualise origin-destination ‘flow’ data <span class="citation" data-cites="flowmapper-r">(<a href="#ref-flowmapper-r" role="doc-biblioref">Mast 2024</a>)</span>. This package expects the data to be in the following format:</p>
 <p>A <code>data.frame</code> with origin-destination pairs and the flow counts between them with the following columns:</p>
@@ -201,8 +201,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p><code>name</code>: The unique <code>id</code> or <code>name</code> of the node, must match with <code>o</code> and <code>d</code> in the flows <code>data.frame</code> above;</p>
 <p><code>x</code>: The x coordinate of the node;</p>
 <p><code>y</code>: The y coordinate of the node;</p>
-<section class="level3" data-number="2.3.1"><h4 data-number="2.3.1" id="prepare-the-flows-table">
-<span class="header-section-number">2.3.1</span> Prepare the flows table<a class="anchor" aria-label="anchor" href="#prepare-the-flows-table"></a>
+<section class="level4" data-number="3.3.1"><h4 data-number="3.3.1" id="prepare-the-flows-table">
+<span class="header-section-number">3.3.1</span> Prepare the flows table<a class="anchor" aria-label="anchor" href="#prepare-the-flows-table"></a>
 </h4>
 <p>The previous code chunk created <code>od_20210407_total</code> with the column names expected by <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>.</p>
 <div class="cell">
@@ -218,8 +218,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 2408910 24181_AM   22.3
 5 2408910 4802004     9.45
 6 2408910 4718608     4.75 </code></pre>
-</section><section class="level3" data-number="2.3.2"><h4 data-number="2.3.2" id="prepare-the-nodes-table-with-coordinates">
-<span class="header-section-number">2.3.2</span> Prepare the nodes table with coordinates<a class="anchor" aria-label="anchor" href="#prepare-the-nodes-table-with-coordinates"></a>
+</section><section class="level4" data-number="3.3.2"><h4 data-number="3.3.2" id="prepare-the-nodes-table-with-coordinates">
+<span class="header-section-number">3.3.2</span> Prepare the nodes table with coordinates<a class="anchor" aria-label="anchor" href="#prepare-the-nodes-table-with-coordinates"></a>
 </h4>
 <p>We need the coordinates for each origin and destination. We can use the centroids of <code>districts_v1</code> polygons for that.</p>
 <div class="cell">
@@ -240,11 +240,11 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 1001283.0 4422732 07058_AM
 5  427524.2 4180942  2305006
 6  428302.1 4190937  2305005</code></pre>
-</section></section><section class="level2" data-number="2.4"><h3 data-number="2.4" id="plot-the-flows">
-<span class="header-section-number">2.4</span> Plot the flows<a class="anchor" aria-label="anchor" href="#plot-the-flows"></a>
+</section></section><section class="level3" data-number="3.4"><h3 data-number="3.4" id="plot-the-flows">
+<span class="header-section-number">3.4</span> Plot the flows<a class="anchor" aria-label="anchor" href="#plot-the-flows"></a>
 </h3>
-<section class="level3" data-number="2.4.1"><h4 data-number="2.4.1" id="plot-the-entire-country">
-<span class="header-section-number">2.4.1</span> Plot the entire country<a class="anchor" aria-label="anchor" href="#plot-the-entire-country"></a>
+<section class="level4" data-number="3.4.1"><h4 data-number="3.4.1" id="plot-the-entire-country">
+<span class="header-section-number">3.4.1</span> Plot the entire country<a class="anchor" aria-label="anchor" href="#plot-the-entire-country"></a>
 </h4>
 <p>Now we have the data structure that match the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>‘s expected data format we can plot a sample of the data (a plot containing all flows would be very ’busy’ and world resemble a haystack!). The <code>k_node</code> argument in the <code>add_flowmap</code> function can be used to reduce this business.</p>
 <div class="cell">
@@ -296,12 +296,12 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="va">flows_plot_all_districts</span></span></code></pre></div>
 </div>
 <p><img src="../reference/figures/flows_plot_all_districts.png"></p>
-</section><section class="level3" data-number="2.4.2"><h4 data-number="2.4.2" id="zoom-in-to-the-city-level">
-<span class="header-section-number">2.4.2</span> Zoom in to the city level<a class="anchor" aria-label="anchor" href="#zoom-in-to-the-city-level"></a>
+</section><section class="level4" data-number="3.4.2"><h4 data-number="3.4.2" id="zoom-in-to-the-city-level">
+<span class="header-section-number">3.4.2</span> Zoom in to the city level<a class="anchor" aria-label="anchor" href="#zoom-in-to-the-city-level"></a>
 </h4>
 <p>Let us filter the flows and zones data to just a specific functional urban area to take a closer look at the flows.</p>
-<section class="level4" data-number="2.4.2.1"><h5 data-number="2.4.2.1" id="filter-the-zones">
-<span class="header-section-number">2.4.2.1</span> Filter the zones<a class="anchor" aria-label="anchor" href="#filter-the-zones"></a>
+<section class="level5" data-number="3.4.2.1"><h5 data-number="3.4.2.1" id="filter-the-zones">
+<span class="header-section-number">3.4.2.1</span> Filter the zones<a class="anchor" aria-label="anchor" href="#filter-the-zones"></a>
 </h5>
 <p>Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the <code>district_names_in_v2</code> column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.</p>
 <div class="cell">
@@ -340,8 +340,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 927995.1 4594372 0801904
 5 930418.9 4599218 0801907
 6 930702.3 4597116 0801906</code></pre>
-</section><section class="level4" data-number="2.4.2.2"><h5 data-number="2.4.2.2" id="prepare-the-flows">
-<span class="header-section-number">2.4.2.2</span> Prepare the flows<a class="anchor" aria-label="anchor" href="#prepare-the-flows"></a>
+</section><section class="level5" data-number="3.4.2.2"><h5 data-number="3.4.2.2" id="prepare-the-flows">
+<span class="header-section-number">3.4.2.2</span> Prepare the flows<a class="anchor" aria-label="anchor" href="#prepare-the-flows"></a>
 </h5>
 <p>Now we can use the zone <code>id</code>s from the <code>zones_barcelona_fua</code> data to select the flows that correspond to Barcelona and the 10 km radius around it.</p>
 <div class="cell">
@@ -349,8 +349,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <code class="sourceCode R"><span><span class="va">od_20210407_total_barcelona</span> <span class="op">&lt;-</span> <span class="va">od_20210407_total</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">o</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span> <span class="op">&amp;</span> <span class="va">d</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level4" data-number="2.4.2.3"><h5 data-number="2.4.2.3" id="visualise-the-flows-for-barcelona-and-surrounding-areas">
-<span class="header-section-number">2.4.2.3</span> Visualise the flows for Barcelona and surrounding areas<a class="anchor" aria-label="anchor" href="#visualise-the-flows-for-barcelona-and-surrounding-areas"></a>
+</section><section class="level5" data-number="3.4.2.3"><h5 data-number="3.4.2.3" id="visualise-the-flows-for-barcelona-and-surrounding-areas">
+<span class="header-section-number">3.4.2.3</span> Visualise the flows for Barcelona and surrounding areas<a class="anchor" aria-label="anchor" href="#visualise-the-flows-for-barcelona-and-surrounding-areas"></a>
 </h5>
 <p>Now, we can create a new plot with this data. Once again, we need the <code>k_node</code> argument to tweak the aggregation of nodes and flows. Feel free to tweak it yourself and see how the results change.</p>
 <div class="cell">
@@ -402,8 +402,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="va">flows_plot_barcelona</span></span></code></pre></div>
 </div>
 <p><img src="../reference/figures/flows_plot_barcelona.png"></p>
-</section></section></section></section><section class="section level2" data-number="3"><h2 data-number="3" id="advanced-example">
-<span class="header-section-number">3</span> Advanced example - aggregate flows for <code>{spanishoddata}</code> logo<a class="anchor" aria-label="anchor" href="#advanced-example"></a>
+</section></section></section></section><section class="level2" data-number="4"><h2 data-number="4" id="advanced-example">
+<span class="header-section-number">4</span> Advanced example - aggregate flows for <code>{spanishoddata}</code> logo<a class="anchor" aria-label="anchor" href="#advanced-example"></a>
 </h2>
 <p>For the advanced example we will need two additional packages: <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> <span class="citation" data-cites="R-mapspain">(<a href="#ref-R-mapspain" role="doc-biblioref">Hernangómez 2024</a>)</span> and <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> <span class="citation" data-cites="R-hexSticker">(<a href="#ref-R-hexSticker" role="doc-biblioref"><strong>R-hexSticker?</strong></a>)</span>.</p>
 <div class="cell">
@@ -418,11 +418,11 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<section class="level2" data-number="3.1"><h3 data-number="3.1" id="get-data-1">
-<span class="header-section-number">3.1</span> Get data<a class="anchor" aria-label="anchor" href="#get-data-1"></a>
+<section class="level3" data-number="4.1"><h3 data-number="4.1" id="get-data-1">
+<span class="header-section-number">4.1</span> Get data<a class="anchor" aria-label="anchor" href="#get-data-1"></a>
 </h3>
-<section class="level3" data-number="3.1.1"><h4 data-number="3.1.1" id="flows-1">
-<span class="header-section-number">3.1.1</span> Flows<a class="anchor" aria-label="anchor" href="#flows-1"></a>
+<section class="level4" data-number="4.1.1"><h4 data-number="4.1.1" id="flows-1">
+<span class="header-section-number">4.1.1</span> Flows<a class="anchor" aria-label="anchor" href="#flows-1"></a>
 </h4>
 <p>Just like in the simple example above, we will need the flows to visualise.</p>
 <p>Let us get the origin-destination flows between <code>districts</code> for a typical working day <code>2022-04-06</code>:</p>
@@ -435,8 +435,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">districts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"distr"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3" data-number="3.1.2"><h4 data-number="3.1.2" id="map-of-spain">
-<span class="header-section-number">3.1.2</span> Map of Spain<a class="anchor" aria-label="anchor" href="#map-of-spain"></a>
+</section><section class="level4" data-number="4.1.2"><h4 data-number="4.1.2" id="map-of-spain">
+<span class="header-section-number">4.1.2</span> Map of Spain<a class="anchor" aria-label="anchor" href="#map-of-spain"></a>
 </h4>
 <p>Ultimately, we would like to plot the flows on a map of Spain, so we will aggregate the flows for visualisation to avoid visual clutter. We therefore also need a nice map of Spain, which we will get using <a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a> <span class="citation" data-cites="R-mapspain">(<a href="#ref-R-mapspain" role="doc-biblioref">Hernangómez 2024</a>)</span> package:</p>
 <div class="cell">
@@ -445,11 +445,11 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="va">spain_for_join</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_ccaa.html" class="external-link">esp_get_ccaa</a></span><span class="op">(</span>moveCAN <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>We are getting two sets of boundaries. First one is with Canary Islands moved closer to the mainland Spain, for nicer visualisation. Second one is with the original location of the islands, so that we can spatially join them to the zones <code>districts</code> data we got from <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a>.</p>
-</section></section><section class="level2" data-number="3.2"><h3 data-number="3.2" id="flows-aggregation">
-<span class="header-section-number">3.2</span> Flows aggregation<a class="anchor" aria-label="anchor" href="#flows-aggregation"></a>
+</section></section><section class="level3" data-number="4.2"><h3 data-number="4.2" id="flows-aggregation">
+<span class="header-section-number">4.2</span> Flows aggregation<a class="anchor" aria-label="anchor" href="#flows-aggregation"></a>
 </h3>
-<section class="level3" data-number="3.2.1"><h4 data-number="3.2.1" id="aggregate-raw-origin-destination-data-by-original-ids">
-<span class="header-section-number">3.2.1</span> Aggregate raw origin destination data by original <code>id</code>s<a class="anchor" aria-label="anchor" href="#aggregate-raw-origin-destination-data-by-original-ids"></a>
+<section class="level4" data-number="4.2.1"><h4 data-number="4.2.1" id="aggregate-raw-origin-destination-data-by-original-ids">
+<span class="header-section-number">4.2.1</span> Aggregate raw origin destination data by original <code>id</code>s<a class="anchor" aria-label="anchor" href="#aggregate-raw-origin-destination-data-by-original-ids"></a>
 </h4>
 <p>Let us count the total number of trips made between all locations on our selected day of <code>2022-04-06</code>:</p>
 <div class="cell">
@@ -477,8 +477,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 10 31260_AM  2608902         109.
 # ℹ 402,701 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
-</section><section class="level3" data-number="3.2.2"><h4 data-number="3.2.2" id="match-ids-of-districts-with-autonomous-communities">
-<span class="header-section-number">3.2.2</span> Match <code>id</code>s of <code>districts</code> with autonomous communities<a class="anchor" aria-label="anchor" href="#match-ids-of-districts-with-autonomous-communities"></a>
+</section><section class="level4" data-number="4.2.2"><h4 data-number="4.2.2" id="match-ids-of-districts-with-autonomous-communities">
+<span class="header-section-number">4.2.2</span> Match <code>id</code>s of <code>districts</code> with autonomous communities<a class="anchor" aria-label="anchor" href="#match-ids-of-districts-with-autonomous-communities"></a>
 </h4>
 <p>Now we need to do a spatial join between <code>districts</code> and <code>spain_for_join</code> to find out which districts fall within which autonomous community. We use <code>spain_for_join</code>. If we used <code>spain_for_vis</code>, the <code>districts</code> in the Canary Islands would not match with the boundaries of the islands.</p>
 <div class="cell">
@@ -511,8 +511,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 # ℹ 3,774 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
 <p>This way we get a table with <code>districts</code> <code>id</code>s and their corresponding autonomous community names.</p>
-</section><section class="level3" data-number="3.2.3"><h4 data-number="3.2.3" id="count-flows-between-pairs-of-autonomous-communities">
-<span class="header-section-number">3.2.3</span> Count flows between pairs of autonomous communities<a class="anchor" aria-label="anchor" href="#count-flows-between-pairs-of-autonomous-communities"></a>
+</section><section class="level4" data-number="4.2.3"><h4 data-number="4.2.3" id="count-flows-between-pairs-of-autonomous-communities">
+<span class="header-section-number">4.2.3</span> Count flows between pairs of autonomous communities<a class="anchor" aria-label="anchor" href="#count-flows-between-pairs-of-autonomous-communities"></a>
 </h4>
 <p>We can now add these ids to the total flows by <code>districts</code> <code>id</code> pairs and calculate total flows between autonomous communities:</p>
 <div class="cell">
@@ -548,8 +548,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 10 Andalusia Catalonia             5453.
 # ℹ 348 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
-</section></section><section class="level2" data-number="3.3"><h3 data-number="3.3" id="reshape-flows-for-visualization-1">
-<span class="header-section-number">3.3</span> Reshape flows for visualization<a class="anchor" aria-label="anchor" href="#reshape-flows-for-visualization-1"></a>
+</section></section><section class="level3" data-number="4.3"><h3 data-number="4.3" id="reshape-flows-for-visualization-1">
+<span class="header-section-number">4.3</span> Reshape flows for visualization<a class="anchor" aria-label="anchor" href="#reshape-flows-for-visualization-1"></a>
 </h3>
 <p>We are going to use the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a> <span class="citation" data-cites="flowmapper-r">(<a href="#ref-flowmapper-r" role="doc-biblioref">Mast 2024</a>)</span> package to plot the flows. This package expects the data to be in the following format:</p>
 <p>A <code>data.frame</code> with origin-destination pairs and the flow counts between them with the following columns:</p>
@@ -562,8 +562,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p><code>name</code>: The unique <code>id</code> or <code>name</code> of the node, must match with <code>o</code> and <code>d</code> in the flows <code>data.frame</code> above;</p>
 <p><code>x</code>: The x coordinate of the node;</p>
 <p><code>y</code>: The y coordinate of the node;</p>
-<section class="level3" data-number="3.3.1"><h4 data-number="3.3.1" id="prepare-the-flows-table-1">
-<span class="header-section-number">3.3.1</span> Prepare the flows table<a class="anchor" aria-label="anchor" href="#prepare-the-flows-table-1"></a>
+<section class="level4" data-number="4.3.1"><h4 data-number="4.3.1" id="prepare-the-flows-table-1">
+<span class="header-section-number">4.3.1</span> Prepare the flows table<a class="anchor" aria-label="anchor" href="#prepare-the-flows-table-1"></a>
 </h4>
 <p>The data we have right now in <code>flows_by_ca</code> already has the correct format expected by <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>.</p>
 <div class="cell">
@@ -579,8 +579,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4 Andalusia Balearic Islands      931.
 5 Andalusia Basque Country        769.
 6 Andalusia Canary Islands       1899.</code></pre>
-</section><section class="level3" data-number="3.3.2"><h4 data-number="3.3.2" id="prepare-the-nodes-table-with-coordinates-1">
-<span class="header-section-number">3.3.2</span> Prepare the nodes table with coordinates<a class="anchor" aria-label="anchor" href="#prepare-the-nodes-table-with-coordinates-1"></a>
+</section><section class="level4" data-number="4.3.2"><h4 data-number="4.3.2" id="prepare-the-nodes-table-with-coordinates-1">
+<span class="header-section-number">4.3.2</span> Prepare the nodes table with coordinates<a class="anchor" aria-label="anchor" href="#prepare-the-nodes-table-with-coordinates-1"></a>
 </h4>
 <p>We need the coordinates for each origin and destination. We can use the centroids of <code>districts_v1</code> polygons for that.</p>
 <div class="cell">
@@ -601,8 +601,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 4   2.9065933 39.57481 Balearic Islands
 5 -10.7324736 35.36091   Canary Islands
 6  -4.0300438 43.19772        Cantabria</code></pre>
-</section></section><section class="level2" data-number="3.4"><h3 data-number="3.4" id="plot-the-flows-1">
-<span class="header-section-number">3.4</span> Plot the flows<a class="anchor" aria-label="anchor" href="#plot-the-flows-1"></a>
+</section></section><section class="level3" data-number="4.4"><h3 data-number="4.4" id="plot-the-flows-1">
+<span class="header-section-number">4.4</span> Plot the flows<a class="anchor" aria-label="anchor" href="#plot-the-flows-1"></a>
 </h3>
 <p>Now we have the data structure that match the <a href="https://github.com/JohMast/flowmapper" class="external-link">flowmapper</a>’s expected data format:</p>
 <div class="cell">
@@ -649,8 +649,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 </div>
 <p><img src="../reference/figures/logo-before-hex.png"></p>
 <p>The image may look a bit bleak, but when we put it on a sticker, it will look great.</p>
-</section><section class="level2" data-number="3.5"><h3 data-number="3.5" id="make-the-sticker">
-<span class="header-section-number">3.5</span> Make the sticker<a class="anchor" aria-label="anchor" href="#make-the-sticker"></a>
+</section><section class="level3" data-number="4.5"><h3 data-number="4.5" id="make-the-sticker">
+<span class="header-section-number">4.5</span> Make the sticker<a class="anchor" aria-label="anchor" href="#make-the-sticker"></a>
 </h3>
 <p>We make the sticker using the <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> <span class="citation" data-cites="hexSticker-r">(<a href="#ref-hexSticker-r" role="doc-biblioref">Yu 2020</a>)</span> package.</p>
 <div class="cell">

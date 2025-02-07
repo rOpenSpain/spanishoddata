@@ -103,8 +103,8 @@
 </ul>
 <p><strong>Note: Kindly consult the documents above for any specific details on the methodology. The codebook here is only a simplified summary.</strong></p>
 <p>To access the data we reference in this codebook, please follow these steps:</p>
-<section class="section level3"><h3 id="install-package">Install the package<a class="anchor" aria-label="anchor" href="#install-package"></a>
-</h3>
+<section class="level2"><h2 id="install-package">Install the package<a class="anchor" aria-label="anchor" href="#install-package"></a>
+</h2>
 <p>Install from CRAN:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
@@ -144,8 +144,8 @@ Alternative installation and developemnt
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Using the instructions below, set the data folder for the package to download the files into. You may need up to 30 GB to download all data and another 30 GB if you would like to convert the downloaded data into analysis ready format (a <code>DuckDB</code> database file, or a folder of <code>parquet</code> files). You can find more info on this conversion in the <a href="convert.html">Download and convert OD datasets</a> vignette.</p>
-</section><section class="section level3"><h3 id="set-data-folder">Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
-</h3>
+</section><section class="level2"><h2 id="set-data-folder">Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h2>
 <p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
@@ -172,7 +172,7 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</details></section><section class="section level2"><h2 id="overall-approach-to-accessing-the-data">Overall approach to accessing the data<a class="anchor" aria-label="anchor" href="#overall-approach-to-accessing-the-data"></a>
+</details></section><section class="level2"><h2 id="overall-approach-to-accessing-the-data">Overall approach to accessing the data<a class="anchor" aria-label="anchor" href="#overall-approach-to-accessing-the-data"></a>
 </h2>
 <p>If you only need flows data aggregated by day at municipal level, you can use the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. This will download the data directly from the web API and let you analyse it in-memory. More on this in the <a href="https://ropenspain.github.io/spanishoddata/articles/quick-get.html" class="external-link">Quickly get daily data</a> vignette.</p>
 <p>If you only want to analyse the data for a few days, you can use the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.</p>
@@ -185,10 +185,10 @@ Setting data directory for advanced users
 Figure 1: The overview of package functions to get the data
 </figcaption></figure>
 </div>
-</section><section class="section level2"><h2 id="spatial-data-with-zoning-boundaries">1. Spatial data with zoning boundaries<a class="anchor" aria-label="anchor" href="#spatial-data-with-zoning-boundaries"></a>
+</section><section class="level2"><h2 id="spatial-data-with-zoning-boundaries">1. Spatial data with zoning boundaries<a class="anchor" aria-label="anchor" href="#spatial-data-with-zoning-boundaries"></a>
 </h2>
-<p>The boundary data is provided at two geographic levels: <a href="#districts"><code>Distrtics</code></a> and <a href="#municipalities"><code>Municipalities</code></a>. It’s important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities”.</p>
-<section class="level2"><h3 id="districts">1.1 <code>Districts</code>
+<p>The boundary data is provided at two geographic levels: <a href="#districts"><code>Districts</code></a> and <a href="#municipalities"><code>Municipalities</code></a>. It’s important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities”.</p>
+<section class="level3"><h3 id="districts">1.1 <code>Districts</code>
 <a class="anchor" aria-label="anchor" href="#districts"></a>
 </h3>
 <p><code>Districts</code> correspond to official census districts in cities; however, in those with lower population density, they are grouped together. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset. Therefore, there are 2850 ‘districts’ compared to the 10494 official census districts on which they are based.</p>
@@ -207,7 +207,7 @@ Figure 1: The overview of package functions to get the data
 <tbody>
 <tr class="odd">
 <td><code>id</code></td>
-<td>District <code>id</code> assigned by the data provider. Matches with <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in district level <a href="#od-data">origin-destination data</a> and <a href="#nt-data">number of trips data</a>.</td>
+<td>District <code>id</code> assigned by the data provider. Matches with <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in district level <a href="#od-data">origin-destination data</a> and <a href="#ptc-data">number of trips data</a>.</td>
 </tr>
 <tr class="even">
 <td><code>census_districts</code></td>
@@ -230,7 +230,7 @@ Figure 1: The overview of package functions to get the data
 <td>A string with semicolon-separated list of identifiers of district polygons defined in the <a href="v2-2022-onwards-mitma-data-codebook.html">v2 version of this data</a> that covers the year 2022 and onwards that correspond to polygons with <code>id</code> above.</td>
 </tr>
 </tbody>
-</table></section><section class="level2"><h3 id="municipalities">1.2 <code>Municipalities</code>
+</table></section><section class="level3"><h3 id="municipalities">1.2 <code>Municipalities</code>
 <a class="anchor" aria-label="anchor" href="#municipalities"></a>
 </h3>
 <p><code>Municipalities</code> are made up of official municipalities in those of a certain size; however, they have also been aggregated in cases of lower population density. As a result, there are 2,205 municipalities compared to the 8,125 official municipalities on which they are based.</p>
@@ -249,7 +249,7 @@ Figure 1: The overview of package functions to get the data
 <tbody>
 <tr class="odd">
 <td><code>id</code></td>
-<td>District <code>id</code> assigned by the data provider. Matches with <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in municipality level <a href="#od-data">origin-destination data</a> and <a href="#nt-data">number of trips data</a>.</td>
+<td>District <code>id</code> assigned by the data provider. Matches with <code>id_origin</code>, <code>id_destination</code>, and <code>id</code> in municipality level <a href="#od-data">origin-destination data</a> and <a href="#pop-tc">population by trip count</a>.</td>
 </tr>
 <tr class="even">
 <td><code>municipalities</code></td>
@@ -274,12 +274,12 @@ Figure 1: The overview of package functions to get the data
 </tbody>
 </table>
 <p>The spatial data you get via <code>spanishoddata</code> package is downloaded directly from the source, the geometries of polygons are automatically fixed if there are any invalid geometries. The zone identifiers are stored in <code>id</code> column. Apart from that <code>id</code> column, the original zones files do not have any metadata. However, as seen above, using the <code>spanishoddata</code> package you get many additional columns that provide a semantic connection between official statistical zones used by the Spanish government and the zones you can get for the v2 data (for 2022 onward).</p>
-</section></section><section class="section level2"><h2 id="mobility-data">2. Mobility data<a class="anchor" aria-label="anchor" href="#mobility-data"></a>
+</section></section><section class="level2"><h2 id="mobility-data">2. Mobility data<a class="anchor" aria-label="anchor" href="#mobility-data"></a>
 </h2>
 <p>All mobility data is referenced via <code>id_origin</code>, <code>id_destination</code>, or other location identifiers (mostly labelled as <code>id</code>) with the two sets of zones described above.</p>
-<section class="level2"><h3 id="od-data">2.1. Origin-destination data<a class="anchor" aria-label="anchor" href="#od-data"></a>
+<section class="level3"><h3 id="od-data">2.1. Origin-Destination data<a class="anchor" aria-label="anchor" href="#od-data"></a>
 </h3>
-<p>The origin-destination data contain the number of trips between <code>districts</code> or <code>municipalities</code> in Spain for every hour of every day between 2020-02-14 and 2021-05-09. Each flow also has attributes such as the trip purpose (composed of the type of activity (<code>home</code>/<code>work_or_study</code>/<code>other</code>) at both the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table. <a href="#fig-flows-barcelona" class="quarto-xref">Figure 2</a> shows an example of total flows in the province of Barcelona on Feb 14th, 2020.</p>
+<p>The origin-destination data contain the number of trips and distance travelled between <code>districts</code> or <code>municipalities</code> in Spain for every hour of every day between 2020-02-14 and 2021-05-09. Each flow also has attributes such as the trip purpose (composed of the type of activity (<code>home</code>/<code>work_or_study</code>/<code>other</code>) at both the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table. <a href="#fig-flows-barcelona" class="quarto-xref">Figure 2</a> shows an example of total flows in the province of Barcelona on Feb 14th, 2020.</p>
 <div id="fig-flows-barcelona" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-flows-barcelona-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="media/flows_plot.svg" style="width:70.0%">
@@ -310,16 +310,28 @@ Figure 2: Origin destination flows in Barcelona on 2020-02-14
 <td>The date of the recorded data, formatted as <code>YYYY-MM-DD</code>.</td>
 </tr>
 <tr class="even">
+<td><code>hour</code></td>
+<td><code>periodo</code></td>
+<td><code>integer</code></td>
+<td>The time slot during which the trips occurred. <em>Note</em>: this column used to be called <code>time_slot</code>, it is still going to be available in the output of package functions until the end of 2025, but going forward please use <code>hour</code> instead.</td>
+</tr>
+<tr class="odd">
 <td><code>id_origin</code></td>
 <td><code>origen</code></td>
 <td><code>factor</code></td>
 <td>The origin zone <code>id</code> of <code>district</code> or <code>municipalitity</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>id_destination</code></td>
 <td><code>destino</code></td>
 <td><code>factor</code></td>
 <td>The destination zone <code>id</code> of <code>district</code> or <code>municipalitity</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>distance</code></td>
+<td><code>distancia</code></td>
+<td><code>factor</code></td>
+<td>The distance range of the trip, categorized into specific intervals such as <code>0005-002</code> (500 m to 2 km), <code>002-005</code> (2-5 km), <code>005-010</code> (5-10km), <code>010-050</code> (10-50 km), <code>050-100</code> (50-100 km), and <code>100+</code> (more than 100 km).</td>
 </tr>
 <tr class="even">
 <td><code>activity_origin</code></td>
@@ -345,18 +357,6 @@ Figure 2: Origin destination flows in Barcelona on 2020-02-14
 </td>
 <td><code>factor</code></td>
 <td>The full name of the residence province, derived from the province code above.</td>
-</tr>
-<tr class="even">
-<td><code>time_slot</code></td>
-<td><code>periodo</code></td>
-<td><code>integer</code></td>
-<td>The time slot during which the trips occurred.</td>
-</tr>
-<tr class="odd">
-<td><code>distance</code></td>
-<td><code>distancia</code></td>
-<td><code>factor</code></td>
-<td>The distance range of the trip, categorized into specific intervals such as <code>0005-002</code> (500 m to 2 km), <code>002-005</code> (2-5 km), <code>005-010</code> (5-10km), <code>010-050</code> (10-50 km), <code>050-100</code> (50-100 km), and <code>100+</code> (more than 100 km).</td>
 </tr>
 <tr class="even">
 <td><code>n_trips</code></td>
@@ -408,7 +408,7 @@ Data transformation note
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="va">od_mean_hourly_trips_over_the_4_days</span> <span class="op">&lt;-</span> <span class="va">od_dist</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time_slot</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">hour</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    mean_hourly_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -416,7 +416,7 @@ Data transformation note
 <span><span class="va">od_mean_hourly_trips_over_the_4_days</span></span></code></pre></div>
 </div>
 <pre><code># A tibble: 24 × 2
-   time_slot mean_hourly_trips
+   hour mean_hourly_trips
        &lt;int&gt;             &lt;dbl&gt;
  1        18              21.4
  2        10              19.3
@@ -438,9 +438,9 @@ Data transformation note
 <p>As long as you use a table connection object created with <code><a href="../reference/spod_get.html">spod_get()</a></code> function, it is much quicker to filter the dates by the <code>year</code>, <code>month</code> and <code>day</code> variables, rather than by the <code>date</code> variable. This is because the data for each day is in a separate CSV file located in folders that look like <code>year=2020/month=2/day=14</code>. So when filtering by the <code>date</code> field, R will have to scan all CSV files comparing the specified date with what is stored inside each CSV file. However, if you query by <code>year</code>, <code>month</code> and <code>day</code> variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use <code><a href="../reference/spod_get.html">spod_get()</a></code> . If you convert (see the <a href="convert.qmd">relevant vignette</a>) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance.</p>
 </blockquote>
 </div>
-</section><section class="level2"><h3 id="nt-data">2.2. Number of trips data<a class="anchor" aria-label="anchor" href="#nt-data"></a>
+</section><section class="level3"><h3 id="ptc-data">2.2. Population by trip count data<a class="anchor" aria-label="anchor" href="#ptc-data"></a>
 </h3>
-<p>The “number of trips” data shows the number of individuals in each district or municipality who made trips categorised by the number of trips.</p>
+<p>The population by trip count data shows the number of individuals in each district or municipality, categorized by the trips they make: 0, 1, 2, or more than 2.</p>
 <table class="table caption-top">
 <colgroup>
 <col style="width: 22%">
@@ -477,7 +477,7 @@ Data transformation note
 <td><code>n_persons</code></td>
 <td><code>personas</code></td>
 <td><code>factor</code></td>
-<td>The number of persons making the trips from <code>district</code> or <code>municipality</code> with zone <code>id</code>.</td>
+<td>The number of individuals making the trips from <code>district</code> or <code>municipality</code> with zone <code>id</code>.</td>
 </tr>
 <tr class="odd">
 <td><code>year</code></td>
@@ -514,7 +514,7 @@ Data transformation note
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nt_dist_tbl</span> <span class="op">&lt;-</span> <span class="va">nt_dist</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section><section class="section level2"><h2 id="advanced-use">Advanced use<a class="anchor" aria-label="anchor" href="#advanced-use"></a>
+</section></section><section class="level2"><h2 id="advanced-use">Advanced use<a class="anchor" aria-label="anchor" href="#advanced-use"></a>
 </h2>
 <p>For more advanced use, especially for analysing longer periods (months or even years), please see <a href="convert.html">Download and convert mobility datasets</a>.</p>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">

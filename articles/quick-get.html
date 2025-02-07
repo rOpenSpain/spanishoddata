@@ -84,11 +84,11 @@
 
 
 
-    <section class="section level2" data-number="1"><h2 data-number="1" id="intro">
+    <section class="level2" data-number="1"><h2 data-number="1" id="intro">
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h2>
 <p>This vignette demonstrates how to get minimal daily aggregated data on the number of trips between municipalities using the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. With this function, you only get total trips for a single day, and no additional variables that are available in the full <a href="v2-2022-onwards-mitma-data-codebook.html">v2 (2022 onwards) data set</a>. The advantage of this function is that it is much faster than downloading the full data from source CSV files using <code><a href="../reference/spod_get.html">spod_get()</a></code>, as each CSV file for a single day is about 200 MB in size. Also, this way of getting the data is much less demanding on your computer as you are only getting a small table from the internet (less than 1 MB), and no data processing (such as aggregation from more detailed hourly data with extra columns that is happening when you use <code><a href="../reference/spod_get.html">spod_get()</a></code> function) is required on your computer.</p>
-</section><section class="section level2" data-number="2"><h2 data-number="2" id="setup">
+</section><section class="level2" data-number="2"><h2 data-number="2" id="setup">
 <span class="header-section-number">2</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <p>Make sure you have loaded the package:</p>
@@ -98,9 +98,9 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<section class="level2" data-number="2.1"><h3 data-number="2.1" id="set-data-folder">
-<span class="header-section-number">2.1</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
-</h3>
+</section><section class="level2" data-number="3"><h2 data-number="3" id="set-data-folder">
+<span class="header-section-number">3</span> Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h2>
 <p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
@@ -133,11 +133,11 @@ Setting data directory for advanced users
 <p>Setting a local data directory in this case is optional, as the data is downloaded directly from the web API and there is no caching on disk. However, the metadata will be downloaded to check the range of valid dates available at the time of the request. So metadata will be downloaded to a temporary location by default, or to the data directory, if you do set it.</p>
 </blockquote>
 </div>
-</section></section><section class="section level2" data-number="3"><h2 data-number="3" id="get-data">
-<span class="header-section-number">3</span> Get the data<a class="anchor" aria-label="anchor" href="#get-data"></a>
+</section><section class="level2" data-number="4"><h2 data-number="4" id="get-data">
+<span class="header-section-number">4</span> Get the data<a class="anchor" aria-label="anchor" href="#get-data"></a>
 </h2>
-<section class="level2" data-number="3.1"><h3 data-number="3.1" id="get-all-flows-with-at-least-1000-trips">
-<span class="header-section-number">3.1</span> Get all flows with at least 1000 trips<a class="anchor" aria-label="anchor" href="#get-all-flows-with-at-least-1000-trips"></a>
+<section class="level3" data-number="4.1"><h3 data-number="4.1" id="get-all-flows-with-at-least-1000-trips">
+<span class="header-section-number">4.1</span> Get all flows with at least 1000 trips<a class="anchor" aria-label="anchor" href="#get-all-flows-with-at-least-1000-trips"></a>
 </h3>
 <p>To get the data, use the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. There is no need to specify whether you need municipalities or districts, as the only municipal level data can be accessed with this function. The <code>min_trips</code> argument specifies the minimum number of trips to include in the data. If you set <code>min_trips</code> to 0, you will get all data for all origin-destination pairs for the specified date.</p>
 <div class="cell">
@@ -179,8 +179,8 @@ $ trips_total_length_km &lt;int&gt; 27130, 13743, 26700, 10603, 12228, 69999,…
 10 2022-01-01 01017_AM  01017_AM          1847                 12695
 # ℹ 8,514 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
-</section><section class="level2" data-number="3.2"><h3 data-number="3.2" id="get-only-trips-of-certain-length">
-<span class="header-section-number">3.2</span> Get only trips of certain length<a class="anchor" aria-label="anchor" href="#get-only-trips-of-certain-length"></a>
+</section><section class="level3" data-number="4.2"><h3 data-number="4.2" id="get-only-trips-of-certain-length">
+<span class="header-section-number">4.2</span> Get only trips of certain length<a class="anchor" aria-label="anchor" href="#get-only-trips-of-certain-length"></a>
 </h3>
 <p>To get only trips of a certain length, use the <code>distances</code> argument.</p>
 <div class="cell">
@@ -221,8 +221,8 @@ $ trips_total_length_km &lt;int&gt; 339, 161, 924, 5052, 2955, 2453, 29630, 1…
 10 2022-01-01 08015     08902              166                  2042
 # ℹ 247,198 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
-</section><section class="level2" data-number="3.3"><h3 data-number="3.3" id="get-only-trips-between-certain-municipalities">
-<span class="header-section-number">3.3</span> Get only trips between certain municipalities<a class="anchor" aria-label="anchor" href="#get-only-trips-between-certain-municipalities"></a>
+</section><section class="level3" data-number="4.3"><h3 data-number="4.3" id="get-only-trips-between-certain-municipalities">
+<span class="header-section-number">4.3</span> Get only trips between certain municipalities<a class="anchor" aria-label="anchor" href="#get-only-trips-between-certain-municipalities"></a>
 </h3>
 <p>To get only trips between certain municipalities, use the <code>id_origin</code> and <code>id_destination</code> arguments.</p>
 <p>You can get all valid munincipality identifiers with the <code>spod_get_zones("muni", ver = 2)</code> function. This function will need to download some spatial data, so it might take some time and you might want to <a href="#setup">setup the data download folder</a> with <code>spod_setup_cache()</code> if you have not done so before.</p>
@@ -231,8 +231,8 @@ $ trips_total_length_km &lt;int&gt; 339, 161, 924, 5052, 2955, 2453, 29630, 1…
 <code class="sourceCode R"><span><span class="va">municipalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"muni"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">municipalities</span><span class="op">)</span></span></code></pre></div>
 </div>
-<section class="level3" data-number="3.3.1"><h4 data-number="3.3.1" id="all-trips-from-madrid">
-<span class="header-section-number">3.3.1</span> All trips from Madrid<a class="anchor" aria-label="anchor" href="#all-trips-from-madrid"></a>
+<section class="level4" data-number="4.3.1"><h4 data-number="4.3.1" id="all-trips-from-madrid">
+<span class="header-section-number">4.3.1</span> All trips from Madrid<a class="anchor" aria-label="anchor" href="#all-trips-from-madrid"></a>
 </h4>
 <p>Let us select all locations with Madrid in the name:</p>
 <div class="cell">
@@ -279,8 +279,8 @@ $ trips_total_length_km &lt;int&gt; 11120, 7268, 75798, 3385, 82, 296, 1036, …
 10 2022-01-01 28073     46120_AM             2                   631
 # ℹ 2,222 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
-</section><section class="level3" data-number="3.3.2"><h4 data-number="3.3.2" id="all-trips-from-madrid-to-barcelona">
-<span class="header-section-number">3.3.2</span> All trips from Madrid to Barcelona<a class="anchor" aria-label="anchor" href="#all-trips-from-madrid-to-barcelona"></a>
+</section><section class="level4" data-number="4.3.2"><h4 data-number="4.3.2" id="all-trips-from-madrid-to-barcelona">
+<span class="header-section-number">4.3.2</span> All trips from Madrid to Barcelona<a class="anchor" aria-label="anchor" href="#all-trips-from-madrid-to-barcelona"></a>
 </h4>
 <p>Similarly, you can set limits on the destination municipalities:</p>
 <div class="cell">

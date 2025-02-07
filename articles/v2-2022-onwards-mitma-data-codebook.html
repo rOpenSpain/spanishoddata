@@ -117,8 +117,8 @@
 </blockquote>
 </div>
 <p>To access the data we reference in this codebook, please follow these steps:</p>
-<section class="section level3"><h3 id="install-package">Install the package<a class="anchor" aria-label="anchor" href="#install-package"></a>
-</h3>
+<section class="level2"><h2 id="install-package">Install the package<a class="anchor" aria-label="anchor" href="#install-package"></a>
+</h2>
 <p>Install from CRAN:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
@@ -158,8 +158,8 @@ Alternative installation and developemnt
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Using the instructions below, set the data folder for the package to download the files into. You may need up to 400 GB to download all data and another 400 GB if you would like to convert the downloaded data into analysis ready format (a <code>DuckDB</code> database file, or a folder of <code>parquet</code> files). You can find more info on this conversion in the <a href="convert.html">Download and convert OD datasets</a> vignette.</p>
-</section><section class="section level3"><h3 id="set-data-folder">Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
-</h3>
+</section><section class="level2"><h2 id="set-data-folder">Set the data directory<a class="anchor" aria-label="anchor" href="#set-data-folder"></a>
+</h2>
 <p>Choose where <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a> should download (and convert) the data by setting the data directory following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
@@ -186,7 +186,7 @@ Setting data directory for advanced users
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">".Renviron"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</details></section><section class="section level2"><h2 id="overall-approach-to-accessing-the-data">Overall approach to accessing the data<a class="anchor" aria-label="anchor" href="#overall-approach-to-accessing-the-data"></a>
+</details></section><section class="level2"><h2 id="overall-approach-to-accessing-the-data">Overall approach to accessing the data<a class="anchor" aria-label="anchor" href="#overall-approach-to-accessing-the-data"></a>
 </h2>
 <p>If you only need flows data aggregated by day at municipal level, you can use the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. This will download the data directly from the web API and let you analyse it in-memory. More on this in the <a href="https://ropenspain.github.io/spanishoddata/articles/quick-get.html" class="external-link">Quickly get daily data</a> vignette.</p>
 <p>If you only want to analyse the data for a few days, you can use the <code><a href="../reference/spod_get.html">spod_get()</a></code> function. It will download the raw data in CSV format and let you analyse it in-memory. This is what we cover in the steps on this page.</p>
@@ -199,10 +199,10 @@ Setting data directory for advanced users
 Figure 1: The overview of package functions to get the data
 </figcaption></figure>
 </div>
-</section><section class="section level2"><h2 id="spatial-data-with-zoning-boundaries">1. Spatial data with zoning boundaries<a class="anchor" aria-label="anchor" href="#spatial-data-with-zoning-boundaries"></a>
+</section><section class="level2"><h2 id="spatial-data-with-zoning-boundaries">1. Spatial data with zoning boundaries<a class="anchor" aria-label="anchor" href="#spatial-data-with-zoning-boundaries"></a>
 </h2>
 <p>The boundary data is provided at three geographic levels: <a href="#districts"><code>Distrtics</code></a>, <a href="#municipalities"><code>Municipalities</code></a>, and <a href="#lua"><code>Large Urban Areas</code></a>. It’s important to note that these do not always align with the official Spanish census districts and municipalities. To comply with data protection regulations, certain aggregations had to be made to districts and municipalities”.</p>
-<section class="level2"><h3 id="districts">1.1 <code>Districts</code>
+<section class="level3"><h3 id="districts">1.1 <code>Districts</code>
 <a class="anchor" aria-label="anchor" href="#districts"></a>
 </h3>
 <p><code>Districts</code> correspond to official census districts in cities; however, in those with lower population density, they are grouped together. In rural areas, one district is often equal to a municipality, but municipalities with low population are combined into larger units to preserve privacy of individuals in the dataset. Therefore, there are 3792 ‘districts’ compared to the 10494 official census districts on which they are based. There are also <a href="https://ec.europa.eu/eurostat/web/nuts" target="_blank" class="external-link">NUTS3 statistical regions</a> covering France (94 units) and Portugal (23 units). Therefore there is a total of 3909 zones in the <code>Districts</code> dataset.</p>
@@ -259,7 +259,7 @@ Figure 1: The overview of package functions to get the data
 <td>Spatial geometry of each district stored as a <code>MULTIPOLYGON</code> object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.</td>
 </tr>
 </tbody>
-</table></section><section class="level2"><h3 id="municipalities">1.2 <code>Municipalities</code>
+</table></section><section class="level3"><h3 id="municipalities">1.2 <code>Municipalities</code>
 <a class="anchor" aria-label="anchor" href="#municipalities"></a>
 </h3>
 <p><code>Municipalities</code> are made up of official municipalities in those of a certain size; however, they have also been aggregated in cases of lower population density. As a result, there are 2618 municipalities compared to the 8,125 official municipalities on which they are based. There are also <a href="https://ec.europa.eu/eurostat/web/nuts" target="_blank" class="external-link">NUTS3 statistical regions</a> covering France (94 units) and Portugal (23 units). Therefore there is a total of 2735 zones in the <code>Districts</code> dataset.</p>
@@ -316,7 +316,7 @@ Figure 1: The overview of package functions to get the data
 <td>Spatial geometry of each district stored as a <code>MULTIPOLYGON</code> object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.</td>
 </tr>
 </tbody>
-</table></section><section class="level2"><h3 id="luas">1.3 <code>LUAs (Large Urban Areas)</code>
+</table></section><section class="level3"><h3 id="luas">1.3 <code>LUAs (Large Urban Areas)</code>
 <a class="anchor" aria-label="anchor" href="#luas"></a>
 </h3>
 <p><code>Large Urban Areas (LUAs)</code> has essentially the same spatial units as <a href="#municipalities"><code>Municipalities</code></a>, but are not aggregated. Therefore, there are 2086 locations in the <code>LUAs</code> dataset. There are also <a href="https://ec.europa.eu/eurostat/web/nuts" target="_blank" class="external-link">NUTS3 statistical regions</a> covering France (94 units) and Portugal (23 units). Therefore there is a total of 2203 zones in the <code>LUAs</code> dataset.</p>
@@ -369,10 +369,10 @@ Figure 1: The overview of package functions to get the data
 <td>Spatial geometry of each district stored as a <code>MULTIPOLYGON</code> object, projected in the ETRS89 / UTM zone 30N CRS with XY dimensions.</td>
 </tr>
 </tbody>
-</table></section></section><section class="section level2"><h2 id="mobility-data">2. Mobility data<a class="anchor" aria-label="anchor" href="#mobility-data"></a>
+</table></section></section><section class="level2"><h2 id="mobility-data">2. Mobility data<a class="anchor" aria-label="anchor" href="#mobility-data"></a>
 </h2>
 <p>All mobility data is referenced via <code>id_origin</code>, <code>id_destination</code>, or other location identifiers (mostly labelled as <code>id</code>) with the two sets of zones described above.</p>
-<section class="level2"><h3 id="od-data">2.1. Origin-destination data<a class="anchor" aria-label="anchor" href="#od-data"></a>
+<section class="level3"><h3 id="od-data">2.1. Origin-destination data<a class="anchor" aria-label="anchor" href="#od-data"></a>
 </h3>
 <p>The origin-destination data contain the number of trips between <code>districts</code>, <code>municipalities</code>, or <code>large urban areas (LUAs)</code> in Spain for every hour of every day between 2022-02-01 and whichever currently available latest data (2024-06-30 at the time of writing). Each flow also has attributes such as the trip purpose (composed of the type of activity (<code>home</code>/<code>work_or_study</code>/<code>frequent_activity</code>/<code>infrequent_activity</code>) at both the origin and destination, but also age, sex, and income of each group of individuals traveling between the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table.</p>
 <p>Here are the variables you can find in the <code>district</code>, <code>municipality</code> and <code>large urban area</code> level data:</p>
@@ -391,10 +391,10 @@ Figure 1: The overview of package functions to get the data
 <td>The date of the recorded data, formatted as <code>YYYY-MM-DD</code>.</td>
 </tr>
 <tr class="even">
-<td><code>time_slot</code></td>
+<td><code>hour</code></td>
 <td><code>periodo</code></td>
 <td><code>integer</code></td>
-<td>The time slot during which the trips occurred.</td>
+<td>The time slot during which the trips occurred. <em>Note</em>: this column used to be called <code>time_slot</code>, it is still going to be available in the output of package functions until the end of 2025, but going forward please use <code>hour</code> instead.</td>
 </tr>
 <tr class="odd">
 <td><code>id_origin</code></td>
@@ -544,17 +544,17 @@ Figure 1: The overview of package functions to get the data
 10 0-25  male   &lt;10              1558461.
 # ℹ 29 more rows
 # ℹ Use `print(n = ...)` to see more rows</code></pre>
-<p>In this example above, becaus the data is with hourly intervals within each day, we first summed the number of trips for each day by age, sex, and income groups. We then grouped the data again dropping the day variable and calculated the mean number of trips per day by age, sex, and income groups. The full data for all 4 days was probably never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. If you were doing the same opearation on 100 or even more days, it would work in the same way and would be possible even with limited memory. This is done transparantly to the user with the help of <a href="https://duckdb.org/" target="_blank" class="external-link"><code>DuckDB</code></a> (specifically, with <a href="https://r.duckdb.org/index.html" target="_blank" class="external-link">{duckdb} R package</a> <span class="citation" data-cites="duckdb-r">Mühleisen and Raasveldt (<a href="#ref-duckdb-r" role="doc-biblioref">2024</a>)</span>).</p>
-<p>The same summary operation as provided in the example above can be done with the entire dataset for multiple years worth of data on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, please also see the <a href="convert.qmd">vignette on converting the data</a> into formats that will increase the analsysis performance.</p>
+<p>In this example above, because the data is with hourly intervals within each day, we first summed the number of trips for each day by age, sex, and income groups. We then grouped the data again dropping the day variable and calculated the mean number of trips per day by age, sex, and income groups. The full data for all 4 days was probably never loaded into memory all at once. Rather the available memory of the computer was used up to its maximum limit to make that calculation happen, without ever exceeding the available memory limit. If you were doing the same opearation on 100 or even more days, it would work in the same way and would be possible even with limited memory. This is done transparently to the user with the help of <a href="https://duckdb.org/" target="_blank" class="external-link"><code>DuckDB</code></a> (specifically, with <a href="https://r.duckdb.org/index.html" target="_blank" class="external-link">{duckdb} R package</a> <span class="citation" data-cites="duckdb-r">Mühleisen and Raasveldt (<a href="#ref-duckdb-r" role="doc-biblioref">2024</a>)</span>).</p>
+<p>The same summary operation as provided in the example above can be done with the entire dataset for multiple years worth of data on a regular laptop with 8-16 GB memory. It will take a bit of time to complete, but it will be done. To speed things up, please also see the <a href="convert.qmd">vignette on converting the data</a> into formats that will increase the analysis performance.</p>
 <div>
 <blockquote>
 <p><strong>Note</strong></p>
 <p>As long as you use a table connection object created with <code><a href="../reference/spod_get.html">spod_get()</a></code> function, it is much quicker to filter the dates by the <code>year</code>, <code>month</code> and <code>day</code> variables, rather than by the <code>date</code> variable. This is because the data for each day is in a separate CSV file located in folders that look like <code>year=2020/month=2/day=14</code>. So when filtering by the <code>date</code> field, R will have to scan all CSV files comparing the specified date with what is stored inside each CSV file. However, if you query by <code>year</code>, <code>month</code> and <code>day</code> variables, R only needs to check these against the path to each CSV file, which is much quicker. This caveat is only relevant as long as you use <code><a href="../reference/spod_get.html">spod_get()</a></code> . If you convert (see the <a href="convert.qmd">relevant vignette</a>) the downloaded data to a format that it optimized for quick analysis, you can use whichever field you want, it should not affect the performance.</p>
 </blockquote>
 </div>
-</section><section class="level2"><h3 id="nt-data">2.2. Number of trips data<a class="anchor" aria-label="anchor" href="#nt-data"></a>
+</section><section class="level3"><h3 id="ptc-data">2.2. Population by trip count data<a class="anchor" aria-label="anchor" href="#ptc-data"></a>
 </h3>
-<p>For each location, the “number of trips” data provides the number of individuals who spent the night there, with breakdown by the number of trips made, age, and sex.</p>
+<p>The population by trip count data shows the number of individuals in each district or municipality, categorized by the trips they make (0, 1, 2, or more than 2), age, and sex.</p>
 <table class="table caption-top">
 <thead><tr class="header">
 <th><strong>English Variable Name</strong></th>
@@ -631,7 +631,7 @@ Figure 1: The overview of package functions to get the data
 <div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nt_dist_tbl</span> <span class="op">&lt;-</span> <span class="va">nt_dist</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h3 id="os-data">2.3. Overnight stays<a class="anchor" aria-label="anchor" href="#os-data"></a>
+</section><section class="level3"><h3 id="pos-data">2.3. Population by overnight stay data<a class="anchor" aria-label="anchor" href="#pos-data"></a>
 </h3>
 <p>This dataset provides the number of people who spend the night in each location, also identifying their place of residence down to the census district level according to the <a href="https://www.ine.es/ss/Satellite?c=Page&amp;p=1259952026632&amp;pagename=ProductosYServicios%2FPYSLayout&amp;cid=1259952026632&amp;L=1" target="_blank" class="external-link">INE encoding</a>.</p>
 <p>Here are the variables you can find in the <code>district</code>, <code>municipality</code> and <code>large urban area</code> level data:</p>
@@ -699,12 +699,15 @@ Figure 1: The overview of package functions to get the data
 <div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">os_dist_tbl</span> <span class="op">&lt;-</span> <span class="va">os_dist</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
+</section></section><section class="level2"><h2 id="advanced-use">Advanced use<a class="anchor" aria-label="anchor" href="#advanced-use"></a>
+</h2>
+<p>For more advanced use, especially for analysing longer periods (months or even years), please see <a href="convert.html">Download and convert mobility datasets</a>.</p>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-duckdb-r" class="csl-entry" role="listitem">
 Mühleisen, Hannes, and Mark Raasveldt. 2024. <em>Duckdb: DBI Package for the DuckDB Database Management System</em>. <a href="https://doi.org/10.32614/CRAN.package.duckdb" class="external-link">https://doi.org/10.32614/CRAN.package.duckdb</a>.
 </div>
 </div>
-</section></section><script id="quarto-html-after-body" type="application/javascript">
+</section><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
