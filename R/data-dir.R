@@ -1,5 +1,9 @@
 #' Set the data directory
 #' 
+#' @description
+#' 
+#' `r lifecycle::badge("stable")`
+#' 
 #' This function sets the data directory in the environment variable SPANISH_OD_DATA_DIR, so that all other functions in the package can access the data. It also creates the directory if it doesn't exist.
 #' 
 #' @param data_dir The data directory to set.
@@ -53,6 +57,10 @@ spod_set_data_dir <- function(
 
 #' Get the data directory
 #'
+#' @description
+#' 
+#' `r lifecycle::badge("stable")`
+#' 
 #' This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
 #' If the environment variable is not set, it returns the temporary directory.
 #' @inheritParams global_quiet_param

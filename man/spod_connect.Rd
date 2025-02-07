@@ -30,6 +30,8 @@ spod_connect(
 a \code{DuckDB} table connection object.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 This function allows the user to quickly connect to the data converted to DuckDB with the \link{spod_convert} function. This function simplifies the connection process. The user is free to use the \code{DBI} and \code{DuckDB} packages to connect to the data manually, or to use the \code{arrow} package to connect to the \code{parquet} files folder.
 }
 \examples{

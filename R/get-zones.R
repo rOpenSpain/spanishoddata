@@ -1,6 +1,9 @@
 #' Get zones
 #' 
 #' @description
+#' 
+#' `r lifecycle::badge("stable")`
+#' 
 #' Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 #' 
 #' @inheritParams spod_download

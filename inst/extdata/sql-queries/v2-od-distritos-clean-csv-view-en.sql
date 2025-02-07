@@ -110,5 +110,6 @@ CREATE VIEW od_csv_clean AS SELECT
     viajes_km AS trips_total_length_km,
     CAST(year AS INTEGER) AS year,
     CAST(month AS INTEGER) AS month,
-    CAST(day AS INTEGER) AS day
+    CAST(day AS INTEGER) AS day,
+    periodo AS time_slot
     FROM od_csv_raw;
