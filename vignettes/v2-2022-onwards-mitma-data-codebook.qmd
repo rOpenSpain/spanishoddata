@@ -20,7 +20,7 @@ You can view this vignette any time by running:
 spanishoddata::spod_codebook(ver = 2)
 ```
 
-The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitma_mobility_2024_v8].
+The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitms_methodology_2022_v8].
 
 The dataset is produced by [Nommon](https://www.nommon.es/){target="_blank"} using the raw data from [Orange España](https://www.orange.es/){target="_blank"}. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology).
 
