@@ -2,19 +2,21 @@
 #' 
 #' @description
 #' 
-#' `r lifecycle::badge("stable")`
+#' `r lifecycle::badge("experimental")`
 #' 
 #' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with `data_dir` argument.
+#' 
 #' 
 #' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
 #' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
+#' **Warning** due to ongoing development of the package, the output of this function including the exact columns and their data types might change slighly in the future.
 #' \describe{
 #'   \item{target_url}{\code{character}. The URL link to the data file.}
 #'   \item{pub_ts}{\code{POSIXct}. The timestamp of when the file was published.}
 #'   \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
-#'   \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
+#'   \item{data_ym}{\code{character}. The year and month of the data coverage, if available.}
 #'   \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
 #'   \item{local_path}{\code{character}. The local file path where the data is stored.}
 #'   \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if `check_local_files` is `TRUE`.}
@@ -106,126 +108,141 @@ spod_available_data_v1 <- function(
   check_local_files = FALSE,
   quiet = FALSE) {
 
-metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
-if(!dir.exists(metadata_folder)){
-  fs::dir_create(metadata_folder)
-}
-
-xml_files_list <- fs::dir_ls(metadata_folder, type = "file", regexp = "data_links_v1") |> sort()
-if (length(xml_files_list) == 0) {
-  if (isFALSE(quiet)) {
-    message("No data links xml files found, getting latest v1 data links xml")
+  metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
+  if(!dir.exists(metadata_folder)){
+    fs::dir_create(metadata_folder)
   }
-  latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
-} else {
-  latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
-}
 
-# Check if the XML file is 1 day old or older from its name
-file_date <- stringr::str_extract(latest_data_links_xml_path, "[0-9]{4}-[0-9]{2}-[0-9]{2}")
-
-if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-  if (isFALSE(quiet)) {
-    message("File list xml is 1 day old or older, getting latest data links xml")
+  xml_files_list <- fs::dir_ls(metadata_folder, type = "file", regexp = "data_links_v1") |> sort()
+  if (length(xml_files_list) == 0) {
+    if (isFALSE(quiet)) {
+      message("No data links xml files found, getting latest v1 data links xml")
+    }
+    latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
+  } else {
+    latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
   }
-  latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
-} else {
-  if (isFALSE(quiet)) {
-    message("Using existing data links xml: ", latest_data_links_xml_path)
+
+  # Check if the XML file is 1 day old or older from its name
+  file_date <- stringr::str_extract(latest_data_links_xml_path, "[0-9]{4}-[0-9]{2}-[0-9]{2}")
+
+  if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
+    if (isFALSE(quiet)) {
+      message("File list xml is 1 day old or older, getting latest data links xml")
+    }
+    latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
+  } else {
+    if (isFALSE(quiet)) {
+      message("Using existing data links xml: ", latest_data_links_xml_path)
+    }
   }
-}
 
-if (length(latest_data_links_xml_path) == 0) {
-  if (isFALSE(quiet)) {
-    message("Getting latest data links xml")
+  if (length(latest_data_links_xml_path) == 0) {
+    if (isFALSE(quiet)) {
+      message("Getting latest data links xml")
+    }
+    latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
   }
-  latest_data_links_xml_path <- spod_get_latest_v1_file_list(data_dir = data_dir)
-}
 
-x_xml <- xml2::read_xml(latest_data_links_xml_path)
+  x_xml <- xml2::read_xml(latest_data_links_xml_path)
 
-files_table <- tibble::tibble(
-  target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |> xml2::xml_text(),
-  pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |> xml2::xml_text()
-)
+  files_table <- tibble::tibble(
+    target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |> xml2::xml_text(),
+    pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |> xml2::xml_text()
+  )
 
-files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
-files_table$file_extension <- tools::file_ext(files_table$target_url)
-files_table <- files_table[files_table$file_extension != "", ]
-files_table$pub_date <- NULL
+  files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
+  files_table$file_extension <- tools::file_ext(files_table$target_url)
+  files_table <- files_table[files_table$file_extension != "", ]
+  files_table$pub_date <- NULL
 
-files_table$data_ym <- lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{4}-[0-9]{2}"))
-files_table$data_ymd <- lubridate::ymd(stringr::str_extract(files_table$target_url, "[0-9]{8}"))
-# order by pub_ts
-files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
-files_table$local_path <- file.path(
-  data_dir,
-  stringr::str_replace(files_table$target_url, ".*mitma.es/", spod_subfolder_raw_data_cache(ver = 1))
-)
-
-files_table$local_path <- stringr::str_replace_all(files_table$local_path, "\\/\\/\\/|\\/\\/", "/")
-
-# change path for daily data files to be in hive-style format
-files_table$local_path <- gsub("([0-9]{4})-([0-9]{2})\\/[0-9]{6}([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
-
-# fix paths for files that are in '0000-referencia' folder
-files_table$local_path <- gsub("0000-referencia\\/([0-9]{4})([0-9]{2})([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
-
-# replace 2 digit month with 1 digit month
-files_table$local_path <- gsub("month=0([1-9])", "month=\\1", files_table$local_path)
-
-# replace 2 digit day with 1 digit day
-files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
-
-# change txt.gz to csv.gz
-files_table$local_path <- gsub("\\.txt\\.gz", "\\.csv\\.gz", files_table$local_path)
-
-# replace all municipal data download links with districts links
-# this is to address the bugs described in detail in:
-# http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-# http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
-# the decision was to use distrcit data and aggregate it to replicate municipal data
-files_table$target_url <- gsub("mitma-municipios", "mitma-distritos", files_table$target_url)
-files_table$target_url <- gsub("mitma_municipio", "mitma_distrito", files_table$target_url)
-
-# add known file sizes from cached data
-file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v1.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
-files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
-
-# if there are files with missing sizes, impute them
-if (any(is.na(files_table$remote_file_size_mb))) {
-  # impute uknown file sizes
-  # primitive file categorisation
-  # Extract file category from the target URL
-  files_table <- files_table |>
-    dplyr::mutate(
-      file_category = stringr::str_extract(.data$target_url, "\\/maestra(\\d)-mitma-(distritos|municipios)\\/(ficheros-diarios|meses-completos)\\/")
+  # infer data year-month
+  files_table$data_ym <- lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{4}-[0-9]{2}"))
+  # infer data year-month for those not detected above
+  files_table <- files_table |> 
+    dplyr::mutate(data_ym = dplyr::if_else(
+      condition = is.na(data_ym),
+      true = lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{6}")),
+      false = data_ym
     )
+  )
 
-  # Set other category for non-categorized files
-  files_table$file_category[is.na(files_table$file_category)] <- "other"
+  # format date as year-month string
+  files_table$data_ym <- format(files_table$data_ym, format = "%Y-%m")
+    
+  # infer data year-month for those not detected above
+  files_table$data_ymd <- lubridate::ymd(stringr::str_extract(files_table$target_url, "[0-9]{8}"))
 
-  # Calculate mean file sizes by category
-  size_by_file_category <- files_table |>
-    dplyr::group_by(.data$file_category) |>
-    dplyr::summarise(mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE))
+  # order by pub_ts
+  files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
+  files_table$local_path <- file.path(
+    data_dir,
+    stringr::str_replace(files_table$target_url, ".*mitma.es/", spod_subfolder_raw_data_cache(ver = 1))
+  )
 
-  # Impute missing file sizes
-  files_table <- files_table |>
-    dplyr::left_join(size_by_file_category, by = "file_category")
-  files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- mean(files_table$mean_file_size_mb)
+  files_table$local_path <- stringr::str_replace_all(files_table$local_path, "\\/\\/\\/|\\/\\/", "/")
 
-  # Clean up temporary columns
-  files_table <- files_table |>
-    dplyr::select(-"mean_file_size_mb", -"file_category")
-}
+  # change path for daily data files to be in hive-style format
+  files_table$local_path <- gsub("([0-9]{4})-([0-9]{2})\\/[0-9]{6}([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
 
-# now check if any of local files exist
-if( check_local_files == TRUE){
-  files_table$downloaded <- fs::file_exists(files_table$local_path)
-}
+  # fix paths for files that are in '0000-referencia' folder
+  files_table$local_path <- gsub("0000-referencia\\/([0-9]{4})([0-9]{2})([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
 
-return(files_table)
+  # replace 2 digit month with 1 digit month
+  files_table$local_path <- gsub("month=0([1-9])", "month=\\1", files_table$local_path)
+
+  # replace 2 digit day with 1 digit day
+  files_table$local_path <- gsub("day=0([1-9])", "day=\\1", files_table$local_path)
+
+  # change txt.gz to csv.gz
+  files_table$local_path <- gsub("\\.txt\\.gz", "\\.csv\\.gz", files_table$local_path)
+
+  # replace all municipal data download links with districts links
+  # this is to address the bugs described in detail in:
+  # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+  # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+  # the decision was to use distrcit data and aggregate it to replicate municipal data
+  files_table$target_url <- gsub("mitma-municipios", "mitma-distritos", files_table$target_url)
+  files_table$target_url <- gsub("mitma_municipio", "mitma_distrito", files_table$target_url)
+
+  # add known file sizes from cached data
+  file_sizes <- readr::read_csv(system.file("extdata", "url_file_sizes_v1.txt.gz", package = "spanishoddata"), show_col_types = FALSE)
+  files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
+
+  # if there are files with missing sizes, impute them
+  if (any(is.na(files_table$remote_file_size_mb))) {
+    # impute uknown file sizes
+    # primitive file categorisation
+    # Extract file category from the target URL
+    files_table <- files_table |>
+      dplyr::mutate(
+        file_category = stringr::str_extract(.data$target_url, "\\/maestra(\\d)-mitma-(distritos|municipios)\\/(ficheros-diarios|meses-completos)\\/")
+      )
+
+    # Set other category for non-categorized files
+    files_table$file_category[is.na(files_table$file_category)] <- "other"
+
+    # Calculate mean file sizes by category
+    size_by_file_category <- files_table |>
+      dplyr::group_by(.data$file_category) |>
+      dplyr::summarise(mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE))
+
+    # Impute missing file sizes
+    files_table <- files_table |>
+      dplyr::left_join(size_by_file_category, by = "file_category")
+    files_table$remote_file_size_mb[is.na(files_table$remote_file_size_mb)] <- mean(files_table$mean_file_size_mb)
+
+    # Clean up temporary columns
+    files_table <- files_table |>
+      dplyr::select(-"mean_file_size_mb", -"file_category")
+  }
+
+  # now check if any of local files exist
+  if( check_local_files == TRUE){
+    files_table$downloaded <- fs::file_exists(files_table$local_path)
+  }
+
+  return(files_table)
 }
 
 #' Get latest file list from the XML for MITMA open mobility data v2 (2022 onwards)
@@ -324,7 +341,19 @@ spod_available_data_v2 <- function(
   files_table <- files_table[files_table$file_extension != "", ]
   files_table$pub_date <- NULL
 
+  # infer data year-month
   files_table$data_ym <- lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{4}-[0-9]{2}"))
+  # infer data year-month for those not detected above
+  files_table <- files_table |> 
+    dplyr::mutate(data_ym = dplyr::if_else(
+      condition = is.na(data_ym),
+      true = lubridate::ym(stringr::str_extract(files_table$target_url, "[0-9]{6}")),
+      false = data_ym
+    )
+  )
+  # format date as year-month string
+  files_table$data_ym <- format(files_table$data_ym, format = "%Y-%m")
+
   files_table$data_ymd <- lubridate::ymd(stringr::str_extract(files_table$target_url, "[0-9]{8}"))
   # order by pub_ts
   files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
