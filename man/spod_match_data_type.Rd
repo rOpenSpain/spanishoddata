@@ -6,7 +6,8 @@
 \usage{
 spod_match_data_type(
   type = c("od", "origin-destination", "viajes", "os", "overnight_stays",
-    "pernoctaciones", "nt", "number_of_trips", "personas")
+    "pernoctaciones", "nt", "number_of_trips", "personas", "rcm",
+    "regular_commuter_mobility")
 )
 }
 \arguments{

@@ -5,7 +5,8 @@
 \title{Get tabular mobility data}
 \usage{
 spod_get(
-  type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"),
+  type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips",
+    "rcm", "regular_commuter_mobility"),
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
     "municip", "municipios", "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"),
   dates = NULL,

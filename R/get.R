@@ -41,7 +41,8 @@ spod_get <- function(
   type = c(
     "od", "origin-destination",
     "os", "overnight_stays",
-    "nt", "number_of_trips"
+    "nt", "number_of_trips",
+    "rcm", "regular_commuter_mobility"
   ),
   zones = c(
     "districts", "dist", "distr", "distritos",
@@ -60,7 +61,13 @@ spod_get <- function(
 ) {
 
   # Validate inputs
-  checkmate::assert_choice(type, choices = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"))
+  checkmate::assert_choice(type, choices = c(
+    "od", "origin-destination",
+    "os", "overnight_stays",
+    "nt", "number_of_trips",
+    "rcm", "regular_commuter_mobility"
+    )
+  )
   checkmate::assert_choice(zones, choices = c(
     "districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios",
@@ -103,9 +110,11 @@ spod_get <- function(
   
   if (isFALSE(cached_data_requested)) {
     dates <- spod_dates_argument_to_dates_seq(dates = dates)
-    ver <- spod_infer_data_v_from_dates(
-      dates = dates, ignore_missing_dates = ignore_missing_dates
-    )
+    if( grepl("^od|^nt", type) ){
+      ver <- spod_infer_data_v_from_dates(dates = dates_to_use, ignore_missing_dates = ignore_missing_dates)
+    } else {
+      ver <- 2
+    }
     # use the spot_download_data() function to download any missing data
     spod_download(
       type = type,
@@ -153,6 +162,12 @@ spod_get <- function(
       con = con,
       zones = zones,
       ver = ver,
+      data_dir = data_dir
+    )
+  } else if (type == "rcm") {
+    con <- spod_duckdb_regular_commuter_mobility(
+      con = con,
+      zones = zones,
       data_dir = data_dir
     )
   }

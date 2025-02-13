@@ -5,7 +5,8 @@
 \title{Match data types to folders}
 \usage{
 spod_match_data_type_for_local_folders(
-  type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"),
+  type = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips",
+    "rcm", "regular_commuter_mobility"),
   ver = c(1, 2)
 )
 }

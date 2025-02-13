@@ -4,7 +4,7 @@
 \alias{spod_sql_where_dates}
 \title{Generate a WHERE part of an SQL query from a sequence of dates}
 \usage{
-spod_sql_where_dates(dates)
+spod_sql_where_dates(dates, elements = c("ymd", "ym"))
 }
 \arguments{
 \item{dates}{A Dates vector of dates to process.}

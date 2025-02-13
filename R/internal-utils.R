@@ -24,9 +24,13 @@
 #' @return A `character` vector of dates in ISO format (YYYY-MM-DD).
 #' @keywords internal
 spod_dates_argument_to_dates_seq <- function(dates) {
+  
+  # TODO: make spod_dates_argument_to_dates_seq work with data_ym
+
   if (is.null(dates) || (!is.character(dates) && !inherits(dates, "Date"))) {
     stop("Invalid date input format. Please provide a character vector or Date object.")
   }
+
   if (length(dates) == 1 && dates %in% c("cached_v1", "cached_v2")) {
     return(dates)
   }
@@ -36,20 +40,25 @@ spod_dates_argument_to_dates_seq <- function(dates) {
   # If dates is a vector of length one
   # Check if is single date, date range, or regex pattern
   if (length(dates) == 1) {
-    # Check if date range
-    # match both YYYY-MM-DD_YYYY-MM-DD and YYYYMMDD_YYYYMMDD
-    if (grepl(range_regex, dates)) {
+    
+    if (grepl("^\\d{4}(-\\d{2})$|^\\d{6}$", dates)) {
+      # Check if it is YYYY-MM or YYYYMM
+      dates <- lubridate::ym(dates)
+
+    } else if (grepl(range_regex, dates)) {
+      # Check if single string is date range
+      # match both YYYY-MM-DD_YYYY-MM-DD and YYYYMMDD_YYYYMMDD
       date_parts <- strsplit(dates, "_")[[1]]
       date_parts <- lubridate::ymd(date_parts)
       dates <- seq.Date(date_parts[1], date_parts[2], by = "day")
 
-      # if dates does not match the date range pattern
-      # check if it is just a single day in YYYY-MM-DD or YYYYMMDD format
     } else if (grepl(single_date_regex, dates)) {
       dates <- lubridate::ymd(dates)
+      # if dates does not match the date range pattern
+      # check if it is just a single day in YYYY-MM-DD or YYYYMMDD format
 
-      # assume it is a regex pattern
     } else {
+      # assume it is a regex pattern
       dates <- spod_expand_dates_from_regex(dates)
       # since spod_expand_dates_from_regex already uses the metadata to generate valid dates we can skip any checks that are required for other date formats and only check for date overlaps between data versions
       if (isFALSE(spod_is_data_version_overlaps(dates))) {
@@ -58,12 +67,23 @@ spod_dates_argument_to_dates_seq <- function(dates) {
     }
 
     # If dates if a vector of multiple values
-  } else if (length(dates) > 1) {
-    # Check if it is of length 2, then it may be a date range
+  } else if (length(dates) > 1 ) {
+    # if not Date, but character check if all elements a have the same length
+    if (!inherits(dates, "Date")) {
+      if (length(unique(lapply(dates, nchar))) != 1) {
+        stop("All elements of the dates vector must have the same character length.")
+      }
+    }
     if (length(dates) == 2 & !is.null(names(dates))) {
+      # Check if it is of length 2, then it may be a date range
       # if the vector is named with 'start' and 'end', we can assume it is a date range
       if (all(names(dates) %in% c("start", "end"))) {
-        date_parts <- lubridate::ymd(dates)
+        date_parts <- lubridate::ymd(dates, quiet = TRUE)
+        if(any(is.na(date_parts))) {
+          date_parts <- lubridate::ym(dates, quiet = TRUE)
+          if(any(is.na(date_parts))) {
+            stop("Invalid date input format. Please provide a character vector or Date object.")}
+        }
         names(date_parts) <- names(dates)
         # check if start is before end
         if (date_parts["start"] > date_parts["end"]) {
@@ -72,7 +92,7 @@ spod_dates_argument_to_dates_seq <- function(dates) {
         dates <- seq.Date(date_parts["start"], date_parts["end"], by = "day")
       }
     } else {
-      # this is apparantly a sequence of dates
+      # this is apparently a sequence of dates
       dates <- lubridate::ymd(dates)
     }
   }
@@ -297,7 +317,8 @@ spod_match_data_type_for_local_folders <- function(
     type = c(
       "od", "origin-destination",
       "os", "overnight_stays",
-      "nt", "number_of_trips"
+      "nt", "number_of_trips",
+      "rcm", "regular_commuter_mobility"
     ),
     ver = c(1, 2)) {
   if (!ver %in% c(1, 2)) {
@@ -322,6 +343,8 @@ spod_match_data_type_for_local_folders <- function(
       return("pernoctaciones")
     } else if (type %in% c("nt", "number_of_trips")) {
       return("personas")
+    } else if (type %in% c("rcm", "regular_commuter_mobility")) {
+      return("movilidad_obligada")
     }
   }
 
@@ -338,7 +361,8 @@ spod_match_data_type <- function(
     type = c(
       "od", "origin-destination", "viajes",
       "os", "overnight_stays", "pernoctaciones",
-      "nt", "number_of_trips", "personas"
+      "nt", "number_of_trips", "personas",
+      "rcm", "regular_commuter_mobility"
     )
 ) {
   
@@ -351,6 +375,8 @@ spod_match_data_type <- function(
     return("os")
   } else if (type %in% c("nt", "number_of_trips", "personas")) {
     return("nt")
+  } else if (type %in% c("rcm", "regular_commuter_mobility")) {
+    return("rcm")
   }
 
   # need to add a warning here that the type is not recognized

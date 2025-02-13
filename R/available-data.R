@@ -355,6 +355,7 @@ spod_available_data_v2 <- function(
   files_table$data_ym <- format(files_table$data_ym, format = "%Y-%m")
 
   files_table$data_ymd <- lubridate::ymd(stringr::str_extract(files_table$target_url, "[0-9]{8}"))
+  
   # order by pub_ts
   files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
   files_table$local_path <- file.path(
@@ -365,8 +366,16 @@ spod_available_data_v2 <- function(
   files_table$local_path <- stringr::str_replace_all(files_table$local_path, "\\/\\/\\/|\\/\\/", "/")
 
   # change path for daily data files to be in hive-style format
-  # TODO: check if this is needed for estudios completo and rutas
   files_table$local_path <- gsub("([0-9]{4})-([0-9]{2})\\/[0-9]{6}([0-9]{2})_", "year=\\1\\/month=\\2\\/day=\\3\\/", files_table$local_path)
+  
+  # change path for monthly data files to be in hive-style format
+  files_table <- files_table |>
+    dplyr::mutate(
+      local_path = dplyr::if_else(
+        condition = is.na(.data$data_ymd) & grepl("meses-completos", .data$target_url),
+        true = stringr::str_replace(local_path, "([0-9]{4})([0-9]{2})_", "year=\\1\\/month=\\2\\/"),
+        false = local_path
+    ))
 
   # replace 2 digit month with 1 digit month
   files_table$local_path <- gsub("month=0([1-9])", "month=\\1", files_table$local_path)

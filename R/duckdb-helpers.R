@@ -143,6 +143,7 @@ spod_duckdb_od <- function(
     spod_read_sql(glue::glue("v{ver}-od-enum-distance.sql"))
   )
 
+  # create PROVINCE_ENUM for residence column
   con <- spod_duckdb_create_province_enum(con)
   
   
@@ -438,7 +439,11 @@ spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, da
   query <- dplyr::sql(
     glue::glue(
       'CREATE VIEW "{new_view_name}" AS SELECT * FROM "{source_view_name}" ',
-      spod_sql_where_dates(dates),
+      if( grepl("^od|^nt|^os", source_view_name) ) {
+        spod_sql_where_dates(dates, elements = "ymd")
+      } else if ( grepl("^rcm", source_view_name) ) {
+        spod_sql_where_dates(dates, elements = "ym")
+      },
       ";"
     )
   )
@@ -494,25 +499,45 @@ spod_duckdb_create_province_enum <- function(con) {
 #' @param dates A Dates vector of dates to process.
 #' @return A character vector of the SQL query.
 #' @keywords internal
-spod_sql_where_dates <- function(dates) {
+spod_sql_where_dates <- function(
+  dates,
+  elements = c("ymd", "ym")
+) {
   # Extract unique year, month, and day combinations from the dates
-  date_parts <- data.frame(
-    year = format(dates, "%Y"),
-    month = format(dates, "%m"),
-    day = format(dates, "%d")
-  )
+  if (elements == "ymd") {
+    date_parts <- data.frame(
+      year = format(dates, "%Y"),
+      month = format(dates, "%m"),
+      day = format(dates, "%d")
+    )
+    # Get distinct rows and sort them by year, month, and day
+    date_parts <- date_parts[!duplicated(date_parts), ]
+    date_parts <- date_parts[order(date_parts$year, date_parts$month, date_parts$day), ]
 
-  # Get distinct rows and sort them by year, month, and day
-  date_parts <- date_parts[!duplicated(date_parts), ]
-  date_parts <- date_parts[order(date_parts$year, date_parts$month, date_parts$day), ]
+    # Create the WHERE conditions for each unique date
+    where_conditions <- stats::aggregate(day ~ year + month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
+    where_conditions$condition <- paste0(
+      "(year = ", where_conditions$year,
+      " AND month = ", where_conditions$month,
+      " AND day IN (", where_conditions$day, "))"
+    )
+  } else if (elements == "ym") {
+    date_parts <- data.frame(
+      year = format(dates, "%Y"),
+      month = format(dates, "%m")
+    )
 
-  # Create the WHERE conditions for each unique date
-  where_conditions <- stats::aggregate(day ~ year + month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
-  where_conditions$condition <- paste0(
-    "(year = ", where_conditions$year,
-    " AND month = ", where_conditions$month,
-    " AND day IN (", where_conditions$day, "))"
-  )
+    date_parts <- date_parts[!duplicated(date_parts), ]
+    date_parts <- date_parts[order(date_parts$year, date_parts$month), ]
+
+    # Create the WHERE conditions for each unique date
+    where_conditions <- stats::aggregate(year ~ month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
+    where_conditions$condition <- paste0(
+      "(year = ", where_conditions$year,
+      " AND month = ", where_conditions$month,
+      " )"
+    )
+  }
 
   # Combine all conditions into a single WHERE clause
   sql_query <- paste0(
@@ -584,6 +609,109 @@ spod_duckdb_set_temp <- function(
     dplyr::sql(
       glue::glue("SET temp_directory='{temp_path}';")
     )
+  )
+
+  return(con)
+}
+
+
+#' Create a duckdb regular commuter mobility table
+#' 
+#' @description
+#' This function creates a duckdb connection to the regular commuter mobility data stored in a folder of CSV.gz files.
+#' @inheritParams spod_duckdb_od
+#' @inheritParams spod_available_data
+#' @inheritParams spod_download
+#' 
+#' @return A `duckdb` connection object with 2 views:
+#'
+#'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
+#'
+#'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
+#' 
+#' @keywords internal
+#' 
+spod_duckdb_regular_commuter_mobility <- function(
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
+  zones = c(
+    "districts", "dist", "distr", "distritos"
+  ),
+  data_dir = spod_get_data_dir()
+) {
+  ver <- 2
+  locale <- "en" # TODO: add support for Spanish, hardcode for now
+  
+  zones <- match.arg(zones)
+  zones <- spod_zone_names_en2es(zones)
+
+
+  csv_folder <- paste0(
+    data_dir, "/",
+    spod_subfolder_raw_data_cache(ver = ver),
+    "/estudios_completos/por-", spod_zone_names_en2es(zones),
+    "/movilidad_obligada/meses-completos/"
+  )
+
+  # create view of csv files and preset variable types
+
+  # create view to the raw TXT/CSV.gz files
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-rcm-{zones}-raw-csv-view.sql"))
+  )
+  
+  # create ENUMs
+  # zones ENUMs from uniqe ids of relevant zones
+  spatial_data <- spod_get_zones(zones,
+    ver = ver,
+    data_dir = data_dir,
+    quiet = TRUE
+  )
+
+  if (locale == "en" ){
+    unique_ids <- c("external", unique(spatial_data$id))
+  } else if (locale == "es" ){
+    unique_ids <- c("externo", unique(spatial_data$id))
+  }
+
+  # TODO: investigate these extra zones that are not in the shapefile
+  unique_ids <- c("FRM01", "FRM02", "PT200", "PT300", unique_ids)
+  
+  DBI::dbExecute(
+    con,
+    dplyr::sql(
+      paste0(
+        "CREATE TYPE ZONES_ENUM AS ENUM ('",
+        paste0(unique_ids, collapse = "','"),
+        "');"
+      )
+    )
+  )
+
+  # create PROVINCE_ENUM for residence column
+  con <- spod_duckdb_create_province_enum(con)
+
+  # age ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-enum-age.sql"))
+  )
+  
+  # sex ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-od-enum-sex-{locale}.sql"))
+  )
+
+  # trip recurrence ENUM
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-rcm-enum-trip-recurrence.sql"))
+  )
+
+  DBI::dbExecute(
+    con,
+    spod_read_sql(glue::glue("v{ver}-rcm-{zones}-clean-csv-view-{locale}.sql"))
   )
 
   return(con)

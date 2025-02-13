@@ -97,7 +97,11 @@ spod_convert <- function(
   cached_data_requested <- length(dates) == 1 &&
     all(as.character(dates) %in% c("cached_v1", "cached_v2"))  
   
-  ver <- spod_infer_data_v_from_dates(dates = dates, ignore_missing_dates = ignore_missing_dates)
+  if( grepl("^od|^nt", type) ){
+    ver <- spod_infer_data_v_from_dates(dates = dates_to_use, ignore_missing_dates = ignore_missing_dates)
+  } else {
+    ver <- 2
+  }
   
   # normalise type
   type <- spod_match_data_type(type = type)

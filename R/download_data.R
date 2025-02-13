@@ -47,7 +47,8 @@ spod_download <- function(
     type = c(
       "od", "origin-destination",
       "os", "overnight_stays",
-      "nt", "number_of_trips"
+      "nt", "number_of_trips",
+      "rcm", "regular_commuter_mobility"
     ),
     zones = c(
       "districts", "dist", "distr", "distritos",
@@ -63,7 +64,13 @@ spod_download <- function(
   ) {
   
   # Validate inputs
-  checkmate::assert_choice(type, choices = c("od", "origin-destination", "os", "overnight_stays", "nt", "number_of_trips"))
+  checkmate::assert_choice(type, choices = c(
+    "od", "origin-destination",
+    "os", "overnight_stays",
+    "nt", "number_of_trips",
+    "rcm", "regular_commuter_mobility"
+    )
+  )
   checkmate::assert_choice(zones, choices = c(
     "districts", "dist", "distr", "distritos",
     "municipalities", "muni", "municip", "municipios",
@@ -87,7 +94,11 @@ spod_download <- function(
 
 
   # check version
-  ver <- spod_infer_data_v_from_dates(dates = dates_to_use, ignore_missing_dates = ignore_missing_dates)
+  if( grepl("^od|^nt", type) ){
+    ver <- spod_infer_data_v_from_dates(dates = dates_to_use, ignore_missing_dates = ignore_missing_dates)
+  } else {
+    ver <- 2
+  }
   # this leads to a second call to an internal spod_get_valid_dates() which in turn causes a second call to spod_available_data(). This results in reading xml files with metadata for the second time. This is not optimal and should be fixed.
   
   if (isFALSE(quiet)) {
@@ -119,9 +130,16 @@ spod_download <- function(
     ]
   } else if (ver == 2) {
     requested_files <- available_data[
-      grepl(glue::glue("v{ver}.*{zones}.*{type}"), available_data$local_path) &
-        available_data$data_ymd %in% dates_to_use,
+      (grepl(glue::glue("v{ver}.*{zones}.*{type}"), available_data$local_path) &
+        available_data$data_ymd %in% dates_to_use),
     ]
+    # TODO: check if this hack is ok to use long term
+    if (nrow(requested_files) == 0) {
+      requested_files <- available_data[
+        (grepl(glue::glue("v{ver}.*{zones}.*{type}"), available_data$local_path) &
+          available_data$data_ym %in% unique(format(dates_to_use, "%Y-%m"))),
+      ]
+    }
   }
 
   files_to_download <- requested_files[!requested_files$downloaded, ]
@@ -170,4 +188,4 @@ spod_download <- function(
   if (return_local_file_paths) {
     return(requested_files$local_path)
   }
-}
+  }
