@@ -77,14 +77,14 @@ spod_connect <- function(
     
     if (is.null(target_table_name)) {
       # try the same name as the file name
-      target_table_name = gsub("\\..*", "", basename(duckdb_path)) # experimental
+      target_table_name <- gsub("\\..*", "", basename(duckdb_path)) # experimental
       tables_list <- DBI::dbListTables(con)
       if (target_table_name %in% tables_list) {
         # if the table with the same name exists, use it
-        target_table_name = target_table_name
+        target_table_name <- target_table_name
       } else {
         # pick the first table that does not contain CSV
-        target_table_name = tables_list[!stringr::str_detect(tables_list, "csv")][1]
+        target_table_name <- tables_list[!stringr::str_detect(tables_list, "csv")][1]
       }
     }
     tbl_con <- dplyr::tbl(con, target_table_name)

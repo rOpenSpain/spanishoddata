@@ -7,7 +7,7 @@
 #' @keywords internal
 #' 
 spod_files_sizes <- function(ver = 2) {
-  data_dir = spod_get_data_dir()
+  data_dir <- spod_get_data_dir()
   
   if (any(ver %in% 1)){
     v1 <- spod_available_data(1)
