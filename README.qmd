@@ -34,7 +34,7 @@ See the [package website](https://rOpenSpain.github.io/spanishoddata/) and vigne
 
 ## Examples of available data
 
-![Example of the data available through the package: daily flows in Barcelona](vignettes/media/flows_plot.svg){#fig-barcelona-flows}
+![Example of the data available through the package: daily flows in Barcelona on 7 April 2021](vignettes/media/flows_plot_barcelona.svg){#fig-barcelona-flows width=100%}
 
 To create static maps like that see our vignette [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html).
 
@@ -116,8 +116,9 @@ distritos <- spod_get_zones("distritos", ver = 2)
 distritos_wgs84 <- distritos |>
   sf::st_simplify(dTolerance = 200) |>
   sf::st_transform(4326)
-plot(sf::st_geometry(distritos_wgs84))
+plot(sf::st_geometry(distritos_wgs84), lwd = 0.2) 
 ```
+
 
 ![](man/figures/README-distritos-1.png)
 
@@ -248,12 +249,14 @@ od_national_sf <- od::od_to_sf(
 )
 distritos_wgs84 |>
   ggplot() +
-  geom_sf(aes(fill = population)) +
+  geom_sf(fill = "grey") +  
   geom_sf(data = spData::world, fill = NA, colour = "black") +
-  geom_sf(aes(size = Trips), colour = "blue", data = od_national_sf) +
+  geom_sf(aes(linewidth = Trips), colour = "blue", data = od_national_sf) +  
   coord_sf(xlim = c(-10, 5), ylim = c(35, 45)) +
-  theme_void()
+  theme_void() +
+  scale_linewidth_continuous(range = c(0.2, 3))  
 ```
+
 
 ![](man/figures/README-desire-lines-1.png)
 
