@@ -66,10 +66,12 @@ download only the files that are not already present.
 
 <div id="fig-barcelona-flows">
 
-![](vignettes/media/flows_plot.svg)
+<img src="vignettes/media/flows_plot_barcelona.svg"
+style="width:100.0%" />
+
 
 Figure 1: Example of the data available through the package: daily flows
-in Barcelona
+in Barcelona on 7 April 2021
 
 </div>
 
@@ -82,14 +84,15 @@ To create static maps like that see our vignette
 
 ![](https://ropenspain.github.io/spanishoddata/media/spain-folding-flows.gif)
 
+
 Figure 2: Example of the data available through the package: interactive
 daily flows in Spain
 
 </div>
-
 <div id="fig-spain-flows">
 
 ![](https://ropenspain.github.io/spanishoddata/media/barcelona-time.gif)
+
 
 Figure 3: Example of the data available through the package: interactive
 daily flows in Barcelona with time filter
@@ -108,9 +111,7 @@ install.packages("spanishoddata")
 ```
 
 <details>
-
 <summary>
-
 Alternative installation and developemnt
 </summary>
 
@@ -171,9 +172,7 @@ The function above will also ensure that the directory is created and
 that you have sufficient permissions to write to it.
 
 <details>
-
 <summary>
-
 Setting data directory for advanced users
 </summary>
 
@@ -242,6 +241,7 @@ package.
 <img src="man/figures/package-functions-overview.svg"
 style="width:78.0%" />
 
+
 Figure 4: The overview of package functions to get the data
 
 </div>
@@ -289,7 +289,7 @@ distritos <- spod_get_zones("distritos", ver = 2)
 distritos_wgs84 <- distritos |>
   sf::st_simplify(dTolerance = 200) |>
   sf::st_transform(4326)
-plot(sf::st_geometry(distritos_wgs84))
+plot(sf::st_geometry(distritos_wgs84), lwd = 0.2) 
 ```
 
 ![](man/figures/README-distritos-1.png)
@@ -425,11 +425,12 @@ od_national_sf <- od::od_to_sf(
 )
 distritos_wgs84 |>
   ggplot() +
-  geom_sf(aes(fill = population)) +
+  geom_sf(fill = "grey") +  
   geom_sf(data = spData::world, fill = NA, colour = "black") +
-  geom_sf(aes(size = Trips), colour = "blue", data = od_national_sf) +
+  geom_sf(aes(linewidth = Trips), colour = "blue", data = od_national_sf) +  
   coord_sf(xlim = c(-10, 5), ylim = c(35, 45)) +
-  theme_void()
+  theme_void() +
+  scale_linewidth_continuous(range = c(0.2, 3))  
 ```
 
 ![](man/figures/README-desire-lines-1.png)
@@ -511,7 +512,7 @@ MITMS (2024). “Estudio de movilidad de viajeros de ámbito nacional
 aplicando la tecnología Big Data. Informe metodológico (Study of
 National Traveler mobility Using Big Data Technology. Methodological
 Report).” Secretaría de Estado de Transportes y Movilidad Sostenible;
-Ministerio de Transportes y Movilidad Sostenible.
+Ministerio de Transportes, Movilidad y Agenda Urbana.
 <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 BibTeX:
@@ -527,7 +528,7 @@ BibTeX:
     @TechReport{mitma_mobility_2024_v8,
       title = {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
       author = {{MITMS}},
-      institution = {Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes y Movilidad Sostenible},
+      institution = {Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes, Movilidad y Agenda Urbana},
       year = {2024},
       url = {https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data},
       urldate = {2024-12-11},
@@ -537,13 +538,9 @@ BibTeX:
 ## References
 
 <!-- metadata for better search engine indexing -->
-
 <!-- should be picked up by pkgdown -->
-
 <!-- update metadata before release with  -->
-
 <!-- cffr::cff_write() -->
-
 <!-- codemetar::write_codemeta(write_minimeta = T) -->
 
 <div id="refs" class="references csl-bib-body hanging-indent"

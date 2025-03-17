@@ -232,72 +232,67 @@ Let us filter the flows and zones data to just a specific functional urban area 
 
 ##### Filter the zones
 
-Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the `district_names_in_v2` column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.
+Using the `district_names_in_v2` column in the zones data, we can easily identify the districts within Barcelona.
+
 
 ```{r}
 zones_barcelona <- districts_v1 |>
   filter(grepl("Barcelona", district_names_in_v2, ignore.case = TRUE))
 
-zones_barcelona_fua <- districts_v1[
-  st_buffer(zones_barcelona, dist = 10000)
-  ,
-]
-
-zones_barcelona_fua_plot <- ggplot() +
-  geom_sf(data = zones_barcelona_fua, fill=NA, col = "grey60", linewidth = 0.3) +
+zones_barcelona_plot <- ggplot() +
+  geom_sf(data = zones_barcelona, fill=NA, col = "grey60", linewidth = 0.3) +
   theme_minimal()
 
-zones_barcelona_fua_plot
+zones_barcelona_plot
 ```
 
 ```{r}
 #| include: false
-ggsave("./man/figures/zones_barcelona_fua_plot.png", plot = zones_barcelona_fua_plot, width = 6, height = 4, dpi = 300)
+ggsave("./man/figures/zones_barcelona_plot.png", plot = zones_barcelona_plot, width = 6, height = 4, dpi = 300)
 ```
 
-![](../man/figures/zones_barcelona_fua_plot.png)
-
+![](../man/figures/zones_barcelona_plot.png)
 
 We also prepare the nodes for the `add_flowmap` function:
 
 ```{r}
-zones_barcelona_fua_coords <- zones_barcelona_fua |>
+zones_barcelona_coords <- zones_barcelona |>
   st_centroid() |>
   st_coordinates() |>
   as.data.frame() |>
-  mutate(name = zones_barcelona_fua$id) |>
+  mutate(name = zones_barcelona$id) |>
   rename(x = X, y = Y)
 
-head(zones_barcelona_fua_coords)
+head(zones_barcelona_coords)
 ```
 
 ```
-      x       y    name
-1 930267.0 4607072   08180
-2 914854.0 4604279   08054
-3 926837.9 4597166 0801905
-4 927995.1 4594372 0801904
-5 930418.9 4599218 0801907
-6 930702.3 4597116 0801906
+         x       y    name
+1 926837.9 4597166 0801905
+2 927995.1 4594372 0801904
+3 930418.9 4599218 0801907
+4 930702.3 4597116 0801906
+5 933291.0 4594003 0801901
+6 930452.8 4590357 0801903
 ```
 
 ##### Prepare the flows
 
-Now we can use the zone `id`s from the `zones_barcelona_fua` data to select the flows that correspond to Barcelona and the 10 km radius around it.
+Now we can use the zone `id`s from the `zones_barcelona` data to select the flows that correspond to Barcelona.
 
 ```{r}
 od_20210407_total_barcelona <- od_20210407_total |>
-  filter(o %in% zones_barcelona_fua$id & d %in% zones_barcelona_fua$id)
+  filter(o %in% zones_barcelona$id & d %in% zones_barcelona$id)
 ```
 
-##### Visualise the flows for Barcelona and surrounding areas
+##### Visualise the flows for Barcelona
 
 Now, we can create a new plot with this data. Once again, we need the `k_node` argument to tweak the aggregation of nodes and flows. Feel free to tweak it yourself and see how the results change.
 
 ```{r}
 # create base ggplot with boundaries removing various visual clutter
 base_plot_barcelona <- ggplot() +
-  geom_sf(data = zones_barcelona_fua, fill=NA, col = "grey60", linewidth = 0.05)+
+  geom_sf(data = zones_barcelona, fill=NA, col = "grey60", linewidth = 0.05)+
   theme_classic(base_size = 20) +
   labs(title = "",
     subtitle = "", fill = "", caption = "") +
@@ -318,7 +313,7 @@ base_plot_barcelona <- ggplot() +
 flows_plot_barcelona <- base_plot_barcelona |>
   add_flowmap(
     od = od_20210407_total_barcelona,
-    nodes = zones_barcelona_fua_coords,
+    nodes = zones_barcelona_coords,
     node_radius_factor = 1,
     edge_width_factor = 0.6,
     arrow_point_angle = 45,
@@ -327,7 +322,7 @@ flows_plot_barcelona <- base_plot_barcelona |>
     add_legend = "bottom",
     legend_col = "gray20",
     legend_gradient = TRUE,
-    k_node = 30 # play around with this parameter to aggregate nodes and flows
+    k_node = 10 # play around with this parameter to aggregate nodes and flows
   )
 
 # customise colours for the fill
@@ -338,7 +333,6 @@ flows_plot_barcelona <- flows_plot_barcelona +
     labels = scales::comma_format()  # Real value labels
   )
 
-
 flows_plot_barcelona
 ```
 
@@ -347,8 +341,12 @@ flows_plot_barcelona
 ggsave("./man/figures/flows_plot_barcelona.png", plot = flows_plot_barcelona, width = 6, height = 4, dpi = 300)
 ```
 
-![](../man/figures/flows_plot_barcelona.png)
+```{r}
+#| include: false
+ggsave("./vignettes/media/flows_plot_barcelona.svg", plot = flows_plot_barcelona, width = 10, height = 10, dpi = 300)
+```
 
+![](../man/figures/flows_plot_barcelona.png)
 
 ## Advanced example - aggregate flows for `{spanishoddata}` logo {#advanced-example}
 
