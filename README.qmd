@@ -116,7 +116,7 @@ distritos <- spod_get_zones("distritos", ver = 2)
 distritos_wgs84 <- distritos |>
   sf::st_simplify(dTolerance = 200) |>
   sf::st_transform(4326)
-plot(sf::st_geometry(distritos_wgs84), lwd = 0.2) 
+plot(sf::st_geometry(distritos_wgs84), lwd = 0.2)
 ```
 
 
@@ -249,12 +249,12 @@ od_national_sf <- od::od_to_sf(
 )
 distritos_wgs84 |>
   ggplot() +
-  geom_sf(fill = "grey") +  
+  geom_sf(fill = "grey") +
   geom_sf(data = spData::world, fill = NA, colour = "black") +
-  geom_sf(aes(linewidth = Trips), colour = "blue", data = od_national_sf) +  
+  geom_sf(aes(linewidth = Trips), colour = "blue", data = od_national_sf) +
   coord_sf(xlim = c(-10, 5), ylim = c(35, 45)) +
   theme_void() +
-  scale_linewidth_continuous(range = c(0.2, 3))  
+  scale_linewidth_continuous(range = c(0.2, 3))
 ```
 
 
@@ -378,7 +378,9 @@ is_html <- knitr::is_html_output()
 
 
 ```{r results="asis", eval = !is_html, include = !is_html, include = FALSE}
-glue::glue('<script type="application/ld+json">
+glue::glue(
+  '<script type="application/ld+json">
       {glue::glue_collapse(readLines("inst/schemaorg.json"), sep = "\n")}
-    </script>')
+    </script>'
+)
 ```
