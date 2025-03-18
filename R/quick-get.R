@@ -73,8 +73,7 @@ spod_quick_get_od <- function(
     # Check for "YYYY-MM-DD" format
     if (grepl("^\\d{4}-\\d{2}-\\d{2}$", date)) {
       date <- as.Date(date) # Safe to convert
-    } # Check for "YYYYMMDD" format
-    else if (nchar(date) == 8 && grepl("^\\d{8}$", date)) {
+    } else if (nchar(date) == 8 && grepl("^\\d{8}$", date)) { # Check for "YYYYMMDD" format
       date <- as.Date(date, format = "%Y%m%d") # Safe to convert
     } else {
       # If neither format matches, stop with a clear error message
@@ -117,6 +116,11 @@ spod_quick_get_od <- function(
 
     return(range_strings)
   }
+
+  # Municipalities checks
+  muni_ref <- readRDS(
+    system.file("extdata", "muni_v2_ref.rds", package = "spanishoddata")
+  )
 
   validate_muni_ids <- function(muni_ids, muni_ref) {
     # Handle cases where muni_ids is NULL, empty, or all NA
@@ -163,11 +167,6 @@ spod_quick_get_od <- function(
       )
     )
   }
-
-  # Municipalities checks
-  muni_ref <- readRDS(
-    system.file("extdata", "muni_v2_ref.rds", package = "spanishoddata")
-  )
 
   # Construct the `journeysMunCriteria` part of the query
   journeysMunCriteria <- list(
