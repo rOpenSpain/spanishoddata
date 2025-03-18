@@ -91,8 +91,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 ```{r}
 od_20210407_total <- od_20210407 |>
   group_by(o = id_origin, d = id_destination) |>
-  summarise(value = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
-  collect() |> 
+  summarise(value = sum(n_trips, na.rm = TRUE), .groups = "drop") |>
+  collect() |>
   arrange(o, d, value)
 ```
 
@@ -173,17 +173,16 @@ Now we have the data structure that match the `{flowmapper}`'s expected data for
 ```{r}
 # create base ggplot with boundaries removing various visual clutter
 base_plot_districts <- ggplot() +
-  geom_sf(data = districts_v1, fill=NA, col = "grey60", linewidth = 0.05)+
+  geom_sf(data = districts_v1, fill = NA, col = "grey60", linewidth = 0.05) +
   theme_classic(base_size = 20) +
-  labs(title = "",
-    subtitle = "", fill = "", caption = "") +
+  labs(title = "", subtitle = "", fill = "", caption = "") +
   theme(
     axis.line = element_blank(),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
-    panel.background = element_rect(fill='transparent'),
-    plot.background = element_rect(fill='transparent', color=NA),
+    panel.background = element_rect(fill = 'transparent'),
+    plot.background = element_rect(fill = 'transparent', color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   ) +
@@ -209,9 +208,9 @@ flows_plot_all_districts <- base_plot_districts |>
 # customise colours for the fill
 flows_plot_all_districts <- flows_plot_all_districts +
   scale_fill_gradient(
-    low = "#FABB29", 
-    high = "#AB061F", 
-    labels = scales::comma_format()  # Real value labels
+    low = "#FABB29",
+    high = "#AB061F",
+    labels = scales::comma_format() # Real value labels
   )
 
 
@@ -221,7 +220,13 @@ flows_plot_all_districts
 
 ```{r}
 #| include: false
-ggsave("./man/figures/flows_plot_all_districts.png", plot = flows_plot_all_districts, width = 6, height = 4, dpi = 300)
+ggsave(
+  "./man/figures/flows_plot_all_districts.png",
+  plot = flows_plot_all_districts,
+  width = 6,
+  height = 4,
+  dpi = 300
+)
 ```
 
 ![](../man/figures/flows_plot_all_districts.png)
@@ -240,7 +245,7 @@ zones_barcelona <- districts_v1 |>
   filter(grepl("Barcelona", district_names_in_v2, ignore.case = TRUE))
 
 zones_barcelona_plot <- ggplot() +
-  geom_sf(data = zones_barcelona, fill=NA, col = "grey60", linewidth = 0.3) +
+  geom_sf(data = zones_barcelona, fill = NA, col = "grey60", linewidth = 0.3) +
   theme_minimal()
 
 zones_barcelona_plot
@@ -248,7 +253,13 @@ zones_barcelona_plot
 
 ```{r}
 #| include: false
-ggsave("./man/figures/zones_barcelona_plot.png", plot = zones_barcelona_plot, width = 6, height = 4, dpi = 300)
+ggsave(
+  "./man/figures/zones_barcelona_plot.png",
+  plot = zones_barcelona_plot,
+  width = 6,
+  height = 4,
+  dpi = 300
+)
 ```
 
 ![](../man/figures/zones_barcelona_plot.png)
@@ -292,17 +303,16 @@ Now, we can create a new plot with this data. Once again, we need the `k_node` a
 ```{r}
 # create base ggplot with boundaries removing various visual clutter
 base_plot_barcelona <- ggplot() +
-  geom_sf(data = zones_barcelona, fill=NA, col = "grey60", linewidth = 0.05)+
+  geom_sf(data = zones_barcelona, fill = NA, col = "grey60", linewidth = 0.3) +
   theme_classic(base_size = 20) +
-  labs(title = "",
-    subtitle = "", fill = "", caption = "") +
+  labs(title = "", subtitle = "", fill = "", caption = "") +
   theme(
     axis.line = element_blank(),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
-    panel.background = element_rect(fill='transparent'),
-    plot.background = element_rect(fill='transparent', color=NA),
+    panel.background = element_rect(fill = 'transparent'),
+    plot.background = element_rect(fill = 'transparent', color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   ) +
@@ -328,9 +338,9 @@ flows_plot_barcelona <- base_plot_barcelona |>
 # customise colours for the fill
 flows_plot_barcelona <- flows_plot_barcelona +
   scale_fill_gradient(
-    low = "#FABB29", 
-    high = "#AB061F", 
-    labels = scales::comma_format()  # Real value labels
+    low = "#FABB29",
+    high = "#AB061F",
+    labels = scales::comma_format() # Real value labels
   )
 
 flows_plot_barcelona
@@ -338,12 +348,25 @@ flows_plot_barcelona
 
 ```{r}
 #| include: false
-ggsave("./man/figures/flows_plot_barcelona.png", plot = flows_plot_barcelona, width = 6, height = 4, dpi = 300)
+ggsave(
+  "./man/figures/flows_plot_barcelona.png",
+  plot = flows_plot_barcelona,
+  width = 7,
+  height = 7,
+  dpi = 300,
+  units = "in"
+)
 ```
 
 ```{r}
 #| include: false
-ggsave("./vignettes/media/flows_plot_barcelona.svg", plot = flows_plot_barcelona, width = 10, height = 10, dpi = 300)
+ggsave(
+  "./vignettes/media/flows_plot_barcelona.svg",
+  plot = flows_plot_barcelona,
+  width = 10,
+  height = 10,
+  dpi = 300
+)
 ```
 
 ![](../man/figures/flows_plot_barcelona.png)
@@ -403,9 +426,9 @@ Let us count the total number of trips made between all locations on our selecte
 
 ```{r}
 flows_by_district <- od |>
-  group_by(id_origin, id_destination) |> 
-  summarise(n_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
-  collect() |> 
+  group_by(id_origin, id_destination) |>
+  summarise(n_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |>
+  collect() |>
   arrange(desc(id_origin), id_destination, n_trips)
 
 flows_by_district
@@ -438,13 +461,13 @@ Now we need to do a spatial join between `districts` and `spain_for_join` to fin
 
 ```{r}
 district_centroids <- districts |>
-  st_centroid() |> 
+  st_centroid() |>
   st_transform(crs = st_crs(spain_for_join))
 
 ca_distr <- district_centroids |>
-  st_join(spain_for_join) |> 
+  st_join(spain_for_join) |>
   st_drop_geometry() |>
-  filter(!is.na(ccaa.shortname.en)) |> 
+  filter(!is.na(ccaa.shortname.en)) |>
   select(id, ca_name = ccaa.shortname.en)
 
 ca_distr
@@ -477,17 +500,18 @@ We can now add these ids to the total flows by `districts` `id` pairs and calcul
 
 ```{r}
 flows_by_ca <- flows_by_district |>
-  left_join(ca_distr |>
-    rename(id_orig = ca_name),
-      by = c("id_origin" = "id")
-    ) |> 
-  left_join(ca_distr |>
-    rename(id_dest = ca_name),
-      by = c("id_destination" = "id")
-    ) |> 
+  left_join(
+    ca_distr |>
+      rename(id_orig = ca_name),
+    by = c("id_origin" = "id")
+  ) |>
+  left_join(
+    ca_distr |>
+      rename(id_dest = ca_name),
+    by = c("id_destination" = "id")
+  ) |>
   group_by(id_orig, id_dest) |>
-  summarise(n_trips = sum(n_trips, na.rm = TRUE),
-    .groups = "drop") |> 
+  summarise(n_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |>
   rename(o = id_orig, d = id_dest, value = n_trips)
 
 flows_by_ca
@@ -587,17 +611,16 @@ Now we have the data structure that match the `{flowmapper}`'s expected data for
 ```{r}
 # create base ggplot with boundaries removing any extra elements
 base_plot <- ggplot() +
-  geom_sf(data = spain_for_vis, fill=NA, col = "grey30", linewidth = 0.05)+
+  geom_sf(data = spain_for_vis, fill = NA, col = "grey30", linewidth = 0.05) +
   theme_classic(base_size = 20) +
-  labs(title = "",
-    subtitle = "", fill = "", caption = "") +
+  labs(title = "", subtitle = "", fill = "", caption = "") +
   theme(
     axis.line = element_blank(),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
-    panel.background = element_rect(fill='transparent'),
-    plot.background = element_rect(fill='transparent', color=NA),
+    panel.background = element_rect(fill = 'transparent'),
+    plot.background = element_rect(fill = 'transparent', color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   ) +
@@ -605,7 +628,7 @@ base_plot <- ggplot() +
 
 # flows_by_ca_twoway_coords |> arrange(desc(flow_ab))
 # add the flows
-flows_plot <- base_plot|>
+flows_plot <- base_plot |>
   add_flowmap(
     od = flows_by_ca,
     nodes = spain_for_vis_coords,
@@ -619,8 +642,8 @@ flows_plot <- base_plot|>
 
 # customise colours and remove legend, as we need a clean image for the logo
 flows_plot <- flows_plot +
-  guides(fill="none") +
-  scale_fill_gradient(low="#FABB29", high = "#AB061F")
+  guides(fill = "none") +
+  scale_fill_gradient(low = "#FABB29", high = "#AB061F")
 
 
 flows_plot
@@ -628,7 +651,13 @@ flows_plot
 
 ```{r}
 #| include: false
-ggsave("./man/figures/logo-before-hex.png", plot = flows_plot, width = 6, height = 4, dpi = 300)
+ggsave(
+  "./man/figures/logo-before-hex.png",
+  plot = flows_plot,
+  width = 6,
+  height = 4,
+  dpi = 300
+)
 ```
 
 ![](../man/figures/logo-before-hex.png)
@@ -640,27 +669,36 @@ The image may look a bit bleak, but when we put it on a sticker, it will look gr
 We make the sticker using the `{hexSticker}` [@hexSticker-r] package.
 
 ```{r}
-sticker(flows_plot,
+sticker(
+  flows_plot,
 
   # package name
-  package= "spanishoddata", 
-  p_size=4, p_y = 1.6,
-  p_color = "gray25", p_family="Roboto",
+  package = "spanishoddata",
+  p_size = 4,
+  p_y = 1.6,
+  p_color = "gray25",
+  p_family = "Roboto",
 
   # ggplot image size and position
-  s_x=1.02, s_y=1.19, s_width=2.6, s_height=2.72,
+  s_x = 1.02,
+  s_y = 1.19,
+  s_width = 2.6,
+  s_height = 2.72,
 
   # white hex
-  h_fill="#ffffff", h_color="grey", h_size=1.3,
+  h_fill = "#ffffff",
+  h_color = "grey",
+  h_size = 1.3,
 
   # url
   url = "github.com/rOpenSpain/spanishoddata",
-  u_color= "gray25",
+  u_color = "gray25",
   u_family = "Roboto",
   u_size = 1.2,
 
   # save output name and resolution
-  filename="./man/figures/logo.png", dpi=300 #
+  filename = "./man/figures/logo.png",
+  dpi = 300 #
 )
 ```
 
