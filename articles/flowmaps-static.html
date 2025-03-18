@@ -183,8 +183,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_total</span> <span class="op">&lt;-</span> <span class="va">od_20210407</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span>o <span class="op">=</span> <span class="va">id_origin</span>, d <span class="op">=</span> <span class="va">id_destination</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">o</span>, <span class="va">d</span>, <span class="va">value</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level3" data-number="3.3"><h3 data-number="3.3" id="reshape-flows-for-visualization">
@@ -251,17 +251,16 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create base ggplot with boundaries removing various visual clutter</span></span>
 <span><span class="va">base_plot_districts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">districts_v1</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">districts_v1</span>, fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">""</span>, fill <span class="op">=</span> <span class="st">""</span>, caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span>, subtitle <span class="op">=</span> <span class="st">""</span>, fill <span class="op">=</span> <span class="st">""</span>, caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.ticks <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">'transparent'</span><span class="op">)</span>,</span>
-<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">'transparent'</span>, color<span class="op">=</span><span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'transparent'</span><span class="op">)</span>,</span>
+<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'transparent'</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>    panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -287,9 +286,9 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="co"># customise colours for the fill</span></span>
 <span><span class="va">flows_plot_all_districts</span> <span class="op">&lt;-</span> <span class="va">flows_plot_all_districts</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span></span>
-<span>    low <span class="op">=</span> <span class="st">"#FABB29"</span>, </span>
-<span>    high <span class="op">=</span> <span class="st">"#AB061F"</span>, </span>
-<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma_format</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Real value labels</span></span>
+<span>    low <span class="op">=</span> <span class="st">"#FABB29"</span>,</span>
+<span>    high <span class="op">=</span> <span class="st">"#AB061F"</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma_format</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Real value labels</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -303,71 +302,65 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <section class="level5" data-number="3.4.2.1"><h5 data-number="3.4.2.1" id="filter-the-zones">
 <span class="header-section-number">3.4.2.1</span> Filter the zones<a class="anchor" aria-label="anchor" href="#filter-the-zones"></a>
 </h5>
-<p>Let us select all districts that correspond to Barcelona and a 10 km radius around it. Thanks to the <code>district_names_in_v2</code> column in the zones data, we can easily select all the districts that correspond to Barcelona and then apply the spatial join on the to select some more districts around the polygons that correspond to Barcelona.</p>
+<p>Using the <code>district_names_in_v2</code> column in the zones data, we can easily identify the districts within Barcelona.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zones_barcelona</span> <span class="op">&lt;-</span> <span class="va">districts_v1</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Barcelona"</span>, <span class="va">district_names_in_v2</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">zones_barcelona_fua</span> <span class="op">&lt;-</span> <span class="va">districts_v1</span><span class="op">[</span></span>
-<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_buffer</a></span><span class="op">(</span><span class="va">zones_barcelona</span>, dist <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span>
-<span>  ,</span>
-<span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">zones_barcelona_fua_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">zones_barcelona_fua</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="va">zones_barcelona_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">zones_barcelona</span>, fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">zones_barcelona_fua_plot</span></span></code></pre></div>
+<span><span class="va">zones_barcelona_plot</span></span></code></pre></div>
 </div>
-<p><img src="../reference/figures/zones_barcelona_fua_plot.png"></p>
+<p><img src="../reference/figures/zones_barcelona_plot.png"></p>
 <p>We also prepare the nodes for the <code>add_flowmap</code> function:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">zones_barcelona_fua_coords</span> <span class="op">&lt;-</span> <span class="va">zones_barcelona_fua</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">zones_barcelona_coords</span> <span class="op">&lt;-</span> <span class="va">zones_barcelona</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">zones_barcelona</span><span class="op">$</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">X</span>, y <span class="op">=</span> <span class="va">Y</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">zones_barcelona_fua_coords</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">zones_barcelona_coords</span><span class="op">)</span></span></code></pre></div>
 </div>
-<pre><code>      x       y    name
-1 930267.0 4607072   08180
-2 914854.0 4604279   08054
-3 926837.9 4597166 0801905
-4 927995.1 4594372 0801904
-5 930418.9 4599218 0801907
-6 930702.3 4597116 0801906</code></pre>
+<pre><code>         x       y    name
+1 926837.9 4597166 0801905
+2 927995.1 4594372 0801904
+3 930418.9 4599218 0801907
+4 930702.3 4597116 0801906
+5 933291.0 4594003 0801901
+6 930452.8 4590357 0801903</code></pre>
 </section><section class="level5" data-number="3.4.2.2"><h5 data-number="3.4.2.2" id="prepare-the-flows">
 <span class="header-section-number">3.4.2.2</span> Prepare the flows<a class="anchor" aria-label="anchor" href="#prepare-the-flows"></a>
 </h5>
-<p>Now we can use the zone <code>id</code>s from the <code>zones_barcelona_fua</code> data to select the flows that correspond to Barcelona and the 10 km radius around it.</p>
+<p>Now we can use the zone <code>id</code>s from the <code>zones_barcelona</code> data to select the flows that correspond to Barcelona.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_20210407_total_barcelona</span> <span class="op">&lt;-</span> <span class="va">od_20210407_total</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">o</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span> <span class="op">&amp;</span> <span class="va">d</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona_fua</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">o</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona</span><span class="op">$</span><span class="va">id</span> <span class="op">&amp;</span> <span class="va">d</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">zones_barcelona</span><span class="op">$</span><span class="va">id</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level5" data-number="3.4.2.3"><h5 data-number="3.4.2.3" id="visualise-the-flows-for-barcelona-and-surrounding-areas">
-<span class="header-section-number">3.4.2.3</span> Visualise the flows for Barcelona and surrounding areas<a class="anchor" aria-label="anchor" href="#visualise-the-flows-for-barcelona-and-surrounding-areas"></a>
+</section><section class="level5" data-number="3.4.2.3"><h5 data-number="3.4.2.3" id="visualise-the-flows-for-barcelona">
+<span class="header-section-number">3.4.2.3</span> Visualise the flows for Barcelona<a class="anchor" aria-label="anchor" href="#visualise-the-flows-for-barcelona"></a>
 </h5>
 <p>Now, we can create a new plot with this data. Once again, we need the <code>k_node</code> argument to tweak the aggregation of nodes and flows. Feel free to tweak it yourself and see how the results change.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create base ggplot with boundaries removing various visual clutter</span></span>
 <span><span class="va">base_plot_barcelona</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">zones_barcelona_fua</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">zones_barcelona</span>, fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey60"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">""</span>, fill <span class="op">=</span> <span class="st">""</span>, caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span>, subtitle <span class="op">=</span> <span class="st">""</span>, fill <span class="op">=</span> <span class="st">""</span>, caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.ticks <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">'transparent'</span><span class="op">)</span>,</span>
-<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">'transparent'</span>, color<span class="op">=</span><span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'transparent'</span><span class="op">)</span>,</span>
+<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'transparent'</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>    panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -378,7 +371,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span><span class="va">flows_plot_barcelona</span> <span class="op">&lt;-</span> <span class="va">base_plot_barcelona</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/flowmapper/man/add_flowmap.html" class="external-link">add_flowmap</a></span><span class="op">(</span></span>
 <span>    od <span class="op">=</span> <span class="va">od_20210407_total_barcelona</span>,</span>
-<span>    nodes <span class="op">=</span> <span class="va">zones_barcelona_fua_coords</span>,</span>
+<span>    nodes <span class="op">=</span> <span class="va">zones_barcelona_coords</span>,</span>
 <span>    node_radius_factor <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    edge_width_factor <span class="op">=</span> <span class="fl">0.6</span>,</span>
 <span>    arrow_point_angle <span class="op">=</span> <span class="fl">45</span>,</span>
@@ -387,17 +380,16 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span>    add_legend <span class="op">=</span> <span class="st">"bottom"</span>,</span>
 <span>    legend_col <span class="op">=</span> <span class="st">"gray20"</span>,</span>
 <span>    legend_gradient <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    k_node <span class="op">=</span> <span class="fl">30</span> <span class="co"># play around with this parameter to aggregate nodes and flows</span></span>
+<span>    k_node <span class="op">=</span> <span class="fl">10</span> <span class="co"># play around with this parameter to aggregate nodes and flows</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># customise colours for the fill</span></span>
 <span><span class="va">flows_plot_barcelona</span> <span class="op">&lt;-</span> <span class="va">flows_plot_barcelona</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span></span>
-<span>    low <span class="op">=</span> <span class="st">"#FABB29"</span>, </span>
-<span>    high <span class="op">=</span> <span class="st">"#AB061F"</span>, </span>
-<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma_format</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Real value labels</span></span>
+<span>    low <span class="op">=</span> <span class="st">"#FABB29"</span>,</span>
+<span>    high <span class="op">=</span> <span class="st">"#AB061F"</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma_format</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Real value labels</span></span>
 <span>  <span class="op">)</span></span>
-<span></span>
 <span></span>
 <span><span class="va">flows_plot_barcelona</span></span></code></pre></div>
 </div>
@@ -455,9 +447,9 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flows_by_district</span> <span class="op">&lt;-</span> <span class="va">od</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id_origin</span>, <span class="va">id_destination</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id_origin</span>, <span class="va">id_destination</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">id_origin</span><span class="op">)</span>, <span class="va">id_destination</span>, <span class="va">n_trips</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">flows_by_district</span></span></code></pre></div>
@@ -484,13 +476,13 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">district_centroids</span> <span class="op">&lt;-</span> <span class="va">districts</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_centroid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">spain_for_join</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ca_distr</span> <span class="op">&lt;-</span> <span class="va">district_centroids</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_join.html" class="external-link">st_join</a></span><span class="op">(</span><span class="va">spain_for_join</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_join.html" class="external-link">st_join</a></span><span class="op">(</span><span class="va">spain_for_join</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">ccaa.shortname.en</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">ccaa.shortname.en</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, ca_name <span class="op">=</span> <span class="va">ccaa.shortname.en</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ca_distr</span></span></code></pre></div>
@@ -518,17 +510,18 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flows_by_ca</span> <span class="op">&lt;-</span> <span class="va">flows_by_district</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">ca_distr</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>id_orig <span class="op">=</span> <span class="va">ca_name</span><span class="op">)</span>,</span>
-<span>      by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id_origin"</span> <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">ca_distr</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>id_dest <span class="op">=</span> <span class="va">ca_name</span><span class="op">)</span>,</span>
-<span>      by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id_destination"</span> <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span></span>
+<span>    <span class="va">ca_distr</span> <span class="op">|&gt;</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>id_orig <span class="op">=</span> <span class="va">ca_name</span><span class="op">)</span>,</span>
+<span>    by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id_origin"</span> <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span></span>
+<span>    <span class="va">ca_distr</span> <span class="op">|&gt;</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>id_dest <span class="op">=</span> <span class="va">ca_name</span><span class="op">)</span>,</span>
+<span>    by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id_destination"</span> <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id_orig</span>, <span class="va">id_dest</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>o <span class="op">=</span> <span class="va">id_orig</span>, d <span class="op">=</span> <span class="va">id_dest</span>, value <span class="op">=</span> <span class="va">n_trips</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">flows_by_ca</span></span></code></pre></div>
@@ -609,17 +602,16 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <div class="sourceCode cell-code" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create base ggplot with boundaries removing any extra elements</span></span>
 <span><span class="va">base_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">spain_for_vis</span>, fill<span class="op">=</span><span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey30"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">spain_for_vis</span>, fill <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="st">"grey30"</span>, linewidth <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">""</span>, fill <span class="op">=</span> <span class="st">""</span>, caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span>, subtitle <span class="op">=</span> <span class="st">""</span>, fill <span class="op">=</span> <span class="st">""</span>, caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.ticks <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">'transparent'</span><span class="op">)</span>,</span>
-<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">'transparent'</span>, color<span class="op">=</span><span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'transparent'</span><span class="op">)</span>,</span>
+<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">'transparent'</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>    panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -627,7 +619,7 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span></span>
 <span><span class="co"># flows_by_ca_twoway_coords |&gt; arrange(desc(flow_ab))</span></span>
 <span><span class="co"># add the flows</span></span>
-<span><span class="va">flows_plot</span> <span class="op">&lt;-</span> <span class="va">base_plot</span><span class="op">|&gt;</span></span>
+<span><span class="va">flows_plot</span> <span class="op">&lt;-</span> <span class="va">base_plot</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/flowmapper/man/add_flowmap.html" class="external-link">add_flowmap</a></span><span class="op">(</span></span>
 <span>    od <span class="op">=</span> <span class="va">flows_by_ca</span>,</span>
 <span>    nodes <span class="op">=</span> <span class="va">spain_for_vis_coords</span>,</span>
@@ -641,8 +633,8 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <span></span>
 <span><span class="co"># customise colours and remove legend, as we need a clean image for the logo</span></span>
 <span><span class="va">flows_plot</span> <span class="op">&lt;-</span> <span class="va">flows_plot</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>low<span class="op">=</span><span class="st">"#FABB29"</span>, high <span class="op">=</span> <span class="st">"#AB061F"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#FABB29"</span>, high <span class="op">=</span> <span class="st">"#AB061F"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">flows_plot</span></span></code></pre></div>
@@ -655,27 +647,36 @@ Projected CRS: ETRS89 / UTM zone 30N (N-E)
 <p>We make the sticker using the <a href="https://github.com/GuangchuangYu/hexSticker" class="external-link">hexSticker</a> <span class="citation" data-cites="hexSticker-r">(<a href="#ref-hexSticker-r" role="doc-biblioref">Yu 2020</a>)</span> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/hexSticker/man/sticker.html" class="external-link">sticker</a></span><span class="op">(</span><span class="va">flows_plot</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/hexSticker/man/sticker.html" class="external-link">sticker</a></span><span class="op">(</span></span>
+<span>  <span class="va">flows_plot</span>,</span>
 <span></span>
 <span>  <span class="co"># package name</span></span>
-<span>  package<span class="op">=</span> <span class="st">"spanishoddata"</span>, </span>
-<span>  p_size<span class="op">=</span><span class="fl">4</span>, p_y <span class="op">=</span> <span class="fl">1.6</span>,</span>
-<span>  p_color <span class="op">=</span> <span class="st">"gray25"</span>, p_family<span class="op">=</span><span class="st">"Roboto"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"spanishoddata"</span>,</span>
+<span>  p_size <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  p_y <span class="op">=</span> <span class="fl">1.6</span>,</span>
+<span>  p_color <span class="op">=</span> <span class="st">"gray25"</span>,</span>
+<span>  p_family <span class="op">=</span> <span class="st">"Roboto"</span>,</span>
 <span></span>
 <span>  <span class="co"># ggplot image size and position</span></span>
-<span>  s_x<span class="op">=</span><span class="fl">1.02</span>, s_y<span class="op">=</span><span class="fl">1.19</span>, s_width<span class="op">=</span><span class="fl">2.6</span>, s_height<span class="op">=</span><span class="fl">2.72</span>,</span>
+<span>  s_x <span class="op">=</span> <span class="fl">1.02</span>,</span>
+<span>  s_y <span class="op">=</span> <span class="fl">1.19</span>,</span>
+<span>  s_width <span class="op">=</span> <span class="fl">2.6</span>,</span>
+<span>  s_height <span class="op">=</span> <span class="fl">2.72</span>,</span>
 <span></span>
 <span>  <span class="co"># white hex</span></span>
-<span>  h_fill<span class="op">=</span><span class="st">"#ffffff"</span>, h_color<span class="op">=</span><span class="st">"grey"</span>, h_size<span class="op">=</span><span class="fl">1.3</span>,</span>
+<span>  h_fill <span class="op">=</span> <span class="st">"#ffffff"</span>,</span>
+<span>  h_color <span class="op">=</span> <span class="st">"grey"</span>,</span>
+<span>  h_size <span class="op">=</span> <span class="fl">1.3</span>,</span>
 <span></span>
 <span>  <span class="co"># url</span></span>
 <span>  url <span class="op">=</span> <span class="st">"github.com/rOpenSpain/spanishoddata"</span>,</span>
-<span>  u_color<span class="op">=</span> <span class="st">"gray25"</span>,</span>
+<span>  u_color <span class="op">=</span> <span class="st">"gray25"</span>,</span>
 <span>  u_family <span class="op">=</span> <span class="st">"Roboto"</span>,</span>
 <span>  u_size <span class="op">=</span> <span class="fl">1.2</span>,</span>
 <span></span>
 <span>  <span class="co"># save output name and resolution</span></span>
-<span>  filename<span class="op">=</span><span class="st">"./man/figures/logo.png"</span>, dpi<span class="op">=</span><span class="fl">300</span> <span class="co">#</span></span>
+<span>  filename <span class="op">=</span> <span class="st">"./man/figures/logo.png"</span>,</span>
+<span>  dpi <span class="op">=</span> <span class="fl">300</span> <span class="co">#</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><img src="../reference/figures/logo.png"></p>

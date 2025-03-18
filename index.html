@@ -84,8 +84,8 @@
 <h2 id="examples-of-available-data">Examples of available data<a class="anchor" aria-label="anchor" href="#examples-of-available-data"></a>
 </h2>
 <div id="fig-barcelona-flows">
-<p><img src="articles/media/flows_plot.svg"></p>
-<p>Figure 1: Example of the data available through the package: daily flows in Barcelona</p>
+<p><img src="articles/media/flows_plot_barcelona.svg" style="width:100.0%"></p>
+<p>Figure 1: Example of the data available through the package: daily flows in Barcelona on 7 April 2021</p>
 </div>
 <p>To create static maps like that see our vignette <a href="https://ropenspain.github.io/spanishoddata/articles/flowmaps-static.html" class="external-link">here</a>.</p>
 <hr>
@@ -201,7 +201,7 @@ Setting data directory for advanced users
 <span><span class="va">distritos_wgs84</span> <span class="op">&lt;-</span> <span class="va">distritos</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_simplify</a></span><span class="op">(</span>dTolerance <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">distritos_wgs84</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">distritos_wgs84</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-distritos-1.png"></p>
 </div>
 <div class="section level3">
@@ -299,11 +299,12 @@ Setting data directory for advanced users
 <span><span class="op">)</span></span>
 <span><span class="va">distritos_wgs84</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">population</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">spData</span><span class="fu">::</span><span class="va">world</span>, fill <span class="op">=</span> <span class="cn">NA</span>, colour <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">Trips</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"blue"</span>, data <span class="op">=</span> <span class="va">od_national_sf</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="va">Trips</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"blue"</span>, data <span class="op">=</span> <span class="va">od_national_sf</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">35</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_linewidth.html" class="external-link">scale_linewidth_continuous</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-desire-lines-1.png"></p>
 <p>Let’s focus on trips in and around a particular area (Salamanca):</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -356,11 +357,17 @@ Setting data directory for advanced users
 <div class="section level3">
 <h3 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h3>
-<p>To cite spanishoddata R package and data in publications use:</p>
+<p>To cite the <code>spanishoddata</code> R package use:</p>
 <p>Kotov E, Lovelace R, Vidal-Tortosa E (2024). <em>spanishoddata</em>. <a href="doi:10.32614/CRAN.package.spanishoddata" class="uri">doi:10.32614/CRAN.package.spanishoddata</a> <a href="https://doi.org/10.32614/CRAN.package.spanishoddata" class="external-link uri">https://doi.org/10.32614/CRAN.package.spanishoddata</a>, <a href="https://github.com/rOpenSpain/spanishoddata" class="external-link uri">https://github.com/rOpenSpain/spanishoddata</a>.</p>
-<p>MITMS (2024). “Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report).” Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes y Movilidad Sostenible. <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" class="external-link uri">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data</a>.</p>
+<p>To cite the official website of the mobility study use:</p>
+<p>Ministerio de Transportes y Movilidad Sostenible (MITMS) (2024). “Estudio de la movilidad con Big Data (Study of mobility with Big Data).” <a href="https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data" class="external-link uri">https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data</a>.</p>
+<p>To cite the methodology for 2022 and onwards data use:</p>
+<p>Ministerio de Transportes y Movilidad Sostenible (MITMS) (2024). <em>Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)</em>. <a href="https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf" class="external-link uri">https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf</a>.</p>
+<p>To cite the methodology for 2020-2021 data use:</p>
+<p>Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) (2021). <em>Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)</em>. <a href="https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf" class="external-link uri">https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf</a>.</p>
+<p>See package website for more details: <a href="https://ropenspain.github.io/spanishoddata/" class="external-link uri">https://ropenspain.github.io/spanishoddata/</a></p>
 <p>BibTeX:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="sc">@</span>Manual{spanishoddata,</span>
+<div class="sourceCode" id="cb28"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="sc">@</span>Manual{r<span class="sc">-</span>spanishoddata,</span>
 <span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>  title <span class="ot">=</span> {spanishoddata},</span>
 <span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  author <span class="ot">=</span> {Egor Kotov and Robin Lovelace and Eugeni Vidal<span class="sc">-</span>Tortosa},</span>
 <span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>  year <span class="ot">=</span> {<span class="dv">2024</span>},</span>
@@ -368,15 +375,26 @@ Setting data directory for advanced users
 <span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>  doi <span class="ot">=</span> {<span class="fl">10.32614</span><span class="sc">/</span>CRAN.package.spanishoddata},</span>
 <span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>}</span>
 <span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a></span>
-<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="sc">@</span>TechReport{mitma_mobility_2024_v8,</span>
-<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>  title <span class="ot">=</span> {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},</span>
-<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>  author <span class="ot">=</span> {{MITMS}},</span>
-<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>  institution <span class="ot">=</span> {Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de Transportes y Movilidad Sostenible},</span>
-<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a>  year <span class="ot">=</span> {<span class="dv">2024</span>},</span>
-<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>  url <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>www.transportes.gob.es<span class="sc">/</span>ministerio<span class="sc">/</span>proyectos<span class="sc">-</span>singulares<span class="sc">/</span>estudio<span class="sc">-</span>de<span class="sc">-</span>movilidad<span class="sc">-</span>con<span class="sc">-</span>big<span class="sc">-</span>data},</span>
-<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>  urldate <span class="ot">=</span> {<span class="dv">2024-12-11</span>},</span>
-<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a>  annotation <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>www.transportes.gob.es<span class="sc">/</span>recursos_mfom<span class="sc">/</span>paginabasica<span class="sc">/</span>recursos<span class="sc">/</span>a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf},</span>
-<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="sc">@</span>Misc{mitms_mobility_web,</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>  title <span class="ot">=</span> {Estudio de la movilidad con Big <span class="fu">Data</span> (Study of mobility with Big Data)},</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>  author <span class="ot">=</span> {{Ministerio de Transportes y Movilidad <span class="fu">Sostenible</span> (MITMS)}},</span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>  year <span class="ot">=</span> {<span class="dv">2024</span>},</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a>  url <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>www.transportes.gob.es<span class="sc">/</span>ministerio<span class="sc">/</span>proyectos<span class="sc">-</span>singulares<span class="sc">/</span>estudio<span class="sc">-</span>de<span class="sc">-</span>movilidad<span class="sc">-</span>con<span class="sc">-</span>big<span class="sc">-</span>data},</span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>}</span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a><span class="sc">@</span>Manual{mitms_methodology_2022_v8,</span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a>  title <span class="ot">=</span> {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},</span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a>  author <span class="ot">=</span> {{Ministerio de Transportes y Movilidad <span class="fu">Sostenible</span> (MITMS)}},</span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a>  year <span class="ot">=</span> {<span class="dv">2024</span>},</span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a>  url <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>www.transportes.gob.es<span class="sc">/</span>recursos_mfom<span class="sc">/</span>paginabasica<span class="sc">/</span>recursos<span class="sc">/</span>a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf},</span>
+<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a>}</span>
+<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a><span class="sc">@</span>Manual{mitma_methodology_2020_v3,</span>
+<span id="cb28-24"><a href="#cb28-24" tabindex="-1"></a>  title <span class="ot">=</span> {Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID<span class="dv">-19</span> (Analysis of mobility <span class="cf">in</span> Spain with Big Data technology during the state of alarm <span class="cf">for</span> COVID<span class="dv">-19</span> crisis management)},</span>
+<span id="cb28-25"><a href="#cb28-25" tabindex="-1"></a>  author <span class="ot">=</span> {{Ministerio de Transportes, Movilidad y Agenda <span class="fu">Urbana</span> (MITMA)}},</span>
+<span id="cb28-26"><a href="#cb28-26" tabindex="-1"></a>  year <span class="ot">=</span> {<span class="dv">2021</span>},</span>
+<span id="cb28-27"><a href="#cb28-27" tabindex="-1"></a>  url <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>cdn.mitma.gob.es<span class="sc">/</span>portal<span class="sc">-</span>web<span class="sc">-</span>drupal<span class="sc">/</span>covid<span class="dv">-19</span><span class="sc">/</span>bigdata<span class="sc">/</span>mitma_<span class="sc">-</span>_estudio_movilidad_covid<span class="dv">-19</span>_informe_metodologico_v3.pdf},</span>
+<span id="cb28-28"><a href="#cb28-28" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
