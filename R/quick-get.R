@@ -4,7 +4,7 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
+#' This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/) No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
 #'
 #' @param date A character or Date object specifying the date for which to retrieve the data. If date is a character, the date must be in "YYYY-MM-DD" or "YYYYMMDD" format.
 #' @param min_trips A numeric value specifying the minimum number of journeys per origin-destination pair to retrieve. Defaults to 100 to reduce the amount of data returned. Can be set to 0 to retrieve all data.
@@ -73,7 +73,8 @@ spod_quick_get_od <- function(
     # Check for "YYYY-MM-DD" format
     if (grepl("^\\d{4}-\\d{2}-\\d{2}$", date)) {
       date <- as.Date(date) # Safe to convert
-    } else if (nchar(date) == 8 && grepl("^\\d{8}$", date)) { # Check for "YYYYMMDD" format
+    } else if (nchar(date) == 8 && grepl("^\\d{8}$", date)) {
+      # Check for "YYYYMMDD" format
       date <- as.Date(date, format = "%Y%m%d") # Safe to convert
     } else {
       # If neither format matches, stop with a clear error message
