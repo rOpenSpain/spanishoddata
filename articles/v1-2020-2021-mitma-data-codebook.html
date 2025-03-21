@@ -282,7 +282,7 @@ Figure 1: The overview of package functions to get the data
 <p>The origin-destination data contain the number of trips and distance travelled between <code>districts</code> or <code>municipalities</code> in Spain for every hour of every day between 2020-02-14 and 2021-05-09. Each flow also has attributes such as the trip purpose (composed of the type of activity (<code>home</code>/<code>work_or_study</code>/<code>other</code>) at both the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table. <a href="#fig-flows-barcelona" class="quarto-xref">Figure 2</a> shows an example of total flows in the province of Barcelona on Feb 14th, 2020.</p>
 <div id="fig-flows-barcelona" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-flows-barcelona-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="media/flows_plot.svg" style="width:70.0%">
+<img src="media/flows_plot_barcelona.svg" style="width:70.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flows-barcelona-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure 2: Origin destination flows in Barcelona on 2020-02-14
@@ -411,7 +411,8 @@ Data transformation note
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">hour</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    mean_hourly_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">od_mean_hourly_trips_over_the_4_days</span></span></code></pre></div>
 </div>

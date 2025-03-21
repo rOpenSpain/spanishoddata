@@ -123,7 +123,7 @@ All mobility data is referenced via `id_origin`, `id_destination`, or other loca
 
 The origin-destination data contain the number of trips and distance travelled between `districts` or `municipalities` in Spain for every hour of every day between 2020-02-14 and 2021-05-09. Each flow also has attributes such as the trip purpose (composed of the type of activity (`home`/`work_or_study`/`other`) at both the origin and destination), province of residence of individuals making this trip, distance covered while making the trip. See the detailed attributes below in a table. @fig-flows-barcelona shows an example of total flows in the province of Barcelona on Feb 14th, 2020.
 
-![Origin destination flows in Barcelona on 2020-02-14](media/flows_plot.svg){#fig-flows-barcelona width="70%"}
+![Origin destination flows in Barcelona on 2020-02-14](media/flows_plot_barcelona.svg){#fig-flows-barcelona width="70%"}
 
 Here are the variables you can find in both the `district` and `municipality` level origin-destination data:
 
@@ -174,7 +174,8 @@ od_mean_hourly_trips_over_the_4_days <- od_dist |>
   group_by(hour) |>
   summarise(
     mean_hourly_trips = mean(n_trips, na.rm = TRUE),
-    .groups = "drop") |> 
+    .groups = "drop"
+  ) |>
   collect()
 od_mean_hourly_trips_over_the_4_days
 ```
