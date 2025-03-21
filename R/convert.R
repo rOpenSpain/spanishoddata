@@ -436,7 +436,8 @@ spod_convert <- function(
   if (save_format == "duckdb") {
     # reconnect and disconnect to make sure DB file is released
     tmp_con <- DBI::dbConnect(
-      duckdb::duckdb(dbdir = save_path),
+      drv = duckdb::duckdb(),
+      dbdir = save_path,
       read_only = TRUE
     )
     DBI::dbDisconnect(tmp_con)
