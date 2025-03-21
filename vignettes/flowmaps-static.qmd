@@ -181,8 +181,8 @@ base_plot_districts <- ggplot() +
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
-    panel.background = element_rect(fill = 'transparent'),
-    plot.background = element_rect(fill = 'transparent', color = NA),
+    panel.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent", color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   ) +
@@ -311,12 +311,12 @@ base_plot_barcelona <- ggplot() +
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
-    panel.background = element_rect(fill = 'transparent'),
-    plot.background = element_rect(fill = 'transparent', color = NA),
+    panel.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent", color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   ) +
-  guides(fill = 'none')
+  guides(fill = "none")
 
 # flows_by_ca_twoway_coords |> arrange(desc(flow_ab))
 # add the flows
@@ -369,7 +369,7 @@ ggsave(
 )
 ```
 
-![](../man/figures/flows_plot_barcelona.png)
+![](../man/figures/flows_plot_barcelona.svg)
 
 ## Advanced example - aggregate flows for `{spanishoddata}` logo {#advanced-example}
 
@@ -619,12 +619,12 @@ base_plot <- ggplot() +
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_blank(),
-    panel.background = element_rect(fill = 'transparent'),
-    plot.background = element_rect(fill = 'transparent', color = NA),
+    panel.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent", color = NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   ) +
-  guides(fill = 'none')
+  guides(fill = "none")
 
 # flows_by_ca_twoway_coords |> arrange(desc(flow_ab))
 # add the flows
