@@ -40,8 +40,24 @@
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "runtimePlatform": "R version 4.4.2 (2024-10-31)",
-      "version": "0.1.0"
+      "runtimePlatform": "R version 4.4.3 (2025-02-28)",
+      "version": "0.1.1"
+    },
+    {
+      "type": "SoftwareSourceCode",
+      "author": {
+        "type": "Organization",
+        "name": "Ministerio de Transportes y Movilidad Sostenible (MITMS)"
+      },
+      "name": "Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)"
+    },
+    {
+      "type": "SoftwareSourceCode",
+      "author": {
+        "type": "Organization",
+        "name": "Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA)"
+      },
+      "name": "Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)"
     },
     {
       "id": "https://doi.org/10.32614/CRAN.package.spanishoddata",

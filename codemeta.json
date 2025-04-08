@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/rOpenSpain/spanishoddata",
   "issueTracker": "https://github.com/rOpenSpain/spanishoddata/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.4.2 (2024-10-31)",
+  "runtimePlatform": "R version 4.4.3 (2025-02-28)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -195,7 +195,7 @@
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
-      "version": ">= 3.5.0"
+      "version": ">= 4.1.0"
     },
     "2": {
       "@type": "SoftwareApplication",
@@ -309,6 +309,18 @@
     },
     "11": {
       "@type": "SoftwareApplication",
+      "identifier": "lifecycle",
+      "name": "lifecycle",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=lifecycle"
+    },
+    "12": {
+      "@type": "SoftwareApplication",
       "identifier": "lubridate",
       "name": "lubridate",
       "provider": {
@@ -319,7 +331,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lubridate"
     },
-    "12": {
+    "13": {
       "@type": "SoftwareApplication",
       "identifier": "memuse",
       "name": "memuse",
@@ -331,7 +343,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=memuse"
     },
-    "13": {
+    "14": {
       "@type": "SoftwareApplication",
       "identifier": "parallelly",
       "name": "parallelly",
@@ -343,7 +355,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=parallelly"
     },
-    "14": {
+    "15": {
       "@type": "SoftwareApplication",
       "identifier": "purrr",
       "name": "purrr",
@@ -355,7 +367,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=purrr"
     },
-    "15": {
+    "16": {
       "@type": "SoftwareApplication",
       "identifier": "readr",
       "name": "readr",
@@ -367,7 +379,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=readr"
     },
-    "16": {
+    "17": {
       "@type": "SoftwareApplication",
       "identifier": "rlang",
       "name": "rlang",
@@ -379,7 +391,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rlang"
     },
-    "17": {
+    "18": {
       "@type": "SoftwareApplication",
       "identifier": "sf",
       "name": "sf",
@@ -391,12 +403,12 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sf"
     },
-    "18": {
+    "19": {
       "@type": "SoftwareApplication",
       "identifier": "stats",
       "name": "stats"
     },
-    "19": {
+    "20": {
       "@type": "SoftwareApplication",
       "identifier": "stringr",
       "name": "stringr",
@@ -408,7 +420,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=stringr"
     },
-    "20": {
+    "21": {
       "@type": "SoftwareApplication",
       "identifier": "tibble",
       "name": "tibble",
@@ -420,7 +432,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=tibble"
     },
-    "21": {
+    "22": {
       "@type": "SoftwareApplication",
       "identifier": "xml2",
       "name": "xml2",
@@ -434,7 +446,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1709.039KB",
+  "fileSize": "1990.545KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -462,15 +474,40 @@
       "sameAs": "https://doi.org/10.32614/CRAN.package.spanishoddata"
     },
     {
+      "@type": "CreativeWork",
       "datePublished": "2024",
       "author": [
         {
           "@type": "Organization",
-          "name": "MITMS"
+          "name": "Ministerio de Transportes y Movilidad Sostenible (MITMS)"
+        }
+      ],
+      "name": "Estudio de la movilidad con Big Data (Study of mobility with Big Data)",
+      "url": "https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "datePublished": "2024",
+      "author": [
+        {
+          "@type": "Organization",
+          "name": "Ministerio de Transportes y Movilidad Sostenible (MITMS)"
         }
       ],
       "name": "Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)",
-      "url": "https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data"
+      "url": "https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "datePublished": "2021",
+      "author": [
+        {
+          "@type": "Organization",
+          "name": "Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA)"
+        }
+      ],
+      "name": "Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)",
+      "url": "https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf"
     }
   ],
   "releaseNotes": "https://github.com/rOpenSpain/spanishoddata/blob/master/NEWS.md",

@@ -8,8 +8,11 @@ message: 'To cite package "spanishoddata" in publications use:'
 type: software
 license: MIT
 title: 'spanishoddata: Get Spanish Origin-Destination Data'
-version: 0.1.0
+version: 0.1.1
 doi: 10.32614/CRAN.package.spanishoddata
+identifiers:
+- type: doi
+  value: 10.32614/CRAN.package.spanishoddata
 abstract: Gain seamless access to origin-destination (OD) data from the Spanish Ministry
   of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>.
   This package simplifies the management of these large datasets by providing tools
@@ -63,18 +66,28 @@ keywords:
 - origin-destination
 - rstats
 references:
-- type: report
+- type: generic
+  title: Estudio de la movilidad con Big Data (Study of mobility with Big Data)
+  authors:
+  - name: Ministerio de Transportes y Movilidad Sostenible (MITMS)
+  year: '2024'
+  url: https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data
+- type: manual
   title: Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología
     Big Data. Informe metodológico (Study of National Traveler mobility Using Big
     Data Technology. Methodological Report)
   authors:
-  - name: MITMS
-  institution:
-    name: Secretaría de Estado de Transportes y Movilidad Sostenible; Ministerio de
-      Transportes y Movilidad Sostenible
+  - name: Ministerio de Transportes y Movilidad Sostenible (MITMS)
   year: '2024'
-  url: https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data
-  date-accessed: '2024-12-11'
+  url: https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf
+- type: manual
+  title: Análisis de la movilidad en España con tecnología Big Data durante el estado
+    de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain
+    with Big Data technology during the state of alarm for COVID-19 crisis management)
+  authors:
+  - name: Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA)
+  year: '2021'
+  url: https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf
 - type: software
   title: 'R: A Language and Environment for Statistical Computing'
   notes: Depends
@@ -84,8 +97,8 @@ references:
   institution:
     name: R Foundation for Statistical Computing
     address: Vienna, Austria
-  year: '2024'
-  version: '>= 3.5.0'
+  year: '2025'
+  version: '>= 4.1.0'
 - type: software
   title: checkmate
   abstract: 'checkmate: Fast and Versatile Argument Checks'
@@ -97,7 +110,8 @@ references:
     given-names: Michel
     email: michellang@gmail.com
     orcid: https://orcid.org/0000-0001-9754-0393
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.checkmate
 - type: software
   title: curl
   abstract: 'curl: A Modern and Flexible Web Client for R'
@@ -109,7 +123,8 @@ references:
     given-names: Jeroen
     email: jeroenooms@gmail.com
     orcid: https://orcid.org/0000-0002-4035-0289
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.curl
   version: '>= 5.0.0'
 - type: software
   title: DBI
@@ -125,7 +140,8 @@ references:
     given-names: Kirill
     email: kirill@cynkra.com
     orcid: https://orcid.org/0000-0002-1416-3412
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.DBI
 - type: software
   title: dplyr
   abstract: 'dplyr: A Grammar of Data Manipulation'
@@ -149,7 +165,8 @@ references:
     given-names: Davis
     email: davis@posit.co
     orcid: https://orcid.org/0000-0003-4777-038X
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.dplyr
 - type: software
   title: duckdb
   abstract: 'duckdb: DBI Package for the DuckDB Database Management System'
@@ -165,7 +182,8 @@ references:
     given-names: Mark
     email: mark.raasveldt@cwi.nl
     orcid: https://orcid.org/0000-0001-5005-6844
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.duckdb
   version: '>= 0.5.0'
 - type: software
   title: fs
@@ -182,7 +200,8 @@ references:
   - family-names: Csárdi
     given-names: Gábor
     email: csardi.gabor@gmail.com
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.fs
 - type: software
   title: glue
   abstract: 'glue: Interpreted String Literals'
@@ -197,7 +216,8 @@ references:
     given-names: Jennifer
     email: jenny@posit.co
     orcid: https://orcid.org/0000-0002-6983-2759
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.glue
 - type: software
   title: here
   abstract: 'here: A Simpler Way to Find Your Files'
@@ -209,7 +229,8 @@ references:
     given-names: Kirill
     email: krlmlr+r@mailbox.org
     orcid: https://orcid.org/0000-0002-1416-3412
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.here
 - type: software
   title: httr2
   abstract: 'httr2: Perform HTTP Requests and Process the Responses'
@@ -220,7 +241,24 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.httr2
+- type: software
+  title: lifecycle
+  abstract: 'lifecycle: Manage the Life Cycle of your Package Functions'
+  notes: Imports
+  url: https://lifecycle.r-lib.org/
+  repository: https://CRAN.R-project.org/package=lifecycle
+  authors:
+  - family-names: Henry
+    given-names: Lionel
+    email: lionel@posit.co
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+    orcid: https://orcid.org/0000-0003-4757-117X
+  year: '2025'
+  doi: 10.32614/CRAN.package.lifecycle
 - type: software
   title: lubridate
   abstract: 'lubridate: Make Dealing with Dates a Little Easier'
@@ -235,7 +273,8 @@ references:
     given-names: Garrett
   - family-names: Wickham
     given-names: Hadley
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.lubridate
 - type: software
   title: memuse
   abstract: 'memuse: Memory Estimation Utilities'
@@ -246,7 +285,8 @@ references:
   - family-names: Schmidt
     given-names: Drew
     email: wrathematics@gmail.com
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.memuse
 - type: software
   title: parallelly
   abstract: 'parallelly: Enhancing the ''parallel'' Package'
@@ -258,7 +298,8 @@ references:
     given-names: Henrik
     email: henrikb@braju.com
     orcid: https://orcid.org/0000-0002-7579-5165
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.parallelly
 - type: software
   title: purrr
   abstract: 'purrr: Functional Programming Tools'
@@ -268,12 +309,13 @@ references:
   authors:
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@rstudio.com
+    email: hadley@posit.co
     orcid: https://orcid.org/0000-0003-4757-117X
   - family-names: Henry
     given-names: Lionel
-    email: lionel@rstudio.com
-  year: '2024'
+    email: lionel@posit.co
+  year: '2025'
+  doi: 10.32614/CRAN.package.purrr
 - type: software
   title: readr
   abstract: 'readr: Read Rectangular Text Data'
@@ -290,7 +332,8 @@ references:
     given-names: Jennifer
     email: jenny@posit.co
     orcid: https://orcid.org/0000-0002-6983-2759
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.readr
 - type: software
   title: rlang
   abstract: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
@@ -304,7 +347,8 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.rlang
 - type: software
   title: sf
   abstract: 'sf: Simple Features for R'
@@ -316,7 +360,8 @@ references:
     given-names: Edzer
     email: edzer.pebesma@uni-muenster.de
     orcid: https://orcid.org/0000-0001-8049-7069
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.sf
 - type: software
   title: stats
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -326,7 +371,7 @@ references:
   institution:
     name: R Foundation for Statistical Computing
     address: Vienna, Austria
-  year: '2024'
+  year: '2025'
 - type: software
   title: stringr
   abstract: 'stringr: Simple, Consistent Wrappers for Common String Operations'
@@ -337,7 +382,8 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.stringr
 - type: software
   title: tibble
   abstract: 'tibble: Simple Data Frames'
@@ -352,22 +398,24 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@rstudio.com
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.tibble
 - type: software
   title: xml2
   abstract: 'xml2: Parse XML'
   notes: Imports
-  url: https://xml2.r-lib.org/
+  url: https://xml2.r-lib.org
   repository: https://CRAN.R-project.org/package=xml2
   authors:
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@posit.co
   - family-names: Hester
     given-names: Jim
   - family-names: Ooms
     given-names: Jeroen
-  year: '2024'
+    email: jeroenooms@gmail.com
+  year: '2025'
+  doi: 10.32614/CRAN.package.xml2
 - type: software
   title: flowmapblue
   abstract: 'flowmapblue: Flow Map Rendering'
@@ -379,7 +427,8 @@ references:
     given-names: Ilya
     email: ilya@boyandin.me
     orcid: https://orcid.org/0000-0001-5585-7587
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.flowmapblue
 - type: software
   title: flowmapper
   abstract: 'flowmapper: Draw Flows (Migration, Goods, Money, Information) on ''ggplot2''
@@ -392,7 +441,8 @@ references:
     given-names: Johannes
     email: johannes.mast@dlr.de
     orcid: https://orcid.org/0000-0001-6595-5834
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.flowmapper
   version: '>= 0.1.2'
 - type: software
   title: furrr
@@ -407,7 +457,8 @@ references:
   - family-names: Dancho
     given-names: Matt
     email: mdancho@business-science.io
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.furrr
 - type: software
   title: future
   abstract: 'future: Unified Parallel and Distributed Processing in R for Everyone'
@@ -419,7 +470,8 @@ references:
     given-names: Henrik
     email: henrikb@braju.com
     orcid: https://orcid.org/0000-0002-7579-5165
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.future
 - type: software
   title: hexSticker
   abstract: 'hexSticker: Create Hexagon Sticker in R'
@@ -430,7 +482,8 @@ references:
   - family-names: Yu
     given-names: Guangchuang
     email: guangchuangyu@gmail.com
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.hexSticker
 - type: software
   title: mapSpain
   abstract: 'mapSpain: Administrative Boundaries of Spain'
@@ -442,8 +495,8 @@ references:
     given-names: Diego
     email: diego.hernangomezherrero@gmail.com
     orcid: https://orcid.org/0000-0001-8457-4658
-    affiliation: rOpenSpain
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.mapSpain
 - type: software
   title: quarto
   abstract: 'quarto: R Interface to ''Quarto'' Markdown Publishing System'
@@ -459,7 +512,8 @@ references:
     given-names: Christophe
     email: cderv@posit.co
     orcid: https://orcid.org/0000-0003-4474-2498
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.quarto
 - type: software
   title: remotes
   abstract: 'remotes: R Package Installation from Remote Repositories, Including ''GitHub'''
@@ -480,7 +534,8 @@ references:
     given-names: Martin
   - family-names: Tenenbaum
     given-names: Dan
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.remotes
 - type: software
   title: scales
   abstract: 'scales: Scale Functions for Visualization'
@@ -497,7 +552,8 @@ references:
     orcid: https://orcid.org/0000-0002-5147-4711
   - family-names: Seidel
     given-names: Dana
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.scales
 - type: software
   title: testthat
   abstract: 'testthat: Unit Testing for R'
@@ -508,7 +564,8 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.testthat
   version: '>= 3.0.0'
 - type: software
   title: tidyverse
@@ -520,5 +577,6 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@rstudio.com
-  year: '2024'
+  year: '2025'
+  doi: 10.32614/CRAN.package.tidyverse
 
