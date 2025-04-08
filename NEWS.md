@@ -2,7 +2,7 @@
 
 ## New features
 
-* `spod_cite()` function to easily cite the package and the data (#134)
+* `spod_cite()` function to easily cite the package and the data ([#134](https://github.com/rOpenSpain/spanishoddata/pull/134))
 
 ## Breaking changes
 
@@ -14,7 +14,7 @@
 
 * `hour` (ex-`time_slot`) column is now right next to the date column in the output of `spod_get()` and `spod_convert()` (#)
 
-* maximum available CPU cores check is now turned off to improve compatibility when running the package from within a container in high performance computing environments (see #130 and #140 for details)
+* maximum available CPU cores check is now turned off to improve compatibility when running the package from within a container in high performance computing environments (see [#130](https://github.com/rOpenSpain/spanishoddata/issues/130) and [#140](https://github.com/rOpenSpain/spanishoddata/pull/140) for details)
 
 * minor documentation improvements and updates
 
