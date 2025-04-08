@@ -7,7 +7,7 @@
   <a class="navbar-brand me-2" href="../index.html">
     <img src="../apple-touch-icon-180x180.png" alt="spanishoddata logo" height="40" class="d-inline-block me-1">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -39,22 +39,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="spanishoddata-development-version">spanishoddata (development version)<a class="anchor" aria-label="anchor" href="#spanishoddata-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.1.1" id="spanishoddata-011">spanishoddata 0.1.1<a class="anchor" aria-label="anchor" href="#spanishoddata-011"></a></h2>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-1-1">New features<a class="anchor" aria-label="anchor" href="#new-features-0-1-1"></a></h3>
 <ul><li>
-<code><a href="../reference/spod_cite.html">spod_cite()</a></code> function to easily cite the package and the data (<a href="https://github.com/rOpenSpain/spanishoddata/issues/134" class="external-link">#134</a>)</li>
+<code><a href="../reference/spod_cite.html">spod_cite()</a></code> function to easily cite the package and the data (<a href="https://github.com/rOpenSpain/spanishoddata/pull/134" class="external-link">#134</a>)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-1-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-1"></a></h3>
 <ul><li>
 <code>hour</code> column is superseeded by <code>time_slot</code> column in the output of <code><a href="../reference/spod_get.html">spod_get()</a></code> and <code><a href="../reference/spod_convert.html">spod_convert()</a></code>. <code>time_slot</code> is deprecated. It is still present in the tables, but will be removed in the end of 2025 but going forward please use the new <code>hour</code> column. Otherwise it is exactly the same as before, this is just a name change. (<a href="https://github.com/rOpenSpain/spanishoddata/issues/132" class="external-link">#132</a>)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
+<h3 id="other-changes-0-1-1">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-1-1"></a></h3>
 <ul><li><p><code>spod_quick_get()</code> does not rely on metadata download anymore and can be used without setting the data directory with <code><a href="../reference/spod_set_data_dir.html">spod_set_data_dir()</a></code> (and therefore does not cause a warning if the data directory is not set).</p></li>
 <li><p><code>hour</code> (ex-<code>time_slot</code>) column is now right next to the date column in the output of <code><a href="../reference/spod_get.html">spod_get()</a></code> and <code><a href="../reference/spod_convert.html">spod_convert()</a></code> (#)</p></li>
-<li><p>maximum available CPU cores check is now turned off to improve compatibility when running the package from within a container in high performance computing environments (see <a href="https://github.com/rOpenSpain/spanishoddata/issues/130" class="external-link">#130</a> and <a href="https://github.com/rOpenSpain/spanishoddata/issues/140" class="external-link">#140</a> for details)</p></li>
+<li><p>maximum available CPU cores check is now turned off to improve compatibility when running the package from within a container in high performance computing environments (see <a href="https://github.com/rOpenSpain/spanishoddata/issues/130" class="external-link">#130</a> and <a href="https://github.com/rOpenSpain/spanishoddata/pull/140" class="external-link">#140</a> for details)</p></li>
 <li><p>minor documentation improvements and updates</p></li>
 <li><p>minor bug fixes</p></li>
 </ul></div>
