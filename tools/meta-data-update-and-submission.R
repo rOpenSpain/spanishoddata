@@ -1,9 +1,9 @@
 # before release
 # usethis::use_version("patch")
 # usethis::use_version("minor")
+usethis::use_tidy_description()
 cffr::cff_write()
 codemetar::write_codemeta(write_minimeta = T)
-usethis::use_tidy_description()
 # urlchecker::url_check()
 # devtools::check(remote = TRUE, manual = TRUE)
 # devtools::check(cran = TRUE)
