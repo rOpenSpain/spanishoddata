@@ -2,7 +2,7 @@
 
 ## Bug fixes
 
-* `spod_convert()` can now accept `overwrite = 'update'` with `save_format = 'parquet'` ([#161](https://github.com/rOpenSpain/spanishoddata/pulls/161)) previously it failed because of the incorrect check that asserted only `TRUE` or `FALSE` ([#160](https://github.com/rOpenSpain/spanishoddata/issues/160))
+* `spod_convert()` can now accept `overwrite = 'update'` with `save_format = 'parquet'` ([#161](https://github.com/rOpenSpain/spanishoddata/pull/161)) previously it failed because of the incorrect check that asserted only `TRUE` or `FALSE` ([#160](https://github.com/rOpenSpain/spanishoddata/issues/160))
 
 # spanishoddata 0.1.1
 
