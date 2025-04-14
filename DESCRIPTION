@@ -28,6 +28,7 @@ BugReports: https://github.com/rOpenSpain/spanishoddata/issues
 Depends:
     R (>= 4.1.0)
 Imports: 
+    base64enc,
     checkmate,
     curl (>= 5.0.0),
     DBI,
