@@ -5,7 +5,7 @@
 #' @param dates A `character` or `Date` vector of dates to process. Kindly keep in mind that v1 and v2 data follow different data collection methodologies and may not be directly comparable. Therefore, do not try to request data from both versions for the same date range. If you need to compare data from both versions, please refer to the respective codebooks and methodology documents. The v1 data covers the period from 2020-02-14 to 2021-05-09, and the v2 data covers the period from 2022-01-01 to the present until further notice. The true dates range is checked against the available data for each version on every function run.
 #'
 #' The possible values can be any of the following:
-#' 
+#'
 #'  * For the `spod_get()` and `spod_convert()` functions, the `dates` can be set to "cached_v1" or "cached_v2" to request data from cached (already previously downloaded) v1 (2020-2021) or v2 (2022 onwards) data. In this case, the function will identify and use all data files that have been downloaded and cached locally, (e.g. using an explicit run of `spod_download()`, or any data requests made using the `spod_get()` or `spod_convert()` functions).
 #'
 #'  * A single date in ISO (YYYY-MM-DD) or YYYYMMDD format. `character` or `Date` object.
@@ -25,7 +25,9 @@
 #' @keywords internal
 spod_dates_argument_to_dates_seq <- function(dates) {
   if (is.null(dates) || (!is.character(dates) && !inherits(dates, "Date"))) {
-    stop("Invalid date input format. Please provide a character vector or Date object.")
+    stop(
+      "Invalid date input format. Please provide a character vector or Date object."
+    )
   }
   if (length(dates) == 1 && dates %in% c("cached_v1", "cached_v2")) {
     return(dates)
@@ -84,7 +86,6 @@ spod_dates_argument_to_dates_seq <- function(dates) {
 }
 
 
-
 #' Check if specified dates span both data versions
 #'
 #' This function checks if the specified dates or date ranges span both v1 and v2 data versions.
@@ -99,7 +100,7 @@ spod_is_data_version_overlaps <- function(dates) {
   if (any(dates %in% all_dates_v1) && any(dates %in% all_dates_v2)) {
     stop(paste0(
       "Dates found in both v1 and v2 data. The v1 and v2 data sets may not be comparable. Please see the respective codebooks and methodology documents: run `spod_codebook(1)` and `spod_codebook(2)`.\nThe valid dates range for v1 is: ",
-        paste(spod_convert_dates_to_ranges(all_dates_v1), collapse = ", "),
+      paste(spod_convert_dates_to_ranges(all_dates_v1), collapse = ", "),
       "\nThe valid dates range for v2 is: ",
       paste(spod_convert_dates_to_ranges(all_dates_v2), collapse = ", "),
       "\n To get the list of valid dates, you can use `spod_get_valid_dates(1)` and `spod_get_valid_dates(2)`."
@@ -109,7 +110,7 @@ spod_is_data_version_overlaps <- function(dates) {
 }
 
 #' Infer data version from dates
-#' 
+#'
 #' @inheritParams spod_download
 #' @inheritParams spod_dates_argument_to_dates_seq
 #' @return An `integer` indicating the inferred data version.
@@ -119,7 +120,7 @@ spod_infer_data_v_from_dates <- function(
   ignore_missing_dates = FALSE
 ) {
   # check if user is requesting to just get all cached data
-  if (length(dates) == 1){
+  if (length(dates) == 1) {
     if (as.character(dates) %in% c("cached_v1", "cached_v2")) {
       return(
         as.integer(stringr::str_extract(as.character(dates), "[0-9]$"))
@@ -128,7 +129,7 @@ spod_infer_data_v_from_dates <- function(
   }
   cached_data_requested <- length(dates) == 1 &&
     all(as.character(dates) %in% c("cached_v1", "cached_v2"))
-  
+
   # in case of overlap
   # will throw an error from the spod_is_data_version_overlaps
   if (spod_is_data_version_overlaps(dates)) {
@@ -144,7 +145,7 @@ spod_infer_data_v_from_dates <- function(
   if (length(missing_dates) == length(dates)) {
     stop(paste0(
       "All requested dates are missing from the available data.\nThe valid dates range for v1 is: ",
-        paste(spod_convert_dates_to_ranges(v1_dates), collapse = ", "),
+      paste(spod_convert_dates_to_ranges(v1_dates), collapse = ", "),
       "\nThe valid dates range for v2 is: ",
       paste(spod_convert_dates_to_ranges(v2_dates), collapse = ", "),
       ".\nYou requested the following missing dates: ",
@@ -178,7 +179,7 @@ spod_infer_data_v_from_dates <- function(
         # Stop with an error if ignore_missing_dates is FALSE
         stop(paste0(
           "Some dates do not match the available data.\nThe valid dates range for v1 is: ",
-            paste(spod_convert_dates_to_ranges(v1_dates), collapse = ", "),
+          paste(spod_convert_dates_to_ranges(v1_dates), collapse = ", "),
           "\nThe valid dates range for v2 is: ",
           paste(spod_convert_dates_to_ranges(v2_dates), collapse = ", "),
           ".\nYou requested the following missing dates: ",
@@ -204,18 +205,24 @@ spod_expand_dates_from_regex <- function(date_regex) {
   all_dates_v2 <- spod_get_valid_dates(ver = 2)
 
   # Filter dates matching the regex for both versions
-  matching_dates_v1 <- all_dates_v1[grepl(date_regex, format(all_dates_v1, "%Y%m%d"))]
-  matching_dates_v2 <- all_dates_v2[grepl(date_regex, format(all_dates_v2, "%Y%m%d"))]
+  matching_dates_v1 <- all_dates_v1[grepl(
+    date_regex,
+    format(all_dates_v1, "%Y%m%d")
+  )]
+  matching_dates_v2 <- all_dates_v2[grepl(
+    date_regex,
+    format(all_dates_v2, "%Y%m%d")
+  )]
 
   # if both vectors are empty, throw an error
   if (length(matching_dates_v1) == 0 && length(matching_dates_v2) == 0) {
     stop(paste0(
       "No matching dates found in the available data.",
       "\nThe valid dates range for v1 is: ",
-        paste(spod_convert_dates_to_ranges(all_dates_v1), collapse = ", "),
+      paste(spod_convert_dates_to_ranges(all_dates_v1), collapse = ", "),
       "\nThe valid dates range for v2 is: ",
-          paste(spod_convert_dates_to_ranges(all_dates_v2), collapse = ", "),
-          "."
+      paste(spod_convert_dates_to_ranges(all_dates_v2), collapse = ", "),
+      "."
     ))
   }
   # If checks above have passed, we can combine the matching dates as only one contains dates and the other is empty
@@ -225,66 +232,87 @@ spod_expand_dates_from_regex <- function(date_regex) {
 }
 
 #' Get valid dates for the specified data version
-#' 
+#'
 #' @description
-#' 
+#'
 #' `r lifecycle::badge("stable")`
-#' 
+#'
 #' Get all metadata for requested data version and identify all dates available for download.
-#' 
+#'
 #' @inheritParams spod_available_data
-#' 
+#'
 #' @return A vector of type `Date` with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
 #' @export
 #' @examplesIf interactive()
 #' \donttest{
 #' # Get all valid dates for v1 (2020-2021) data
 #' spod_get_valid_dates(ver = 1)
-#' 
+#'
 #' # Get all valid dates for v2 (2020 onwards) data
 #' spod_get_valid_dates(ver = 2)
 #' }
-#' 
+#'
 spod_get_valid_dates <- function(ver = NULL) {
   # Validate input
   checkmate::assertIntegerish(ver, max.len = 1)
   if (!ver %in% c(1, 2)) {
-    stop("Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards).")
+    stop(
+      "Invalid version number. Must be 1 (for v1 2020-2021 data) or 2 (for v2 2022 onwards)."
+    )
   }
 
   if (ver == 1) {
     # available_data <- spod_available_data_v1(check_local_files = FALSE, quiet = TRUE)
     # all_dates <- unique(available_data[grepl("maestra1.*diarios", available_data$target_url),]$data_ymd, na.rm = TRUE)
     # perahps it is worth hardcoding at lest the v1 data range as it is unlikely to change at this point
-    all_dates <- seq.Date(from = as.Date("2020-02-14"), to = as.Date("2021-05-09"), by = "day")
+    all_dates <- seq.Date(
+      from = as.Date("2020-02-14"),
+      to = as.Date("2021-05-09"),
+      by = "day"
+    )
   } else if (ver == 2) {
     available_data <- spod_available_data_v2(quiet = TRUE)
-    all_dates <- unique(available_data[grepl("viajes.*diarios", available_data$target_url), ]$data_ymd, na.rm = TRUE)
+    all_dates <- unique(
+      available_data[
+        grepl("viajes.*diarios", available_data$target_url),
+      ]$data_ymd,
+      na.rm = TRUE
+    )
   }
   all_dates <- sort(all_dates)
   return(all_dates)
 }
 # TODO: currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
 
-
 #' Translate zone names from English to Spanish
 #' @inheritParams spod_download
 #' @return A `character` string with the translated zone name. Or `NULL` if the zone name is not recognized.
 #' @keywords internal
 spod_zone_names_en2es <- function(
-    zones = c(
-      "districts", "dist", "distr", "distritos",
-      "municipalities", "muni", "municip", "municipios",
-      "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
-    )
-  ) {
+  zones = c(
+    "districts",
+    "dist",
+    "distr",
+    "distritos",
+    "municipalities",
+    "muni",
+    "municip",
+    "municipios",
+    "lua",
+    "large_urban_areas",
+    "gau",
+    "grandes_areas_urbanas"
+  )
+) {
   zones <- tolower(zones)
   zones <- match.arg(zones)
   if (zones %in% c("districts", "dist", "distr", "distritos")) {
     return("distritos")
   } else if (zones %in% c("municipalities", "muni", "municip", "municipios")) {
     return("municipios")
-  } else if (zones %in% c("lua", "large_urban_areas", "gau", "grandes_areas_urbanas")) {
+  } else if (
+    zones %in% c("lua", "large_urban_areas", "gau", "grandes_areas_urbanas")
+  ) {
     return("gau")
   }
 }
@@ -294,12 +322,16 @@ spod_zone_names_en2es <- function(
 #' @return A `character` string with the folder name for the specified data type. Or `NULL` if the data type is not recognized.
 #' @keywords internal
 spod_match_data_type_for_local_folders <- function(
-    type = c(
-      "od", "origin-destination",
-      "os", "overnight_stays",
-      "nt", "number_of_trips"
-    ),
-    ver = c(1, 2)) {
+  type = c(
+    "od",
+    "origin-destination",
+    "os",
+    "overnight_stays",
+    "nt",
+    "number_of_trips"
+  ),
+  ver = c(1, 2)
+) {
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
   }
@@ -335,13 +367,18 @@ spod_match_data_type_for_local_folders <- function(
 #' @return A `character` string with the folder name for the specified data type. Or `NULL` if the type is not recognized.
 #' @keywords internal
 spod_match_data_type <- function(
-    type = c(
-      "od", "origin-destination", "viajes",
-      "os", "overnight_stays", "pernoctaciones",
-      "nt", "number_of_trips", "personas"
-    )
+  type = c(
+    "od",
+    "origin-destination",
+    "viajes",
+    "os",
+    "overnight_stays",
+    "pernoctaciones",
+    "nt",
+    "number_of_trips",
+    "personas"
+  )
 ) {
-  
   type <- tolower(type)
   type <- match.arg(type)
 
@@ -360,41 +397,47 @@ spod_match_data_type <- function(
 #' Get available RAM
 #' @keywords internal
 #' @return A `numeric` amount of available RAM in GB.
-spod_available_ram <- function(){
+spod_available_ram <- function() {
   return(
-    as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']])/1024/1024/1024
+    as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']]) /
+      1024 /
+      1024 /
+      1024
   )
 }
 
 #' Remove duplicate values in a semicolon-separated string
-#' 
+#'
 #' @description
 #' Remove duplicate IDs in a semicolon-separated string in a selected column in a data frame
 #' @param column A `character` vector column in a data frame to remove duplicates from.
-#' 
+#'
 #' @return A `character` vector with semicolon-separated unique IDs.
 #' @keywords internal
 spod_unique_separated_ids <- function(column) {
-  purrr::map_chr(column, ~ {
-    unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]])  # Split by semicolon and remove duplicates
-    stringr::str_c(unique_ids, collapse = "; ")  # Join them back with semicolons
-  })
+  purrr::map_chr(
+    column,
+    ~ {
+      unique_ids <- unique(stringr::str_split(.x, ";\\s*")[[1]]) # Split by semicolon and remove duplicates
+      stringr::str_c(unique_ids, collapse = "; ") # Join them back with semicolons
+    }
+  )
 }
 
 #' Convert dates to ranges
-#' 
+#'
 #' This internal helper function reduces a vector of dates to a vector of date ranges to shorten the warning and error messages that mention the valid date ranges.
 #' @param dates A `character` vector of dates.
 #' @importFrom rlang .data
 #' @return A `character` vector of date ranges.
 #' @keywords internal
-#' 
+#'
 spod_convert_dates_to_ranges <- function(dates) {
   # TODO: remove the `convert_to_ranges` function from `spod_quick_get_od()` when both branches are merged into main and use this `spod_convert_dates_to_ranges()` instead
   dates <- as.Date(dates) # Ensure dates are in Date format
   ranges <- tibble::tibble(date = dates) |>
-    dplyr::arrange(date) |> 
-      dplyr::mutate(
+    dplyr::arrange(date) |>
+    dplyr::mutate(
       diff = c(0, diff(date)), # Calculate differences
       group = cumsum(diff != 1) # Create groups for consecutive ranges
     ) |>
@@ -416,34 +459,42 @@ spod_convert_dates_to_ranges <- function(dates) {
 #' Get valid dates from the GraphQL API
 #' @return A `Date` vector of dates that are valid to request data with \code{spod_quick_get_od()}.
 #' @keywords internal
-spod_graphql_valid_dates <- function(){
+spod_graphql_valid_dates <- function() {
   graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
 
   # Define the GraphQL query
   graphql_query <- list(
     query = "query { find_date_ranges { start_date, end_date } }",
-    variables = structure(list(), .Names = character(0))  # Empty named list so that it serialises to {} not []
+    variables = structure(list(), .Names = character(0)) # Empty named list so that it serialises to {} not []
   )
 
+  # Generate signature for the query
+  x_sign <- spod_sign_request(graphql_query$query)
 
   # Send the POST request
-  response <- httr2::request(graphql_endpoint) |>
+  req <- httr2::request(graphql_endpoint) |>
     httr2::req_headers(
-      "Content-Type" = "application/json",  # Ensure correct header
-      "User-Agent" = "R-httr2-client"
+      "Content-Length" = spod_request_length(graphql_query),
+      "Content-Type" = "application/json",
+      "User-Agent" = getOption("spanishoddata.user_agent"),
+      "x-signature" = x_sign$x_signature,
+      "x-signature-timestamp" = x_sign$x_signature_timestamp
     ) |>
-    httr2::req_body_json(graphql_query) |>  # Pass query as JSON
-    httr2::req_perform()
+    httr2::req_body_json(graphql_query)
+
+  resp <- req |> httr2::req_perform()
 
   # parse the response
-  response_data <- httr2::resp_body_json(response, simplifyVector = TRUE)
-  dates_table <- response_data$data$find_date_ranges |> 
-    dplyr::mutate(end_date = dplyr::if_else(
-      condition = .data$end_date == "2024-09-31",
-      true = "2024-09-30",
-      false = .data$end_date
-    ))
-  
+  response_data <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  dates_table <- response_data$data$find_date_ranges |>
+    dplyr::mutate(
+      end_date = dplyr::if_else(
+        condition = .data$end_date == "2024-09-31",
+        true = "2024-09-30",
+        false = .data$end_date
+      )
+    )
+
   dates_table
 
   # Convert start_date and end_date columns to Date class
@@ -461,6 +512,42 @@ spod_graphql_valid_dates <- function(){
 
   # Flatten the list of date sequences into a single vector and remove duplicates
   dates <- as.Date(unique(unlist(date_sequences)))
-  
+
   return(dates)
+}
+
+spod_sign_request <- function(query_str) {
+  # Generate signature for the query
+  timestamp <- as.character(as.integer(Sys.time()))
+  # Concatenate the query and the timestamp (this is what gets signed)
+  string_to_sign <- paste0(query_str, " ", timestamp)
+
+  # secret key
+  # secret_key <- "LMRwUOv2vdE9jHvpxE19viAwF8LQ7O8O6wCg4YvD" # fallback key? hardcoded in js https://mapas-movilidad.transportes.gob.es/assets/index-BFdJ8uY8.js
+  secret_key <- "sTPf7dEorzjcLYyclMX1qK0eYz2JCgx8RtLOj1vR" # from the website
+
+  # Compute the HMAC-SHA256 value.
+  # Important: serialize=FALSE and raw=TRUE ensure that the exact plain text is hashed,
+  # and we get a raw vector that we then Base64-encode.
+  hmac_raw <- digest::hmac(
+    key = secret_key,
+    object = string_to_sign,
+    algo = "sha256",
+    serialize = FALSE,
+    raw = TRUE
+  )
+
+  # Base64-encode the raw HMAC output.
+  signature <- base64enc::base64encode(hmac_raw)
+
+  x_sign <- list(x_signature = signature, x_signature_timestamp = timestamp)
+
+  return(x_sign)
+}
+
+spod_request_length <- function(graphql_query) {
+  payload_json <- jsonlite::toJSON(graphql_query, auto_unbox = TRUE)
+  content_length <- nchar(payload_json, type = "bytes")
+
+  return(content_length)
 }

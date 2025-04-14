@@ -4,7 +4,7 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/) No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
+#' **WARNING: this function may stop working at any time, as the API may change**. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/) No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
 #'
 #' @param date A character or Date object specifying the date for which to retrieve the data. If date is a character, the date must be in "YYYY-MM-DD" or "YYYYMMDD" format.
 #' @param min_trips A numeric value specifying the minimum number of journeys per origin-destination pair to retrieve. Defaults to 100 to reduce the amount of data returned. Can be set to 0 to retrieve all data.
@@ -214,17 +214,24 @@ spod_quick_get_od <- function(
     )
   )
 
+  # Generate signature for the query
+  x_sign <- spod_sign_request(graphql_query$query)
+
   # Send the POST request
-  response <- httr2::request(graphql_endpoint) |>
+  req <- httr2::request(graphql_endpoint) |>
     httr2::req_headers(
+      "Content-Length" = spod_request_length(graphql_query),
       "Content-Type" = "application/json",
-      "User-Agent" = getOption("spanishoddata.user_agent")
+      "User-Agent" = getOption("spanishoddata.user_agent"),
+      "x-signature" = x_sign$x_signature,
+      "x-signature-timestamp" = x_sign$x_signature_timestamp
     ) |>
-    httr2::req_body_json(graphql_query) |>
-    httr2::req_perform()
+    httr2::req_body_json(graphql_query)
+
+  resp <- req |> httr2::req_perform()
 
   # Parse the response
-  response_data <- httr2::resp_body_json(response, simplifyVector = TRUE)
+  response_data <- httr2::resp_body_json(resp, simplifyVector = TRUE)
 
   # check if data is empty
 
