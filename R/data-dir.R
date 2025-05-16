@@ -100,6 +100,6 @@ spod_get_data_dir <- function(quiet = FALSE) {
   if (!dir.exists(data_dir_env_abs)) {
     fs::dir_create(data_dir_env_abs, recurse = TRUE)
   }
-  data_dir_env_real <- fs::path_real(data_dir_env_abs)
+  data_dir_env_real <- fs::path_abs(data_dir_env_abs)
   return(data_dir_env_real)
 }
