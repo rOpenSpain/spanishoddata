@@ -137,93 +137,34 @@ spod_available_data_v1 <- function(
   }
 
   if (use_s3) {
-    files_table <- spod_available_data_s3(
-      ver = 1,
-      force = force
+    if (!quiet) message("Attempting to fetch available data from S3")
+    files_table <- tryCatch(
+      {
+        spod_available_data_s3(ver = 1, force = force)
+      },
+      error = function(e) {
+        message(
+          "S3 fetch failed (",
+          e$message,
+          "); falling back to XML sequence."
+        )
+        read_data_links_xml(
+          metadata_folder = metadata_folder,
+          data_dir = data_dir,
+          force = force,
+          quiet = quiet,
+          latest_file_function = spod_get_latest_v1_file_list
+        )
+      }
     )
   } else {
-    xmls <- fs::dir_ls(
-      metadata_folder,
-      type = "file",
-      regexp = "data_links_v1"
-    ) |>
-      sort()
-
-    latest_file <- utils::tail(xmls, 1)
-
-    needs_update <- isTRUE(force) ||
-      length(xmls) == 0 ||
-      as.Date(stringr::str_extract(latest_file, "\\d{4}-\\d{2}-\\d{2}")) <
-        Sys.Date()
-
-    if (needs_update) {
-      if (!quiet) message("Fetching latest data links xml")
-      latest_data_links_xml_path <- spod_get_latest_v1_file_list(
-        data_dir = data_dir
-      )
-    } else {
-      if (!quiet) message("Using existing data links xml: ", latest_file)
-      latest_data_links_xml_path <- latest_file
-    }
-    # xml_files_list <- fs::dir_ls(
-    #   metadata_folder,
-    #   type = "file",
-    #   regexp = "data_links_v1"
-    # ) |>
-    #   sort()
-    # if (length(xml_files_list) == 0) {
-    #   if (isFALSE(quiet)) {
-    #     message(
-    #       "No data links xml files found, getting latest v1 data links xml"
-    #     )
-    #   }
-    #   latest_data_links_xml_path <- spod_get_latest_v1_file_list(
-    #     data_dir = data_dir
-    #   )
-    # } else {
-    #   latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
-    # }
-
-    # # Check if the XML file is 1 day old or older from its name
-    # file_date <- stringr::str_extract(
-    #   latest_data_links_xml_path,
-    #   "[0-9]{4}-[0-9]{2}-[0-9]{2}"
-    # )
-
-    # if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-    #   if (isFALSE(quiet)) {
-    #     message(
-    #       "File list xml is 1 day old or older, getting latest data links xml"
-    #     )
-    #   }
-    #   latest_data_links_xml_path <- spod_get_latest_v1_file_list(
-    #     data_dir = data_dir
-    #   )
-    # } else {
-    #   if (isFALSE(quiet)) {
-    #     message("Using existing data links xml: ", latest_data_links_xml_path)
-    #   }
-    # }
-
-    # if (length(latest_data_links_xml_path) == 0) {
-    #   if (isFALSE(quiet)) {
-    #     message("Getting latest data links xml")
-    #   }
-    #   latest_data_links_xml_path <- spod_get_latest_v1_file_list(
-    #     data_dir = data_dir
-    #   )
-    # }
-
-    x_xml <- xml2::read_xml(latest_data_links_xml_path)
-
-    files_table <- tibble::tibble(
-      target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |>
-        xml2::xml_text(),
-      pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |>
-        xml2::xml_text()
+    files_table <- read_data_links_xml(
+      metadata_folder = metadata_folder,
+      data_dir = data_dir,
+      force = force,
+      quiet = quiet,
+      latest_file_function = spod_get_latest_v1_file_list
     )
-    files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
-    files_table$pub_date <- NULL
   }
 
   files_table$file_extension <- tools::file_ext(files_table$target_url)
@@ -446,70 +387,34 @@ spod_available_data_v2 <- function(
   }
 
   if (use_s3) {
-    files_table <- spod_available_data_s3(
-      ver = 2,
-      force = force
+    if (!quiet) message("Attempting to fetch available data from S3")
+    files_table <- tryCatch(
+      {
+        spod_available_data_s3(ver = 1, force = force)
+      },
+      error = function(e) {
+        message(
+          "S3 fetch failed (",
+          e$message,
+          "); falling back to XML sequence."
+        )
+        read_data_links_memoised(
+          metadata_folder = metadata_folder,
+          data_dir = data_dir,
+          force = force,
+          quiet = quiet,
+          latest_file_function = spod_get_latest_v2_file_list
+        )
+      }
     )
   } else {
-    xml_files_list <- fs::dir_ls(
-      metadata_folder,
-      type = "file",
-      regexp = "data_links_v2"
-    ) |>
-      sort()
-    if (length(xml_files_list) == 0) {
-      if (isFALSE(quiet)) {
-        message(
-          "No data links xml files found, getting latest v2 data links xml."
-        )
-      }
-      latest_data_links_xml_path <- spod_get_latest_v2_file_list(
-        data_dir = data_dir
-      )
-    } else {
-      latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
-    }
-
-    # Check if the XML file is 1 day old or older from its name
-    file_date <- stringr::str_extract(
-      latest_data_links_xml_path,
-      "[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    files_table <- read_data_links_memoised(
+      metadata_folder = metadata_folder,
+      data_dir = data_dir,
+      force = force,
+      quiet = quiet,
+      latest_file_function = spod_get_latest_v2_file_list
     )
-
-    if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-      if (isFALSE(quiet)) {
-        message(
-          "File list xml is 1 day old or older, getting latest data links xml"
-        )
-      }
-      latest_data_links_xml_path <- spod_get_latest_v2_file_list(
-        data_dir = data_dir
-      )
-    } else {
-      if (isFALSE(quiet)) {
-        message("Using existing data links xml: ", latest_data_links_xml_path)
-      }
-    }
-
-    if (length(latest_data_links_xml_path) == 0) {
-      if (isFALSE(quiet)) {
-        message("Getting latest data links xml")
-      }
-      latest_data_links_xml_path <- spod_get_latest_v2_file_list(
-        data_dir = data_dir
-      )
-    }
-
-    x_xml <- xml2::read_xml(latest_data_links_xml_path)
-
-    files_table <- tibble::tibble(
-      target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |>
-        xml2::xml_text(),
-      pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |>
-        xml2::xml_text()
-    )
-    files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
-    files_table$pub_date <- NULL
   }
 
   files_table$file_extension <- tools::file_ext(files_table$target_url)
@@ -671,3 +576,48 @@ spod_available_data_v2 <- function(
 
   return(files_table)
 }
+
+read_data_links_xml <- function(
+  metadata_folder,
+  data_dir,
+  force = FALSE,
+  quiet = FALSE,
+  latest_file_function
+) {
+  xml_files_list <- fs::dir_ls(
+    metadata_folder,
+    type = "file",
+    regexp = "data_links_v1"
+  ) |>
+    sort()
+  latest_file <- utils::tail(xml_files_list, 1)
+
+  needs_update <- isTRUE(force) ||
+    length(xml_files_list) == 0 ||
+    as.Date(
+      stringr::str_extract(latest_file, "\\d{4}-\\d{2}-\\d{2}")
+    ) <
+      Sys.Date()
+
+  if (needs_update) {
+    if (!quiet) message("Fetching latest data links xml")
+    latest_data_links_xml_path <- latest_file_function(
+      data_dir = data_dir
+    )
+  } else {
+    if (!quiet) message("Using existing data links xml: ", latest_file)
+    latest_data_links_xml_path <- latest_file
+  }
+
+  x_xml <- xml2::read_xml(latest_data_links_xml_path)
+  files_table <- tibble::tibble(
+    target_url = xml2::xml_find_all(x_xml, "//link") |> xml2::xml_text(),
+    pub_date = xml2::xml_find_all(x_xml, "//pubDate") |> xml2::xml_text()
+  )
+  files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
+  files_table$pub_date <- NULL
+
+  files_table
+}
+
+read_data_links_memoised <- memoise::memoise(read_data_links_xml)
