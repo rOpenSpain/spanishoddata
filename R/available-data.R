@@ -4,13 +4,13 @@
 #'
 #' `r lifecycle::badge("stable")`
 #'
-#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with `data_dir` argument.
+#' Get a table with links to available data files for the specified data version. Optionally check (see arguments) the file size and availability of data files previously downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by [spod_set_data_dir()]) or a custom path specified with `data_dir` argument. By default the data is fetched from Amazon S3 bucket where the data is stored. If that fails, the function falls back to downloading an XML file from the Spanish Ministry of Transport website. You can also control this behaviour with `use_s3` argument.
 #'
-#' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
+#' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with [spod_codebook()].
 #' @param check_local_files Whether to check if the local files exist and get the file size. Defaults to `FALSE`.
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param use_s3 `r lifecycle::badge("experimental")` Logical. If `TRUE`, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If `FALSE`, use the XML file to get available data list.
-#' @param s3_force_update `r lifecycle::badge("experimental")` Logical. If `TRUE`, force update of the available data list from Amazon S3. If `FALSE`, only update the available data list if it is older than 1 day.
+#' @param force Logical. If `TRUE`, force re-download of metadata. For Amazon S3 this queries the S3 bucket for the XML file it re-downloads. If `FALSE`, only update the available data list if it is older than 1 day.
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
 #' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
@@ -46,8 +46,8 @@ spod_available_data <- function(
   check_local_files = FALSE,
   quiet = FALSE,
   data_dir = spod_get_data_dir(),
-  use_s3 = FALSE,
-  s3_force_update = FALSE
+  use_s3 = TRUE,
+  force = FALSE
 ) {
   # Validate input
   checkmate::assertIntegerish(ver, max.len = 1)
@@ -66,7 +66,7 @@ spod_available_data <- function(
       check_local_files = check_local_files,
       quiet = quiet,
       use_s3 = use_s3,
-      s3_force_update = s3_force_update
+      force = force
     )
   } else if (ver == 2) {
     available_data <- spod_available_data_v2(
@@ -74,7 +74,7 @@ spod_available_data <- function(
       check_local_files = check_local_files,
       quiet = quiet,
       use_s3 = use_s3,
-      s3_force_update = s3_force_update
+      force = force
     )
   }
 
@@ -127,8 +127,8 @@ spod_available_data_v1 <- function(
   data_dir = spod_get_data_dir(),
   # check_local_files (below) is FALSE by default to avoid excessive filesystem access, perhaps should be TRUE. Download functions use it to load the xml file, but we probably do not want the script to check all local cache directories every time we run a get data function. Perhaps it is better to offload this check to a separate function and have a csv file or some other way to keep track of the files that were downloaded and cached. An output of curl::multi_download() could be used for this purpose.
   check_local_files = FALSE,
-  use_s3 = FALSE,
-  s3_force_update = FALSE,
+  use_s3 = TRUE,
+  force = FALSE,
   quiet = FALSE
 ) {
   metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
@@ -139,57 +139,80 @@ spod_available_data_v1 <- function(
   if (use_s3) {
     files_table <- spod_available_data_s3(
       ver = 1,
-      s3_force_update = s3_force_update
+      force = force
     )
   } else {
-    xml_files_list <- fs::dir_ls(
+    xmls <- fs::dir_ls(
       metadata_folder,
       type = "file",
       regexp = "data_links_v1"
     ) |>
       sort()
-    if (length(xml_files_list) == 0) {
-      if (isFALSE(quiet)) {
-        message(
-          "No data links xml files found, getting latest v1 data links xml"
-        )
-      }
+
+    latest_file <- tail(xmls, 1)
+
+    needs_update <- isTRUE(force) ||
+      length(xmls) == 0 ||
+      as.Date(stringr::str_extract(latest_file, "\\d{4}-\\d{2}-\\d{2}")) <
+        Sys.Date()
+
+    if (needs_update) {
+      if (!quiet) message("Fetching latest data links xml")
       latest_data_links_xml_path <- spod_get_latest_v1_file_list(
         data_dir = data_dir
       )
     } else {
-      latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
+      if (!quiet) message("Using existing data links xml: ", latest_file)
+      latest_data_links_xml_path <- latest_file
     }
+    # xml_files_list <- fs::dir_ls(
+    #   metadata_folder,
+    #   type = "file",
+    #   regexp = "data_links_v1"
+    # ) |>
+    #   sort()
+    # if (length(xml_files_list) == 0) {
+    #   if (isFALSE(quiet)) {
+    #     message(
+    #       "No data links xml files found, getting latest v1 data links xml"
+    #     )
+    #   }
+    #   latest_data_links_xml_path <- spod_get_latest_v1_file_list(
+    #     data_dir = data_dir
+    #   )
+    # } else {
+    #   latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
+    # }
 
-    # Check if the XML file is 1 day old or older from its name
-    file_date <- stringr::str_extract(
-      latest_data_links_xml_path,
-      "[0-9]{4}-[0-9]{2}-[0-9]{2}"
-    )
+    # # Check if the XML file is 1 day old or older from its name
+    # file_date <- stringr::str_extract(
+    #   latest_data_links_xml_path,
+    #   "[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    # )
 
-    if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-      if (isFALSE(quiet)) {
-        message(
-          "File list xml is 1 day old or older, getting latest data links xml"
-        )
-      }
-      latest_data_links_xml_path <- spod_get_latest_v1_file_list(
-        data_dir = data_dir
-      )
-    } else {
-      if (isFALSE(quiet)) {
-        message("Using existing data links xml: ", latest_data_links_xml_path)
-      }
-    }
+    # if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
+    #   if (isFALSE(quiet)) {
+    #     message(
+    #       "File list xml is 1 day old or older, getting latest data links xml"
+    #     )
+    #   }
+    #   latest_data_links_xml_path <- spod_get_latest_v1_file_list(
+    #     data_dir = data_dir
+    #   )
+    # } else {
+    #   if (isFALSE(quiet)) {
+    #     message("Using existing data links xml: ", latest_data_links_xml_path)
+    #   }
+    # }
 
-    if (length(latest_data_links_xml_path) == 0) {
-      if (isFALSE(quiet)) {
-        message("Getting latest data links xml")
-      }
-      latest_data_links_xml_path <- spod_get_latest_v1_file_list(
-        data_dir = data_dir
-      )
-    }
+    # if (length(latest_data_links_xml_path) == 0) {
+    #   if (isFALSE(quiet)) {
+    #     message("Getting latest data links xml")
+    #   }
+    #   latest_data_links_xml_path <- spod_get_latest_v1_file_list(
+    #     data_dir = data_dir
+    #   )
+    # }
 
     x_xml <- xml2::read_xml(latest_data_links_xml_path)
 
@@ -413,8 +436,8 @@ spod_get_latest_v2_file_list <- function(
 spod_available_data_v2 <- function(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
-  use_s3 = FALSE,
-  s3_force_update = FALSE,
+  use_s3 = TRUE,
+  force = FALSE,
   quiet = FALSE
 ) {
   metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
@@ -425,7 +448,7 @@ spod_available_data_v2 <- function(
   if (use_s3) {
     files_table <- spod_available_data_s3(
       ver = 2,
-      s3_force_update = s3_force_update
+      force = force
     )
   } else {
     xml_files_list <- fs::dir_ls(

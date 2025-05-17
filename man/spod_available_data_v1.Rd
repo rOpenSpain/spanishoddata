@@ -7,8 +7,8 @@
 spod_available_data_v1(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
-  use_s3 = FALSE,
-  s3_force_update = FALSE,
+  use_s3 = TRUE,
+  force = FALSE,
   quiet = FALSE
 )
 }
@@ -19,7 +19,7 @@ spod_available_data_v1(
 
 \item{use_s3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If \code{FALSE}, use the XML file to get available data list.}
 
-\item{s3_force_update}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, force update of the available data list from Amazon S3. If \code{FALSE}, only update the available data list if it is older than 1 day.}
+\item{force}{Logical. If \code{TRUE}, force re-download of metadata. For Amazon S3 this queries the S3 bucket for the XML file it re-downloads. If \code{FALSE}, only update the available data list if it is older than 1 day.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }

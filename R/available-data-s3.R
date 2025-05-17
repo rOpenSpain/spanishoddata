@@ -2,8 +2,6 @@
 #'
 #' @description
 #'
-#' `r lifecycle::badge("experimental")`
-#'
 #' Get a table with links to available data files for the specified data version from Amazon S3 storage.
 #'
 #' @inheritParams spod_available_data
@@ -13,13 +11,69 @@
 #' @export
 spod_available_data_s3 <- function(
   ver = c(1, 2),
-  s3_force_update = FALSE
+  force = FALSE,
+  quiet = FALSE,
+  data_dir = spod_get_data_dir()
 ) {
-  if (s3_force_update) {
+  ver <- as.character(ver)
+  ver <- match.arg(ver)
+  metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
+
+  # if forcing, evict the in-session cache now
+  if (isTRUE(force)) {
     memoise::forget(spod_available_data_s3_memoised)
   }
 
-  spod_available_data_s3_memoised(ver = ver)
+  # shortcut: if we already have it memoised, return immediately
+  if (!force && memoise::has_cache(spod_available_data_s3_memoised)(ver)) {
+    return(spod_available_data_s3_memoised(ver))
+  }
+
+  # no in-session data, check your on-disk RDS pool
+  pattern <- glue::glue("metadata_s3_v{ver}_\\d{{4}}-\\d{{2}}-\\d{{2}}\\.rds$")
+  rds_files <- fs::dir_ls(
+    path = metadata_folder,
+    type = "file",
+    regexp = pattern
+  ) |>
+    sort()
+
+  latest_file <- tail(rds_files, 1)
+  latest_date <- if (length(latest_file) == 1) {
+    stringr::str_extract(basename(latest_file), "\\d{4}-\\d{2}-\\d{2}") |>
+      as.Date()
+  } else {
+    NA
+  }
+
+  needs_update <- isTRUE(force) ||
+    length(rds_files) == 0 ||
+    (!is.na(latest_date) && latest_date < Sys.Date())
+
+  if (!needs_update) {
+    if (!quiet) message("Using existing disk cache: ", latest_file)
+    return(readRDS(latest_file))
+  }
+
+  # if forcing, also clear old disk files
+  if (isTRUE(force) && length(rds_files) > 0) {
+    fs::file_delete(rds_files)
+  }
+
+  # fetch via the memoised function (this will re-hit S3 if we forgot it)
+  if (!quiet) message("Fetching latest data from S3 (v", ver, ")…")
+  dat <- spod_available_data_s3_memoised(ver)
+
+  # write a new RDS stamped with today’s date
+  file_date <- format(Sys.Date(), "%Y-%m-%d")
+  out_path <- file.path(
+    metadata_folder,
+    glue::glue("metadata_s3_v{ver}_{file_date}.rds")
+  )
+  saveRDS(dat, out_path)
+  if (!quiet) message("Cached new data to: ", out_path)
+
+  dat
 }
 
 

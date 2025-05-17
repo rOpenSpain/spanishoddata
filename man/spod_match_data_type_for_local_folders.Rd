@@ -10,7 +10,7 @@ spod_match_data_type_for_local_folders(
 )
 }
 \arguments{
-\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with \code{\link[=spod_codebook]{spod_codebook()}}.}
 }
 \value{
 A \code{character} string with the folder name for the specified data type. Or \code{NULL} if the data type is not recognized.
