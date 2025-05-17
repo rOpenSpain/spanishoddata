@@ -72,7 +72,9 @@ spod_available_data <- function(
     available_data <- spod_available_data_v2(
       data_dir = data_dir,
       check_local_files = check_local_files,
-      quiet = quiet
+      quiet = quiet,
+      use_s3 = use_s3,
+      s3_force_update = s3_force_update
     )
   }
 
@@ -395,6 +397,8 @@ spod_get_latest_v2_file_list <- function(
 spod_available_data_v2 <- function(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
+  use_s3 = FALSE,
+  s3_force_update = FALSE,
   quiet = FALSE
 ) {
   metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
@@ -402,68 +406,75 @@ spod_available_data_v2 <- function(
     fs::dir_create(metadata_folder)
   }
 
-  xml_files_list <- fs::dir_ls(
-    metadata_folder,
-    type = "file",
-    regexp = "data_links_v2"
-  ) |>
-    sort()
-  if (length(xml_files_list) == 0) {
-    if (isFALSE(quiet)) {
-      message(
-        "No data links xml files found, getting latest v2 data links xml."
-      )
-    }
-    latest_data_links_xml_path <- spod_get_latest_v2_file_list(
-      data_dir = data_dir
+  if (use_s3) {
+    files_table <- spod_available_data_s3(
+      ver = 2,
+      s3_force_update = s3_force_update
     )
   } else {
-    latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
-  }
+    xml_files_list <- fs::dir_ls(
+      metadata_folder,
+      type = "file",
+      regexp = "data_links_v2"
+    ) |>
+      sort()
+    if (length(xml_files_list) == 0) {
+      if (isFALSE(quiet)) {
+        message(
+          "No data links xml files found, getting latest v2 data links xml."
+        )
+      }
+      latest_data_links_xml_path <- spod_get_latest_v2_file_list(
+        data_dir = data_dir
+      )
+    } else {
+      latest_data_links_xml_path <- utils::tail(xml_files_list, 1)
+    }
 
-  # Check if the XML file is 1 day old or older from its name
-  file_date <- stringr::str_extract(
-    latest_data_links_xml_path,
-    "[0-9]{4}-[0-9]{2}-[0-9]{2}"
-  )
+    # Check if the XML file is 1 day old or older from its name
+    file_date <- stringr::str_extract(
+      latest_data_links_xml_path,
+      "[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    )
 
-  if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
-    if (isFALSE(quiet)) {
-      message(
-        "File list xml is 1 day old or older, getting latest data links xml"
+    if (file_date < format(Sys.Date(), format = "%Y-%m-%d")) {
+      if (isFALSE(quiet)) {
+        message(
+          "File list xml is 1 day old or older, getting latest data links xml"
+        )
+      }
+      latest_data_links_xml_path <- spod_get_latest_v2_file_list(
+        data_dir = data_dir
+      )
+    } else {
+      if (isFALSE(quiet)) {
+        message("Using existing data links xml: ", latest_data_links_xml_path)
+      }
+    }
+
+    if (length(latest_data_links_xml_path) == 0) {
+      if (isFALSE(quiet)) {
+        message("Getting latest data links xml")
+      }
+      latest_data_links_xml_path <- spod_get_latest_v2_file_list(
+        data_dir = data_dir
       )
     }
-    latest_data_links_xml_path <- spod_get_latest_v2_file_list(
-      data_dir = data_dir
+
+    x_xml <- xml2::read_xml(latest_data_links_xml_path)
+
+    files_table <- tibble::tibble(
+      target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |>
+        xml2::xml_text(),
+      pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |>
+        xml2::xml_text()
     )
-  } else {
-    if (isFALSE(quiet)) {
-      message("Using existing data links xml: ", latest_data_links_xml_path)
-    }
+    files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
+    files_table$pub_date <- NULL
   }
 
-  if (length(latest_data_links_xml_path) == 0) {
-    if (isFALSE(quiet)) {
-      message("Getting latest data links xml")
-    }
-    latest_data_links_xml_path <- spod_get_latest_v2_file_list(
-      data_dir = data_dir
-    )
-  }
-
-  x_xml <- xml2::read_xml(latest_data_links_xml_path)
-
-  files_table <- tibble::tibble(
-    target_url = xml2::xml_find_all(x = x_xml, xpath = "//link") |>
-      xml2::xml_text(),
-    pub_date = xml2::xml_find_all(x = x_xml, xpath = "//pubDate") |>
-      xml2::xml_text()
-  )
-
-  files_table$pub_ts <- lubridate::dmy_hms(files_table$pub_date)
   files_table$file_extension <- tools::file_ext(files_table$target_url)
   files_table <- files_table[files_table$file_extension != "", ]
-  files_table$pub_date <- NULL
 
   files_table$data_ym <- lubridate::ym(stringr::str_extract(
     files_table$target_url,
@@ -514,101 +525,109 @@ spod_available_data_v2 <- function(
   # lowercase GAU to avoid problems with case-sensitive matching
   files_table$local_path <- gsub("GAU", "gau", files_table$local_path)
 
+  # add known file sizes from cached data
+  if (use_s3) {
+    files_table$remote_file_size_mb <- round(
+      files_table$file_size_bytes / 1024^2,
+      2
+    )
+  } else {
+    file_sizes <- readr::read_csv(
+      system.file(
+        "extdata",
+        "url_file_sizes_v2.txt.gz",
+        package = "spanishoddata"
+      ),
+      show_col_types = FALSE
+    )
+    files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
+
+    # if there are files with missing sizes, impute them
+    if (any(is.na(files_table$remote_file_size_mb))) {
+      # impute uknown file sizes
+      # primitive file categorisation
+      files_table <- files_table |>
+        dplyr::mutate(
+          cleaned_url = stringr::str_remove_all(
+            .data$target_url,
+            "/[0-9]{4}[-_][0-9]{2}[-_][0-9]{2}|/[0-9]{6,8}"
+          ) |>
+            stringr::str_remove("/[^/]+$"),
+          file_category = dplyr::case_when(
+            stringr::str_detect(.data$cleaned_url, "calidad") ~ "quality",
+            stringr::str_detect(.data$cleaned_url, "rutas") ~ "routes",
+            stringr::str_detect(.data$cleaned_url, "estudios_basicos") ~
+              paste0(
+                "basic_studies_",
+                dplyr::case_when(
+                  stringr::str_detect(.data$cleaned_url, "por-distritos") ~
+                    "district_",
+                  stringr::str_detect(.data$cleaned_url, "por-municipios") ~
+                    "municipal_",
+                  stringr::str_detect(.data$cleaned_url, "por-GAU") ~ "GAU_",
+                  TRUE ~ "unknown_"
+                ),
+                dplyr::case_when(
+                  stringr::str_detect(.data$cleaned_url, "viajes") ~ "trips_",
+                  stringr::str_detect(.data$cleaned_url, "personas") ~
+                    "people_",
+                  stringr::str_detect(.data$cleaned_url, "pernoctaciones") ~
+                    "overnight_",
+                  TRUE ~ "unknown_"
+                ),
+                ifelse(
+                  stringr::str_detect(.data$cleaned_url, "ficheros-diarios"),
+                  "daily",
+                  "monthly"
+                )
+              ),
+            TRUE ~ "other"
+          )
+        ) |>
+        dplyr::select(-"cleaned_url")
+
+      # Calculate mean file sizes by category
+      size_by_file_category <- files_table |>
+        dplyr::group_by(.data$file_category) |>
+        dplyr::summarise(
+          mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE)
+        )
+
+      # Impute missing file sizes
+      files_table <- dplyr::left_join(
+        files_table,
+        size_by_file_category,
+        by = "file_category"
+      )
+      files_table <- files_table |>
+        dplyr::mutate(
+          size_imputed = ifelse(is.na(.data$remote_file_size_mb), TRUE, FALSE)
+        )
+      if (
+        length(files_table$remote_file_size_mb[is.na(
+          files_table$remote_file_size_mb
+        )]) >
+          0
+      ) {
+        files_table <- files_table |>
+          dplyr::mutate(
+            remote_file_size_mb = ifelse(
+              is.na(.data$remote_file_size_mb),
+              .data$mean_file_size_mb,
+              .data$remote_file_size_mb
+            )
+          )
+      }
+      files_table$mean_file_size_mb <- NULL
+      files_table$file_category <- NULL
+    } else {
+      files_table$size_imputed <- FALSE
+    }
+  }
+
   # now check if any of local files exist
   if (check_local_files == TRUE) {
     files_table$downloaded <- fs::file_exists(files_table$local_path)
-  }
-
-  # add known file sizes from cached data
-  file_sizes <- readr::read_csv(
-    system.file(
-      "extdata",
-      "url_file_sizes_v2.txt.gz",
-      package = "spanishoddata"
-    ),
-    show_col_types = FALSE
-  )
-  files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
-
-  # if there are files with missing sizes, impute them
-  if (any(is.na(files_table$remote_file_size_mb))) {
-    # impute uknown file sizes
-    # primitive file categorisation
-    files_table <- files_table |>
-      dplyr::mutate(
-        cleaned_url = stringr::str_remove_all(
-          .data$target_url,
-          "/[0-9]{4}[-_][0-9]{2}[-_][0-9]{2}|/[0-9]{6,8}"
-        ) |>
-          stringr::str_remove("/[^/]+$"),
-        file_category = dplyr::case_when(
-          stringr::str_detect(.data$cleaned_url, "calidad") ~ "quality",
-          stringr::str_detect(.data$cleaned_url, "rutas") ~ "routes",
-          stringr::str_detect(.data$cleaned_url, "estudios_basicos") ~
-            paste0(
-              "basic_studies_",
-              dplyr::case_when(
-                stringr::str_detect(.data$cleaned_url, "por-distritos") ~
-                  "district_",
-                stringr::str_detect(.data$cleaned_url, "por-municipios") ~
-                  "municipal_",
-                stringr::str_detect(.data$cleaned_url, "por-GAU") ~ "GAU_",
-                TRUE ~ "unknown_"
-              ),
-              dplyr::case_when(
-                stringr::str_detect(.data$cleaned_url, "viajes") ~ "trips_",
-                stringr::str_detect(.data$cleaned_url, "personas") ~ "people_",
-                stringr::str_detect(.data$cleaned_url, "pernoctaciones") ~
-                  "overnight_",
-                TRUE ~ "unknown_"
-              ),
-              ifelse(
-                stringr::str_detect(.data$cleaned_url, "ficheros-diarios"),
-                "daily",
-                "monthly"
-              )
-            ),
-          TRUE ~ "other"
-        )
-      ) |>
-      dplyr::select(-"cleaned_url")
-
-    # Calculate mean file sizes by category
-    size_by_file_category <- files_table |>
-      dplyr::group_by(.data$file_category) |>
-      dplyr::summarise(
-        mean_file_size_mb = mean(.data$remote_file_size_mb, na.rm = TRUE)
-      )
-
-    # Impute missing file sizes
-    files_table <- dplyr::left_join(
-      files_table,
-      size_by_file_category,
-      by = "file_category"
-    )
-    files_table <- files_table |>
-      dplyr::mutate(
-        size_imputed = ifelse(is.na(.data$remote_file_size_mb), TRUE, FALSE)
-      )
-    if (
-      length(files_table$remote_file_size_mb[is.na(
-        files_table$remote_file_size_mb
-      )]) >
-        0
-    ) {
-      files_table <- files_table |>
-        dplyr::mutate(
-          remote_file_size_mb = ifelse(
-            is.na(.data$remote_file_size_mb),
-            .data$mean_file_size_mb,
-            .data$remote_file_size_mb
-          )
-        )
-    }
-    files_table$mean_file_size_mb <- NULL
-    files_table$file_category <- NULL
-  } else {
-    files_table$size_imputed <- FALSE
   }
 
   return(files_table)

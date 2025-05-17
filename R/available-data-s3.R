@@ -63,7 +63,7 @@ spod_available_data_s3_function <- function(
         format = "%Y-%m-%dT%H:%M:%OSZ",
         tz = "UTC"
       ),
-      file_size_bytes = as.integer(Size),
+      file_size_bytes = as.numeric(Size),
       etag = gsub('\\"', '', ETag)
     ) |>
     dplyr::select(

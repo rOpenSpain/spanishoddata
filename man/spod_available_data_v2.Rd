@@ -7,6 +7,8 @@
 spod_available_data_v2(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
+  use_s3 = FALSE,
+  s3_force_update = FALSE,
   quiet = FALSE
 )
 }
