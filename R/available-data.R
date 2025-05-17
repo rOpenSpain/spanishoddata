@@ -149,7 +149,7 @@ spod_available_data_v1 <- function(
     ) |>
       sort()
 
-    latest_file <- tail(xmls, 1)
+    latest_file <- utils::tail(xmls, 1)
 
     needs_update <- isTRUE(force) ||
       length(xmls) == 0 ||

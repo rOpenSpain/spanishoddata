@@ -61,10 +61,10 @@ spod_available_data_s3 <- function(
   }
 
   # fetch via the memoised function (this will re-hit S3 if we forgot it)
-  if (!quiet) message("Fetching latest data from S3 (v", ver, ")…")
+  if (!quiet) message("Fetching latest metadata from AmazonS3 (v", ver, ")...")
   dat <- spod_available_data_s3_memoised(ver)
 
-  # write a new RDS stamped with today’s date
+  # write a new RDS stamped with today's date
   file_date <- format(Sys.Date(), "%Y-%m-%d")
   out_path <- file.path(
     metadata_folder,
