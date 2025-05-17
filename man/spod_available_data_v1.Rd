@@ -15,7 +15,7 @@ spod_available_data_v1(
 \arguments{
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
 
-\item{check_local_files}{Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
+\item{check_local_files}{Logical. Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
 
 \item{use_s3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If \code{FALSE}, use the XML file to get available data list.}
 

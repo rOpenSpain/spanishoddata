@@ -13,7 +13,8 @@ spod_download(
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
   return_local_file_paths = FALSE,
-  ignore_missing_dates = FALSE
+  ignore_missing_dates = FALSE,
+  check_local_files = TRUE
 )
 }
 \arguments{
@@ -45,6 +46,8 @@ The possible values can be any of the following:
 \item{return_local_file_paths}{Logical. If \code{TRUE}, the function returns a character vector of the paths to the downloaded files. If \code{FALSE}, the function returns \code{NULL}.}
 
 \item{ignore_missing_dates}{Logical. If \code{TRUE}, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to \code{FALSE}.}
+
+\item{check_local_files}{Logical. Whether to check the file size of local files against knwown remote file sizes on the Amazon S3 storage. Defaults to \code{TRUE}, which fetches the metadata from Amazon S3. This setting ensures your downloaded files are not broken, so it is recommended to keep it \code{TRUE}.}
 }
 \value{
 Nothing. If \code{return_local_file_paths = TRUE}, a \code{character} vector of the paths to the downloaded files.

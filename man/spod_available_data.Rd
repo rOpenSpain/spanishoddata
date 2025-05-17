@@ -16,7 +16,7 @@ spod_available_data(
 \arguments{
 \item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with \code{\link[=spod_codebook]{spod_codebook()}}.}
 
-\item{check_local_files}{Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
+\item{check_local_files}{Logical. Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
