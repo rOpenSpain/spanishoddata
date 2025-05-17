@@ -309,14 +309,14 @@ spod_available_data_v1 <- function(
   if (use_s3) {
     # replace remote file sizes for v1
     replacement_file_sizes_distr <- files_table |>
-      dplyr::filter(grepl("mitma-distr", local_path)) |>
+      dplyr::filter(grepl("mitma-distr", .data$local_path)) |>
       dplyr::select(.data$target_url, .data$file_size_bytes)
     replaced_file_sizes_municip <- files_table |>
-      dplyr::filter(grepl("mitma-municip", local_path)) |>
+      dplyr::filter(grepl("mitma-municip", .data$local_path)) |>
       dplyr::select(-"file_size_bytes") |>
       dplyr::left_join(replacement_file_sizes_distr, by = "target_url")
     files_table_replaced_file_sizes <- files_table |>
-      dplyr::filter(!grepl("mitma-municip", local_path)) |>
+      dplyr::filter(!grepl("mitma-municip", .data$local_path)) |>
       dplyr::bind_rows(replaced_file_sizes_municip) |>
       dplyr::arrange(dplyr::desc(.data$pub_ts))
     files_table <- files_table_replaced_file_sizes

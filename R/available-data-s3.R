@@ -38,7 +38,7 @@ spod_available_data_s3 <- function(
   ) |>
     sort()
 
-  latest_file <- tail(rds_files, 1)
+  latest_file <- utils::tail(rds_files, 1)
   latest_date <- if (length(latest_file) == 1) {
     stringr::str_extract(basename(latest_file), "\\d{4}-\\d{2}-\\d{2}") |>
       as.Date()
@@ -111,20 +111,20 @@ spod_available_data_s3_function <- function(
   ) |>
     dplyr::as_tibble() |>
     dplyr::mutate(
-      target_url = paste0(url_prefix, Key),
+      target_url = paste0(url_prefix, .data$Key),
       pub_ts = as.POSIXct(
-        LastModified,
+        .data$LastModified,
         format = "%Y-%m-%dT%H:%M:%OSZ",
         tz = "UTC"
       ),
-      file_size_bytes = as.numeric(Size),
-      etag = gsub('\\"', '', ETag)
+      file_size_bytes = as.numeric(.data$Size),
+      etag = gsub('\\"', '', .data$ETag)
     ) |>
     dplyr::select(
-      target_url,
-      pub_ts,
-      file_size_bytes,
-      etag
+      .data$target_url,
+      .data$pub_ts,
+      .data$file_size_bytes,
+      .data$etag
     )
 
   return(all_objects)
