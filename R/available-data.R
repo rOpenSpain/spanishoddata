@@ -7,9 +7,10 @@
 #' Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with `data_dir` argument.
 #'
 #' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.
+#' @param check_local_files Whether to check if the local files exist and get the file size. Defaults to `FALSE`.
+#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
 #' @param use_s3 `r lifecycle::badge("experimental")` Logical. If `TRUE`, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If `FALSE`, use the XML file to get available data list.
 #' @param s3_force_update `r lifecycle::badge("experimental")` Logical. If `TRUE`, force update of the available data list from Amazon S3. If `FALSE`, only update the available data list if it is older than 1 day.
-#' @param check_local_file_size `r lifecycle::badge("experimental")` Logical. If `TRUE`, calculate the file size of the local files and add it to the available data list.
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
 #' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
@@ -45,7 +46,6 @@ spod_available_data <- function(
   check_local_files = FALSE,
   quiet = FALSE,
   data_dir = spod_get_data_dir(),
-  check_local_file_size = FALSE,
   use_s3 = FALSE,
   s3_force_update = FALSE
 ) {
@@ -76,13 +76,6 @@ spod_available_data <- function(
       use_s3 = use_s3,
       s3_force_update = s3_force_update
     )
-  }
-
-  if (check_local_file_size == TRUE) {
-    available_data <- available_data |>
-      dplyr::mutate(
-        local_file_size = fs::file_size(local_path),
-      )
   }
 
   return(available_data)
@@ -125,8 +118,7 @@ spod_get_latest_v1_file_list <- function(
 #'
 #' This function provides a table of the available data list of MITMA v1 (2020-2021), both remote and local.
 #'
-#' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
-#' @param check_local_files Whether to check if the local files exist. Defaults to `FALSE`.
+#' @inheritParams spod_available_data
 #' @inheritParams global_quiet_param
 #' @inherit spod_available_data return
 #' @importFrom rlang .data
@@ -292,6 +284,20 @@ spod_available_data_v1 <- function(
 
   # add known file sizes from cached data
   if (use_s3) {
+    # replace remote file sizes for v1
+    replacement_file_sizes_distr <- files_table |>
+      dplyr::filter(grepl("mitma-distr", local_path)) |>
+      dplyr::select(.data$target_url, .data$file_size_bytes)
+    replaced_file_sizes_municip <- files_table |>
+      dplyr::filter(grepl("mitma-municip", local_path)) |>
+      dplyr::select(-"file_size_bytes") |>
+      dplyr::left_join(replacement_file_sizes_distr, by = "target_url")
+    files_table_replaced_file_sizes <- files_table |>
+      dplyr::filter(!grepl("mitma-municip", local_path)) |>
+      dplyr::bind_rows(replaced_file_sizes_municip) |>
+      dplyr::arrange(dplyr::desc(.data$pub_ts))
+    files_table <- files_table_replaced_file_sizes
+
     files_table$remote_file_size_mb <- round(
       files_table$file_size_bytes / 1024^2,
       2
@@ -345,7 +351,17 @@ spod_available_data_v1 <- function(
 
   # now check if any of local files exist
   if (check_local_files == TRUE) {
-    files_table$downloaded <- fs::file_exists(files_table$local_path)
+    files_table <- files_table |>
+      dplyr::mutate(
+        local_file_size = fs::file_size(.data$local_path)
+      ) |>
+      dplyr::mutate(
+        downloaded = dplyr::if_else(
+          condition = is.na(.data$local_file_size),
+          true = FALSE,
+          false = TRUE
+        )
+      )
   }
 
   return(files_table)

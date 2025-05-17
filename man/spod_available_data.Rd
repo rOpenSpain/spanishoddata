@@ -9,7 +9,6 @@ spod_available_data(
   check_local_files = FALSE,
   quiet = FALSE,
   data_dir = spod_get_data_dir(),
-  check_local_file_size = FALSE,
   use_s3 = FALSE,
   s3_force_update = FALSE
 )
@@ -17,13 +16,11 @@ spod_available_data(
 \arguments{
 \item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
 
-\item{check_local_files}{Whether to check if the local files exist. Defaults to \code{FALSE}.}
+\item{check_local_files}{Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
-
-\item{check_local_file_size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, calculate the file size of the local files and add it to the available data list.}
 
 \item{use_s3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If \code{FALSE}, use the XML file to get available data list.}
 
