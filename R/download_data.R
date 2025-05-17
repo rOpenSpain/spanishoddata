@@ -12,6 +12,7 @@
 #' @param max_download_size_gb The maximum download size in gigabytes. Defaults to 1.
 #' @param return_local_file_paths Logical. If `TRUE`, the function returns a character vector of the paths to the downloaded files. If `FALSE`, the function returns `NULL`.
 #' @param ignore_missing_dates Logical. If `TRUE`, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to `FALSE`.
+#' @param check_local_files Logical. Whether to check the file size of local files against knwown remote file sizes on the Amazon S3 storage. Defaults to `TRUE`, which fetches the metadata from Amazon S3. This setting ensures your downloaded files are not broken, so it is recommended to keep it `TRUE`.
 #' @inheritParams global_quiet_param
 #'
 #' @return Nothing. If `return_local_file_paths = TRUE`, a `character` vector of the paths to the downloaded files.
@@ -71,7 +72,8 @@ spod_download <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
   return_local_file_paths = FALSE,
-  ignore_missing_dates = FALSE
+  ignore_missing_dates = FALSE,
+  check_local_files = TRUE
 ) {
   # Validate inputs
   checkmate::assert_choice(
@@ -139,7 +141,9 @@ spod_download <- function(
   available_data <- spod_available_data(
     ver = ver,
     check_local_files = TRUE,
-    data_dir = data_dir
+    data_dir = data_dir,
+    quiet = quiet,
+    use_s3 = TRUE
   )
 
   # match the available_data to type, zones, version and dates
