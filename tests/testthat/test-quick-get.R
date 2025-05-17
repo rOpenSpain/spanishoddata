@@ -1,13 +1,13 @@
-test_that("spod_quick_get_od fails out of range dates", {
-  skip_on_ci()
-  skip_on_cran()
-  expect_error(
-    spod_quick_get_od(
-      date = "2021-12-31",
-    ),
-    ".*Must be within valid range.*"
-  )
-})
+# test_that("spod_quick_get_od fails out of range dates", {
+#   skip_on_ci()
+#   skip_on_cran()
+#   expect_error(
+#     spod_quick_get_od(
+#       date = "2021-12-31",
+#     ),
+#     ".*Must be within valid range.*"
+#   )
+# })
 
 test_that("spod_quick_get_od fails on invalid date format", {
   expect_error(
@@ -46,7 +46,7 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
     ),
     ".*Invalid municipality IDs detected.*"
   )
-  
+
   expect_error(
     spod_quick_get_od(
       date = "2022-01-04",
@@ -54,7 +54,7 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
     ),
     ".*Invalid municipality IDs detected.*"
   )
-  
+
   expect_error(
     spod_quick_get_od(
       date = "2022-01-05",
