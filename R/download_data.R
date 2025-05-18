@@ -235,7 +235,7 @@ spod_download <- function(
 
     # set download status for downloaded files as TRUE in requested_files
     # update the columns in requested_files to have new local file size, downloaded and download complete status columns
-    requested_files_clean <- requested_files |>
+    requested_files <- requested_files |>
       dplyr::rows_update(
         downloaded_files |>
           dplyr::select(
@@ -253,7 +253,7 @@ spod_download <- function(
   }
 
   if (return_local_file_paths) {
-    return(requested_files_clean$local_path)
+    return(requested_files$local_path)
   }
 }
 
