@@ -277,12 +277,11 @@ spod_multi_download_with_progress <- function(
   bar_width = 20,
   show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
 ) {
-  # disable progress if non-interactive or knitting
   if (!interactive() || isTRUE(getOption("knitr.in.progress"))) {
     show_progress <- FALSE
   }
 
-  # sort by date and prepare folders
+  # Sort and create directories
   files_to_download <- files_to_download[order(files_to_download$data_ymd), ]
   dirs <- unique(dirname(files_to_download$local_path))
   for (d in dirs) {
@@ -295,49 +294,69 @@ spod_multi_download_with_progress <- function(
   total_expected_bytes <- sum(files_to_download$file_size_bytes, na.rm = TRUE)
   total_gb <- total_expected_bytes / 2^30
 
-  cum_bytes <- 0L # bytes fully committed so far
-  files_counted <- 0L # number of files processed
+  cum_bytes <- 0L
+  files_counted <- 0L
 
-  # ensure logical columns exist
   if (!"downloaded" %in% names(files_to_download))
     files_to_download$downloaded <- FALSE
   if (!"complete_download" %in% names(files_to_download))
     files_to_download$complete_download <- FALSE
 
-  # define redraw_bar() only if we want progress
+  # Helper: ETA formatter
+  format_eta <- function(eta_secs) {
+    if (is.na(eta_secs) || eta_secs < 0) return("--")
+    if (eta_secs > 3600) {
+      return(sprintf("%.1fh", eta_secs / 3600))
+    } else if (eta_secs > 60) {
+      return(sprintf("%.0fm", eta_secs / 60))
+    } else {
+      return(sprintf("%.0fs", eta_secs))
+    }
+  }
+
+  # Initial redraw function
   if (show_progress) {
-    redraw_bar <- function(date_str) {
-      pct <- cum_bytes / total_expected_bytes
+    redraw_bar <- function(date_str, bytes_so_far, file_bytes = 0L) {
+      pct <- bytes_so_far / total_expected_bytes
       nfill <- floor(pct * bar_width)
       bar <- if (nfill < bar_width) {
         paste0(strrep("=", nfill), ">", strrep(" ", bar_width - nfill - 1))
       } else {
         strrep("=", bar_width)
       }
+
+      elapsed <- as.numeric(Sys.time() - start_time, units = "secs")
+      speed <- (bytes_so_far) / max(elapsed, 0.1) # bytes/sec
+      speed_mb <- speed / 2^20
+      eta <- (total_expected_bytes - bytes_so_far) / speed
+      eta_str <- format_eta(eta)
+
       cat(sprintf(
-        "\rDownloading: %s: [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB)",
+        "\rDownloading: %s [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB, %.1f MB/s, ETA: %s)",
         date_str,
         bar,
         pct * 100,
         files_counted,
         total_files,
-        cum_bytes / 2^30,
-        total_gb
+        bytes_so_far / 2^30,
+        total_gb,
+        speed_mb,
+        eta_str
       ))
       utils::flush.console()
     }
-    # initial empty bar
-    redraw_bar("----")
+
+    start_time <- Sys.time()
+    redraw_bar("----", 0)
   }
 
-  # loop over each file
+  # Download loop
   for (i in seq_len(total_files)) {
     date_str <- format(files_to_download$data_ymd[i], "%Y-%m-%d")
     url <- files_to_download$target_url[i]
     dest <- files_to_download$local_path[i]
     exp_bytes <- files_to_download$file_size_bytes[i]
 
-    # skip if already correct
     local_sz <- if (file.exists(dest)) file.info(dest)$size else NA_real_
     if (!is.na(local_sz) && local_sz == exp_bytes) {
       cum_bytes <- cum_bytes + local_sz
@@ -345,11 +364,10 @@ spod_multi_download_with_progress <- function(
       files_to_download$local_file_size[i] <- local_sz
       files_to_download$downloaded[i] <- TRUE
       files_to_download$complete_download[i] <- TRUE
-      if (show_progress) redraw_bar(date_str)
+      if (show_progress) redraw_bar(date_str, cum_bytes)
       next
     }
 
-    # stream-download in chunks (with 2 retries)
     success <- FALSE
     actual_sz <- 0L
     for (attempt in 1:3) {
@@ -363,27 +381,8 @@ spod_multi_download_with_progress <- function(
         writeBin(chunk, con_out)
         file_bytes <- file_bytes + length(chunk)
 
-        # live update overall bar
         if (show_progress) {
-          current_total <- cum_bytes + file_bytes
-          pct <- current_total / total_expected_bytes
-          nfill <- floor(pct * bar_width)
-          bar <- if (nfill < bar_width) {
-            paste0(strrep("=", nfill), ">", strrep(" ", bar_width - nfill - 1))
-          } else {
-            strrep("=", bar_width)
-          }
-          cat(sprintf(
-            "\rDownloading: %s: [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB)",
-            date_str,
-            bar,
-            pct * 100,
-            files_counted,
-            total_files,
-            current_total / 2^30,
-            total_gb
-          ))
-          utils::flush.console()
+          redraw_bar(date_str, cum_bytes + file_bytes, file_bytes)
         }
       }
 
@@ -397,7 +396,7 @@ spod_multi_download_with_progress <- function(
       } else if (attempt == 1) {
         warning(
           sprintf(
-            "Size mismatch on %s (expected %d, got %d). Retryin...",
+            "Size mismatch on %s (expected %d, got %d). Retrying...",
             date_str,
             exp_bytes,
             actual_sz
@@ -419,13 +418,13 @@ spod_multi_download_with_progress <- function(
       )
     }
 
-    # commit bytes and mark row
     cum_bytes <- cum_bytes + actual_sz
     files_counted <- files_counted + 1L
     files_to_download$local_file_size[i] <- actual_sz
     files_to_download$downloaded[i] <- TRUE
     files_to_download$complete_download[i] <- identical(actual_sz, exp_bytes)
-    if (show_progress) redraw_bar(date_str)
+
+    if (show_progress) redraw_bar(date_str, cum_bytes)
   }
 
   if (show_progress) cat("\nAll downloads complete.\n")
