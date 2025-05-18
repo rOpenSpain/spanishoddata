@@ -42,7 +42,7 @@ Imports:
     memoise,
     memuse,
     parallelly,
-    paws (>= 0.4.0),
+    paws.storage (>= 0.4.0),
     purrr,
     readr,
     rlang,

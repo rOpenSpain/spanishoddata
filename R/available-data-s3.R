@@ -105,7 +105,7 @@ spod_available_data_s3_function <- function(
     url_prefix <- "https://movilidad-opendata.mitma.es/"
   }
 
-  s3 <- paws::s3(
+  s3 <- paws.storage::s3(
     config = list(
       credentials = list(
         anonymous = TRUE
@@ -148,7 +148,7 @@ spod_available_data_s3_memoised <- memoise::memoise(
 )
 
 list_objects_v2_all <- function(s3, bucket, prefix = "", max_keys = 10000) {
-  pages <- paws::paginate(
+  pages <- paws.storage::paginate(
     s3$list_objects_v2(
       Bucket = bucket,
       Prefix = prefix,
