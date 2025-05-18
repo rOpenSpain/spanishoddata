@@ -8,7 +8,7 @@
 #' @inheritParams global_quiet_param
 #' @return A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
 #'
-#' @export
+#' @keywords internal
 spod_available_data_s3 <- function(
   ver = c(1, 2),
   force = FALSE,

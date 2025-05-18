@@ -26,3 +26,4 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \description{
 Get a table with links to available data files for the specified data version from Amazon S3 storage.
 }
+\keyword{internal}
