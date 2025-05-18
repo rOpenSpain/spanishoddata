@@ -138,9 +138,10 @@ spod_download <- function(
   type <- spod_match_data_type_for_local_folders(type = type, ver = ver)
 
   # get the available  data list while checking for files already cached on disk
+  # TODO: make requests faster by providing filtering prefix for Amazon S3 to only get the files we need?
   available_data <- spod_available_data(
     ver = ver,
-    check_local_files = TRUE,
+    check_local_files = check_local_files,
     data_dir = data_dir,
     quiet = quiet,
     use_s3 = TRUE
@@ -166,7 +167,19 @@ spod_download <- function(
     ]
   }
 
-  files_to_download <- requested_files[!requested_files$downloaded, ]
+  # compare file sizes
+  requested_files <- requested_files |>
+    dplyr::mutate(
+      complete_download = dplyr::if_else(
+        condition = .data$file_size_bytes == as.numeric(.data$local_file_size),
+        true = TRUE,
+        false = FALSE,
+        missing = FALSE
+      )
+    )
+
+  files_to_download <- requested_files |>
+    dplyr::filter(.data$complete_download == FALSE)
 
   # only download files if some are missing
   if (nrow(files_to_download) > 0) {
@@ -177,7 +190,7 @@ spod_download <- function(
     # warn if more than 1 GB is to be downloaded
     if (total_size_to_download_gb > max_download_size_gb) {
       message(glue::glue(
-        "Approximately {total_size_to_download_gb} GB of data will be downloaded."
+        "Approximately {round(total_size_to_download_gb, 2)} GB of data will be downloaded."
       ))
       # ask for confirmation
       response <- readline(
@@ -194,23 +207,29 @@ spod_download <- function(
 
     if (isFALSE(quiet)) {
       message(glue::glue(
-        "Downloading approximately {total_size_to_download_gb} GB of data."
+        "Downloading approximately {round(total_size_to_download_gb, 2)} GB of data."
       ))
     }
 
     # pre-generate target paths for the files to download
-    fs::dir_create(
-      unique(fs::path_dir(files_to_download$local_path)),
-      recurse = TRUE
-    )
+    # and create all directories in the path
+    # fs::dir_create(
+    #   unique(fs::path_dir(files_to_download$local_path)),
+    #   recurse = TRUE
+    # )
 
     # download the missing files
-    downloaded_files <- curl::multi_download(
-      urls = files_to_download$target_url,
-      destfiles = files_to_download$local_path,
-      progress = TRUE,
-      resume = TRUE
-    )
+    # TODO: disable mass curl::multi_download due to multiple failures on some connections
+    # downloaded_files <- curl::multi_download(
+    #   urls = files_to_download$target_url,
+    #   destfiles = files_to_download$local_path,
+    #   progress = TRUE,
+    #   resume = TRUE,
+    #   multiplex = FALSE
+    # )
+
+    # use curl::multi_download in a loop on one file at a time with manual progress bar
+    downloaded_files <- spod_multi_download_with_progress(files_to_download)
 
     # set download status for downloaded files as TRUE in requested_files
     requested_files$downloaded[
@@ -225,4 +244,179 @@ spod_download <- function(
   if (return_local_file_paths) {
     return(requested_files$local_path)
   }
+}
+
+#' Download multiple files with progress bar
+#'
+#' @description
+#' Download multiple files with a progress bar. Retries failed downloads up to 3 times.
+#'
+#' @param files_to_download A data frame with columns `target_url`, `local_path` and `file_size_bytes`.
+#' @param chunk_size Number of bytes to download at a time.
+#' @param bar_width Width of the progress bar.
+#' @param show_progress Whether to show the progress bar.
+#'
+#' @return A data frame with columns `target_url`, `local_path`, `file_size_bytes` and `local_file_size`.
+#'
+#' @keywords internal
+#'
+spod_multi_download_with_progress <- function(
+  files_to_download,
+  chunk_size = 65536,
+  bar_width = 20,
+  show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
+) {
+  # disable progress if non‐interactive or knitting
+  if (!interactive() || isTRUE(getOption("knitr.in.progress"))) {
+    show_progress <- FALSE
+  }
+
+  # 1) sort by date and prepare folders
+  files_to_download <- files_to_download[order(files_to_download$data_ymd), ]
+  dirs <- unique(dirname(files_to_download$local_path))
+  for (d in dirs) {
+    if (!dir.exists(d)) {
+      dir.create(d, recursive = TRUE, showWarnings = FALSE)
+    }
+  }
+
+  total_files <- nrow(files_to_download)
+  total_expected_bytes <- sum(files_to_download$file_size_bytes, na.rm = TRUE)
+  total_gb <- total_expected_bytes / 2^30
+
+  cum_bytes <- 0L # bytes fully committed so far
+  files_counted <- 0L # number of files processed
+
+  # ensure logical columns exist
+  if (!"downloaded" %in% names(files_to_download))
+    files_to_download$downloaded <- FALSE
+  if (!"complete_download" %in% names(files_to_download))
+    files_to_download$complete_download <- FALSE
+
+  # 2) define redraw_bar() only if we want progress
+  if (show_progress) {
+    redraw_bar <- function(date_str) {
+      pct <- cum_bytes / total_expected_bytes
+      nfill <- floor(pct * bar_width)
+      bar <- if (nfill < bar_width) {
+        paste0(strrep("=", nfill), ">", strrep(" ", bar_width - nfill - 1))
+      } else {
+        strrep("=", bar_width)
+      }
+      cat(sprintf(
+        "\rDownloading: %s: [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB)",
+        date_str,
+        bar,
+        pct * 100,
+        files_counted,
+        total_files,
+        cum_bytes / 2^30,
+        total_gb
+      ))
+      flush.console()
+    }
+    # initial empty bar
+    redraw_bar("----")
+  }
+
+  # 3) loop over each file
+  for (i in seq_len(total_files)) {
+    date_str <- format(files_to_download$data_ymd[i], "%Y-%m-%d")
+    url <- files_to_download$target_url[i]
+    dest <- files_to_download$local_path[i]
+    exp_bytes <- files_to_download$file_size_bytes[i]
+
+    # 3a) skip if already correct
+    local_sz <- if (file.exists(dest)) file.info(dest)$size else NA_real_
+    if (!is.na(local_sz) && local_sz == exp_bytes) {
+      cum_bytes <- cum_bytes + local_sz
+      files_counted <- files_counted + 1L
+      files_to_download$local_file_size[i] <- local_sz
+      files_to_download$downloaded[i] <- TRUE
+      files_to_download$complete_download[i] <- TRUE
+      if (show_progress) redraw_bar(date_str)
+      next
+    }
+
+    # 3b) stream‐download in chunks (with one retry)
+    success <- FALSE
+    actual_sz <- 0L
+    for (attempt in 1:3) {
+      file_bytes <- 0L
+      con_in <- url(url, "rb")
+      con_out <- file(dest, "wb")
+
+      repeat {
+        chunk <- readBin(con_in, "raw", n = chunk_size)
+        if (length(chunk) == 0) break
+        writeBin(chunk, con_out)
+        file_bytes <- file_bytes + length(chunk)
+
+        # live update overall bar
+        if (show_progress) {
+          current_total <- cum_bytes + file_bytes
+          pct <- current_total / total_expected_bytes
+          nfill <- floor(pct * bar_width)
+          bar <- if (nfill < bar_width) {
+            paste0(strrep("=", nfill), ">", strrep(" ", bar_width - nfill - 1))
+          } else {
+            strrep("=", bar_width)
+          }
+          cat(sprintf(
+            "\rDownloading: %s: [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB)",
+            date_str,
+            bar,
+            pct * 100,
+            files_counted,
+            total_files,
+            current_total / 2^30,
+            total_gb
+          ))
+          flush.console()
+        }
+      }
+
+      close(con_in)
+      close(con_out)
+      actual_sz <- file.info(dest)$size
+
+      if (identical(actual_sz, exp_bytes)) {
+        success <- TRUE
+        break
+      } else if (attempt == 1) {
+        warning(
+          sprintf(
+            "Size mismatch on %s (expected %d, got %d). Retrying…",
+            date_str,
+            exp_bytes,
+            actual_sz
+          ),
+          call. = FALSE
+        )
+      }
+    }
+
+    if (!success) {
+      warning(
+        sprintf(
+          "After retry, %s still mismatched: expected %d, got %d. Proceeding.",
+          date_str,
+          exp_bytes,
+          actual_sz
+        ),
+        call. = FALSE
+      )
+    }
+
+    # 3c) commit bytes and mark row
+    cum_bytes <- cum_bytes + actual_sz
+    files_counted <- files_counted + 1L
+    files_to_download$local_file_size[i] <- actual_sz
+    files_to_download$downloaded[i] <- TRUE
+    files_to_download$complete_download[i] <- identical(actual_sz, exp_bytes)
+    if (show_progress) redraw_bar(date_str)
+  }
+
+  if (show_progress) cat("\nAll downloads complete.\n")
+  return(files_to_download)
 }

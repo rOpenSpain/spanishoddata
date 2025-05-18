@@ -312,7 +312,7 @@ spod_available_data_v1 <- function(
     }
   }
 
-  # now check if any of local files exist
+  # check file sizes
   if (check_local_files == TRUE) {
     files_table <- files_table |>
       dplyr::mutate(
@@ -567,9 +567,19 @@ spod_available_data_v2 <- function(
     }
   }
 
-  # now check if any of local files exist
+  # check file sizes
   if (check_local_files == TRUE) {
-    files_table$downloaded <- fs::file_exists(files_table$local_path)
+    files_table <- files_table |>
+      dplyr::mutate(
+        local_file_size = fs::file_size(.data$local_path)
+      ) |>
+      dplyr::mutate(
+        downloaded = dplyr::if_else(
+          condition = is.na(.data$local_file_size),
+          true = FALSE,
+          false = TRUE
+        )
+      )
   }
 
   return(files_table)
