@@ -26,6 +26,7 @@ spod_available_data_s3 <- function(
 
   # shortcut: if we already have it memoised, return immediately
   if (!force && memoise::has_cache(spod_available_data_s3_memoised)(ver)) {
+    if (!quiet) message("Using memory-cached available data from S3")
     return(spod_available_data_s3_memoised(ver))
   }
 
@@ -104,11 +105,23 @@ spod_available_data_s3_function <- function(
     url_prefix <- "https://movilidad-opendata.mitma.es/"
   }
 
-  all_objects <- aws.s3::get_bucket_df(
-    bucket = bucket,
-    prefix = "", # root of bucket
-    max = Inf # fetch beyond the default 1000
-  ) |>
+  s3 <- paws::s3(
+    config = list(
+      credentials = list(
+        anonymous = TRUE
+      )
+    )
+  )
+
+  all_objects <- list_objects_v2_all(s3, bucket)
+
+  # all_objects <- aws.s3::get_bucket_df(
+  #   bucket = bucket,
+  #   prefix = "", # root of bucket
+  #   max = Inf # fetch beyond the default 1000
+  # )
+
+  all_objects <- all_objects |>
     dplyr::as_tibble() |>
     dplyr::mutate(
       target_url = paste0(url_prefix, .data$Key),
@@ -133,3 +146,32 @@ spod_available_data_s3_function <- function(
 spod_available_data_s3_memoised <- memoise::memoise(
   spod_available_data_s3_function
 )
+
+list_objects_v2_all <- function(s3, bucket, prefix = "", max_keys = 10000) {
+  pages <- paws::paginate(
+    s3$list_objects_v2(
+      Bucket = bucket,
+      Prefix = prefix,
+      MaxKeys = max_keys
+    ),
+    PageSize = max_keys
+  )
+
+  all_objects <- unlist(
+    lapply(pages, `[[`, "Contents"),
+    recursive = FALSE
+  )
+
+  metadata <- dplyr::tibble(
+    Key = vapply(all_objs, `[[`, character(1), "Key"),
+    LastModified = as.POSIXct(
+      vapply(all_objs, `[[`, numeric(1), "LastModified"),
+      origin = "1970-01-01",
+      tz = "UTC"
+    ),
+    Size = vapply(all_objs, `[[`, numeric(1), "Size"),
+    ETag = vapply(all_objs, `[[`, character(1), "ETag")
+  )
+
+  return(metadata)
+}

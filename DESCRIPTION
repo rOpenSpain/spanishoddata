@@ -28,7 +28,6 @@ BugReports: https://github.com/rOpenSpain/spanishoddata/issues
 Depends:
     R (>= 4.1.0)
 Imports: 
-    aws.s3,
     checkmate,
     curl (>= 5.0.0),
     DBI,
@@ -43,6 +42,7 @@ Imports:
     memoise,
     memuse,
     parallelly,
+    paws (>= 0.4.0),
     purrr,
     readr,
     rlang,

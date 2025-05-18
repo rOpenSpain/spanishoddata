@@ -137,10 +137,9 @@ spod_available_data_v1 <- function(
   }
 
   if (use_s3) {
-    if (!quiet) message("Attempting to fetch available data from S3")
     files_table <- tryCatch(
       {
-        spod_available_data_s3(ver = 1, force = force)
+        spod_available_data_s3(ver = 1, force = force, quiet = quiet)
       },
       error = function(e) {
         message(
@@ -387,10 +386,9 @@ spod_available_data_v2 <- function(
   }
 
   if (use_s3) {
-    if (!quiet) message("Attempting to fetch available data from S3")
     files_table <- tryCatch(
       {
-        spod_available_data_s3(ver = 1, force = force)
+        spod_available_data_s3(ver = 2, force = force, quiet = quiet)
       },
       error = function(e) {
         message(
