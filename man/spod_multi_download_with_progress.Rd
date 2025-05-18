@@ -6,7 +6,7 @@
 \usage{
 spod_multi_download_with_progress(
   files_to_download,
-  chunk_size = 65536,
+  chunk_size = 1024 * 1024,
   bar_width = 20,
   show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
 )

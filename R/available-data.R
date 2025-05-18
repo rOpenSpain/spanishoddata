@@ -270,16 +270,44 @@ spod_available_data_v1 <- function(
       files_table$file_size_bytes / 1024^2,
       2
     )
-  } else {
-    file_sizes <- readr::read_csv(
+
+    file_sizes <- readRDS(
       system.file(
         "extdata",
-        "url_file_sizes_v1.txt.gz",
+        "available_data_v1.rds",
         package = "spanishoddata"
-      ),
-      show_col_types = FALSE
+      )
     )
-    files_table <- dplyr::left_join(files_table, file_sizes, by = "target_url")
+    files_table <- dplyr::left_join(
+      files_table |> dplyr::select(-"file_size_bytes"),
+      file_sizes |>
+        dplyr::select(
+          "target_url",
+          "etag",
+          file_size_bytes = "true_remote_file_size_bytes"
+        ),
+      by = c("target_url", "etag")
+    ) |>
+      dplyr::relocate("file_size_bytes", .after = "target_url")
+  } else {
+    file_sizes <- readRDS(
+      system.file(
+        "extdata",
+        "available_data_v1.rds",
+        package = "spanishoddata"
+      )
+    )
+    files_table <- dplyr::left_join(
+      files_table |> dplyr::select(-"file_size_bytes"),
+      file_sizes |>
+        dplyr::select(
+          "target_url",
+          "etag",
+          file_size_bytes = "true_remote_file_size_bytes"
+        ),
+      by = c("target_url", "etag")
+    ) |>
+      dplyr::relocate("file_size_bytes", .after = "target_url")
 
     # if there are files with missing sizes, impute them
     if (any(is.na(files_table$remote_file_size_mb))) {

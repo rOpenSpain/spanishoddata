@@ -229,12 +229,23 @@ spod_download <- function(
     # )
 
     # use curl::multi_download in a loop on one file at a time with manual progress bar
-    downloaded_files <- spod_multi_download_with_progress(files_to_download)
+    downloaded_files <- spod_multi_download_with_progress(
+      files_to_download
+    )
 
     # set download status for downloaded files as TRUE in requested_files
-    requested_files$downloaded[
-      requested_files$local_path %in% downloaded_files$destfile
-    ] <- TRUE
+    # update the columns in requested_files to have new local file size, downloaded and download complete status columns
+    requested_files_clean <- requested_files |>
+      dplyr::rows_update(
+        downloaded_files |>
+          dplyr::select(
+            .data$local_path,
+            .data$local_file_size,
+            .data$downloaded,
+            .data$complete_download
+          ),
+        by = "local_path"
+      )
 
     if (isFALSE(quiet)) {
       message("Retrieved data for requested dates.")
@@ -242,7 +253,7 @@ spod_download <- function(
   }
 
   if (return_local_file_paths) {
-    return(requested_files$local_path)
+    return(requested_files_clean$local_path)
   }
 }
 
@@ -262,7 +273,7 @@ spod_download <- function(
 #'
 spod_multi_download_with_progress <- function(
   files_to_download,
-  chunk_size = 65536,
+  chunk_size = 1024 * 1024,
   bar_width = 20,
   show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
 ) {
