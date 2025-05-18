@@ -266,12 +266,12 @@ spod_multi_download_with_progress <- function(
   bar_width = 20,
   show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
 ) {
-  # disable progress if non‐interactive or knitting
+  # disable progress if non-interactive or knitting
   if (!interactive() || isTRUE(getOption("knitr.in.progress"))) {
     show_progress <- FALSE
   }
 
-  # 1) sort by date and prepare folders
+  # sort by date and prepare folders
   files_to_download <- files_to_download[order(files_to_download$data_ymd), ]
   dirs <- unique(dirname(files_to_download$local_path))
   for (d in dirs) {
@@ -293,7 +293,7 @@ spod_multi_download_with_progress <- function(
   if (!"complete_download" %in% names(files_to_download))
     files_to_download$complete_download <- FALSE
 
-  # 2) define redraw_bar() only if we want progress
+  # define redraw_bar() only if we want progress
   if (show_progress) {
     redraw_bar <- function(date_str) {
       pct <- cum_bytes / total_expected_bytes
@@ -313,20 +313,20 @@ spod_multi_download_with_progress <- function(
         cum_bytes / 2^30,
         total_gb
       ))
-      flush.console()
+      utils::flush.console()
     }
     # initial empty bar
     redraw_bar("----")
   }
 
-  # 3) loop over each file
+  # loop over each file
   for (i in seq_len(total_files)) {
     date_str <- format(files_to_download$data_ymd[i], "%Y-%m-%d")
     url <- files_to_download$target_url[i]
     dest <- files_to_download$local_path[i]
     exp_bytes <- files_to_download$file_size_bytes[i]
 
-    # 3a) skip if already correct
+    # skip if already correct
     local_sz <- if (file.exists(dest)) file.info(dest)$size else NA_real_
     if (!is.na(local_sz) && local_sz == exp_bytes) {
       cum_bytes <- cum_bytes + local_sz
@@ -338,7 +338,7 @@ spod_multi_download_with_progress <- function(
       next
     }
 
-    # 3b) stream‐download in chunks (with one retry)
+    # stream-download in chunks (with 2 retries)
     success <- FALSE
     actual_sz <- 0L
     for (attempt in 1:3) {
@@ -372,7 +372,7 @@ spod_multi_download_with_progress <- function(
             current_total / 2^30,
             total_gb
           ))
-          flush.console()
+          utils::flush.console()
         }
       }
 
@@ -386,7 +386,7 @@ spod_multi_download_with_progress <- function(
       } else if (attempt == 1) {
         warning(
           sprintf(
-            "Size mismatch on %s (expected %d, got %d). Retrying…",
+            "Size mismatch on %s (expected %d, got %d). Retryin...",
             date_str,
             exp_bytes,
             actual_sz
@@ -408,7 +408,7 @@ spod_multi_download_with_progress <- function(
       )
     }
 
-    # 3c) commit bytes and mark row
+    # commit bytes and mark row
     cum_bytes <- cum_bytes + actual_sz
     files_counted <- files_counted + 1L
     files_to_download$local_file_size[i] <- actual_sz

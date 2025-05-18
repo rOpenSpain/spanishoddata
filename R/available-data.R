@@ -107,10 +107,15 @@ spod_get_latest_v1_file_list <- function(
   }
 
   message("Saving the file to: ", current_filename)
-  xml_requested <- curl::multi_download(
-    urls = xml_url,
-    destfiles = current_filename
-  )
+  utils::download.file(xml_url, current_filename, mode = "wb")
+  # disable curl::multi_download() for now
+  # xml_requested <- curl::multi_download(
+  #   urls = xml_url,
+  #   destfiles = current_filename
+  # )
+  if (!fs::file_exists(current_filename)) {
+    stop("Failed to download XML file.")
+  }
   return(current_filename)
 }
 
@@ -356,10 +361,16 @@ spod_get_latest_v2_file_list <- function(
   }
 
   message("Saving the file to: ", current_filename)
-  xml_requested <- curl::multi_download(
-    urls = xml_url,
-    destfiles = current_filename
-  )
+  utils::download.file(xml_url, current_filename, mode = "wb")
+  # disable curl::multi_download() for now
+  # xml_requested <- curl::multi_download(
+  #   urls = xml_url,
+  #   destfiles = current_filename
+  # )
+  if (!fs::file_exists(current_filename)) {
+    stop("Failed to download the XML file.")
+  }
+
   return(current_filename)
 }
 
