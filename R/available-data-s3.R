@@ -86,18 +86,18 @@ spod_available_data_s3_function <- function(
 
   bucket <- paste0("mitma-movilidad-v", ver)
 
-  original_aws_region <- Sys.getenv("AWS_DEFAULT_REGION")
-  original_aws_url_style <- Sys.getenv("AWS_S3_URL_STYLE")
-  on.exit({
-    Sys.setenv(
-      AWS_DEFAULT_REGION = original_aws_region,
-      AWS_S3_URL_STYLE = original_aws_url_style
-    )
-  })
-  Sys.setenv(
-    AWS_DEFAULT_REGION = "eu-west-1",
-    AWS_S3_URL_STYLE = "virtual"
-  )
+  # original_aws_region <- Sys.getenv("AWS_DEFAULT_REGION")
+  # original_aws_url_style <- Sys.getenv("AWS_S3_URL_STYLE")
+  # on.exit({
+  #   Sys.setenv(
+  #     AWS_DEFAULT_REGION = original_aws_region,
+  #     AWS_S3_URL_STYLE = original_aws_url_style
+  #   )
+  # })
+  # Sys.setenv(
+  #   AWS_DEFAULT_REGION = "eu-west-1",
+  #   AWS_S3_URL_STYLE = "virtual"
+  # )
 
   if (ver == 1) {
     url_prefix <- "https://opendata-movilidad.mitma.es/"
@@ -163,15 +163,25 @@ list_objects_v2_all <- function(s3, bucket, prefix = "", max_keys = 10000) {
   )
 
   metadata <- dplyr::tibble(
-    Key = vapply(all_objs, `[[`, character(1), "Key"),
+    Key = vapply(all_objects, `[[`, character(1), "Key"),
     LastModified = as.POSIXct(
-      vapply(all_objs, `[[`, numeric(1), "LastModified"),
+      vapply(all_objects, `[[`, numeric(1), "LastModified"),
       origin = "1970-01-01",
       tz = "UTC"
     ),
-    Size = vapply(all_objs, `[[`, numeric(1), "Size"),
-    ETag = vapply(all_objs, `[[`, character(1), "ETag")
+    Size = vapply(all_objects, `[[`, numeric(1), "Size"),
+    ETag = vapply(all_objects, `[[`, character(1), "ETag")
   )
+
+  # S3 generate download urls
+  # urls <- metadata$Key |>
+  #   purrr::map(
+  #     ~ s3$generate_presigned_url(
+  #       client_method = "get_object",
+  #       params = list(Bucket = "mitma-movilidad-v1", Key = .x)
+  #     ),
+  #     .progress = TRUE
+  #   )
 
   return(metadata)
 }
