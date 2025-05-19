@@ -110,7 +110,7 @@ spod_quick_get_od <- function(
   if (!lubridate::ymd(date_fmt) %in% valid_dates) {
     stop(
       "Invalid date. Must be within valid range: ",
-      paste(convert_to_ranges(valid_dates), collapse = ", ")
+      paste(spod_convert_dates_to_ranges(valid_dates), collapse = ", ")
     )
   }
 
