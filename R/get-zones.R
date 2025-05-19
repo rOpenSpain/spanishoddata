@@ -412,7 +412,8 @@ spod_download_zones_v1 <- function(
     )
     # disable curl::multi_download() for now
     # invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
-    relation_files <- spod_multi_download_with_progress(relation_files)
+    # relation_files <- spod_multi_download_with_progress(relation_files)
+    relation_files <- spod_download_in_batches(relation_files)
   }
 
   regex <- glue::glue("zonificacion_{zones}\\.")
@@ -426,7 +427,8 @@ spod_download_zones_v1 <- function(
   if (!fs::file_exists(metadata_zones$local_path)) {
     if (isFALSE(quiet))
       message("Downloading the file to: ", metadata_zones$local_path)
-    downloaded_file <- spod_multi_download_with_progress(metadata_zones)
+    downloaded_file <- spod_download_in_batches(metadata_zones)
+    # downloaded_file <- spod_multi_download_with_progress(metadata_zones)
     # disable curl::multi_download() for now
     # downloaded_file <- curl::multi_download(
     #   metadata_zones$target_url,
@@ -539,9 +541,12 @@ spod_get_zones_v2 <- function(
     #   resume = TRUE,
     #   progress = TRUE
     # )
-    metadata_zones_for_download <- spod_multi_download_with_progress(
+    metadata_zones_for_download <- spod_download_in_batches(
       metadata_zones_for_download
     )
+    # metadata_zones_for_download <- spod_multi_download_with_progress(
+    #   metadata_zones_for_download
+    # )
   }
 
   zones_path <- fs::dir_ls(
