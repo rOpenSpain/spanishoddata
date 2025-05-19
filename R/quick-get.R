@@ -31,8 +31,6 @@
 #'   min_trips = 1000
 #' )
 #' }
-#'
-#'
 spod_quick_get_od <- function(
   date = NA,
   min_trips = 100,
@@ -55,9 +53,7 @@ spod_quick_get_od <- function(
     "10-50km" = "D_10_50",
     "50+km" = "D_50"
   )
-  # Translate user-friendly distances into GraphQL distances
   graphql_distances <- unname(distance_mapping[distances])
-
   if (any(is.na(graphql_distances))) {
     stop(
       "Invalid distance value. Allowed values are: ",
@@ -70,188 +66,183 @@ spod_quick_get_od <- function(
 
   # Convert the date into YYYYMMDD format
   if (is.character(date)) {
-    # Check for "YYYY-MM-DD" format
     if (grepl("^\\d{4}-\\d{2}-\\d{2}$", date)) {
-      date <- as.Date(date) # Safe to convert
+      date <- as.Date(date)
     } else if (nchar(date) == 8 && grepl("^\\d{8}$", date)) {
-      # Check for "YYYYMMDD" format
-      date <- as.Date(date, format = "%Y%m%d") # Safe to convert
+      date <- as.Date(date, format = "%Y%m%d")
     } else {
-      # If neither format matches, stop with a clear error message
       stop(
         "Invalid date format. Use 'YYYY-MM-DD', 'YYYYMMDD', or a Date object."
       )
     }
   }
 
-  # Check if the input is already a Date object
   if (inherits(date, "Date")) {
-    date <- format(date, "%Y%m%d") # Convert to YYYYMMDD format for GraphQL
+    date_fmt <- format(date, "%Y%m%d")
   } else {
-    # Catch any remaining invalid inputs
     stop(
       "Invalid date input. Must be a character in 'YYYY-MM-DD'/'YYYYMMDD' format or a Date object."
     )
   }
 
-  # convert valid dates to ranges
+  # Helper to convert date vectors into consecutive ranges
   convert_to_ranges <- function(dates) {
-    dates <- as.Date(dates) # Ensure dates are in Date format
+    dates <- as.Date(dates)
     ranges <- tibble::tibble(date = dates) |>
       dplyr::arrange(date) |>
       dplyr::mutate(
-        diff = c(0, diff(date)), # Calculate differences
-        group = cumsum(diff != 1) # Create groups for consecutive ranges
+        diff = c(0, diff(date)),
+        group = cumsum(diff != 1)
       ) |>
       dplyr::group_by(.data$group) |>
       dplyr::summarise(
-        start = dplyr::first(date),
-        end = dplyr::last(date),
+        start = first(date),
+        end = last(date),
         .groups = "drop"
-      )
-
-    # Create a character vector of ranges
-    range_strings <- ranges |>
-      dplyr::mutate(range = paste(.data$start, "to", .data$end)) |>
+      ) |>
+      dplyr::mutate(range = paste(start, "to", end)) |>
       dplyr::pull(range)
-
-    return(range_strings)
+    return(ranges)
   }
 
-  # Municipalities checks
+  # Validate municipality IDs
   muni_ref <- readRDS(
     system.file("extdata", "muni_v2_ref.rds", package = "spanishoddata")
   )
-
-  validate_muni_ids <- function(muni_ids, muni_ref) {
-    # Handle cases where muni_ids is NULL, empty, or all NA
-    if (is.null(muni_ids) || length(muni_ids) == 0 || all(is.na(muni_ids))) {
-      return(TRUE) # Nothing to validate
-    }
-
-    # Check which IDs are invalid
-    invalid_ids <- setdiff(muni_ids, muni_ref$id)
-
-    # If there are invalid IDs, return a message
-    if (length(invalid_ids) > 0) {
+  validate_muni_ids <- function(ids, muni_ref) {
+    if (is.null(ids) || length(ids) == 0 || all(is.na(ids))) return(TRUE)
+    invalid <- setdiff(ids, muni_ref$id)
+    if (length(invalid) > 0) {
       stop(
-        "Invalid municipality IDs detected: ",
-        paste(invalid_ids, collapse = ", "),
-        ". Please provide valid municipality IDs. Use `spod_get_zones(zones = 'muni', ver = 2)` to get valid municipality IDs."
+        "Invalid municipality IDs: ",
+        paste(invalid, collapse = ", "),
+        ". Use `spod_get_zones(zones='muni', ver=2)` for valid IDs."
       )
     }
-
-    # If all IDs are valid
-    return(TRUE)
+    TRUE
   }
+  if (!all(is.na(id_origin))) validate_muni_ids(id_origin, muni_ref)
+  if (!all(is.na(id_destination))) validate_muni_ids(id_destination, muni_ref)
 
-  # Validate municipality IDs if provided
-  if (!is.null(id_origin) && length(id_origin) > 0 && !all(is.na(id_origin))) {
-    validate_muni_ids(id_origin, muni_ref)
-  }
-  if (
-    !is.null(id_destination) &&
-      length(id_destination) > 0 &&
-      !all(is.na(id_destination))
-  ) {
-    validate_muni_ids(id_destination, muni_ref)
-  }
-
-  # check if date is within valid range
+  # Check date is within API-supported range
   valid_dates <- spod_graphql_valid_dates()
-  is_valid_date <- lubridate::ymd(date) %in% valid_dates
-  if (!is_valid_date) {
+  if (!lubridate::ymd(date_fmt) %in% valid_dates) {
     stop(
-      paste0(
-        "Invalid date. Must be within valid range: ",
-        paste(convert_to_ranges(valid_dates), collapse = ", ")
-      )
+      "Invalid date. Must be within valid range: ",
+      paste(convert_to_ranges(valid_dates), collapse = ", ")
     )
   }
 
-  # Construct the `journeysMunCriteria` part of the query
+  # Build criteria
   journeysMunCriteria <- list(
-    date = date,
-    min_journeys = min_trips
+    date = date_fmt,
+    min_journeys = min_trips,
+    distances = graphql_distances
   )
-
-  # Add distances if provided (default is all)
-  journeysMunCriteria$distances <- graphql_distances
-
-  # Include origin_muni and target_muni only if they are not NA
-  if (!is.null(id_origin) && length(id_origin) > 0 && !all(is.na(id_origin))) {
-    journeysMunCriteria$origin_muni <- id_origin
-  }
-
-  if (
-    !is.null(id_destination) &&
-      length(id_destination) > 0 &&
-      !all(is.na(id_destination))
-  ) {
+  if (!all(is.na(id_origin))) journeysMunCriteria$origin_muni <- id_origin
+  if (!all(is.na(id_destination)))
     journeysMunCriteria$target_muni <- id_destination
-  }
 
-  if (length(id_origin) == 0) id_origin <- NULL
-  if (length(id_destination) == 0) id_destination <- NULL
-
-  # Define the GraphQL endpoint
-  graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
-
-  # Construct the GraphQL query
+  # Build GraphQL payload
   graphql_query <- list(
     query = paste(
-      collapse = " ",
       c(
         "query ($journeysMunCriteria: JourneysMunCriteriaGqlInput!) {",
-        "find_journeys_mun_criteria(journeysMunCriteria: $journeysMunCriteria) {",
-        "journeys, journeys_km, origin_muni, target_muni",
-        "}",
+        "  find_journeys_mun_criteria(journeysMunCriteria: $journeysMunCriteria) {",
+        "    journeys, journeys_km, origin_muni, target_muni",
+        "  }",
         "}"
-      )
+      ),
+      collapse = " "
     ),
-    variables = list(
-      journeysMunCriteria = journeysMunCriteria
-    )
+    variables = list(journeysMunCriteria = journeysMunCriteria)
   )
 
-  # Generate signature for the query
-  x_sign <- spod_sign_request(graphql_query$query)
+  # in-memory session token
+  session_token <- getOption("spanishoddata.session_token")
+  if (is.null(session_token)) {
+    session_token <- uuid::UUIDgenerate()
+    options(spanishoddata.session_token = session_token)
+  }
 
-  # Send the POST request
+  # get HMAC secret
+  hmac_secret <- get_hmac_secret()
+
+  # compute the raw HMAC-SHA256 bytes
+  raw_sig <- digest::hmac(
+    key = hmac_secret,
+    object = session_token,
+    algo = "sha256",
+    serialize = FALSE,
+    raw = TRUE # <= return raw bytes, not hex
+  )
+
+  # base64-encode those raw bytes
+  signature_b64 <- openssl::base64_encode(raw_sig)
+  signature_b64
+
+  graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
   req <- httr2::request(graphql_endpoint) |>
     httr2::req_headers(
-      "Content-Length" = spod_request_length(graphql_query),
       "Content-Type" = "application/json",
       "User-Agent" = getOption("spanishoddata.user_agent"),
-      "x-signature" = x_sign$x_signature,
-      "x-signature-timestamp" = x_sign$x_signature_timestamp
+      "X-Session-Token" = session_token,
+      "X-Signature" = signature_b64
     ) |>
     httr2::req_body_json(graphql_query)
+  resp <- req |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(simplifyVector = TRUE)
 
-  resp <- req |> httr2::req_perform()
-
-  # Parse the response
-  response_data <- httr2::resp_body_json(resp, simplifyVector = TRUE)
-
-  # check if data is empty
-
-  if (length(response_data$data[[1]]) == 0) {
+  # Handle empty data
+  if (length(resp$data[[1]]) == 0) {
     stop(
-      "You have selected a date that is reported by the remote server as valid, but in fact there is no data. Please select a different date."
+      "No data for ",
+      date_fmt,
+      ". The server reports the date as valid but returns no records."
     )
   }
 
-  od <- tibble::as_tibble(response_data$data[[1]]) |>
+  # Tidy and return
+  od <- tibble::as_tibble(resp$data[[1]]) |>
     dplyr::select(
       id_origin = .data$origin_muni,
       id_destination = .data$target_muni,
       n_trips = .data$journeys,
       trips_total_length_km = .data$journeys_km
     ) |>
-    dplyr::mutate(
-      date = lubridate::ymd(date)
-    ) |>
+    dplyr::mutate(date = lubridate::ymd(date_fmt)) |>
     dplyr::relocate(.data$date, .before = id_origin)
 
   return(od)
+}
+
+
+get_hmac_secret <- function(
+  base_url = "https://mapas-movilidad.transportes.gob.es"
+) {
+  # 1) Fetch the homepage HTML
+  homepage <- httr2::request(base_url) %>%
+    httr2::req_perform() %>%
+    httr2::resp_body_string()
+
+  # 2) Parse and find the inline <script> that mentions import_meta_env
+  doc <- xml2::read_html(homepage)
+  scripts <- xml2::xml_find_all(doc, "//script[not(@src)]")
+  inline <- scripts[stringr::str_detect(
+    xml2::xml_text(scripts),
+    "import_meta_env"
+  )]
+  if (length(inline) != 1) {
+    stop("Could not uniquely locate the import_meta_env script block.")
+  }
+  txt <- xml2::xml_text(inline)
+
+  # 3) Extract the real HMAC_SECRET from that block
+  secret <- stringr::str_match(txt, '"HMAC_SECRET"\\s*:\\s*"([^"]+)"')[, 2]
+
+  if (is.na(secret) || nchar(secret) < 10) {
+    stop("Failed to parse HMAC_SECRET from the page.")
+  }
+  secret
 }
