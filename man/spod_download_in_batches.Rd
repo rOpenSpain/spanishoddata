@@ -18,6 +18,8 @@ spod_download_in_batches(
 \arguments{
 \item{files_to_download}{A data frame with columns \code{target_url}, \code{local_path} and \code{file_size_bytes}.}
 
+\item{batch_size}{Numeric. Number of files to download at a time.}
+
 \item{bar_width}{Numeric. Width of the progress bar.}
 
 \item{chunk_size}{Numeric. Number of bytes to download at a time for speed test.}

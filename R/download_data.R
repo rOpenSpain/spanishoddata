@@ -448,8 +448,9 @@ spod_multi_download_with_progress <- function(
 #' Download multiple files with a progress bar. Retries failed downloads up to 3 times. Downloads are in parallel and in batches to show progress. First 10 Mb of a file is downloaded to check the speed.
 #'
 #' @param files_to_download A data frame with columns `target_url`, `local_path` and `file_size_bytes`.
-#' @param chunk_size Numeric. Number of bytes to download at a time for speed test.
+#' @param batch_size Numeric. Number of files to download at a time.
 #' @param bar_width Numeric. Width of the progress bar.
+#' @param chunk_size Numeric. Number of bytes to download at a time for speed test.
 #' @param show_progress Logical. Whether to show the progress bar.
 #' @param max_retries Integer. Maximum number of retries for failed downloads.
 #' @param timeout Numeric. Timeout in seconds for each download.
@@ -608,50 +609,65 @@ spod_download_in_batches <- function(
   rem <- which(to_download)
   idx_batches <- split(rem, ceiling(seq_along(rem) / batch_size))
 
-  # Download batches in parallel via libcurl with size check & retry
-
+  # Download batches in parallel via libcurl
   for (batch in idx_batches) {
     urls <- files_to_download$target_url[batch]
     dests <- files_to_download$local_path[batch]
 
-    for (j in seq_along(batch)) {
-      i <- batch[j]
+    res <- utils::download.file(
+      url = urls,
+      destfile = dests,
+      method = "libcurl",
+      mode = "wb",
+      quiet = TRUE
+    )
+    if (length(res) == 1L) res <- rep(res, length(batch))
+
+    # Retry on size mismatch or initial failure
+    for (k in seq_along(batch)) {
+      i <- batch[k]
       expected <- files_to_download$file_size_bytes[i]
-      attempts <- 0L
-
-      repeat {
-        attempts <- attempts + 1L
-
-        status <- utils::download.file(
-          url = urls[j],
-          destfile = dests[j],
-          method = "libcurl",
-          mode = "wb",
-          quiet = TRUE
-        )
-
-        actual <- if (file.exists(dests[j])) file.info(dests[j])$size else
-          NA_integer_
-
-        if (status == 0L && !is.na(actual) && identical(actual, expected)) {
-          files_to_download$downloaded[i] <- TRUE
-          files_to_download$complete_download[i] <- TRUE
-          files_to_download$local_file_size[i] <- actual
-          cum_bytes <- cum_bytes + actual
-          break
-        } else if (attempts >= max_retries) {
-          warning(sprintf(
-            "Failed to download %s after %d attempts (got %s bytes, expected %s)",
-            urls[j],
-            attempts,
-            actual,
-            expected
-          ))
-          break
+      dest <- dests[k]
+      # if initial status not ok or size mismatch
+      if (
+        res[k] != 0L || !file.exists(dest) || file.info(dest)$size != expected
+      ) {
+        attempts <- 1L
+        while (attempts < max_retries) {
+          attempts <- attempts + 1L
+          status2 <- utils::download.file(
+            url = urls[k],
+            destfile = dest,
+            method = "libcurl",
+            mode = "wb",
+            quiet = TRUE
+          )
+          actual <- if (file.exists(dest)) file.info(dest)$size else NA_integer_
+          if (status2 == 0L && identical(actual, expected)) {
+            res[k] <- 0L
+            break
+          }
         }
-        # else retry
       }
+    }
 
+    for (k in seq_along(batch)) {
+      i <- batch[k]
+      if (res[k] == 0L && file.exists(dests[k])) {
+        sz <- file.info(dests[k])$size
+        files_to_download$downloaded[i] <- TRUE
+        files_to_download$complete_download[i] <- TRUE
+        files_to_download$local_file_size[i] <- sz
+        cum_bytes <- cum_bytes + sz
+      } else {
+        warning(sprintf(
+          "Failed to download %s after %d attempts (got %s bytes, expected %s)",
+          urls[k],
+          max_retries,
+          if (file.exists(dests[k])) file.info(dests[k])$size else NA,
+          files_to_download$file_size_bytes[i]
+        ))
+      }
       files_counted <- files_counted + 1L
       if (show_progress) redraw_bar(cum_bytes)
     }
