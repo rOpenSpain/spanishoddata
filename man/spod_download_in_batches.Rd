@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data.R
 \name{spod_download_in_batches}
 \alias{spod_download_in_batches}
-\title{Download multiple files with progress bar in batches}
+\title{Download multiple files with progress bar in parallel}
 \usage{
 spod_download_in_batches(
   files_to_download,
@@ -10,22 +10,25 @@ spod_download_in_batches(
   bar_width = 20,
   chunk_size = 1024 * 1024,
   test_size = 10 * 1024 * 1024,
+  max_retries = 3L,
   show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
 )
 }
 \arguments{
 \item{files_to_download}{A data frame with columns \code{target_url}, \code{local_path} and \code{file_size_bytes}.}
 
-\item{bar_width}{Width of the progress bar.}
+\item{bar_width}{Numeric. Width of the progress bar.}
 
-\item{chunk_size}{Number of bytes to download at a time.}
+\item{chunk_size}{Numeric. Number of bytes to download at a time for speed test.}
 
-\item{show_progress}{Whether to show the progress bar.}
+\item{max_retries}{Integer. Maximum number of retries for failed downloads.}
+
+\item{show_progress}{Logical. Whether to show the progress bar.}
 }
 \value{
 A data frame with columns \code{target_url}, \code{local_path}, \code{file_size_bytes} and \code{local_file_size}.
 }
 \description{
-Download multiple files with a progress bar. Retries failed downloads up to 3 times.
+Download multiple files with a progress bar. Retries failed downloads up to 3 times. Downloads are in parallel and in batches to show progress. First 10 Mb of a file is downloaded to check the speed.
 }
 \keyword{internal}

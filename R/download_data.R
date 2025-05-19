@@ -448,10 +448,10 @@ spod_multi_download_with_progress <- function(
 #' Download multiple files with a progress bar. Retries failed downloads up to 3 times. Downloads are in parallel and in batches to show progress. First 10 Mb of a file is downloaded to check the speed.
 #'
 #' @param files_to_download A data frame with columns `target_url`, `local_path` and `file_size_bytes`.
-#' @param chunk_size Number of bytes to download at a time.
-#' @param bar_width Width of the progress bar.
-#' @param show_progress Whether to show the progress bar.
-#'
+#' @param chunk_size Numeric. Number of bytes to download at a time for speed test.
+#' @param bar_width Numeric. Width of the progress bar.
+#' @param show_progress Logical. Whether to show the progress bar.
+#' @param max_retries Integer. Maximum number of retries for failed downloads.
 #' @return A data frame with columns `target_url`, `local_path`, `file_size_bytes` and `local_file_size`.
 #'
 #' @keywords internal

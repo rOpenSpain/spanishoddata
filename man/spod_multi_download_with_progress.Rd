@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_data.R
 \name{spod_multi_download_with_progress}
 \alias{spod_multi_download_with_progress}
-\title{Download multiple files with progress bar}
+\title{Download multiple files with progress bar sequentially}
 \usage{
 spod_multi_download_with_progress(
   files_to_download,
