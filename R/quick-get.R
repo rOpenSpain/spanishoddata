@@ -250,12 +250,12 @@ spod_fetch_municipalities_json_memoised <- memoise::memoise(
 spod_get_hmac_secret <- function(
   base_url = "https://mapas-movilidad.transportes.gob.es"
 ) {
-  # 1) Fetch the homepage HTML
-  homepage <- httr2::request(base_url) %>%
-    httr2::req_perform() %>%
+  # Fetch the homepage HTML
+  homepage <- httr2::request(base_url) |>
+    httr2::req_perform() |>
     httr2::resp_body_string()
 
-  # 2) Parse and find the inline <script> that mentions import_meta_env
+  # Parse and find the inline <script> that mentions import_meta_env
   doc <- xml2::read_html(homepage)
   scripts <- xml2::xml_find_all(doc, "//script[not(@src)]")
   inline <- scripts[stringr::str_detect(
@@ -267,7 +267,7 @@ spod_get_hmac_secret <- function(
   }
   txt <- xml2::xml_text(inline)
 
-  # 3) Extract the real HMAC_SECRET from that block
+  # Extract the real HMAC_SECRET from that block
   secret <- stringr::str_match(txt, '"HMAC_SECRET"\\s*:\\s*"([^"]+)"')[, 2]
 
   if (is.na(secret) || nchar(secret) < 10) {
