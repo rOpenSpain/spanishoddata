@@ -1,8 +1,18 @@
 # spanishoddata (development version)
 
+## New features
+
+* `spod_check_files()` function allows to check consistency of downloaded files with Amazon S3 checksums (PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165)). ETags for v1 data are stored with the package, and for v2 data they are fetched from Amazon S3.
+
+## Improvements
+
+* Metadata is now fetched from Amazon S3 storage of the original data files, which allows validation of downloaded files ((#126)[https://github.com/rOpenSpain/spanishoddata/issues/126]) with both size and checksum. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
+
 ## Bug fixes
 
-* `spod_convert()` can now accept `overwrite = 'update'` with `save_format = 'parquet'` ([#161](https://github.com/rOpenSpain/spanishoddata/pull/161)) previously it failed because of the incorrect check that asserted only `TRUE` or `FALSE` ([#160](https://github.com/rOpenSpain/spanishoddata/issues/160))
+* More reliable, but still multi-threaded data file downloads using base R `utils::download.file()` instead of `curl::multi_download()` which failed on some connections ([#127](https://github.com/rOpenSpain/spanishoddata/issues/127)), so now `curl` dependency is no longer required. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
+
+* `spod_convert()` now accepts `overwrite = 'update'` with `save_format = 'parquet'` ([#161](https://github.com/rOpenSpain/spanishoddata/pull/161)) previously it failed because of the incorrect check that asserted only `TRUE` or `FALSE` ([#160](https://github.com/rOpenSpain/spanishoddata/issues/160))
 
 # spanishoddata 0.1.1
 
