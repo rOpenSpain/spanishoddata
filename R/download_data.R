@@ -331,8 +331,8 @@ spod_multi_download_with_progress <- function(
       eta <- (total_expected_bytes - bytes_so_far) / speed
       eta_str <- format_eta(eta)
 
-      cat(sprintf(
-        "\rDownloading: %s [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB, %.1f MB/s, ETA: %s)",
+      msg <- sprintf(
+        "Downloading: %s [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB, %.1f MB/s, ETA: %s)",
         date_str,
         bar,
         pct * 100,
@@ -342,7 +342,8 @@ spod_multi_download_with_progress <- function(
         total_gb,
         speed_mb,
         eta_str
-      ))
+      )
+      cat(sprintf("\r%-120s", msg))
       utils::flush.console()
     }
 
