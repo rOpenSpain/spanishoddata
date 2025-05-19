@@ -235,8 +235,8 @@ spod_get_hmac_secret <- function(
   base_url = "https://mapas-movilidad.transportes.gob.es"
 ) {
   # 1) Fetch the homepage HTML
-  homepage <- httr2::request(base_url) |>
-    httr2::req_perform() |>
+  homepage <- httr2::request(base_url) %>%
+    httr2::req_perform() %>%
     httr2::resp_body_string()
 
   # 2) Parse and find the inline <script> that mentions import_meta_env
