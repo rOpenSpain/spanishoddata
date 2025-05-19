@@ -420,6 +420,9 @@ spod_multi_download_with_progress <- function(
 
     cum_bytes <- cum_bytes + actual_sz
     files_counted <- files_counted + 1L
+    if (!"local_file_size" %in% names(files_to_download)) {
+      files_to_download$local_file_size <- NA_real_
+    }
     files_to_download$local_file_size[i] <- actual_sz
     files_to_download$downloaded[i] <- TRUE
     files_to_download$complete_download[i] <- identical(actual_sz, exp_bytes)

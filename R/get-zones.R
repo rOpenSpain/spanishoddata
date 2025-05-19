@@ -397,6 +397,7 @@ spod_download_zones_v1 <- function(
   metadata <- spod_available_data(
     ver = 1,
     data_dir = data_dir,
+    use_s3 = TRUE,
     check_local_files = FALSE
   )
 
@@ -425,11 +426,7 @@ spod_download_zones_v1 <- function(
   if (!fs::file_exists(metadata_zones$local_path)) {
     if (isFALSE(quiet))
       message("Downloading the file to: ", metadata_zones$local_path)
-    utils::download.file(
-      url = metadata_zones$target_url,
-      destfile = metadata_zones$local_path,
-      mode = "wb"
-    )
+    downloaded_file <- spod_multi_download_with_progress(metadata_zones)
     # disable curl::multi_download() for now
     # downloaded_file <- curl::multi_download(
     #   metadata_zones$target_url,
@@ -437,7 +434,7 @@ spod_download_zones_v1 <- function(
     #   resume = TRUE,
     #   progress = TRUE
     # )
-    downloaded_file <- downloaded_file$destfile
+    downloaded_file <- downloaded_file$local_path
   } else {
     if (isFALSE(quiet))
       message("File already exists: ", metadata_zones$local_path)
