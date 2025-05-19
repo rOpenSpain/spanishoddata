@@ -15,6 +15,12 @@ execute:
   eval: false
 ---
 
+::: callout-warning
+
+**This functionality may stop working at any time, as the API may change unexpectedly.**
+
+:::
+
 ## Introduction {#intro}
 
 This vignette demonstrates how to get minimal daily aggregated data on the number of trips between municipalities using the `spod_quick_get_od()` function. With this function, you only get total trips for a single day, and no additional variables that are available in the full [v2 (2022 onwards) data set](v2-2022-onwards-mitma-data-codebook.html). The advantage of this function is that it is much faster than downloading the full data from source CSV files using `spod_get()`, as each CSV file for a single day is about 200 MB in size. Also, this way of getting the data is much less demanding on your computer as you are only getting a small table from the internet (less than 1 MB), and no data processing (such as aggregation from more detailed hourly data with extra columns that is happening when you use `spod_get()` function) is required on your computer. The original interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/){target="_blank"}.
@@ -150,8 +156,11 @@ You can get all valid munincipality identifiers with the `spod_get_zones("muni",
 
 
 ```{r}
-municipalities <- spod_get_zones("muni", ver = 2)
-head(municipalities)
+municipalities <- spod_quick_get_zones()
+
+# if code above fails, you can also use the following:
+# municipalities <- spod_get_zones("muni", ver = 2)
+# head(municipalities)
 ```
 
 #### All trips from Madrid

@@ -1,14 +1,14 @@
 # some tests are disabled as the API endpoint is not working because of the new restrictions see https://github.com/rOpenSpain/spanishoddata/issues/162
-# test_that("spod_quick_get_od fails out of range dates", {
-#   skip_on_ci()
-#   skip_on_cran()
-#   expect_error(
-#     spod_quick_get_od(
-#       date = "2021-12-31",
-#     ),
-#     ".*Must be within valid range.*"
-#   )
-# })
+test_that("spod_quick_get_od fails out of range dates", {
+  skip_on_ci()
+  skip_on_cran()
+  expect_error(
+    spod_quick_get_od(
+      date = "2021-12-31",
+    ),
+    ".*Must be within valid range.*"
+  )
+})
 
 test_that("spod_quick_get_od fails on invalid date format", {
   expect_error(
@@ -45,7 +45,7 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
       date = "2022-01-03",
       id_origin = "invalid"
     ),
-    ".*Invalid municipality IDs detected.*"
+    ".*Invalid municipality ID.*"
   )
 
   expect_error(
@@ -53,7 +53,7 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
       date = "2022-01-04",
       id_destination = "invalid"
     ),
-    ".*Invalid municipality IDs detected.*"
+    ".*Invalid municipality ID.*"
   )
 
   expect_error(
@@ -62,6 +62,6 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
       id_origin = "invalid",
       id_destination = "invalid"
     ),
-    ".*Invalid municipality IDs detected.*"
+    ".*Invalid municipality ID.*"
   )
 })

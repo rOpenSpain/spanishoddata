@@ -433,7 +433,6 @@ spod_unique_separated_ids <- function(column) {
 #' @keywords internal
 #'
 spod_convert_dates_to_ranges <- function(dates) {
-  # TODO: remove the `convert_to_ranges` function from `spod_quick_get_od()` when both branches are merged into main and use this `spod_convert_dates_to_ranges()` instead
   dates <- as.Date(dates) # Ensure dates are in Date format
   ranges <- tibble::tibble(date = dates) |>
     dplyr::arrange(date) |>
@@ -464,12 +463,14 @@ spod_graphql_valid_dates <- function() {
 
   # Define the GraphQL query
   graphql_query <- list(
-    query = "query { find_date_ranges { start_date, end_date } }",
+    query = "query {dates_find_available_dates_basic{startDate endDate } }",
     variables = structure(list(), .Names = character(0)) # Empty named list so that it serialises to {} not []
   )
 
   # Generate signature for the query
-  x_sign <- spod_sign_request(graphql_query$query)
+  session_token_and_signature <- spod_session_token_and_signature()
+  x_session_token <- session_token_and_signature$x_session_token
+  x_signature <- session_token_and_signature$x_signature
 
   # Send the POST request
   req <- httr2::request(graphql_endpoint) |>
@@ -477,16 +478,18 @@ spod_graphql_valid_dates <- function() {
       "Content-Length" = spod_request_length(graphql_query),
       "Content-Type" = "application/json",
       "User-Agent" = getOption("spanishoddata.user_agent"),
-      "x-signature" = x_sign$x_signature,
-      "x-signature-timestamp" = x_sign$x_signature_timestamp
+      "X-Session-Token" = x_session_token,
+      "X-Signature" = x_signature
     ) |>
-    httr2::req_body_json(graphql_query)
+    httr2::req_body_json(graphql_query) |>
+    httr2::req_progress(type = "down")
 
   resp <- req |> httr2::req_perform()
 
   # parse the response
   response_data <- httr2::resp_body_json(resp, simplifyVector = TRUE)
-  dates_table <- response_data$data$find_date_ranges |>
+  dates_table <- response_data$data$dates_find_available_dates_basic |>
+    dplyr::rename(start_date = .data$startDate, end_date = .data$endDate) |>
     dplyr::mutate(
       end_date = dplyr::if_else(
         condition = .data$end_date == "2024-09-31",
@@ -494,8 +497,6 @@ spod_graphql_valid_dates <- function() {
         false = .data$end_date
       )
     )
-
-  dates_table
 
   # Convert start_date and end_date columns to Date class
   dates_table$start_date <- as.Date(dates_table$start_date)
@@ -516,35 +517,43 @@ spod_graphql_valid_dates <- function() {
   return(dates)
 }
 
-spod_sign_request <- function(query_str) {
-  # Generate signature for the query
-  timestamp <- as.character(as.integer(Sys.time()))
-  # Concatenate the query and the timestamp (this is what gets signed)
-  string_to_sign <- paste0(query_str, " ", timestamp)
+spod_graphql_valid_dates_memoised <- memoise::memoise(spod_graphql_valid_dates)
 
-  # secret key
-  # secret_key <- "LMRwUOv2vdE9jHvpxE19viAwF8LQ7O8O6wCg4YvD" # fallback key? hardcoded in js https://mapas-movilidad.transportes.gob.es/assets/index-BFdJ8uY8.js
-  secret_key <- "sTPf7dEorzjcLYyclMX1qK0eYz2JCgx8RtLOj1vR" # from the website
+spod_session_token_and_signature <- function() {
+  # in-memory session token
+  session_token <- getOption("spanishoddata.session_token")
+  if (is.null(session_token)) {
+    session_token <- paste0("rand-", floor(runif(1, 1e6, 1e9)))
+    options(spanishoddata.session_token = session_token)
+  }
 
-  # Compute the HMAC-SHA256 value.
-  # Important: serialize=FALSE and raw=TRUE ensure that the exact plain text is hashed,
-  # and we get a raw vector that we then Base64-encode.
-  hmac_raw <- digest::hmac(
-    key = secret_key,
-    object = string_to_sign,
+  # get HMAC secret
+  hmac_secret <- spod_get_hmac_secret_memoised()
+
+  # compute the raw HMAC-SHA256 bytes
+  raw_sig <- digest::hmac(
+    key = hmac_secret,
+    object = session_token,
     algo = "sha256",
     serialize = FALSE,
-    raw = TRUE
+    raw = TRUE # <= return raw bytes, not hex
   )
 
-  # Base64-encode the raw HMAC output.
-  signature <- base64enc::base64encode(hmac_raw)
+  # base64-encode those raw bytes
+  signature_b64 <- openssl::base64_encode(raw_sig)
 
-  x_sign <- list(x_signature = signature, x_signature_timestamp = timestamp)
+  x_session_token_and_signature <- list(
+    x_session_token = session_token,
+    x_signature = signature_b64
+  )
 
-  return(x_sign)
+  return(x_session_token_and_signature)
 }
 
+#' Get the length of the request payload
+#' @param graphql_query Character. The GraphQL query.
+#' @return Numeric. The length of the request payload.
+#' @keywords internal
 spod_request_length <- function(graphql_query) {
   payload_json <- jsonlite::toJSON(graphql_query, auto_unbox = TRUE)
   content_length <- nchar(payload_json, type = "bytes")

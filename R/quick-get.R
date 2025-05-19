@@ -4,11 +4,11 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' **WARNING: this function may stop working at any time, as the API may change**. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/) No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
+#' **WARNING: this function may stop working at any time, as the API may change**. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to [spod_get()], which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). No data aggregation is performed on your computer (unlike in [spod_get()]), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via [spod_get()].
 #'
 #' @param date A character or Date object specifying the date for which to retrieve the data. If date is a character, the date must be in "YYYY-MM-DD" or "YYYYMMDD" format.
 #' @param min_trips A numeric value specifying the minimum number of journeys per origin-destination pair to retrieve. Defaults to 100 to reduce the amount of data returned. Can be set to 0 to retrieve all data.
-#' @param distances A character vector specifying the distances to retrieve. Valid values are "500m-2km", "2-10km", "10-50km", and "50+km". Defaults to `c("500m-2km", "2-10km", "10-50km", "50+km")`. The resulting data will not have number of trips per category of distance. Therefore, if you want to retrieve the number of trips per distance category, you need to make 4 separate calls to this function or use `spod_get()` instead to get the full data from source CSV files.
+#' @param distances A character vector specifying the distances to retrieve. Valid values are "500m-2km", "2-10km", "10-50km", and "50+km". Defaults to `c("500m-2km", "2-10km", "10-50km", "50+km")`. The resulting data will not have number of trips per category of distance. Therefore, if you want to retrieve the number of trips per distance category, you need to make 4 separate calls to this function or use [spod_get()] instead to get the full data from source CSV files.
 #' @param id_origin A character vector specifying the origin municipalities to retrieve. If not provided, all origin municipalities will be included. Valid municipality IDs can be found in the dataset returned by `spod_get_zones(zones = "muni", ver = 2)`.
 #' @param id_destination A character vector specifying the target municipalities to retrieve. If not provided, all target municipalities will be included. Valid municipality IDs can be found in the dataset returned by `spod_get_zones(zones = "muni", ver = 2)`.
 #' @return A `tibble` containing the flows for the specified date, minimum number of journeys, distances and origin-destination pairs if specified. The columns are:
@@ -85,27 +85,8 @@ spod_quick_get_od <- function(
     )
   }
 
-  # Helper to convert date vectors into consecutive ranges
-  convert_to_ranges <- function(dates) {
-    dates <- as.Date(dates)
-    ranges <- tibble::tibble(date = dates) |>
-      dplyr::arrange(date) |>
-      dplyr::mutate(
-        diff = c(0, diff(date)),
-        group = cumsum(diff != 1)
-      ) |>
-      dplyr::group_by(.data$group) |>
-      dplyr::summarise(
-        start = first(date),
-        end = last(date),
-        .groups = "drop"
-      ) |>
-      dplyr::mutate(range = paste(start, "to", end)) |>
-      dplyr::pull(range)
-    return(ranges)
-  }
+  convert_to_ranges <- spod_convert_dates_to_ranges(date)
 
-  # Validate municipality IDs
   muni_ref <- readRDS(
     system.file("extdata", "muni_v2_ref.rds", package = "spanishoddata")
   )
@@ -125,7 +106,7 @@ spod_quick_get_od <- function(
   if (!all(is.na(id_destination))) validate_muni_ids(id_destination, muni_ref)
 
   # Check date is within API-supported range
-  valid_dates <- spod_graphql_valid_dates()
+  valid_dates <- spod_graphql_valid_dates_memoised()
   if (!lubridate::ymd(date_fmt) %in% valid_dates) {
     stop(
       "Invalid date. Must be within valid range: ",
@@ -133,63 +114,56 @@ spod_quick_get_od <- function(
     )
   }
 
-  # Build criteria
-  journeysMunCriteria <- list(
-    date = date_fmt,
-    min_journeys = min_trips,
-    distances = graphql_distances
+  # build the GraphQL query
+  full_query <- paste0(
+    "query ($journeyDate:String!,$distances:[JourneysDistancesBasic!],",
+    "$originMunicipality:[String!],$destinationMunicipality:[String!],",
+    "$minJourneys:Float!){",
+    "journeys_municipality_find_by_criteria_basic(criteria:{",
+    "journeyDate:$journeyDate,",
+    "distances:$distances,",
+    "originMunicipality:$originMunicipality,",
+    "destinationMunicipality:$destinationMunicipality,",
+    "minJourneys:$minJourneys",
+    "}){origin destination journeys journeysKm}}"
   )
-  if (!all(is.na(id_origin))) journeysMunCriteria$origin_muni <- id_origin
-  if (!all(is.na(id_destination)))
-    journeysMunCriteria$target_muni <- id_destination
 
-  # Build GraphQL payload
+  vars_list <- list(
+    journeyDate = date_fmt,
+    distances = graphql_distances,
+    minJourneys = min_trips
+  )
+
+  if (!all(is.na(id_origin))) {
+    vars_list$originMunicipality <- id_origin
+  }
+
+  if (!all(is.na(id_destination))) {
+    vars_list$destinationMunicipality <- id_destination
+  }
+
+  # assemble final payload
   graphql_query <- list(
-    query = paste(
-      c(
-        "query ($journeysMunCriteria: JourneysMunCriteriaGqlInput!) {",
-        "  find_journeys_mun_criteria(journeysMunCriteria: $journeysMunCriteria) {",
-        "    journeys, journeys_km, origin_muni, target_muni",
-        "  }",
-        "}"
-      ),
-      collapse = " "
-    ),
-    variables = list(journeysMunCriteria = journeysMunCriteria)
+    query = full_query,
+    variables = vars_list
   )
 
   # in-memory session token
-  session_token <- getOption("spanishoddata.session_token")
-  if (is.null(session_token)) {
-    session_token <- uuid::UUIDgenerate()
-    options(spanishoddata.session_token = session_token)
-  }
-
-  # get HMAC secret
-  hmac_secret <- get_hmac_secret()
-
-  # compute the raw HMAC-SHA256 bytes
-  raw_sig <- digest::hmac(
-    key = hmac_secret,
-    object = session_token,
-    algo = "sha256",
-    serialize = FALSE,
-    raw = TRUE # <= return raw bytes, not hex
-  )
-
-  # base64-encode those raw bytes
-  signature_b64 <- openssl::base64_encode(raw_sig)
-  signature_b64
+  session_token_and_signature <- spod_session_token_and_signature()
+  x_session_token <- session_token_and_signature$x_session_token
+  x_signature <- session_token_and_signature$x_signature
 
   graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
   req <- httr2::request(graphql_endpoint) |>
     httr2::req_headers(
       "Content-Type" = "application/json",
       "User-Agent" = getOption("spanishoddata.user_agent"),
-      "X-Session-Token" = session_token,
-      "X-Signature" = signature_b64
+      "X-Session-Token" = x_session_token,
+      "X-Signature" = x_signature
     ) |>
-    httr2::req_body_json(graphql_query)
+    httr2::req_body_json(graphql_query) |>
+    httr2::req_progress(type = "down")
+  # req |> httr2::req_dry_run()
   resp <- req |>
     httr2::req_perform() |>
     httr2::resp_body_json(simplifyVector = TRUE)
@@ -206,10 +180,10 @@ spod_quick_get_od <- function(
   # Tidy and return
   od <- tibble::as_tibble(resp$data[[1]]) |>
     dplyr::select(
-      id_origin = .data$origin_muni,
-      id_destination = .data$target_muni,
+      id_origin = .data$origin,
+      id_destination = .data$destination,
       n_trips = .data$journeys,
-      trips_total_length_km = .data$journeys_km
+      trips_total_length_km = .data$journeysKm
     ) |>
     dplyr::mutate(date = lubridate::ymd(date_fmt)) |>
     dplyr::relocate(.data$date, .before = id_origin)
@@ -217,8 +191,47 @@ spod_quick_get_od <- function(
   return(od)
 }
 
+#' Get the municipalities geometries
+#'
+#' @description
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' This function fetches the municipalities geometries from the mapas-movilidad website and returns a `sf` object with the municipalities geometries. This is intended for use with the flows data retrieved by the `spod_quick_get_od()` function. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). These municipality geometries only include Spanish municipalities (and not the NUTS3 regions in Portugal and France) and do not contain extra columns that you can get with the [spod_get_zones()] function. The function caches the retrieved geometries in memory of the current R session to reduce the number of requests to the mapas-movilidad website.
+#'
+#' @return A `sf` object with the municipalities geometries to match with the data retrieved with `spod_quick_get_od()`.
+#'
+#' @export
+#' @examplesIf interactive()
+#' \donttest{
+#' municipalities_sf <- spod_quick_get_zones()
+#' }
+#'
+spod_quick_get_zones <- function() {
+  municipalities_sf <- spod_fetch_municipalities_json_memoised()
+  return(municipalities_sf)
+}
 
-get_hmac_secret <- function(
+
+spod_fetch_municipalities_json_memoised <- memoise::memoise(
+  function() {
+    municip_geometries_url <- "https://mapas-movilidad.transportes.gob.es/api/static/data/municipios60.json"
+    municipalities_sf <- sf::st_read(municip_geometries_url, quiet = TRUE) |>
+      dplyr::rename(id = .data$ID) |>
+      dplyr::mutate(
+        population = as.numeric(dplyr::na_if(population, "NA"))
+      ) |>
+      dplyr::select(.data$id, .data$name, .data$population)
+    return(municipalities_sf)
+  }
+)
+
+
+#' Get the HMAC secret from the mapas-movilidad website
+#' @param base_url The base URL of the mapas-movilidad website
+#' @return Character vector with the HMAC secret.
+#' @keywords internal
+spod_get_hmac_secret <- function(
   base_url = "https://mapas-movilidad.transportes.gob.es"
 ) {
   # 1) Fetch the homepage HTML
@@ -246,3 +259,5 @@ get_hmac_secret <- function(
   }
   secret
 }
+
+spod_get_hmac_secret_memoised <- memoise::memoise(spod_get_hmac_secret)

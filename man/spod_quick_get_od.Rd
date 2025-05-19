@@ -17,7 +17,7 @@ spod_quick_get_od(
 
 \item{min_trips}{A numeric value specifying the minimum number of journeys per origin-destination pair to retrieve. Defaults to 100 to reduce the amount of data returned. Can be set to 0 to retrieve all data.}
 
-\item{distances}{A character vector specifying the distances to retrieve. Valid values are "500m-2km", "2-10km", "10-50km", and "50+km". Defaults to \code{c("500m-2km", "2-10km", "10-50km", "50+km")}. The resulting data will not have number of trips per category of distance. Therefore, if you want to retrieve the number of trips per distance category, you need to make 4 separate calls to this function or use \code{spod_get()} instead to get the full data from source CSV files.}
+\item{distances}{A character vector specifying the distances to retrieve. Valid values are "500m-2km", "2-10km", "10-50km", and "50+km". Defaults to \code{c("500m-2km", "2-10km", "10-50km", "50+km")}. The resulting data will not have number of trips per category of distance. Therefore, if you want to retrieve the number of trips per distance category, you need to make 4 separate calls to this function or use \code{\link[=spod_get]{spod_get()}} instead to get the full data from source CSV files.}
 
 \item{id_origin}{A character vector specifying the origin municipalities to retrieve. If not provided, all origin municipalities will be included. Valid municipality IDs can be found in the dataset returned by \code{spod_get_zones(zones = "muni", ver = 2)}.}
 
@@ -36,7 +36,7 @@ A \code{tibble} containing the flows for the specified date, minimum number of j
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\strong{WARNING: this function may stop working at any time, as the API may change}. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at \url{https://mapas-movilidad.transportes.gob.es/} No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
+\strong{WARNING: this function may stop working at any time, as the API may change}. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \code{\link[=spod_get]{spod_get()}}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at \url{https://mapas-movilidad.transportes.gob.es/}. No data aggregation is performed on your computer (unlike in \code{\link[=spod_get]{spod_get()}}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \code{\link[=spod_get]{spod_get()}}.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -46,6 +46,5 @@ od_1000 <- spod_quick_get_od(
   min_trips = 1000
 )
 }
-
 \dontshow{\}) # examplesIf}
 }
