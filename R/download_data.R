@@ -353,7 +353,11 @@ spod_multi_download_with_progress <- function(
 
   # Download loop
   for (i in seq_len(total_files)) {
-    date_str <- format(files_to_download$data_ymd[i], "%Y-%m-%d")
+    if (!is.na(files_to_download$data_ymd[i])) {
+      date_str <- format(files_to_download$data_ymd[i], "%Y-%m-%d")
+    } else {
+      date_str <- basename(files_to_download$local_path[i])
+    }
     url <- files_to_download$target_url[i]
     dest <- files_to_download$local_path[i]
     exp_bytes <- files_to_download$file_size_bytes[i]
