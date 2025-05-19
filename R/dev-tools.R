@@ -86,6 +86,7 @@ spod_store_etags <- function() {
   local_etags <- available_data$local_path |>
     purrr::map_chr(~ spod_compute_s3_etag(.x), .progress = TRUE)
   available_data <- available_data |>
-    dplyr::mutate(local_etag = local_etags)
-  saveRDS(available_data, file.path("inst", "extdata", "available_data_v1.rds"))
+    dplyr::mutate(local_etag = local_etags) |>
+    dplyr::as_tibble()
+  return(available_data)
 }
