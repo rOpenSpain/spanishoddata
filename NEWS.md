@@ -2,7 +2,7 @@
 
 ## New features
 
-* `spod_quick_get_zones()` is a new function to quickly get municipality geometries identifiers to match with the data retrieved with `spod_quick_get_od()` [#163](https://github.com/rOpenSpain/spanishoddata/pull/163). Requests to get geometies are cached in memory of the current R session with `memoise` package.
+* `spod_quick_get_zones()` is a new function to quickly get municipality geometries to match with the data retrieved with `spod_quick_get_od()` [#163](https://github.com/rOpenSpain/spanishoddata/pull/163). Requests to get geometies are cached in memory of the current R session with `memoise` package.
 
 ## Bug fixes
 
