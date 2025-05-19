@@ -85,8 +85,6 @@ spod_quick_get_od <- function(
     )
   }
 
-  convert_to_ranges <- spod_convert_dates_to_ranges(date)
-
   muni_ref <- readRDS(
     system.file("extdata", "muni_v2_ref.rds", package = "spanishoddata")
   )
