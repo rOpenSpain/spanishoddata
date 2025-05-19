@@ -30,6 +30,7 @@ Depends:
 Imports: 
     checkmate,
     DBI,
+    digest,
     dplyr,
     duckdb (>= 0.5.0),
     fs,

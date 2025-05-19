@@ -62,3 +62,4 @@ reference:
       - spod_set_data_dir
       - spod_get_data_dir
       - spod_cite
+      - spod_check_files
