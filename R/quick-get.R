@@ -197,7 +197,7 @@ spod_quick_get_od <- function(
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' This function fetches the municipalities geometries from the mapas-movilidad website and returns a `sf` object with the municipalities geometries. This is intended for use with the flows data retrieved by the `spod_quick_get_od()` function. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). These municipality geometries only include Spanish municipalities (and not the NUTS3 regions in Portugal and France) and do not contain extra columns that you can get with the [spod_get_zones()] function. The function caches the retrieved geometries in memory of the current R session to reduce the number of requests to the mapas-movilidad website.
+#' This function fetches the municipalities (for now this is the  only option) geometries from the mapas-movilidad website and returns a `sf` object with the municipalities geometries. This is intended for use with the flows data retrieved by the `spod_quick_get_od()` function. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). These municipality geometries only include Spanish municipalities (and not the NUTS3 regions in Portugal and France) and do not contain extra columns that you can get with the [spod_get_zones()] function. The function caches the retrieved geometries in memory of the current R session to reduce the number of requests to the mapas-movilidad website.
 #'
 #' @return A `sf` object with the municipalities geometries to match with the data retrieved with `spod_quick_get_od()`.
 #'
@@ -207,7 +207,23 @@ spod_quick_get_od <- function(
 #' municipalities_sf <- spod_quick_get_zones()
 #' }
 #'
-spod_quick_get_zones <- function() {
+spod_quick_get_zones <- function(
+  zones = "municipalities"
+) {
+  # Validate inputs
+  checkmate::assert_choice(
+    zones,
+    choices = c(
+      "municipalities",
+      "muni",
+      "municip",
+      "municipios"
+    )
+  )
+  zones <- spod_zone_names_en2es(zones)
+  if (zones != "municipios") {
+    stop("Only municipalities are available for now.")
+  }
   municipalities_sf <- spod_fetch_municipalities_json_memoised()
   return(municipalities_sf)
 }
