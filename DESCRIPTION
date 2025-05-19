@@ -42,6 +42,7 @@ Imports:
     jsonlite,
     lifecycle,
     lubridate,
+    memoise,
     memuse,
     parallelly,
     purrr,
