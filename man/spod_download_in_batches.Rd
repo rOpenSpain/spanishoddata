@@ -11,6 +11,7 @@ spod_download_in_batches(
   chunk_size = 1024 * 1024,
   test_size = 10 * 1024 * 1024,
   max_retries = 3L,
+  timeout = 900,
   show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
 )
 }
@@ -22,6 +23,8 @@ spod_download_in_batches(
 \item{chunk_size}{Numeric. Number of bytes to download at a time for speed test.}
 
 \item{max_retries}{Integer. Maximum number of retries for failed downloads.}
+
+\item{timeout}{Numeric. Timeout in seconds for each download.}
 
 \item{show_progress}{Logical. Whether to show the progress bar.}
 }

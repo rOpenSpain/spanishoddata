@@ -452,6 +452,7 @@ spod_multi_download_with_progress <- function(
 #' @param bar_width Numeric. Width of the progress bar.
 #' @param show_progress Logical. Whether to show the progress bar.
 #' @param max_retries Integer. Maximum number of retries for failed downloads.
+#' @param timeout Numeric. Timeout in seconds for each download.
 #' @return A data frame with columns `target_url`, `local_path`, `file_size_bytes` and `local_file_size`.
 #'
 #' @keywords internal
@@ -463,12 +464,17 @@ spod_download_in_batches <- function(
   chunk_size = 1024 * 1024,
   test_size = 10 * 1024 * 1024, # 10 MB test
   max_retries = 3L,
+  timeout = 900,
   show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
 ) {
   # Check interactive context
   if (!interactive() || isTRUE(getOption("knitr.in.progress"))) {
     show_progress <- FALSE
   }
+
+  original_timeout <- getOption("timeout")
+  options(timeout = timeout)
+  on.exit(options(timeout = original_timeout))
 
   # Sort and ensure directories exist
   files_to_download <- files_to_download[order(files_to_download$data_ymd), ]
