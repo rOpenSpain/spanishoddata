@@ -6,6 +6,9 @@
 \usage{
 spod_quick_get_zones(zones = "municipalities")
 }
+\arguments{
+\item{zones}{A character string specifying the zones to retrieve. Valid values are "municipalities", "muni", "municip", and "municipios". Defaults to "municipalities".}
+}
 \value{
 A \code{sf} object with the municipalities geometries to match with the data retrieved with \code{spod_quick_get_od()}.
 }

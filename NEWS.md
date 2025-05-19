@@ -1,6 +1,12 @@
 # spanishoddata (development version)
 
+## New features
+
+* `spod_quick_get_zones()` is a new function to quickly get municipality geometries identifiers to match with the data retrieved with `spod_quick_get_od()` [#163](https://github.com/rOpenSpain/spanishoddata/pull/163). Requests to get geometies are cached in memory of the current R session with `memoise` package.
+
 ## Bug fixes
+
+* `spod_quick_get_od()` is working again. We fixed it to work with the updated API of the Spanish Ministry of Transport (PR [#163](https://github.com/rOpenSpain/spanishoddata/pull/163), issue [#162](https://github.com/rOpenSpain/spanishoddata/issues/162)). It will remain experimental, as the API may change in the future.
 
 * `spod_convert()` can now accept `overwrite = 'update'` with `save_format = 'parquet'` ([#161](https://github.com/rOpenSpain/spanishoddata/pull/161)) previously it failed because of the incorrect check that asserted only `TRUE` or `FALSE` ([#160](https://github.com/rOpenSpain/spanishoddata/issues/160))
 
