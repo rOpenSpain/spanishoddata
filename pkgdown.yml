@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   convert: convert.html
@@ -9,7 +9,7 @@ articles:
   quick-get: quick-get.html
   v1-2020-2021-mitma-data-codebook: v1-2020-2021-mitma-data-codebook.html
   v2-2022-onwards-mitma-data-codebook: v2-2022-onwards-mitma-data-codebook.html
-last_built: 2025-04-12T18:50Z
+last_built: 2025-05-21T10:26Z
 urls:
   reference: https://rOpenSpain.github.io/spanishoddata/reference
   article: https://rOpenSpain.github.io/spanishoddata/articles

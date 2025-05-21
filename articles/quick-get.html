@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Quicky get daily data • spanishoddata</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -34,7 +33,7 @@
 
     <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
   <a class="navbar-brand me-2" href="../index.html">
-    <img src="../apple-touch-icon-180x180.png" alt="spanishoddata logo" height="40" class="d-inline-block me-1">spanishoddata</a>
+    <img src="../apple-touch-icon.png" alt="spanishoddata logo" height="40" class="d-inline-block me-1">spanishoddata</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
@@ -84,10 +83,16 @@
 
 
 
-    <section class="level2" data-number="1"><h2 data-number="1" id="intro">
+    <div>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p><strong>This functionality may stop working at any time, as the API may change unexpectedly.</strong></p>
+</blockquote>
+</div>
+<section class="level2" data-number="1"><h2 data-number="1" id="intro">
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h2>
-<p>This vignette demonstrates how to get minimal daily aggregated data on the number of trips between municipalities using the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. With this function, you only get total trips for a single day, and no additional variables that are available in the full <a href="v2-2022-onwards-mitma-data-codebook.html">v2 (2022 onwards) data set</a>. The advantage of this function is that it is much faster than downloading the full data from source CSV files using <code><a href="../reference/spod_get.html">spod_get()</a></code>, as each CSV file for a single day is about 200 MB in size. Also, this way of getting the data is much less demanding on your computer as you are only getting a small table from the internet (less than 1 MB), and no data processing (such as aggregation from more detailed hourly data with extra columns that is happening when you use <code><a href="../reference/spod_get.html">spod_get()</a></code> function) is required on your computer. The original interactive web map with this data is available at <a href="https://mapas-movilidad.transportes.gob.es/" target="_blank" class="external-link">https://mapas-movilidad.transportes.gob.es/</a>.</p>
+<p>This vignette demonstrates how to get minimal daily aggregated data on the number of trips between municipalities using the function. With this function, you only get total trips for a single day, and no additional variables that are available in the full <a href="v2-2022-onwards-mitma-data-codebook.html">v2 (2022 onwards) data set</a>. The advantage of this function is that it is much faster than downloading the full data from source CSV files using <code><a href="../reference/spod_get.html">spod_get()</a></code>, as each CSV file for a single day is about 200 MB in size. Also, this way of getting the data is much less demanding on your computer as you are only getting a small table from the internet (less than 1 MB), and no data processing (such as aggregation from more detailed hourly data with extra columns that is happening when you use <code><a href="../reference/spod_get.html">spod_get()</a></code> function) is required on your computer. The original interactive web map with this data is available at <a href="https://mapas-movilidad.transportes.gob.es/" target="_blank" class="external-link">https://mapas-movilidad.transportes.gob.es/</a>.</p>
 </section><section class="level2" data-number="2"><h2 data-number="2" id="setup">
 <span class="header-section-number">2</span> Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
@@ -139,7 +144,7 @@ Setting data directory for advanced users
 <section class="level3" data-number="4.1"><h3 data-number="4.1" id="get-all-flows-with-at-least-1000-trips">
 <span class="header-section-number">4.1</span> Get all flows with at least 1000 trips<a class="anchor" aria-label="anchor" href="#get-all-flows-with-at-least-1000-trips"></a>
 </h3>
-<p>To get the data, use the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function. There is no need to specify whether you need municipalities or districts, as the only municipal level data can be accessed with this function. The <code>min_trips</code> argument specifies the minimum number of trips to include in the data. If you set <code>min_trips</code> to 0, you will get all data for all origin-destination pairs for the specified date.</p>
+<p>To get the data, use the function. There is no need to specify whether you need municipalities or districts, as the only municipal level data can be accessed with this function. The <code>min_trips</code> argument specifies the minimum number of trips to include in the data. If you set <code>min_trips</code> to 0, you will get all data for all origin-destination pairs for the specified date.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_1000</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_quick_get_od.html">spod_quick_get_od</a></span><span class="op">(</span></span>
@@ -228,8 +233,11 @@ $ trips_total_length_km &lt;int&gt; 339, 161, 924, 5052, 2955, 2453, 29630, 1…
 <p>You can get all valid munincipality identifiers with the <code>spod_get_zones("muni", ver = 2)</code> function. This function will need to download some spatial data, so it might take some time and you might want to <a href="#setup">setup the data download folder</a> with <code>spod_setup_cache()</code> if you have not done so before.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">municipalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_get_zones.html">spod_get_zones</a></span><span class="op">(</span><span class="st">"muni"</span>, ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">municipalities</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">municipalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spod_quick_get_zones.html">spod_quick_get_zones</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># if code above fails, you can also use the following:</span></span>
+<span><span class="co"># municipalities &lt;- spod_get_zones("muni", ver = 2)</span></span>
+<span><span class="co"># head(municipalities)</span></span></code></pre></div>
 </div>
 <section class="level4" data-number="4.3.1"><h4 data-number="4.3.1" id="all-trips-from-madrid">
 <span class="header-section-number">4.3.1</span> All trips from Madrid<a class="anchor" aria-label="anchor" href="#all-trips-from-madrid"></a>
@@ -312,107 +320,89 @@ $ trips_total_length_km &lt;int&gt; 11120, 7268, 75798, 3385, 82, 296, 1036, …
 4 2022-01-01 45087     08019                2                  1184</code></pre>
 <p>You can now proceed to analyse these flows or visualise them as in the <a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-static.html">static</a> and <a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html">interactive</a> flow maps tutorials.</p>
 </section></section></section><script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
         }
       }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'light-border',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config);
-  }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
       }
-    } else {
-      return undefined;
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
     }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
         });
-        return popup.innerHTML;
-      });
+      }
     }
-  }
-});
-</script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -440,7 +430,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   <div class="container">
     <div class="row">
       <div class="col-md text-center text-lg-start">
-        <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+        <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
       </div>
       <div class="col-md offset-md-4 text-center text-lg-start">
       <p>Template <a href="https://github.com/ropenspain/rostemplate/" class="external-link">rostemplate</a> by <a href="https://github.com/dieghernan/" class="external-link">dieghernan</a>, based on <a href="https://bootstraptemple.com/" class="external-link">bootstraptemple.com</a>.
