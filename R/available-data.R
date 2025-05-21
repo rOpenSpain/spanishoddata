@@ -284,11 +284,20 @@ spod_available_data_v1 <- function(
         dplyr::select(
           "target_url",
           "etag",
+          "true_etag",
           file_size_bytes = "true_remote_file_size_bytes"
         ),
       by = c("target_url", "etag")
     ) |>
-      dplyr::relocate("file_size_bytes", .after = "target_url")
+      dplyr::relocate("file_size_bytes", .after = "pub_ts") |>
+      dplyr::mutate(
+        etag = dplyr::if_else(
+          condition = !is.na(.data$true_etag),
+          true = .data$true_etag,
+          false = .data$etag
+        )
+      ) |>
+      dplyr::select(-"true_etag")
   } else {
     file_sizes <- readRDS(
       system.file(
@@ -303,11 +312,20 @@ spod_available_data_v1 <- function(
         dplyr::select(
           "target_url",
           "etag",
+          "true_etag",
           file_size_bytes = "true_remote_file_size_bytes"
         ),
       by = c("target_url", "etag")
     ) |>
-      dplyr::relocate("file_size_bytes", .after = "target_url")
+      dplyr::relocate("file_size_bytes", .after = "pub_ts") |>
+      dplyr::mutate(
+        etag = dplyr::if_else(
+          condition = !is.na(.data$true_etag),
+          true = .data$true_etag,
+          false = .data$etag
+        )
+      ) |>
+      dplyr::select(-"true_etag")
 
     # if there are files with missing sizes, impute them
     if (any(is.na(files_table$remote_file_size_mb))) {
