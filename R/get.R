@@ -157,6 +157,7 @@ spod_get <- function(
   }
 
   # create temporary dir structure
+  # notes: on windows, the only viable option is hard links on the same volume, on macOS and linux, symlinks in temporary directory work perfectly
   if (!cached_data_requested) {
     dates <- spod_dates_argument_to_dates_seq(dates = dates)
     available_data <- spod_available_data(
@@ -183,7 +184,7 @@ spod_get <- function(
 
     fs::dir_create(unique(fs::path_dir(temp_paths)), recurse = TRUE)
 
-    purrr::walk2(all_files, temp_paths, fs::link_create)
+    purrr::walk2(selected_paths, temp_paths, fs::link_create, symbolic = FALSE)
 
     drv <- duckdb::duckdb()
     con <- DBI::dbConnect(drv, dbdir = ":memory:", read_only = FALSE)
