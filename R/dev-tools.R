@@ -229,7 +229,10 @@ spod_check_files_parallel <- function(
   }
 
   # compute ETag for each file
-  with(future::plan(future::multisession, workers = nthreads), local = TRUE)
+  with(
+    future::plan(future.mirai::mirai_multisession, workers = nthreads),
+    local = TRUE
+  )
   local_etags <- requested_files$local_path |>
     furrr::future_map_chr(
       ~ spod_compute_s3_etag(.x),
