@@ -89,7 +89,7 @@ spod_check_files <- function(
   )
   checkmate::assert_directory_exists(data_dir, access = "r")
   checkmate::assert_flag(quiet)
-  checkmate::assertNumber(nthreads, lower = 1)
+  checkmate::assertNumber(n_threads, lower = 1)
 
   # normalise zones
   zones <- spod_zone_names_en2es(zones)
@@ -169,7 +169,7 @@ spod_check_files <- function(
   } else if (n_threads > 1) {
     spod_assert_package(c("future", "furrr", "future.mirai"))
     with(
-      future::plan(future.mirai::mirai_multisession, workers = nthreads),
+      future::plan(future.mirai::mirai_multisession, workers = n_threads),
       local = TRUE
     )
     local_etags <- requested_files$local_path |>
