@@ -115,7 +115,7 @@ spod_check_files <- function(
 
   # convert english data type names to spanish words used in the default data paths
   type <- match.arg(type)
-  type <- spod_match_data_type_for_local_folders(type = type, ver = ver)
+  matched_type <- spod_match_data_type_for_local_folders(type = type, ver = ver)
 
   available_data <- spod_available_data(
     ver = ver,
@@ -141,22 +141,29 @@ spod_check_files <- function(
       # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
       # the decision was to use distrcit data and aggregate it to replicate municipal data
       grepl(
-        glue::glue("v{ver}.*{type}.*distritos"),
+        glue::glue("v{ver}.*{matched_type}.*distritos"),
         available_data$local_path
       ) &
         available_data$data_ymd %in% dates_to_use,
     ]
   } else if (ver == 2) {
     requested_files <- available_data[
-      grepl(glue::glue("v{ver}.*{zones}.*{type}"), available_data$local_path) &
+      grepl(
+        glue::glue("v{ver}.*{zones}.*{matched_type}"),
+        available_data$local_path
+      ) &
         available_data$data_ymd %in% dates_to_use,
     ]
   }
 
   # if some requested files are missing issue a warning
   if (!all(requested_files$downloaded)) {
+    dates_missing_downloads <- requested_files |>
+      dplyr::filter(.data$downloaded == FALSE) |>
+      dplyr::filter(.data$data_ymd %in% dates_to_use) |>
+      dplyr::pull(.data$data_ymd)
     warning(glue::glue(
-      "Some files for the requested dates are missing. Make sure you have downloaded all files requested to be checked for consistency with `spod_download(type = {type}, zones = {zones}, dates = {dates})`. For now, `spod_check_files()` will only check the files that were previously downloaded and currently exist on disk.",
+      'Some files for the requested dates are missing ({paste(spod_convert_dates_to_ranges(dates_missing_downloads), collapse = ", ")}). Make sure you have downloaded all files requested to be checked for consistency with `spod_download()`. For now, `spod_check_files()` will only check the files that were previously downloaded and currently exist on disk.',
     ))
     requested_files <- requested_files |>
       dplyr::filter(.data$downloaded == TRUE)
@@ -197,11 +204,14 @@ spod_check_files <- function(
   # issue a warning if there are mismatches or inform that everything is ok
   if (isFALSE(quiet)) {
     if (!all(requested_files$local_file_consistent)) {
+      broken_dates <- requested_files |>
+        dplyr::filter(.data$local_file_consistent == FALSE) |>
+        dplyr::pull(.data$data_ymd)
       warning(glue::glue(
-        "Some files are inconsistent with their local copies. Please inspect the returned table. Run `spod_download(type = {type}, zones = {zones}, dates = {dates})` to download the files again."
+        'Some files are inconsistent with the reference data ({paste(spod_convert_dates_to_ranges(broken_dates), collapse = ", ")}). Please inspect the returned table by filtering the output table by "local_file_consistent == FALSE". To re-download the inconsistent files, use `spod_download()` and specify the missing dates.'
       ))
     } else {
-      message("All files are consistent with their local copies.")
+      message("All checked files are consistent.")
     }
   }
 
