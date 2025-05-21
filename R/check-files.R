@@ -127,6 +127,8 @@ spod_check_files <- function(
     dates_to_use <- available_data |>
       dplyr::filter(.data$downloaded == TRUE & !is.na(.data$data_ymd)) |>
       dplyr::pull(.data$data_ymd)
+    available_data <- available_data |>
+      dplyr::filter(.data$downloaded == TRUE & !is.na(.data$data_ymd))
   }
 
   # match the available_data to type, zones, version and dates
@@ -149,6 +151,15 @@ spod_check_files <- function(
     ]
   }
 
+  # if some requested files are missing issue a warning
+  if (!all(requested_files$downloaded)) {
+    warning(glue::glue(
+      "Some files for the requested dates are missing. Make sure you have downloaded all files requested to be checked for consistency with `spod_download(type = {type}, zones = {zones}, dates = {dates})`. For now, `spod_check_files()` will only check the files that were previously downloaded and currently exist on disk.",
+    ))
+    requested_files <- requested_files |>
+      dplyr::filter(.data$downloaded == TRUE)
+  }
+
   # compute ETag for each file
   local_etags <- requested_files$local_path |>
     purrr::map_chr(~ spod_compute_s3_etag(.x), .progress = TRUE)
@@ -166,6 +177,17 @@ spod_check_files <- function(
         missing = FALSE
       )
     )
+
+  # issue a warning if there are mismatches or inform that everything is ok
+  if (isFALSE(quiet)) {
+    if (!all(requested_files$local_file_consistent)) {
+      warning(glue::glue(
+        "Some files are inconsistent with their local copies. Please inspect the returned table. Run `spod_download(type = {type}, zones = {zones}, dates = {dates})` to download the files again."
+      ))
+    } else {
+      message("All files are consistent with their local copies.")
+    }
+  }
 
   return(requested_files)
 }
