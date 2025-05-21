@@ -5,10 +5,10 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' This function checks downloaded data files whether they are consistent with their checksums in Amazon S3 by computing ETag for each file. This involves computing MD5 for each part of the file and concatenating them and computing MD5 again on the resulting concatenated MD5s. This may take very long time if you check all files, so use with caution.
-#'
 #' @inheritParams spod_get
 #' @inheritParams spod_download
 #' @inheritParams global_quiet_param
+#' @param n_threads Numeric. Number of threads to use for file verificaiton. Defaults to 1. When set to 2 or more threads, uses `future.mirai` as a backend for parallelization, resulting in significant (~4x) speedup, unless disk read speed is a bottleneck.
 #'
 #' @return A tibble similar to the output of `spod_available_data`, but with an extra column `local_file_consistent`, where `TRUE` indicates that the file cheksum matches the expected checksums in Amazon S3. Note: some v1 (2020-2021) files were not stored correctly on S3 and their ETag checksums are incorrectly reported by Amazon S3, so their true file sizes and ETag checksums were cached inside the `spanishoddata` package.
 #' @export
@@ -55,7 +55,8 @@ spod_check_files <- function(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  ignore_missing_dates = FALSE
+  ignore_missing_dates = FALSE,
+  n_threads = 1
 ) {
   # Validate inputs
   checkmate::assert_choice(
@@ -88,6 +89,7 @@ spod_check_files <- function(
   )
   checkmate::assert_directory_exists(data_dir, access = "r")
   checkmate::assert_flag(quiet)
+  checkmate::assertNumber(nthreads, lower = 1)
 
   # normalise zones
   zones <- spod_zone_names_en2es(zones)
@@ -161,8 +163,22 @@ spod_check_files <- function(
   }
 
   # compute ETag for each file
-  local_etags <- requested_files$local_path |>
-    purrr::map_chr(~ spod_compute_s3_etag(.x), .progress = TRUE)
+  if (n_threads == 1) {
+    local_etags <- requested_files$local_path |>
+      purrr::map_chr(~ spod_compute_s3_etag(.x), .progress = TRUE)
+  } else if (n_threads > 1) {
+    spod_assert_package(c("future", "furrr", "future.mirai"))
+    with(
+      future::plan(future.mirai::mirai_multisession, workers = nthreads),
+      local = TRUE
+    )
+    local_etags <- requested_files$local_path |>
+      furrr::future_map_chr(
+        ~ spod_compute_s3_etag(.x),
+        .progress = TRUE,
+        future.seed = TRUE
+      )
+  }
 
   # compare ETags
   requested_files <- requested_files |>

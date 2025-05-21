@@ -58,6 +58,7 @@ Suggests:
     flowmapper (>= 0.1.2),
     furrr,
     future,
+    future.mirai,
     hexSticker,
     mapSpain,
     quarto,

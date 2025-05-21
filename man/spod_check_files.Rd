@@ -11,7 +11,8 @@ spod_check_files(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  ignore_missing_dates = FALSE
+  ignore_missing_dates = FALSE,
+  n_threads = 1
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ The possible values can be any of the following:
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
 \item{ignore_missing_dates}{Logical. If \code{TRUE}, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to \code{FALSE}.}
+
+\item{n_threads}{Numeric. Number of threads to use for file verificaiton. Defaults to 1. When set to 2 or more threads, uses \code{future.mirai} as a backend for parallelization, resulting in significant (~4x) speedup, unless disk read speed is a bottleneck.}
 }
 \value{
 A tibble similar to the output of \code{spod_available_data}, but with an extra column \code{local_file_consistent}, where \code{TRUE} indicates that the file cheksum matches the expected checksums in Amazon S3. Note: some v1 (2020-2021) files were not stored correctly on S3 and their ETag checksums are incorrectly reported by Amazon S3, so their true file sizes and ETag checksums were cached inside the \code{spanishoddata} package.
