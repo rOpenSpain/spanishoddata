@@ -54,6 +54,7 @@ reference:
       Quickly get a single day of flows between municipalities (without hourly data or any other attributes) for 2022 and onwards
     contents:
       - spod_quick_get_od
+      - spod_quick_get_zones
   - title: "Helper functions"
     contents:
       - spod_codebook

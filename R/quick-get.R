@@ -4,11 +4,11 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \link[spanishoddata]{spod_get}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/) No data aggregation is performed on your computer (unlike in \link[spanishoddata]{spod_get}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \link[spanishoddata]{spod_get}.
+#' **WARNING: this function may stop working at any time, as the API may change**. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \code{\link[=spod_get]{spod_get()}}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). No data aggregation is performed on your computer (unlike in \code{\link[=spod_get]{spod_get()}}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \code{\link[=spod_get]{spod_get()}}.
 #'
 #' @param date A character or Date object specifying the date for which to retrieve the data. If date is a character, the date must be in "YYYY-MM-DD" or "YYYYMMDD" format.
 #' @param min_trips A numeric value specifying the minimum number of journeys per origin-destination pair to retrieve. Defaults to 100 to reduce the amount of data returned. Can be set to 0 to retrieve all data.
-#' @param distances A character vector specifying the distances to retrieve. Valid values are "500m-2km", "2-10km", "10-50km", and "50+km". Defaults to `c("500m-2km", "2-10km", "10-50km", "50+km")`. The resulting data will not have number of trips per category of distance. Therefore, if you want to retrieve the number of trips per distance category, you need to make 4 separate calls to this function or use `spod_get()` instead to get the full data from source CSV files.
+#' @param distances A character vector specifying the distances to retrieve. Valid values are "500m-2km", "2-10km", "10-50km", and "50+km". Defaults to `c("500m-2km", "2-10km", "10-50km", "50+km")`. The resulting data will not have number of trips per category of distance. Therefore, if you want to retrieve the number of trips per distance category, you need to make 4 separate calls to this function or use \code{\link[=spod_get]{spod_get()}} instead to get the full data from source CSV files.
 #' @param id_origin A character vector specifying the origin municipalities to retrieve. If not provided, all origin municipalities will be included. Valid municipality IDs can be found in the dataset returned by `spod_get_zones(zones = "muni", ver = 2)`.
 #' @param id_destination A character vector specifying the target municipalities to retrieve. If not provided, all target municipalities will be included. Valid municipality IDs can be found in the dataset returned by `spod_get_zones(zones = "muni", ver = 2)`.
 #' @return A `tibble` containing the flows for the specified date, minimum number of journeys, distances and origin-destination pairs if specified. The columns are:
@@ -31,8 +31,6 @@
 #'   min_trips = 1000
 #' )
 #' }
-#'
-#'
 spod_quick_get_od <- function(
   date = NA,
   min_trips = 100,
@@ -55,9 +53,7 @@ spod_quick_get_od <- function(
     "10-50km" = "D_10_50",
     "50+km" = "D_50"
   )
-  # Translate user-friendly distances into GraphQL distances
   graphql_distances <- unname(distance_mapping[distances])
-
   if (any(is.na(graphql_distances))) {
     stop(
       "Invalid distance value. Allowed values are: ",
@@ -70,181 +66,212 @@ spod_quick_get_od <- function(
 
   # Convert the date into YYYYMMDD format
   if (is.character(date)) {
-    # Check for "YYYY-MM-DD" format
     if (grepl("^\\d{4}-\\d{2}-\\d{2}$", date)) {
-      date <- as.Date(date) # Safe to convert
+      date <- as.Date(date)
     } else if (nchar(date) == 8 && grepl("^\\d{8}$", date)) {
-      # Check for "YYYYMMDD" format
-      date <- as.Date(date, format = "%Y%m%d") # Safe to convert
+      date <- as.Date(date, format = "%Y%m%d")
     } else {
-      # If neither format matches, stop with a clear error message
       stop(
         "Invalid date format. Use 'YYYY-MM-DD', 'YYYYMMDD', or a Date object."
       )
     }
   }
 
-  # Check if the input is already a Date object
   if (inherits(date, "Date")) {
-    date <- format(date, "%Y%m%d") # Convert to YYYYMMDD format for GraphQL
+    date_fmt <- format(date, "%Y%m%d")
   } else {
-    # Catch any remaining invalid inputs
     stop(
       "Invalid date input. Must be a character in 'YYYY-MM-DD'/'YYYYMMDD' format or a Date object."
     )
   }
 
-  # convert valid dates to ranges
-  convert_to_ranges <- function(dates) {
-    dates <- as.Date(dates) # Ensure dates are in Date format
-    ranges <- tibble::tibble(date = dates) |>
-      dplyr::arrange(date) |>
-      dplyr::mutate(
-        diff = c(0, diff(date)), # Calculate differences
-        group = cumsum(diff != 1) # Create groups for consecutive ranges
-      ) |>
-      dplyr::group_by(.data$group) |>
-      dplyr::summarise(
-        start = dplyr::first(date),
-        end = dplyr::last(date),
-        .groups = "drop"
-      )
-
-    # Create a character vector of ranges
-    range_strings <- ranges |>
-      dplyr::mutate(range = paste(.data$start, "to", .data$end)) |>
-      dplyr::pull(range)
-
-    return(range_strings)
-  }
-
-  # Municipalities checks
   muni_ref <- readRDS(
     system.file("extdata", "muni_v2_ref.rds", package = "spanishoddata")
   )
-
-  validate_muni_ids <- function(muni_ids, muni_ref) {
-    # Handle cases where muni_ids is NULL, empty, or all NA
-    if (is.null(muni_ids) || length(muni_ids) == 0 || all(is.na(muni_ids))) {
-      return(TRUE) # Nothing to validate
-    }
-
-    # Check which IDs are invalid
-    invalid_ids <- setdiff(muni_ids, muni_ref$id)
-
-    # If there are invalid IDs, return a message
-    if (length(invalid_ids) > 0) {
+  validate_muni_ids <- function(ids, muni_ref) {
+    if (is.null(ids) || length(ids) == 0 || all(is.na(ids))) return(TRUE)
+    invalid <- setdiff(ids, muni_ref$id)
+    if (length(invalid) > 0) {
       stop(
-        "Invalid municipality IDs detected: ",
-        paste(invalid_ids, collapse = ", "),
-        ". Please provide valid municipality IDs. Use `spod_get_zones(zones = 'muni', ver = 2)` to get valid municipality IDs."
+        "Invalid municipality IDs: ",
+        paste(invalid, collapse = ", "),
+        ". Use `spod_get_zones(zones='muni', ver=2)` for valid IDs."
       )
     }
-
-    # If all IDs are valid
-    return(TRUE)
+    TRUE
   }
+  if (!all(is.na(id_origin))) validate_muni_ids(id_origin, muni_ref)
+  if (!all(is.na(id_destination))) validate_muni_ids(id_destination, muni_ref)
 
-  # Validate municipality IDs if provided
-  if (!is.null(id_origin) && length(id_origin) > 0 && !all(is.na(id_origin))) {
-    validate_muni_ids(id_origin, muni_ref)
-  }
-  if (
-    !is.null(id_destination) &&
-      length(id_destination) > 0 &&
-      !all(is.na(id_destination))
-  ) {
-    validate_muni_ids(id_destination, muni_ref)
-  }
-
-  # check if date is within valid range
-  valid_dates <- spod_graphql_valid_dates()
-  is_valid_date <- lubridate::ymd(date) %in% valid_dates
-  if (!is_valid_date) {
+  # Check date is within API-supported range
+  valid_dates <- spod_graphql_valid_dates_memoised()
+  if (!lubridate::ymd(date_fmt) %in% valid_dates) {
     stop(
-      paste0(
-        "Invalid date. Must be within valid range: ",
-        paste(convert_to_ranges(valid_dates), collapse = ", ")
-      )
+      "Invalid date. Must be within valid range: ",
+      paste(spod_convert_dates_to_ranges(valid_dates), collapse = ", ")
     )
   }
 
-  # Construct the `journeysMunCriteria` part of the query
-  journeysMunCriteria <- list(
-    date = date,
-    min_journeys = min_trips
+  # build the GraphQL query
+  full_query <- paste0(
+    "query ($journeyDate:String!,$distances:[JourneysDistancesBasic!],",
+    "$originMunicipality:[String!],$destinationMunicipality:[String!],",
+    "$minJourneys:Float!){",
+    "journeys_municipality_find_by_criteria_basic(criteria:{",
+    "journeyDate:$journeyDate,",
+    "distances:$distances,",
+    "originMunicipality:$originMunicipality,",
+    "destinationMunicipality:$destinationMunicipality,",
+    "minJourneys:$minJourneys",
+    "}){origin destination journeys journeysKm}}"
   )
 
-  # Add distances if provided (default is all)
-  journeysMunCriteria$distances <- graphql_distances
+  vars_list <- list(
+    journeyDate = date_fmt,
+    distances = graphql_distances,
+    minJourneys = min_trips
+  )
 
-  # Include origin_muni and target_muni only if they are not NA
-  if (!is.null(id_origin) && length(id_origin) > 0 && !all(is.na(id_origin))) {
-    journeysMunCriteria$origin_muni <- id_origin
+  if (!all(is.na(id_origin))) {
+    vars_list$originMunicipality <- id_origin
   }
 
-  if (
-    !is.null(id_destination) &&
-      length(id_destination) > 0 &&
-      !all(is.na(id_destination))
-  ) {
-    journeysMunCriteria$target_muni <- id_destination
+  if (!all(is.na(id_destination))) {
+    vars_list$destinationMunicipality <- id_destination
   }
 
-  if (length(id_origin) == 0) id_origin <- NULL
-  if (length(id_destination) == 0) id_destination <- NULL
-
-  # Define the GraphQL endpoint
-  graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
-
-  # Construct the GraphQL query
+  # assemble final payload
   graphql_query <- list(
-    query = paste(
-      collapse = " ",
-      c(
-        "query ($journeysMunCriteria: JourneysMunCriteriaGqlInput!) {",
-        "find_journeys_mun_criteria(journeysMunCriteria: $journeysMunCriteria) {",
-        "journeys, journeys_km, origin_muni, target_muni",
-        "}",
-        "}"
-      )
-    ),
-    variables = list(
-      journeysMunCriteria = journeysMunCriteria
-    )
+    query = full_query,
+    variables = vars_list
   )
 
-  # Send the POST request
-  response <- httr2::request(graphql_endpoint) |>
+  # in-memory session token
+  session_token_and_signature <- spod_session_token_and_signature()
+  x_session_token <- session_token_and_signature$x_session_token
+  x_signature <- session_token_and_signature$x_signature
+
+  graphql_endpoint <- getOption("spanishoddata.graphql_api_endpoint")
+  req <- httr2::request(graphql_endpoint) |>
     httr2::req_headers(
       "Content-Type" = "application/json",
-      "User-Agent" = getOption("spanishoddata.user_agent")
+      "User-Agent" = getOption("spanishoddata.user_agent"),
+      "X-Session-Token" = x_session_token,
+      "X-Signature" = x_signature
     ) |>
     httr2::req_body_json(graphql_query) |>
-    httr2::req_perform()
+    httr2::req_progress(type = "down")
+  # req |> httr2::req_dry_run()
+  resp <- req |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(simplifyVector = TRUE)
 
-  # Parse the response
-  response_data <- httr2::resp_body_json(response, simplifyVector = TRUE)
-
-  # check if data is empty
-
-  if (length(response_data$data[[1]]) == 0) {
+  # Handle empty data
+  if (length(resp$data[[1]]) == 0) {
     stop(
-      "You have selected a date that is reported by the remote server as valid, but in fact there is no data. Please select a different date."
+      "No data for ",
+      date_fmt,
+      ". The server reports the date as valid but returns no records."
     )
   }
 
-  od <- tibble::as_tibble(response_data$data[[1]]) |>
+  # Tidy and return
+  od <- tibble::as_tibble(resp$data[[1]]) |>
     dplyr::select(
-      id_origin = .data$origin_muni,
-      id_destination = .data$target_muni,
+      id_origin = .data$origin,
+      id_destination = .data$destination,
       n_trips = .data$journeys,
-      trips_total_length_km = .data$journeys_km
+      trips_total_length_km = .data$journeysKm
     ) |>
-    dplyr::mutate(
-      date = lubridate::ymd(date)
-    ) |>
+    dplyr::mutate(date = lubridate::ymd(date_fmt)) |>
     dplyr::relocate(.data$date, .before = id_origin)
 
   return(od)
 }
+
+#' Get the municipalities geometries
+#'
+#' @description
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' This function fetches the municipalities (for now this is the  only option) geometries from the mapas-movilidad website and returns a `sf` object with the municipalities geometries. This is intended for use with the flows data retrieved by the \code{\link[=spod_quick_get_od]{spod_quick_get_od()}} function. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). These municipality geometries only include Spanish municipalities (and not the NUTS3 regions in Portugal and France) and do not contain extra columns that you can get with the \code{\link[=spod_get_zones]{spod_get_zones()}} function. The function caches the retrieved geometries in memory of the current R session to reduce the number of requests to the mapas-movilidad website.
+#' @param zones A character string specifying the zones to retrieve. Valid values are "municipalities", "muni", "municip", and "municipios". Defaults to "municipalities".
+#' @return A `sf` object with the municipalities geometries to match with the data retrieved with \code{\link[=spod_quick_get_od]{spod_quick_get_od()}}.
+#'
+#' @export
+#' @examplesIf interactive()
+#' \donttest{
+#' municipalities_sf <- spod_quick_get_zones()
+#' }
+#'
+spod_quick_get_zones <- function(
+  zones = "municipalities"
+) {
+  # Validate inputs
+  checkmate::assert_choice(
+    zones,
+    choices = c(
+      "municipalities",
+      "muni",
+      "municip",
+      "municipios"
+    )
+  )
+  zones <- spod_zone_names_en2es(zones)
+  if (zones != "municipios") {
+    stop("Only municipalities are available for now.")
+  }
+  municipalities_sf <- spod_fetch_municipalities_json_memoised()
+  return(municipalities_sf)
+}
+
+
+spod_fetch_municipalities_json_memoised <- memoise::memoise(
+  function() {
+    municip_geometries_url <- "https://mapas-movilidad.transportes.gob.es/api/static/data/municipios60.json"
+    municipalities_sf <- sf::st_read(municip_geometries_url, quiet = TRUE) |>
+      dplyr::rename(id = .data$ID) |>
+      dplyr::mutate(
+        population = as.numeric(dplyr::na_if(population, "NA"))
+      ) |>
+      dplyr::select(.data$id, .data$name, .data$population)
+    return(municipalities_sf)
+  }
+)
+
+
+#' Get the HMAC secret from the mapas-movilidad website
+#' @param base_url The base URL of the mapas-movilidad website
+#' @return Character vector with the HMAC secret.
+#' @keywords internal
+spod_get_hmac_secret <- function(
+  base_url = "https://mapas-movilidad.transportes.gob.es"
+) {
+  # Fetch the homepage HTML
+  homepage <- httr2::request(base_url) |>
+    httr2::req_perform() |>
+    httr2::resp_body_string()
+
+  # Parse and find the inline <script> that mentions import_meta_env
+  doc <- xml2::read_html(homepage)
+  scripts <- xml2::xml_find_all(doc, "//script[not(@src)]")
+  inline <- scripts[stringr::str_detect(
+    xml2::xml_text(scripts),
+    "import_meta_env"
+  )]
+  if (length(inline) != 1) {
+    stop("Could not uniquely locate the import_meta_env script block.")
+  }
+  txt <- xml2::xml_text(inline)
+
+  # Extract the real HMAC_SECRET from that block
+  secret <- stringr::str_match(txt, '"HMAC_SECRET"\\s*:\\s*"([^"]+)"')[, 2]
+
+  if (is.na(secret) || nchar(secret) < 10) {
+    stop("Failed to parse HMAC_SECRET from the page.")
+  }
+  secret
+}
+
+spod_get_hmac_secret_memoised <- memoise::memoise(spod_get_hmac_secret)
