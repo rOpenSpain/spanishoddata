@@ -4,7 +4,7 @@ execute:
 ---
 
 
-::: {.callout-warning}
+::: callout-warning
 
 
 Due to mobile network outages, the data on certain dates is missing. Kindly keep this in mind when calculating mean monthly or weekly flows.
