@@ -29,7 +29,6 @@ Depends:
     R (>= 4.1.0)
 Imports: 
     checkmate,
-    curl (>= 5.0.0),
     DBI,
     digest,
     dplyr,
@@ -45,6 +44,7 @@ Imports:
     memuse,
     openssl,
     parallelly,
+    paws.storage (>= 0.4.0),
     purrr,
     readr,
     rlang,
@@ -58,6 +58,7 @@ Suggests:
     flowmapper (>= 0.1.2),
     furrr,
     future,
+    future.mirai,
     hexSticker,
     mapSpain,
     quarto,

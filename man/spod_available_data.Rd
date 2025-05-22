@@ -8,17 +8,23 @@ spod_available_data(
   ver = 2,
   check_local_files = FALSE,
   quiet = FALSE,
-  data_dir = spod_get_data_dir()
+  data_dir = spod_get_data_dir(),
+  use_s3 = TRUE,
+  force = FALSE
 )
 }
 \arguments{
-\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with \code{\link[=spod_codebook]{spod_codebook()}}.}
 
-\item{check_local_files}{Whether to check if the local files exist. Defaults to \code{FALSE}.}
+\item{check_local_files}{Logical. Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
+
+\item{use_s3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If \code{FALSE}, use the XML file to get available data list.}
+
+\item{force}{Logical. If \code{TRUE}, force re-download of metadata. For Amazon S3 this queries the S3 bucket for the XML file it re-downloads. If \code{FALSE}, only update the available data list if it is older than 1 day.}
 }
 \value{
 A tibble with links, release dates of files in the data, dates of data coverage, local paths to files, and the download status.
@@ -28,14 +34,14 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
 \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
 \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
-\item{local_path}{\code{character}. The local file path where the data is stored.}
+\item{local_path}{\code{character}. The local file path where the data is (or going to be) stored.}
 \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if \code{check_local_files} is \code{TRUE}.}
 }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Get a table with links to available data files for the specified data version. Optionally check (see arguments) if certain files have already been downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \link{spod_set_data_dir}) or a custom path specified with \code{data_dir} argument.
+Get a table with links to available data files for the specified data version. Optionally check (see arguments) the file size and availability of data files previously downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by \code{\link[=spod_set_data_dir]{spod_set_data_dir()}}) or a custom path specified with \code{data_dir} argument. By default the data is fetched from Amazon S3 bucket where the data is stored. If that fails, the function falls back to downloading an XML file from the Spanish Ministry of Transport website. You can also control this behaviour with \code{use_s3} argument.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

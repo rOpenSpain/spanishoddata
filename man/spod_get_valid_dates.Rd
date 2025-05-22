@@ -7,7 +7,7 @@
 spod_get_valid_dates(ver = NULL)
 }
 \arguments{
-\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with \code{\link[=spod_codebook]{spod_codebook()}}.}
 }
 \value{
 A vector of type \code{Date} with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).

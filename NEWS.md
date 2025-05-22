@@ -2,13 +2,21 @@
 
 ## New features
 
-* `spod_quick_get_zones()` is a new function to quickly get municipality geometries to match with the data retrieved with `spod_quick_get_od()` [#163](https://github.com/rOpenSpain/spanishoddata/pull/163). Requests to get geometies are cached in memory of the current R session with `memoise` package.
+* `spod_quick_get_zones()` is a new function to quickly get municipality geometries to match with the data retrieved with `spod_quick_get_od()` [#163](https://github.com/rOpenSpain/spanishoddata/pull/163). Requests to get geometies are cached in memory of the current R session with `memoise` package. This function is experimental, just as the `spod_quick_get_od()` function, as the API of the Spanish Ministry of Transport may change in the future. It is only intended for quick analysis in educational or other demonstration purposes, as it downloads very little data compared to the regular `spod_get_od()`, `spod_download()` and `spod_convert()` functions.
+
+* `spod_check_files()` function allows to check consistency of downloaded files with Amazon S3 checksums (PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165)). ETags for v1 data are stored with the package, and for v2 data they are fetched from Amazon S3. This function is experimental.
+
+## Improvements
+
+* Metadata is now fetched from Amazon S3 storage of the original data files, which allows validation of downloaded files ((#126)[https://github.com/rOpenSpain/spanishoddata/issues/126]) with both size and checksum. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
 
 ## Bug fixes
 
-* `spod_quick_get_od()` is working again. We fixed it to work with the updated API of the Spanish Ministry of Transport (PR [#163](https://github.com/rOpenSpain/spanishoddata/pull/163), issue [#162](https://github.com/rOpenSpain/spanishoddata/issues/162)). It will remain experimental, as the API may change in the future.
+* More reliable, but still multi-threaded data file downloads using base R `utils::download.file()` instead of `curl::multi_download()` which failed on some connections ([#127](https://github.com/rOpenSpain/spanishoddata/issues/127)), so now `curl` dependency is no longer required. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
 
-* `spod_convert()` can now accept `overwrite = 'update'` with `save_format = 'parquet'` ([#161](https://github.com/rOpenSpain/spanishoddata/pull/161)) previously it failed because of the incorrect check that asserted only `TRUE` or `FALSE` ([#160](https://github.com/rOpenSpain/spanishoddata/issues/160))
+* `spod_quick_get_od()` is working again. We fixed it to work with the updated API of the Spanish Ministry of Transport (PR [#163](https://github.com/rOpenSpain/spanishoddata/pull/163), issue [#162](https://github.com/rOpenSpain/spanishoddata/issues/162)). This function will remain experimental, just as the `spod_quick_get_zones()` function, as the API of the Spanish Ministry of Transport may change in the future. It is only intended for quick analysis in educational or other demonstration purposes, as it downloads very little data compared to the regular `spod_get_od()`, `spod_download()` and `spod_convert()` functions.
+
+* `spod_convert()` now accepts `overwrite = 'update'` with `save_format = 'parquet'` ([#161](https://github.com/rOpenSpain/spanishoddata/pull/161)) previously it failed because of the incorrect check that asserted only `TRUE` or `FALSE` ([#160](https://github.com/rOpenSpain/spanishoddata/issues/160))
 
 # spanishoddata 0.1.1
 

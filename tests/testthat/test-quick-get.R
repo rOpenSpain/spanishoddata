@@ -1,4 +1,3 @@
-# some tests are disabled as the API endpoint is not working because of the new restrictions see https://github.com/rOpenSpain/spanishoddata/issues/162
 test_that("spod_quick_get_od fails out of range dates", {
   skip_on_ci()
   skip_on_cran()
@@ -9,6 +8,7 @@ test_that("spod_quick_get_od fails out of range dates", {
     ".*Must be within valid range.*"
   )
 })
+
 
 test_that("spod_quick_get_od fails on invalid date format", {
   expect_error(
