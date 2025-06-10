@@ -250,6 +250,37 @@ spod_available_data_v1 <- function(
     files_table$target_url
   )
 
+  files_table <- files_table |>
+    dplyr::mutate(
+      study = dplyr::case_when(
+        grepl("maestra", .data$target_url) ~ "basic",
+        TRUE ~ ""
+      ),
+
+      type = dplyr::case_when(
+        grepl("maestra2", .data$target_url) ~ "number_of_trips",
+        grepl("maestra1", .data$target_url) ~ "origin-destination",
+        grepl("RSS\\.xml", .data$target_url) ~ "metadata",
+        grepl("zonificacion", .data$target_url) ~ "zones",
+        grepl("relacion", .data$target_url) ~ "relations",
+        grepl("index\\.html", .data$target_url) ~ "index",
+        grepl(".\\pdf", .data$target_url) ~ "documentation",
+        TRUE ~ ""
+      ),
+
+      period = dplyr::case_when(
+        grepl("ficheros-diarios", .data$target_url) ~ "day",
+        grepl("meses-completos|mensual", .data$target_url) ~ "month",
+        TRUE ~ ""
+      ),
+
+      zones = dplyr::case_when(
+        grepl("distrito", .data$target_url) ~ "district",
+        grepl("municipio", .data$target_url) ~ "municipality",
+        TRUE ~ ""
+      )
+    )
+
   # add known file sizes from cached data
   if (use_s3) {
     # replace remote file sizes for v1
@@ -523,6 +554,38 @@ spod_available_data_v2 <- function(
 
   # lowercase GAU to avoid problems with case-sensitive matching
   files_table$local_path <- gsub("GAU", "gau", files_table$local_path)
+
+  files_table <- files_table |>
+    dplyr::mutate(
+      study = dplyr::case_when(
+        grepl("estudios_basicos", .data$target_url) ~ "basic",
+        grepl("estudios_completos", .data$target_url) ~ "complete",
+        grepl("rutas", .data$target_url) ~ "routes",
+        TRUE ~ ""
+      ),
+
+      type = dplyr::case_when(
+        grepl("personas", .data$target_url) ~ "number_of_trips",
+        grepl("viajes", .data$target_url) ~ "origin-destination",
+        grepl("pernoctaciones", .data$target_url) ~ "overnight_stays",
+        grepl("calidad", .data$target_url) ~ "data_quality",
+        grepl("RSS\\.xml", .data$target_url) ~ "metadata",
+        TRUE ~ ""
+      ),
+
+      period = dplyr::case_when(
+        grepl("ficheros-diarios", .data$target_url) ~ "day",
+        grepl("meses-completos|mensual", .data$target_url) ~ "month",
+        TRUE ~ ""
+      ),
+
+      zones = dplyr::case_when(
+        grepl("distritos", .data$target_url) ~ "district",
+        grepl("municipios", .data$target_url) ~ "municipality",
+        grepl("GAU", .data$target_url) ~ "gau",
+        TRUE ~ ""
+      )
+    )
 
   # add known file sizes from cached data
   if (use_s3) {
