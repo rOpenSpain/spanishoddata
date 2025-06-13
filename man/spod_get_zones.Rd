@@ -15,7 +15,7 @@ spod_get_zones(
 \arguments{
 \item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}) for both data versions. Additionaly, these can be \code{"large_urban_areas"} (or \code{"lua"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data (2022 onwards).}
 
-\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with \code{\link[=spod_codebook]{spod_codebook()}}.}
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set. To set the data directory, use \link{spod_set_data_dir}.}
 

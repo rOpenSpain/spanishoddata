@@ -7,7 +7,7 @@
 spod_subfolder_clean_data_cache(ver = 1)
 }
 \arguments{
-\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards.}
+\item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with \code{\link[=spod_codebook]{spod_codebook()}}.}
 }
 \value{
 A \code{character} string with the subfolder name for the clean data cache.

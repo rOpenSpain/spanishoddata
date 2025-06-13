@@ -7,13 +7,19 @@
 spod_available_data_v2(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
+  use_s3 = TRUE,
+  force = FALSE,
   quiet = FALSE
 )
 }
 \arguments{
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()}.}
 
-\item{check_local_files}{Whether to check if the local files exist. Defaults to \code{FALSE}.}
+\item{check_local_files}{Logical. Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
+
+\item{use_s3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If \code{FALSE}, use the XML file to get available data list.}
+
+\item{force}{Logical. If \code{TRUE}, force re-download of metadata. For Amazon S3 this queries the S3 bucket for the XML file it re-downloads. If \code{FALSE}, only update the available data list if it is older than 1 day.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
@@ -25,7 +31,7 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
 \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
 \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
-\item{local_path}{\code{character}. The local file path where the data is stored.}
+\item{local_path}{\code{character}. The local file path where the data is (or going to be) stored.}
 \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if \code{check_local_files} is \code{TRUE}.}
 }
 }

@@ -3,34 +3,36 @@
 #' Get files sizes for remote files of v1 and v2 data and save them into a csv.gz file in the inst/extdata folder.
 #' @param ver The version of the data (1 or 2). Can be both. Defaults to 2, as v1 data is not being updated since 2021.
 #' @return Nothing. Only saves a csv.gz file with up to date file sizes in the inst/extdata folder.
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 spod_files_sizes <- function(ver = 2) {
   data_dir <- spod_get_data_dir()
-  
-  if (any(ver %in% 1)){
+
+  if (any(ver %in% 1)) {
     v1 <- spod_available_data(1)
-    
+
     # takes about 1 minute
-    future::plan(future::multisession, workers = 6)
-    v1$remote_file_size_mb <- furrr::future_map_dbl(
+    # tictoc::tic()
+    future::plan(future::multisession, workers = 8)
+    v1$true_remote_file_size_bytes <- furrr::future_map_dbl(
       .x = v1$target_url,
       .f = ~ spod_get_file_size_from_url(x_url = .x),
       .progress = TRUE
     )
     future::plan(future::sequential)
+    # tictoc::toc()
 
-    v1_url_file_sizes <- v1[, c("target_url", "remote_file_size_mb")]
-    readr::write_csv(
-      x = v1_url_file_sizes,
-      file = "inst/extdata/url_file_sizes_v1.txt.gz"
-    )
+    v1 <- v1 |>
+      dplyr::arrange(!!!dplyr::syms(c("data_ymd", "target_url"))) |>
+      dplyr::select(-"local_path")
+
+    saveRDS(v1, file.path("inst", "extdata", "available_data_v1.rds"))
   }
 
-  if (any(ver %in% 2)){
+  if (any(ver %in% 2)) {
     v2 <- spod_available_data(2)
-    if(all(v2$size_imputed == FALSE)){
+    if (all(v2$size_imputed == FALSE)) {
       stop("all file sizes are known")
     }
     v2_known_size <- v2[v2$size_imputed == FALSE, ]
@@ -52,7 +54,6 @@ spod_files_sizes <- function(ver = 2) {
       file = "inst/extdata/url_file_sizes_v2.txt.gz"
     )
   }
-  
 }
 
 
@@ -61,15 +62,31 @@ spod_files_sizes <- function(ver = 2) {
 #' @return File size in MB
 #' @importFrom utils URLencode
 #' @keywords internal
-spod_get_file_size_from_url <- function(x_url){
-  
+spod_get_file_size_from_url <- function(x_url) {
   url <- utils::URLencode(x_url)
   headers <- curlGetHeaders(url)
   content_length_line <- grep("Content-Length", headers, value = TRUE)
-  content_length_value <- sub("Content-Length:\\s*(\\d+).*", "\\1", content_length_line)
-  
-  # Convert bytes to MB (1 MB = 1024 * 1024 bytes)
-  file_size_mb <- as.numeric(content_length_value) / (1024 * 1024)
-  
-  return(file_size_mb)
+  content_length_value <- sub(
+    "Content-Length:\\s*(\\d+).*",
+    "\\1",
+    content_length_line
+  ) |>
+    as.numeric()
+
+  return(content_length_value)
+}
+
+#' Get Etags for locally saved v1 data files and save them into a RDS file in the inst/extdata folder.
+#' @return Returns a tibble with the local path, local ETag and remote ETag.
+#' @keywords internal
+spod_store_etags <- function() {
+  available_data <- spod_available_data(1, check_local_files = TRUE)
+  available_data <- available_data |>
+    dplyr::filter(.data$downloaded == TRUE)
+  local_etags <- available_data$local_path |>
+    purrr::map_chr(~ spod_compute_s3_etag(.x), .progress = TRUE)
+  available_data <- available_data |>
+    dplyr::mutate(local_etag = local_etags) |>
+    dplyr::as_tibble()
+  return(available_data)
 }
