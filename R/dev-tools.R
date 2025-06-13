@@ -82,7 +82,7 @@ spod_get_file_size_from_url <- function(x_url) {
 spod_store_etags <- function() {
   available_data <- spod_available_data(1, check_local_files = TRUE)
   available_data <- available_data |>
-    dplyr::filter(downloaded == TRUE)
+    dplyr::filter(.data$downloaded == TRUE)
   local_etags <- available_data$local_path |>
     purrr::map_chr(~ spod_compute_s3_etag(.x), .progress = TRUE)
   available_data <- available_data |>
