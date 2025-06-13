@@ -4,7 +4,7 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' **WARNING: The checks may fail for May 2022 data and for some 2024 data, as the remote cheksums that are used for checking the file consistency are incorrect. We are working on solving this in future updates, for now, kindly rely on the built-in file size checks of \code{\link{spod_download}}, \code{\link{spod_spod_get}}, and \code{\link{spod_convert}}.** This function checks downloaded data files whether they are consistent with their checksums in Amazon S3 by computing ETag for each file. This involves computing MD5 for each part of the file and concatenating them and computing MD5 again on the resulting concatenated MD5s. This may take very long time if you check all files, so use with caution.
+#' **WARNING: The checks may fail for May 2022 data and for some 2024 data, as the remote cheksums that are used for checking the file consistency are incorrect. We are working on solving this in future updates, for now, kindly rely on the built-in file size checks of \code{\link{spod_download}}, \code{\link{spod_get}}, and \code{\link{spod_convert}}.** This function checks downloaded data files whether they are consistent with their checksums in Amazon S3 by computing ETag for each file. This involves computing MD5 for each part of the file and concatenating them and computing MD5 again on the resulting concatenated MD5s. This may take very long time if you check all files, so use with caution.
 #' @inheritParams spod_get
 #' @inheritParams spod_download
 #' @inheritParams global_quiet_param
