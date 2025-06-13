@@ -199,7 +199,7 @@ spod_download <- function(
       response <- tolower(response) %in% c("y", "yes", "Yes")
       if (!response) {
         message(glue::glue(
-          "Exiting without downloading missing files by user request."
+          "Exiting without downloading missing files by user request. Requested data download size is larger than {max_download_size_gb} GB. Please increase `max_download_size_gb` parameter when running the function again."
         ))
         return()
       }
@@ -300,14 +300,18 @@ spod_multi_download_with_progress <- function(
   cum_bytes <- 0L
   files_counted <- 0L
 
-  if (!"downloaded" %in% names(files_to_download))
+  if (!"downloaded" %in% names(files_to_download)) {
     files_to_download$downloaded <- FALSE
-  if (!"complete_download" %in% names(files_to_download))
+  }
+  if (!"complete_download" %in% names(files_to_download)) {
     files_to_download$complete_download <- FALSE
+  }
 
   # Helper: ETA formatter
   format_eta <- function(eta_secs) {
-    if (is.na(eta_secs) || eta_secs < 0) return("--")
+    if (is.na(eta_secs) || eta_secs < 0) {
+      return("--")
+    }
     if (eta_secs > 3600) {
       return(sprintf("%.1fh", eta_secs / 3600))
     } else if (eta_secs > 60) {
@@ -372,7 +376,9 @@ spod_multi_download_with_progress <- function(
       files_to_download$local_file_size[i] <- local_sz
       files_to_download$downloaded[i] <- TRUE
       files_to_download$complete_download[i] <- TRUE
-      if (show_progress) redraw_bar(date_str, cum_bytes)
+      if (show_progress) {
+        redraw_bar(date_str, cum_bytes)
+      }
       next
     }
 
@@ -385,7 +391,9 @@ spod_multi_download_with_progress <- function(
 
       repeat {
         chunk <- readBin(con_in, "raw", n = chunk_size)
-        if (length(chunk) == 0) break
+        if (length(chunk) == 0) {
+          break
+        }
         writeBin(chunk, con_out)
         file_bytes <- file_bytes + length(chunk)
 
@@ -438,7 +446,9 @@ spod_multi_download_with_progress <- function(
     if (show_progress) redraw_bar(date_str, cum_bytes)
   }
 
-  if (show_progress) cat("\nAll downloads complete.\n")
+  if (show_progress) {
+    cat("\nAll downloads complete.\n")
+  }
   return(files_to_download)
 }
 
@@ -541,9 +551,16 @@ spod_download_in_batches <- function(
 
   # ETA formatter
   format_eta <- function(eta) {
-    if (is.na(eta) || eta <= 0 || !is.finite(eta)) return("--")
-    if (eta > 3600) sprintf("%.1fh", eta / 3600) else if (eta > 60)
-      sprintf("%.0fm", eta / 60) else sprintf("%.0fs", eta)
+    if (is.na(eta) || eta <= 0 || !is.finite(eta)) {
+      return("--")
+    }
+    if (eta > 3600) {
+      sprintf("%.1fh", eta / 3600)
+    } else if (eta > 60) {
+      sprintf("%.0fm", eta / 60)
+    } else {
+      sprintf("%.0fs", eta)
+    }
   }
 
   # Progress bar redraw
@@ -552,13 +569,21 @@ spod_download_in_batches <- function(
     nfill <- max(floor(pct * bar_width), 1L)
     bar <- if (nfill < bar_width) {
       paste0(strrep("=", nfill), ">", strrep(" ", bar_width - nfill - 1))
-    } else strrep("=", bar_width)
+    } else {
+      strrep("=", bar_width)
+    }
     elapsed <- as.numeric(Sys.time() - start_time, "secs")
-    speed_bps <- if (!is.null(speed_bytes)) speed_bytes else
+    speed_bps <- if (!is.null(speed_bytes)) {
+      speed_bytes
+    } else {
       (bytes_done / max(elapsed, 0.1))
+    }
     speed_mb <- speed_bps / 2^20
-    eta_secs <- if (speed_bps > 0)
-      (total_expected_bytes - bytes_done) / speed_bps else NA
+    eta_secs <- if (speed_bps > 0) {
+      (total_expected_bytes - bytes_done) / speed_bps
+    } else {
+      NA
+    }
     eta <- format_eta(eta_secs)
 
     msg <- sprintf(
@@ -591,9 +616,13 @@ spod_download_in_batches <- function(
       con <- url(url1, "rb")
       repeat {
         to_read <- min(chunk_size, test_size - bytes_read)
-        if (to_read <= 0) break
+        if (to_read <= 0) {
+          break
+        }
         chunk <- readBin(con, "raw", n = to_read)
-        if (length(chunk) == 0) break
+        if (length(chunk) == 0) {
+          break
+        }
         bytes_read <- bytes_read + length(chunk)
       }
       close(con)
@@ -621,7 +650,9 @@ spod_download_in_batches <- function(
       mode = "wb",
       quiet = TRUE
     )
-    if (length(res) == 1L) res <- rep(res, length(batch))
+    if (length(res) == 1L) {
+      res <- rep(res, length(batch))
+    }
 
     # Retry on size mismatch or initial failure
     for (k in seq_along(batch)) {
@@ -673,6 +704,8 @@ spod_download_in_batches <- function(
     }
   }
 
-  if (show_progress) cat("\nAll downloads complete.\n")
+  if (show_progress) {
+    cat("\nAll downloads complete.\n")
+  }
   files_to_download
 }
