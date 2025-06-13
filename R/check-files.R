@@ -4,14 +4,16 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' This function checks downloaded data files whether they are consistent with their checksums in Amazon S3 by computing ETag for each file. This involves computing MD5 for each part of the file and concatenating them and computing MD5 again on the resulting concatenated MD5s. This may take very long time if you check all files, so use with caution.
+#' **WARNING: The checks may fail for May 2022 data and for some 2024 data, as the remote cheksums that are used for checking the file consistency are incorrect. We are working on solving this in future updates, for now, kindly rely on the built-in file size checks of \code{\link{spod_download}}, \code{\link{spod_spod_get}}, and \code{\link{spod_convert}}.** This function checks downloaded data files whether they are consistent with their checksums in Amazon S3 by computing ETag for each file. This involves computing MD5 for each part of the file and concatenating them and computing MD5 again on the resulting concatenated MD5s. This may take very long time if you check all files, so use with caution.
 #' @inheritParams spod_get
 #' @inheritParams spod_download
 #' @inheritParams global_quiet_param
 #' @param n_threads Numeric. Number of threads to use for file verificaiton. Defaults to 1. When set to 2 or more threads, uses `future.mirai` as a backend for parallelization, resulting in significant (~4x) speedup, unless disk read speed is a bottleneck.
 #'
 #' @return A tibble similar to the output of `spod_available_data`, but with an extra column `local_file_consistent`, where `TRUE` indicates that the file cheksum matches the expected checksums in Amazon S3. Note: some v1 (2020-2021) files were not stored correctly on S3 and their ETag checksums are incorrectly reported by Amazon S3, so their true file sizes and ETag checksums were cached inside the `spanishoddata` package.
+#'
 #' @export
+#'
 #' @examplesIf interactive()
 #' \donttest{
 #' spod_set_data_dir(tempdir())
@@ -231,7 +233,9 @@ spod_compute_s3_etag <- function(file_path, part_size = 8 * 1024^2) {
   part_md5s <- list()
   repeat {
     buf <- readBin(con, "raw", n = part_size)
-    if (length(buf) == 0) break
+    if (length(buf) == 0) {
+      break
+    }
     part_md5s[[length(part_md5s) + 1]] <- digest::digest(
       buf,
       algo = "md5",
