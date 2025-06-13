@@ -7,7 +7,7 @@
 spod_store_etags()
 }
 \value{
-Nothing. Only saves a RDS file with up to date ETags in the inst/extdata folder.
+Returns a tibble with the local path, local ETag and remote ETag.
 }
 \description{
 Get Etags for locally saved v1 data files and save them into a RDS file in the inst/extdata folder.

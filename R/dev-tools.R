@@ -77,7 +77,7 @@ spod_get_file_size_from_url <- function(x_url) {
 }
 
 #' Get Etags for locally saved v1 data files and save them into a RDS file in the inst/extdata folder.
-#' @return Returns a tibble with the local path, local etag and remote etag.
+#' @return Returns a tibble with the local path, local ETag and remote ETag.
 #' @keywords internal
 spod_store_etags <- function() {
   available_data <- spod_available_data(1, check_local_files = TRUE)
