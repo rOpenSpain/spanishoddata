@@ -252,32 +252,52 @@ spod_available_data_v1 <- function(
 
   files_table <- files_table |>
     dplyr::mutate(
-      study = dplyr::case_when(
-        grepl("maestra", .data$target_url) ~ "basic",
-        TRUE ~ ""
+      study = factor(
+        dplyr::case_when(
+          grepl("maestra", .data$target_url) ~ "basic",
+          TRUE ~ NA_character_
+        ),
+        levels = c("basic")
       ),
 
-      type = dplyr::case_when(
-        grepl("maestra2", .data$target_url) ~ "number_of_trips",
-        grepl("maestra1", .data$target_url) ~ "origin-destination",
-        grepl("RSS\\.xml", .data$target_url) ~ "metadata",
-        grepl("zonificacion", .data$target_url) ~ "zones",
-        grepl("relacion", .data$target_url) ~ "relations",
-        grepl("index\\.html", .data$target_url) ~ "index",
-        grepl(".\\pdf", .data$target_url) ~ "documentation",
-        TRUE ~ ""
+      type = factor(
+        dplyr::case_when(
+          grepl("maestra2", .data$target_url) ~ "number_of_trips",
+          grepl("maestra1", .data$target_url) ~ "origin-destination",
+          grepl("RSS\\.xml", .data$target_url) ~ "metadata",
+          grepl("zonificacion", .data$target_url) ~ "zones",
+          grepl("relacion", .data$target_url) ~ "relations",
+          grepl("index\\.html", .data$target_url) ~ "index",
+          grepl("\\.pdf", .data$target_url) ~ "documentation",
+          TRUE ~ NA_character_
+        ),
+        levels = c(
+          "number_of_trips",
+          "origin-destination",
+          "metadata",
+          "zones",
+          "relations",
+          "index",
+          "documentation"
+        )
       ),
 
-      period = dplyr::case_when(
-        grepl("ficheros-diarios", .data$target_url) ~ "day",
-        grepl("meses-completos|mensual", .data$target_url) ~ "month",
-        TRUE ~ ""
+      period = factor(
+        dplyr::case_when(
+          grepl("ficheros-diarios", .data$target_url) ~ "day",
+          grepl("meses-completos|mensual", .data$target_url) ~ "month",
+          TRUE ~ NA_character_
+        ),
+        levels = c("day", "month")
       ),
 
-      zones = dplyr::case_when(
-        grepl("distrito", .data$target_url) ~ "districts",
-        grepl("municipio", .data$target_url) ~ "municipalities",
-        TRUE ~ ""
+      zones = factor(
+        dplyr::case_when(
+          grepl("distrito", .data$target_url) ~ "districts",
+          grepl("municipio", .data$target_url) ~ "municipalities",
+          TRUE ~ NA_character_
+        ),
+        levels = c("districts", "municipalities")
       )
     )
 
@@ -557,33 +577,51 @@ spod_available_data_v2 <- function(
 
   files_table <- files_table |>
     dplyr::mutate(
-      study = dplyr::case_when(
-        grepl("estudios_basicos", .data$target_url) ~ "basic",
-        grepl("estudios_completos", .data$target_url) ~ "complete",
-        grepl("rutas", .data$target_url) ~ "routes",
-        TRUE ~ ""
+      study = factor(
+        dplyr::case_when(
+          grepl("estudios_basicos", .data$target_url) ~ "basic",
+          grepl("estudios_completos", .data$target_url) ~ "complete",
+          grepl("rutas", .data$target_url) ~ "routes",
+          TRUE ~ NA_character_
+        ),
+        levels = c("basic", "complete", "routes")
       ),
 
-      type = dplyr::case_when(
-        grepl("personas", .data$target_url) ~ "number_of_trips",
-        grepl("viajes", .data$target_url) ~ "origin-destination",
-        grepl("pernoctaciones", .data$target_url) ~ "overnight_stays",
-        grepl("calidad", .data$target_url) ~ "data_quality",
-        grepl("RSS\\.xml", .data$target_url) ~ "metadata",
-        TRUE ~ ""
+      type = factor(
+        dplyr::case_when(
+          grepl("personas", .data$target_url) ~ "number_of_trips",
+          grepl("viajes", .data$target_url) ~ "origin-destination",
+          grepl("pernoctaciones", .data$target_url) ~ "overnight_stays",
+          grepl("calidad", .data$target_url) ~ "data_quality",
+          grepl("RSS\\.xml", .data$target_url) ~ "metadata",
+          TRUE ~ NA_character_
+        ),
+        levels = c(
+          "origin-destination",
+          "number_of_trips",
+          "overnight_stays",
+          "data_quality",
+          "metadata"
+        )
       ),
 
-      period = dplyr::case_when(
-        grepl("ficheros-diarios", .data$target_url) ~ "day",
-        grepl("meses-completos|mensual", .data$target_url) ~ "month",
-        TRUE ~ ""
+      period = factor(
+        dplyr::case_when(
+          grepl("ficheros-diarios", .data$target_url) ~ "day",
+          grepl("meses-completos|mensual", .data$target_url) ~ "month",
+          TRUE ~ NA_character_
+        ),
+        levels = c("day", "month")
       ),
 
-      zones = dplyr::case_when(
-        grepl("distritos", .data$target_url) ~ "districts",
-        grepl("municipios", .data$target_url) ~ "municipalities",
-        grepl("GAU", .data$target_url) ~ "large_urban_areas",
-        TRUE ~ ""
+      zones = factor(
+        dplyr::case_when(
+          grepl("distritos", .data$target_url) ~ "districts",
+          grepl("municipios", .data$target_url) ~ "municipalities",
+          grepl("GAU", .data$target_url) ~ "large_urban_areas",
+          TRUE ~ NA_character_
+        ),
+        levels = c("districts", "municipalities", "large_urban_areas")
       )
     )
 
