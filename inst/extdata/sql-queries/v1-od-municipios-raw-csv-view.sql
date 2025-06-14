@@ -1,4 +1,4 @@
-CREATE VIEW od_csv_raw AS SELECT *
+CREATE OR REPLACE VIEW od_csv_raw AS SELECT *
     /* csv_folder needs to be replaced with a valid path
     in R use glue::glue() 
     # this file actually connects to raw data with districts, because of the bugs described in

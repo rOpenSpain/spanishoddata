@@ -1,4 +1,4 @@
-CREATE VIEW nt_csv_clean AS SELECT
+CREATE OR REPLACE VIEW nt_csv_clean AS SELECT
     fecha,
     CAST (distrito AS ZONES_ENUM) AS distrito,
     CAST(numero_viajes AS N_TRIPS_ENUM) AS numero_viajes,

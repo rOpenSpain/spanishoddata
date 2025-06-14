@@ -1,4 +1,4 @@
-CREATE VIEW nt_csv_clean AS SELECT
+CREATE OR REPLACE VIEW nt_csv_clean AS SELECT
     fecha AS date,
     CAST(zona_pernoctacion AS ZONES_ENUM) AS id,
     CAST(CASE edad

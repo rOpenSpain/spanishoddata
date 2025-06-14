@@ -1,4 +1,4 @@
-CREATE VIEW od_csv_clean AS SELECT
+CREATE OR REPLACE VIEW od_csv_clean AS SELECT
     fecha AS date,
     periodo,
     CAST(origen AS ZONES_ENUM) AS origen,
