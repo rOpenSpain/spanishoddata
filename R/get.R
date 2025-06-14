@@ -197,10 +197,10 @@ spod_get <- function(
   # filter by date, unless cached data requested
   if (isFALSE(cached_data_requested)) {
     con <- spod_duckdb_filter_by_dates(
-      con,
-      clean_csv_view_name,
-      clean_filtered_csv_view_name,
-      dates
+      con = con,
+      source_view_name = clean_csv_view_name,
+      new_view_name = clean_filtered_csv_view_name,
+      dates = dates
     )
   }
 

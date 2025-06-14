@@ -1,4 +1,4 @@
-CREATE VIEW os_csv_clean AS SELECT
+CREATE OR REPLACE VIEW os_csv_clean AS SELECT
     fecha,
     CAST(zona_residencia AS RESID_ZONES_ENUM) AS zona_residencia,
     CAST(zona_pernoctacion AS OVERNIGHT_ZONES_ENUM) AS zona_pernoctacion,

@@ -1,5 +1,5 @@
 -- Create the relationships view from the relaciones_distrito_mitma.csv
-CREATE VIEW relations_districts_municipalities AS 
+CREATE OR REPLACE VIEW relations_districts_municipalities AS 
 SELECT 
     distrito_mitma, 
     municipio_mitma 
@@ -14,7 +14,7 @@ FROM
 );
 
 -- Create the nt_csv_clean view with the necessary joins, recoding, and aggregation
-CREATE VIEW nt_csv_clean AS 
+CREATE OR REPLACE VIEW nt_csv_clean AS 
 SELECT
     d.fecha AS date,
     CAST(CASE r.municipio_mitma

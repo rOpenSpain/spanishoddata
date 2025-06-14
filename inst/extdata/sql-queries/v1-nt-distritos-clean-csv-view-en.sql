@@ -1,4 +1,4 @@
-CREATE VIEW nt_csv_clean AS SELECT
+CREATE OR REPLACE VIEW nt_csv_clean AS SELECT
     fecha AS date,
     CAST (CASE distrito
         WHEN 'externo' THEN 'external'
