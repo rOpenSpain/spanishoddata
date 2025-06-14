@@ -31,6 +31,10 @@ A tibble with links, release dates of files in the data, dates of data coverage,
 \item{file_extension}{\code{character}. The file extension of the data file (e.g., 'tar', 'gz').}
 \item{data_ym}{\code{Date}. The year and month of the data coverage, if available.}
 \item{data_ymd}{\code{Date}. The specific date of the data coverage, if available.}
+\item{study}{\code{factor}. Study category derived from the URL (e.g., 'basic', 'complete', 'routes').}
+\item{type}{\code{factor}. Data type category derived from the URL (e.g., 'number_of_trips', 'origin-destination', 'overnight_stays', 'data_quality', 'metadata').}
+\item{period}{\code{factor}. Temporal granularity category derived from the URL (e.g., 'day', 'month').}
+\item{zones}{\code{factor}. Geographic zone classification derived from the URL (e.g., 'districts', 'municipalities', 'large_urban_areas').}
 \item{local_path}{\code{character}. The local file path where the data is (or going to be) stored.}
 \item{downloaded}{\code{logical}. Indicator of whether the data file has been downloaded locally. This is only available if \code{check_local_files} is \code{TRUE}.}
 }
