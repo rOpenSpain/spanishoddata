@@ -50,23 +50,31 @@
 #' }
 #' @keywords internal
 spod_duckdb_od <- function(
-    con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
-    zones = c(
-      "districts", "dist", "distr", "distritos",
-      "municipalities", "muni", "municip", "municipios",
-      "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
-    ),
-    ver = NULL,
-    data_dir = spod_get_data_dir()
+  con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
+  zones = c(
+    "districts",
+    "dist",
+    "distr",
+    "distritos",
+    "municipalities",
+    "muni",
+    "municip",
+    "municipios",
+    "lua",
+    "large_urban_areas",
+    "gau",
+    "grandes_areas_urbanas"
+  ),
+  ver = NULL,
+  data_dir = spod_get_data_dir()
 ) {
-  
   locale <- "en" # hardcode locale for now, but be ready to make it a function argument across the package #TODO
 
   ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
   }
-  
+
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
@@ -81,16 +89,19 @@ spod_duckdb_od <- function(
     # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
     # the decision was to use distrcit data and aggregate it to replicate municipal data
     csv_folder <- paste0(
-      data_dir, "/",
+      data_dir,
+      "/",
       spod_subfolder_raw_data_cache(ver = ver),
       "/maestra1-mitma-distritos",
       "/ficheros-diarios/"
     )
   } else if (ver == 2) {
     csv_folder <- paste0(
-      data_dir, "/",
+      data_dir,
+      "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/estudios_basicos/por-", spod_zone_names_en2es(zones),
+      "/estudios_basicos/por-",
+      spod_zone_names_en2es(zones),
       "/viajes/ficheros-diarios/"
     )
   }
@@ -104,22 +115,23 @@ spod_duckdb_od <- function(
   # create ENUMs
 
   # zones ENUMs from uniqe ids of relevant zones
-  spatial_data <- spod_get_zones(zones,
+  spatial_data <- spod_get_zones(
+    zones,
     ver = ver,
     data_dir = data_dir,
     quiet = TRUE
   )
-  
-  if( ver == 1 ) {
+
+  if (ver == 1) {
     unique_ids <- unique(spatial_data$id)
-  } else if( ver == 2 ) {
-    if (locale == "en" ){
+  } else if (ver == 2) {
+    if (locale == "en") {
       unique_ids <- c("external", unique(spatial_data$id))
-    } else if (locale == "es" ){
+    } else if (locale == "es") {
       unique_ids <- c("externo", unique(spatial_data$id))
     }
   }
-  
+
   DBI::dbExecute(
     con,
     dplyr::sql(
@@ -144,8 +156,7 @@ spod_duckdb_od <- function(
   )
 
   con <- spod_duckdb_create_province_enum(con)
-  
-  
+
   # v2 only enums
   if (ver == 2) {
     # income ENUM
@@ -153,13 +164,13 @@ spod_duckdb_od <- function(
       con,
       spod_read_sql(glue::glue("v{ver}-od-enum-income.sql"))
     )
-    
+
     # age ENUM
     DBI::dbExecute(
       con,
       spod_read_sql(glue::glue("v{ver}-od-enum-age.sql"))
     )
-    
+
     # sex ENUM
     DBI::dbExecute(
       con,
@@ -171,9 +182,9 @@ spod_duckdb_od <- function(
   if (ver == 1 && zones == "municipios") {
     # this will be picked up by the sql loaded below if neccessary
     relations_districts_municipalities <- here::here(
-        data_dir,
-        spod_subfolder_raw_data_cache(1),
-        "relaciones_distrito_mitma.csv"
+      data_dir,
+      spod_subfolder_raw_data_cache(1),
+      "relaciones_distrito_mitma.csv"
     )
   }
   DBI::dbExecute(
@@ -186,38 +197,46 @@ spod_duckdb_od <- function(
 }
 
 #' Create a duckdb number of trips table
-#' 
+#'
 #' @description
 #' This function creates a duckdb connection to the number of trips data stored in a folder of CSV.gz files.
 #' @inheritParams spod_duckdb_od
 #' @inheritParams spod_available_data
 #' @inheritParams spod_download
-#' 
+#'
 #' @return A `duckdb` connection object with 2 views:
 #'
 #'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
 #'
 #'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
-#' 
+#'
 #' @keywords internal
 spod_duckdb_number_of_trips <- function(
   con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
   zones = c(
-    "districts", "dist", "distr", "distritos",
-    "municipalities", "muni", "municip", "municipios",
-    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
+    "districts",
+    "dist",
+    "distr",
+    "distritos",
+    "municipalities",
+    "muni",
+    "municip",
+    "municipios",
+    "lua",
+    "large_urban_areas",
+    "gau",
+    "grandes_areas_urbanas"
   ),
   ver = NULL,
   data_dir = spod_get_data_dir()
 ) {
-  
   locale <- "en" # TODO: add support for Spanish, hardcode for now
 
   ver <- as.integer(ver)
   if (!ver %in% c(1, 2)) {
     stop("Invalid version number. Must be 1 or 2.")
   }
-  
+
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
@@ -232,16 +251,19 @@ spod_duckdb_number_of_trips <- function(
     # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
     # the decision was to use distrcit data and aggregate it to replicate municipal data
     csv_folder <- paste0(
-      data_dir, "/",
+      data_dir,
+      "/",
       spod_subfolder_raw_data_cache(ver = ver),
       "/maestra2-mitma-distritos",
       "/ficheros-diarios/"
     )
   } else if (ver == 2) {
     csv_folder <- paste0(
-      data_dir, "/",
+      data_dir,
+      "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/estudios_basicos/por-", spod_zone_names_en2es(zones),
+      "/estudios_basicos/por-",
+      spod_zone_names_en2es(zones),
       "/personas/ficheros-diarios/"
     )
   }
@@ -257,12 +279,13 @@ spod_duckdb_number_of_trips <- function(
   # create ENUMs
 
   # zones ENUMs from uniqe ids of relevant zones
-  spatial_data <- spod_get_zones(zones,
+  spatial_data <- spod_get_zones(
+    zones,
     ver = ver,
     data_dir = data_dir,
     quiet = TRUE
   )
-  
+
   unique_ids <- unique(spatial_data$id)
 
   DBI::dbExecute(
@@ -282,30 +305,29 @@ spod_duckdb_number_of_trips <- function(
     spod_read_sql(glue::glue("v{ver}-nt-enum-ntrips.sql"))
   )
 
-  
   # v2 only enums
-# v2 only enums
-if (ver == 2) {
-  # age ENUM
-  DBI::dbExecute(
-    con,
-    spod_read_sql(glue::glue("v{ver}-nt-enum-age.sql"))
-  )
-  
-  # sex ENUM
-  DBI::dbExecute(
-    con,
-    spod_read_sql(glue::glue("v{ver}-nt-enum-sex-{locale}.sql"))
-  )
-}
+  # v2 only enums
+  if (ver == 2) {
+    # age ENUM
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-nt-enum-age.sql"))
+    )
+
+    # sex ENUM
+    DBI::dbExecute(
+      con,
+      spod_read_sql(glue::glue("v{ver}-nt-enum-sex-{locale}.sql"))
+    )
+  }
 
   # create od_csv_clean view
   if (ver == 1 && zones == "municipios") {
     # this will be picked up by the sql loaded below if neccessary
     relations_districts_municipalities <- here::here(
-        data_dir,
-        spod_subfolder_raw_data_cache(1),
-        "relaciones_distrito_mitma.csv"
+      data_dir,
+      spod_subfolder_raw_data_cache(1),
+      "relaciones_distrito_mitma.csv"
     )
   }
   DBI::dbExecute(
@@ -317,46 +339,57 @@ if (ver == 2) {
 }
 
 #' Create a duckdb overnight stays table
-#' 
+#'
 #' @description
 #' This function creates a duckdb connection to the overnight stays data stored in a folder of CSV.gz files.
 #' @inheritParams spod_duckdb_od
 #' @inheritParams spod_available_data
 #' @inheritParams spod_download
-#' 
+#'
 #' @return A `duckdb` connection object with 2 views:
 #'
 #'  * `od_csv_raw` - a raw table view of all cached CSV files with the origin-destination data that has been previously cached in $SPANISH_OD_DATA_DIR
 #'
 #'  * `od_csv_clean` - a cleaned-up table view of `od_csv_raw` with column names and values translated and mapped to English. This still includes all cached data.
-#' 
+#'
 #' @keywords internal
 spod_duckdb_overnight_stays <- function(
   con = DBI::dbConnect(duckdb::duckdb(), dbdir = ":memory:", read_only = FALSE),
   zones = c(
-    "districts", "dist", "distr", "distritos",
-    "municipalities", "muni", "municip", "municipios",
-    "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"
+    "districts",
+    "dist",
+    "distr",
+    "distritos",
+    "municipalities",
+    "muni",
+    "municip",
+    "municipios",
+    "lua",
+    "large_urban_areas",
+    "gau",
+    "grandes_areas_urbanas"
   ),
   ver = NULL,
   data_dir = spod_get_data_dir()
 ) {
-  
   locale <- "en" # TODO: add support for Spanish, hardcode for now
 
   ver <- as.integer(ver)
   if (ver == 1) {
-    stop("Overnight stays data is only available in v2 data (2022-01-01 onwards).")
+    stop(
+      "Overnight stays data is only available in v2 data (2022-01-01 onwards)."
+    )
   }
-  
+
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
-
   csv_folder <- paste0(
-    data_dir, "/",
+    data_dir,
+    "/",
     spod_subfolder_raw_data_cache(ver = ver),
-    "/estudios_basicos/por-", spod_zone_names_en2es(zones),
+    "/estudios_basicos/por-",
+    spod_zone_names_en2es(zones),
     "/pernoctaciones/ficheros-diarios/"
   )
 
@@ -371,14 +404,15 @@ spod_duckdb_overnight_stays <- function(
   # create ENUMs
 
   # zones ENUMs for residence, these are always detailed down to "districts", despite the selected zones
-  spatial_data_residence <- spod_get_zones("distr",
+  spatial_data_residence <- spod_get_zones(
+    "distr",
     ver = ver,
     data_dir = data_dir,
     quiet = TRUE
   )
-  
+
   unique_ids_residence <- unique(spatial_data_residence$id)
-  
+
   DBI::dbExecute(
     con,
     dplyr::sql(
@@ -391,14 +425,15 @@ spod_duckdb_overnight_stays <- function(
   )
 
   # zones ENUMs for overnight stays, these always match the selected zones
-  spatial_data_overnight <- spod_get_zones(zones,
+  spatial_data_overnight <- spod_get_zones(
+    zones,
     ver = ver,
     data_dir = data_dir,
     quiet = TRUE
   )
 
   unique_ids_overnight <- unique(spatial_data_overnight$id)
-  
+
   DBI::dbExecute(
     con,
     dplyr::sql(
@@ -410,7 +445,6 @@ spod_duckdb_overnight_stays <- function(
     )
   )
 
-
   DBI::dbExecute(
     con,
     spod_read_sql(glue::glue("v{ver}-os-{zones}-clean-csv-view-{locale}.sql"))
@@ -420,11 +454,11 @@ spod_duckdb_overnight_stays <- function(
 }
 
 #' Filter a duckdb conenction by dates
-#' 
+#'
 #' @description
 #' IMPORTANT: This function assumes that the table or view that is being filtered has separate `year`, `month` and `day` columns with integer values. This is done so that the filtering is faster on CSV files that are stored in a folder structure with hive-style `/year=2020/month=2/day=14/`.
-#' 
-#' 
+#'
+#'
 #' @param con A duckdb connection
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
 #' @param new_view_name The name of the new duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files).
@@ -432,8 +466,13 @@ spod_duckdb_overnight_stays <- function(
 #' @param source_view_name The name of the source duckdb "view" (the virtual table, in the context of current package likely connected to a folder of CSV files)
 #' @keywords internal
 #' @return A `duckdb` connection with original views and a new filtered view.
-#' 
-spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, dates) {
+#'
+spod_duckdb_filter_by_dates <- function(
+  con,
+  source_view_name,
+  new_view_name,
+  dates
+) {
   # prepare query to filter by dates
   query <- dplyr::sql(
     glue::glue(
@@ -453,15 +492,16 @@ spod_duckdb_filter_by_dates <- function(con, source_view_name, new_view_name, da
 #' @param con A `duckdb` connection.
 #' @return A `duckdb` connection with `INE_PROV_NAME_ENUM` and `INE_PROV_CODE_ENUM` created.
 #' @keywords internal
-#' 
+#'
 spod_duckdb_create_province_enum <- function(con) {
   # LOAD SQL STATEMENT to create province names ENUM
   province_names_enum_sql <- readLines(
-    system.file("extdata/sql-queries/province_names_enum.sql",
+    system.file(
+      "extdata/sql-queries/province_names_enum.sql",
       package = "spanishoddata"
     )
   ) |>
-    paste(collapse = "\n") |> 
+    paste(collapse = "\n") |>
     dplyr::sql()
 
   # create INE_PROV_NAME_ENUM
@@ -471,7 +511,7 @@ spod_duckdb_create_province_enum <- function(con) {
   )
 
   # also create INE encoded INE_PROV_CODE_ENUM
-  
+
   # format codes 1:52 as 2 digits with leading zeros
   ine_codes <- sprintf("%02d", 1:52)
 
@@ -504,14 +544,24 @@ spod_sql_where_dates <- function(dates) {
 
   # Get distinct rows and sort them by year, month, and day
   date_parts <- date_parts[!duplicated(date_parts), ]
-  date_parts <- date_parts[order(date_parts$year, date_parts$month, date_parts$day), ]
+  date_parts <- date_parts[
+    order(date_parts$year, date_parts$month, date_parts$day),
+  ]
 
   # Create the WHERE conditions for each unique date
-  where_conditions <- stats::aggregate(day ~ year + month, data = date_parts, FUN = function(x) paste(x, collapse = ", "))
+  where_conditions <- stats::aggregate(
+    day ~ year + month,
+    data = date_parts,
+    FUN = function(x) paste(x, collapse = ", ")
+  )
   where_conditions$condition <- paste0(
-    "(year = ", where_conditions$year,
-    " AND month = ", where_conditions$month,
-    " AND day IN (", where_conditions$day, "))"
+    "(year = ",
+    where_conditions$year,
+    " AND month = ",
+    where_conditions$month,
+    " AND day IN (",
+    where_conditions$day,
+    "))"
   )
 
   # Combine all conditions into a single WHERE clause
@@ -554,19 +604,20 @@ spod_duckdb_limit_resources <- function(
 #' Load an SQL query, glue it, dplyr::sql it
 #' @description
 #' Load an SQL query from a specified file in package installation directory, glue::collapse it, glue::glue it in case of any variables that need to be replaced, and dplyr::sql it for additional safety.
-#' 
+#'
 #' @return Text of the SQL query of class `sql`/`character`.
 #' @param sql_file_name The name of the SQL file to load from the package installation directory.
 #' @keywords internal
 spod_read_sql <- function(sql_file_name) {
   sql_file_path <- glue::glue("extdata/sql-queries/{sql_file_name}")
-  
+
   sql_query <- readLines(
-    system.file(sql_file_path, package = "spanishoddata")) |> 
-    glue::glue_collapse(sep = "\n") |> 
-    glue::glue(.envir = parent.frame()) |> 
+    system.file(sql_file_path, package = "spanishoddata")
+  ) |>
+    glue::glue_collapse(sep = "\n") |>
+    glue::glue(.envir = parent.frame()) |>
     dplyr::sql()
-  
+
   return(sql_query)
 }
 
