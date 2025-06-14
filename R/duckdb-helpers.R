@@ -473,20 +473,73 @@ spod_duckdb_filter_by_dates <- function(
   new_view_name,
   dates
 ) {
-  # prepare query to filter by dates
-  query <- dplyr::sql(
+  # grab the clean(source)-view sql query
+  clean_sql <- DBI::dbGetQuery(
+    con,
+    sprintf(
+      "SELECT sql
+         FROM duckdb_views()
+        WHERE view_name = '%s';",
+      source_view_name
+    )
+  )$sql[1]
+
+  # identify the raw view behind the source view
+  all_views <- DBI::dbGetQuery(
+    con,
+    "SELECT view_name FROM duckdb_views();"
+  )$view_name
+  candidates <- setdiff(all_views, source_view_name)
+  raw_view <- Filter(
+    function(v) grepl(paste0("\\b", v, "\\b"), clean_sql, ignore.case = TRUE),
+    candidates
+  )[[1]]
+  if (is.null(raw_view)) {
+    stop("Could not identify the raw view behind ", source_view_name)
+  }
+
+  # build the fast WHERE clause that relies on duckdb selecting files using hive style partitioning
+  where_clause <- spod_sql_where_dates(dates)
+
+  # create the raw-filtered view
+  filtered_raw <- paste0(source_view_name, "_raw_filtered")
+  DBI::dbExecute(
+    con,
     glue::glue(
-      'CREATE VIEW "{new_view_name}" AS SELECT * FROM "{source_view_name}" ',
-      spod_sql_where_dates(dates),
-      ";"
+      "CREATE OR REPLACE VIEW {filtered_raw} AS
+         SELECT *
+           FROM {raw_view}
+         {where_clause};"
     )
   )
 
-  # create a view with a filter to the desired dates
-  DBI::dbSendStatement(con, query)
+  # strip off the CREATE...AS header so we only have the SELECT body
+  select_body <- sub(
+    '(?i)^CREATE(?:\\s+OR\\s+REPLACE)?\\s+VIEW\\s+"?[A-Za-z_][A-Za-z0-9_]*"?\\s+AS\\s+',
+    "",
+    clean_sql,
+    perl = TRUE
+  )
+
+  # point that body at our filtered-raw view
+  new_body <- gsub(
+    paste0("\\b", raw_view, "\\b"),
+    filtered_raw,
+    select_body
+  )
+
+  # create the final clean-filtered view
+  DBI::dbExecute(
+    con,
+    glue::glue(
+      "CREATE OR REPLACE VIEW {new_view_name} AS
+       {new_body};"
+    )
+  )
 
   return(con)
 }
+
 
 #' Create province names ENUM in a duckdb connection
 #' @param con A `duckdb` connection.
