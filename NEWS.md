@@ -8,6 +8,8 @@
 
 ## Improvements
 
+* `spod_get()` and `spod_convert()` are now up to x100,000 faster when you have all (or a lot of) data downloaded, but only requesting several days in the call to `spod_get()` or `spod_convert()`. This is thanks to a new smarter filtering strategy (issue [#159](https://github.com/rOpenSpain/spanishoddata/issues/159), PR [#166](https://github.com/rOpenSpain/spanishoddata/pull/166)).
+
 * Metadata is now fetched from Amazon S3 storage of the original data files, which allows validation of downloaded files (issue [#126](https://github.com/rOpenSpain/spanishoddata/issues/126)) with both size and checksum. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
 
 ## Bug fixes
