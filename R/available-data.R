@@ -275,8 +275,8 @@ spod_available_data_v1 <- function(
       ),
 
       zones = dplyr::case_when(
-        grepl("distrito", .data$target_url) ~ "district",
-        grepl("municipio", .data$target_url) ~ "municipality",
+        grepl("distrito", .data$target_url) ~ "districts",
+        grepl("municipio", .data$target_url) ~ "municipalities",
         TRUE ~ ""
       )
     )
@@ -580,9 +580,9 @@ spod_available_data_v2 <- function(
       ),
 
       zones = dplyr::case_when(
-        grepl("distritos", .data$target_url) ~ "district",
-        grepl("municipios", .data$target_url) ~ "municipality",
-        grepl("GAU", .data$target_url) ~ "gau",
+        grepl("distritos", .data$target_url) ~ "districts",
+        grepl("municipios", .data$target_url) ~ "municipalities",
+        grepl("GAU", .data$target_url) ~ "large_urban_areas",
         TRUE ~ ""
       )
     )
@@ -728,12 +728,16 @@ read_data_links_xml <- function(
       Sys.Date()
 
   if (needs_update) {
-    if (!quiet) message("Fetching latest data links xml")
+    if (!quiet) {
+      message("Fetching latest data links xml")
+    }
     latest_data_links_xml_path <- latest_file_function(
       data_dir = data_dir
     )
   } else {
-    if (!quiet) message("Using existing data links xml: ", latest_file)
+    if (!quiet) {
+      message("Using existing data links xml: ", latest_file)
+    }
     latest_data_links_xml_path <- latest_file
   }
 
