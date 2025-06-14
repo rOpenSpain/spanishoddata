@@ -47,7 +47,9 @@
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-development-version">Improvements<a class="anchor" aria-label="anchor" href="#improvements-development-version"></a></h3>
-<ul><li>Metadata is now fetched from Amazon S3 storage of the original data files, which allows validation of downloaded files (issue <a href="https://github.com/rOpenSpain/spanishoddata/issues/126" class="external-link">#126</a>) with both size and checksum. PR <a href="https://github.com/rOpenSpain/spanishoddata/pull/165" class="external-link">#165</a>.</li>
+<ul><li><p><code><a href="../reference/spod_get.html">spod_get()</a></code> and <code><a href="../reference/spod_convert.html">spod_convert()</a></code> are now up to x100,000 faster when you have all (or a lot of) data downloaded, but only requesting several days in the call to <code><a href="../reference/spod_get.html">spod_get()</a></code> or <code><a href="../reference/spod_convert.html">spod_convert()</a></code>. This is thanks to a new smarter filtering strategy (issue <a href="https://github.com/rOpenSpain/spanishoddata/issues/159" class="external-link">#159</a>, PR <a href="https://github.com/rOpenSpain/spanishoddata/pull/166" class="external-link">#166</a>).</p></li>
+<li><p>Metadata is now fetched from Amazon S3 storage of the original data files, which allows validation of downloaded files (issue <a href="https://github.com/rOpenSpain/spanishoddata/issues/126" class="external-link">#126</a>) with both size and checksum. PR <a href="https://github.com/rOpenSpain/spanishoddata/pull/165" class="external-link">#165</a>.</p></li>
+<li><p>Metadata fetched by <code><a href="../reference/spod_available_data.html">spod_available_data()</a></code> has extra columns such as data <code>type</code>, <code>zones</code> and <code>period</code>, see help <code>?spod_available_data()</code> for details.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
