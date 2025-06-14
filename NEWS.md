@@ -12,6 +12,8 @@
 
 * Metadata is now fetched from Amazon S3 storage of the original data files, which allows validation of downloaded files (issue [#126](https://github.com/rOpenSpain/spanishoddata/issues/126)) with both size and checksum. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
 
+* Metadata fetched by `spod_available_data()` has extra columns such as data `type`, `zones` and `period`, see help `?spod_available_data()` for details.
+
 ## Bug fixes
 
 * More reliable, but still multi-threaded data file downloads using base R `utils::download.file()` instead of `curl::multi_download()` which failed on some connections (issue [#127](https://github.com/rOpenSpain/spanishoddata/issues/127)), so now `curl` dependency is no longer required. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
