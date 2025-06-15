@@ -282,7 +282,7 @@ spod_convert <- function(
         "Using {max_mem_gb} GB of memory and {max_n_cpu} threads. You may adjust this using the function arguments `max_mem_gb` and `max_n_cpu`."
       ))
     } else {
-      max_mem_duckdb <- dbGetQuery(
+      max_mem_duckdb <- DBI::dbGetQuery(
         con,
         "SELECT current_setting('memory_limit');"
       )[
