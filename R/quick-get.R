@@ -89,7 +89,9 @@ spod_quick_get_od <- function(
     system.file("extdata", "muni_v2_ref.rds", package = "spanishoddata")
   )
   validate_muni_ids <- function(ids, muni_ref) {
-    if (is.null(ids) || length(ids) == 0 || all(is.na(ids))) return(TRUE)
+    if (is.null(ids) || length(ids) == 0 || all(is.na(ids))) {
+      return(TRUE)
+    }
     invalid <- setdiff(ids, muni_ref$id)
     if (length(invalid) > 0) {
       stop(
@@ -100,8 +102,12 @@ spod_quick_get_od <- function(
     }
     TRUE
   }
-  if (!all(is.na(id_origin))) validate_muni_ids(id_origin, muni_ref)
-  if (!all(is.na(id_destination))) validate_muni_ids(id_destination, muni_ref)
+  if (!all(is.na(id_origin))) {
+    validate_muni_ids(id_origin, muni_ref)
+  }
+  if (!all(is.na(id_destination))) {
+    validate_muni_ids(id_destination, muni_ref)
+  }
 
   # Check date is within API-supported range
   valid_dates <- spod_graphql_valid_dates_memoised()
@@ -146,6 +152,31 @@ spod_quick_get_od <- function(
     variables = vars_list
   )
 
+  # Query the API
+  od <- spod_query_od_memoised(
+    date_fmt = date_fmt,
+    graphql_distances = graphql_distances,
+    id_origin = id_origin,
+    id_destination = id_destination,
+    min_trips = min_trips,
+    graphql_query = graphql_query
+  )
+
+  return(od)
+}
+
+#' Internal function to query the GraphQL API for origin-destination data
+#' @inheritParams spod_quick_get_od
+#' @return A `tibble` containing the flows for the specified date, minimum number of journeys, distances and origin-destination pairs if specified.
+#' @keywords internal
+spod_query_od_raw <- function(
+  date_fmt,
+  graphql_distances,
+  id_origin,
+  id_destination,
+  min_trips,
+  graphql_query
+) {
   # in-memory session token
   session_token_and_signature <- spod_session_token_and_signature()
   x_session_token <- session_token_and_signature$x_session_token
@@ -189,6 +220,11 @@ spod_quick_get_od <- function(
   return(od)
 }
 
+#' Cache the spod_query_od_raw function to avoid repeated requests
+#' @importFrom memoise memoise
+#' @keywords internal
+spod_query_od_memoised <- memoise::memoise(spod_query_od_raw)
+
 #' Get the municipalities geometries
 #'
 #' @description
@@ -226,7 +262,9 @@ spod_quick_get_zones <- function(
   return(municipalities_sf)
 }
 
-
+#' Cache the municipalities geometries from the mapas-movilidad website
+#' @importFrom memoise memoise
+#' @keywords internal
 spod_fetch_municipalities_json_memoised <- memoise::memoise(
   function() {
     municip_geometries_url <- "https://mapas-movilidad.transportes.gob.es/api/static/data/municipios60.json"
@@ -274,4 +312,7 @@ spod_get_hmac_secret <- function(
   secret
 }
 
+#' Cache the HMAC secret to avoid repeated requests
+#' @importFrom memoise memoise
+#' @keywords internal
 spod_get_hmac_secret_memoised <- memoise::memoise(spod_get_hmac_secret)

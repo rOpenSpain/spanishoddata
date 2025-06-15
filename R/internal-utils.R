@@ -508,6 +508,7 @@ spod_graphql_valid_dates <- function() {
 #' @importFrom memoise memoise
 spod_graphql_valid_dates_memoised <- memoise::memoise(spod_graphql_valid_dates)
 
+
 spod_session_token_and_signature <- function() {
   # in-memory session token
   session_token <- getOption("spanishoddata.session_token")
