@@ -394,18 +394,6 @@ spod_match_data_type <- function(
   return(NULL)
 }
 
-#' Get available RAM
-#' @keywords internal
-#' @return A `numeric` amount of available RAM in GB.
-spod_available_ram <- function() {
-  return(
-    as.numeric(unclass(memuse::Sys.meminfo())[1][['totalram']]) /
-      1024 /
-      1024 /
-      1024
-  )
-}
-
 #' Remove duplicate values in a semicolon-separated string
 #'
 #' @description

@@ -63,7 +63,7 @@ spod_get <- function(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  max_mem_gb = max(4, spod_available_ram() - 4),
+  max_mem_gb = NULL,
   max_n_cpu = max(1, parallelly::availableCores() - 1),
   max_download_size_gb = 1,
   duckdb_target = ":memory:",
