@@ -75,7 +75,7 @@ spod_cite <- function(
   # 6.1. Human‐readable labels for each “what”
   citation_labels <- list(
     package = "To cite the spanishoddata package",
-    data = "To site the Ministry's mobility study website",
+    data = "To cite the Ministry's mobility study website",
     methodology_v1 = "To cite the methodology for 2020-2021 data",
     methodology_v2 = "To cite the methodology for 2022 and onwards data"
   )
@@ -127,6 +127,12 @@ spod_cite <- function(
         cit_item <- citations_to_show[[w]]
         cat(paste0(citation_labels[[w]], ":\n"))
         cat(format_text(cit_item), "\n\n")
+        # note for methodology_v2
+        if (w == "methodology_v2") {
+          cat(
+            "Note: A more up-to-date methodology document may be available at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/metodologia-del-estudio-de-movilidad-con-bigdata\n\n"
+          )
+        }
       }
     } else if (f == "markdown") {
       cat("\nMarkdown citations:\n-------------------\n")
@@ -134,6 +140,12 @@ spod_cite <- function(
         cit_item <- citations_to_show[[w]]
         cat(paste0("**", citation_labels[[w]], ":**\n"))
         cat(format_markdown(cit_item), "\n\n")
+        # note for methodology_v2
+        if (w == "methodology_v2") {
+          cat(
+            "> **Note:** A more up-to-date methodology document may be available at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/metodologia-del-estudio-de-movilidad-con-bigdata\n\n"
+          )
+        }
       }
     } else if (f == "bibtex") {
       cat("\nBibTeX citations:\n-----------------\n")
@@ -141,6 +153,12 @@ spod_cite <- function(
         cat(paste0("%% ", citation_labels[[w]], "\n"))
         print(utils::toBibtex(citations_to_show[[w]]))
         cat("\n")
+        # note for methodology_v2
+        if (w == "methodology_v2") {
+          cat(
+            "%% Note: A more up-to-date methodology document may be available at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/metodologia-del-estudio-de-movilidad-con-bigdata\n\n"
+          )
+        }
       }
     }
   }
