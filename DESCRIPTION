@@ -41,7 +41,6 @@ Imports:
     lifecycle,
     lubridate,
     memoise,
-    memuse,
     openssl,
     parallelly,
     paws.storage (>= 0.4.0),

@@ -63,7 +63,7 @@ spod_get <- function(
   dates = NULL,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
-  max_mem_gb = max(4, spod_available_ram() - 4),
+  max_mem_gb = NULL,
   max_n_cpu = max(1, parallelly::availableCores() - 1),
   max_download_size_gb = 1,
   duckdb_target = ":memory:",
@@ -100,7 +100,7 @@ spod_get <- function(
     )
   )
   checkmate::assert_flag(quiet)
-  checkmate::assert_number(max_mem_gb, lower = 1)
+  checkmate::assert_number(max_mem_gb, lower = 1, null.ok = TRUE)
   checkmate::assert_integerish(max_n_cpu, lower = 1)
   checkmate::assert_number(max_download_size_gb, lower = 0.1)
   checkmate::assert_string(duckdb_target)
