@@ -43,11 +43,13 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_overnight_stays.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_duckdb_set_temp.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_expand_dates_from_regex.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_fetch_municipalities_json_memoised.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_files_sizes.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_data_dir.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_file_size_from_url.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_hmac_secret.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_hmac_secret_memoised.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_latest_v1_file_list.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_latest_v2_file_list.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_get_temp_dir.html</loc></url>
@@ -61,6 +63,8 @@
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_match_data_type.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_match_data_type_for_local_folders.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_multi_download_with_progress.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_query_od_memoised.html</loc></url>
+<url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_query_od_raw.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_quick_get_od.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_quick_get_zones.html</loc></url>
 <url><loc>https://rOpenSpain.github.io/spanishoddata/reference/spod_read_sql.html</loc></url>
