@@ -283,7 +283,7 @@ spod_convert <- function(
       ))
     } else {
       max_mem_duckdb <- DBI::dbGetQuery(
-        con,
+        db_con,
         "SELECT current_setting('memory_limit');"
       )[
         1,
