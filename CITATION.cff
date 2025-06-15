@@ -8,7 +8,7 @@ message: 'To cite package "spanishoddata" in publications use:'
 type: software
 license: MIT
 title: 'spanishoddata: Get Spanish Origin-Destination Data'
-version: 0.1.1
+version: 0.2.0
 doi: 10.32614/CRAN.package.spanishoddata
 identifiers:
 - type: doi
@@ -113,20 +113,6 @@ references:
   year: '2025'
   doi: 10.32614/CRAN.package.checkmate
 - type: software
-  title: curl
-  abstract: 'curl: A Modern and Flexible Web Client for R'
-  notes: Imports
-  url: https://jeroen.r-universe.dev/curl
-  repository: https://CRAN.R-project.org/package=curl
-  authors:
-  - family-names: Ooms
-    given-names: Jeroen
-    email: jeroenooms@gmail.com
-    orcid: https://orcid.org/0000-0002-4035-0289
-  year: '2025'
-  doi: 10.32614/CRAN.package.curl
-  version: '>= 5.0.0'
-- type: software
   title: DBI
   abstract: 'DBI: R Database Interface'
   notes: Imports
@@ -142,6 +128,19 @@ references:
     orcid: https://orcid.org/0000-0002-1416-3412
   year: '2025'
   doi: 10.32614/CRAN.package.DBI
+- type: software
+  title: digest
+  abstract: 'digest: Create Compact Hash Digests of R Objects'
+  notes: Imports
+  url: https://dirk.eddelbuettel.com/code/digest.html
+  repository: https://CRAN.R-project.org/package=digest
+  authors:
+  - family-names: Eddelbuettel
+    given-names: Dirk
+    email: edd@debian.org
+    orcid: https://orcid.org/0000-0001-6419-907X
+  year: '2025'
+  doi: 10.32614/CRAN.package.digest
 - type: software
   title: dplyr
   abstract: 'dplyr: A Grammar of Data Manipulation'
@@ -244,6 +243,19 @@ references:
   year: '2025'
   doi: 10.32614/CRAN.package.httr2
 - type: software
+  title: jsonlite
+  abstract: 'jsonlite: A Simple and Robust JSON Parser and Generator for R'
+  notes: Imports
+  url: https://jeroen.r-universe.dev/jsonlite
+  repository: https://CRAN.R-project.org/package=jsonlite
+  authors:
+  - family-names: Ooms
+    given-names: Jeroen
+    email: jeroenooms@gmail.com
+    orcid: https://orcid.org/0000-0002-4035-0289
+  year: '2025'
+  doi: 10.32614/CRAN.package.jsonlite
+- type: software
   title: lifecycle
   abstract: 'lifecycle: Manage the Life Cycle of your Package Functions'
   notes: Imports
@@ -276,17 +288,42 @@ references:
   year: '2025'
   doi: 10.32614/CRAN.package.lubridate
 - type: software
-  title: memuse
-  abstract: 'memuse: Memory Estimation Utilities'
+  title: memoise
+  abstract: 'memoise: ''Memoisation'' of Functions'
   notes: Imports
-  url: https://github.com/shinra-dev/memuse
-  repository: https://CRAN.R-project.org/package=memuse
+  url: https://memoise.r-lib.org
+  repository: https://CRAN.R-project.org/package=memoise
   authors:
-  - family-names: Schmidt
-    given-names: Drew
-    email: wrathematics@gmail.com
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  - family-names: Hester
+    given-names: Jim
+  - family-names: Chang
+    given-names: Winston
+    email: winston@rstudio.com
+  - family-names: Müller
+    given-names: Kirill
+    email: krlmlr+r@mailbox.org
+  - family-names: Cook
+    given-names: Daniel
+    email: danielecook@gmail.com
   year: '2025'
-  doi: 10.32614/CRAN.package.memuse
+  doi: 10.32614/CRAN.package.memoise
+- type: software
+  title: openssl
+  abstract: 'openssl: Toolkit for Encryption, Signatures and Certificates Based on
+    OpenSSL'
+  notes: Imports
+  url: https://jeroen.r-universe.dev/openssl
+  repository: https://CRAN.R-project.org/package=openssl
+  authors:
+  - family-names: Ooms
+    given-names: Jeroen
+    email: jeroenooms@gmail.com
+    orcid: https://orcid.org/0000-0002-4035-0289
+  year: '2025'
+  doi: 10.32614/CRAN.package.openssl
 - type: software
   title: parallelly
   abstract: 'parallelly: Enhancing the ''parallel'' Package'
@@ -300,6 +337,22 @@ references:
     orcid: https://orcid.org/0000-0002-7579-5165
   year: '2025'
   doi: 10.32614/CRAN.package.parallelly
+- type: software
+  title: paws.storage
+  abstract: 'paws.storage: ''Amazon Web Services'' Storage Services'
+  notes: Imports
+  url: https://paws-r.r-universe.dev/paws.storage
+  repository: https://CRAN.R-project.org/package=paws.storage
+  authors:
+  - family-names: Kretch
+    given-names: David
+    email: david.kretch@gmail.com
+  - family-names: Banker
+    given-names: Adam
+    email: adam.banker39@gmail.com
+  year: '2025'
+  doi: 10.32614/CRAN.package.paws.storage
+  version: '>= 0.4.0'
 - type: software
   title: purrr
   abstract: 'purrr: Functional Programming Tools'
@@ -473,17 +526,18 @@ references:
   year: '2025'
   doi: 10.32614/CRAN.package.future
 - type: software
-  title: hexSticker
-  abstract: 'hexSticker: Create Hexagon Sticker in R'
+  title: future.mirai
+  abstract: 'future.mirai: A ''Future'' API for Parallel Processing using ''mirai'''
   notes: Suggests
-  url: https://github.com/GuangchuangYu/hexSticker
-  repository: https://CRAN.R-project.org/package=hexSticker
+  url: https://future.mirai.futureverse.org
+  repository: https://CRAN.R-project.org/package=future.mirai
   authors:
-  - family-names: Yu
-    given-names: Guangchuang
-    email: guangchuangyu@gmail.com
+  - family-names: Bengtsson
+    given-names: Henrik
+    email: henrikb@braju.com
+    orcid: https://orcid.org/0000-0002-7579-5165
   year: '2025'
-  doi: 10.32614/CRAN.package.hexSticker
+  doi: 10.32614/CRAN.package.future.mirai
 - type: software
   title: mapSpain
   abstract: 'mapSpain: Administrative Boundaries of Spain'
