@@ -14,6 +14,8 @@
 
 * Metadata fetched by `spod_available_data()` has extra columns such as data `type`, `zones` and `period`, see help `?spod_available_data()` for details.
 
+* Memory allocation is now delegated to `DuckDB` engine, which by default uses 80% of available RAM. Beware that in some HPC environments this may detect more memory than is actually available to your job, so set the limit manually to 80% of RAM available to your job with `max_mem_gb` argument of `spod_get()`, `spod_convert()`, `spod_connect()` functions. This will also improve performance in some cases, as DuckDB is more efficient than R at memory allocation (PR [#167](https://github.com/rOpenSpain/spanishoddata/pull/167)).
+
 ## Bug fixes
 
 * More reliable, but still multi-threaded data file downloads using base R `utils::download.file()` instead of `curl::multi_download()` which failed on some connections (issue [#127](https://github.com/rOpenSpain/spanishoddata/issues/127)), so now `curl` dependency is no longer required. PR [#165](https://github.com/rOpenSpain/spanishoddata/pull/165).
