@@ -7,7 +7,7 @@
   <a class="navbar-brand me-2" href="../index.html">
     <img src="../apple-touch-icon.png" alt="spanishoddata logo" height="40" class="d-inline-block me-1">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -39,7 +39,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0" id="spanishoddata-020-2025-06-15">spanishoddata 0.2.0 (2025-06-15)<a class="anchor" aria-label="anchor" href="#spanishoddata-020-2025-06-15"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="spanishoddata-development-version">spanishoddata (development version)<a class="anchor" aria-label="anchor" href="#spanishoddata-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="spanishoddata-020-2025-06-15">spanishoddata 0.2.0 (2025-06-15)<a class="anchor" aria-label="anchor" href="#spanishoddata-020-2025-06-15"></a></h2><p class="text-muted">CRAN release: 2025-06-15</p>
 <div class="section level3">
 <h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
 <ul><li><p><code><a href="../reference/spod_quick_get_zones.html">spod_quick_get_zones()</a></code> is a new function to quickly get municipality geometries to match with the data retrieved with <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> (PR <a href="https://github.com/rOpenSpain/spanishoddata/pull/163" class="external-link">#163</a>). This function is experimental, just as the <code><a href="../reference/spod_quick_get_od.html">spod_quick_get_od()</a></code> function, as the API of the Spanish Ministry of Transport may change in the future. It is only intended for quick analysis in educational or other demonstration purposes, as it downloads very little data compared to the regular <code>spod_get_od()</code>, <code><a href="../reference/spod_download.html">spod_download()</a></code> and <code><a href="../reference/spod_convert.html">spod_convert()</a></code> functions. The requests are cached in memory of the current R session with <code>memoise</code> package, so repeated calls to <code><a href="../reference/spod_quick_get_zones.html">spod_quick_get_zones()</a></code> will not cause repeated requests to the API and will allow the user to get the data faster from repeat calls.</p></li>
