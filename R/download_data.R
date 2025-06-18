@@ -646,7 +646,6 @@ spod_download_in_batches <- function(
     res <- utils::download.file(
       url = urls,
       destfile = dests,
-      method = "libcurl",
       mode = "wb",
       quiet = TRUE
     )
@@ -669,7 +668,6 @@ spod_download_in_batches <- function(
           status2 <- utils::download.file(
             url = urls[k],
             destfile = dest,
-            method = "libcurl",
             mode = "wb",
             quiet = TRUE
           )
