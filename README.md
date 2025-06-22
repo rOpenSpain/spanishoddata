@@ -579,6 +579,11 @@ BibTeX:
 
 <!-- codemetar::write_codemeta(write_minimeta = T) -->
 
+# Working with Python?
+
+Try the new work-in-progress package:
+<https://github.com/pySpainMobility/pySpainMobility>.
+
 <div id="refs" class="references csl-bib-body hanging-indent"
 entry-spacing="0">
 
