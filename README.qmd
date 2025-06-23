@@ -361,6 +361,10 @@ toBibtex(citation("spanishoddata"))
 ```
 
 
+### Working with Python?
+
+Try the new work-in-progress package: [https://github.com/pySpainMobility/pySpainMobility](https://github.com/pySpainMobility/pySpainMobility).
+
 
 ## References
 
@@ -384,7 +388,3 @@ glue::glue(
     </script>'
 )
 ```
-
-# Working with Python?
-
-Try the new work-in-progress package: [https://github.com/pySpainMobility/pySpainMobility](https://github.com/pySpainMobility/pySpainMobility).
