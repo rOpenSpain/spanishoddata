@@ -1,6 +1,6 @@
 -- Create the relationships view from the relaciones_distrito_mitma.csv
 CREATE OR REPLACE VIEW relations_districts_municipalities AS 
-SELECT 
+SELECT DISTINCT
     distrito_mitma, 
     municipio_mitma 
 FROM 

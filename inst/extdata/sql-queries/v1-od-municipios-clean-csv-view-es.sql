@@ -1,6 +1,6 @@
 -- Create the relationships view from the relaciones_distrito_mitma.csv
 CREATE OR REPLACE VIEW relations_districts_municipalities AS 
-SELECT
+SELECT DISTINCT
     distrito_mitma, 
     municipio_mitma 
 FROM 
@@ -20,14 +20,10 @@ SELECT
     CAST(m1.municipio_mitma AS ZONES_ENUM) AS origen,
     CAST(m2.municipio_mitma AS ZONES_ENUM) AS destino,
     CAST(CASE d.actividad_origen
-        WHEN 'casa' THEN 'home'
-        WHEN 'otros' THEN 'other'
-        WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'trabajo' THEN 'trabajo_estudio'
         END AS ACTIV_ENUM) AS actividad_origen,
     CAST(CASE d.actividad_destino
-        WHEN 'casa' THEN 'home'
-        WHEN 'otros' THEN 'other'
-        WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'trabajo' THEN 'trabajo_estudio'
         END AS ACTIV_ENUM) AS actividad_destino,
     CAST(d.residencia AS INE_PROV_CODE_ENUM) AS residencia,
     CAST(CASE d.residencia
