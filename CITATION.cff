@@ -8,7 +8,7 @@ message: 'To cite package "spanishoddata" in publications use:'
 type: software
 license: MIT
 title: 'spanishoddata: Get Spanish Origin-Destination Data'
-version: 0.2.0
+version: 0.2.1
 doi: 10.32614/CRAN.package.spanishoddata
 identifiers:
 - type: doi

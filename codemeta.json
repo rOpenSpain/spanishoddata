@@ -8,7 +8,7 @@
   "codeRepository": "https://github.com/rOpenSpain/spanishoddata",
   "issueTracker": "https://github.com/rOpenSpain/spanishoddata/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -494,7 +494,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2123.415KB",
+  "fileSize": "2123.967KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
