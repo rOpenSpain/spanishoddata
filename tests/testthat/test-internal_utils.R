@@ -1,9 +1,15 @@
 # Prepare the testing environment using bundled xml files to avoid downloading data from the internet
 
 extdata_path <- system.file("extdata", package = "spanishoddata")
-gz_files <- list.files(extdata_path, pattern = "(data_links_.*\\.xml\\.gz)|(url_file_sizes_v[1-2]\\.csv\\.gz)", full.names = TRUE)
+gz_files <- list.files(
+  extdata_path,
+  pattern = "(data_links_.*\\.xml\\.gz)|(url_file_sizes_v[1-2]\\.csv\\.gz)",
+  full.names = TRUE
+)
 
-if (length(gz_files) == 0) stop("No gzipped XML files found.")
+if (length(gz_files) == 0) {
+  stop("No gzipped XML files found.")
+}
 
 # Create a temporary directory
 test_data_dir <- tempfile()
@@ -17,9 +23,15 @@ current_date <- format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE)
 # Copy and rename gzipped XML files to the temporary directory
 for (gz_file in gz_files) {
   if (grepl("v1", gz_file)) {
-    file.copy(gz_file, file.path(metadata_dir, paste0("data_links_v1_", current_date, ".xml.gz")))
+    file.copy(
+      gz_file,
+      file.path(metadata_dir, paste0("data_links_v1_", current_date, ".xml.gz"))
+    )
   } else if (grepl("v2", gz_file)) {
-    file.copy(gz_file, file.path(metadata_dir, paste0("data_links_v2_", current_date, ".xml.gz")))
+    file.copy(
+      gz_file,
+      file.path(metadata_dir, paste0("data_links_v2_", current_date, ".xml.gz"))
+    )
   }
 }
 
@@ -54,37 +66,72 @@ test_that("vector of YYYYMMDD dates", {
 test_that("date range in ISO format", {
   dates <- "2023-07-01_2023-07-05"
   result <- spod_dates_argument_to_dates_seq(dates)
-  expect_equal(result, seq.Date(from = as.Date("2023-07-01"), to = as.Date("2023-07-05"), by = "day"))
+  expect_equal(
+    result,
+    seq.Date(
+      from = as.Date("2023-07-01"),
+      to = as.Date("2023-07-05"),
+      by = "day"
+    )
+  )
 })
 
 test_that("date range in YYYYMMDD format", {
   dates <- "20230701_20230705"
   result <- spod_dates_argument_to_dates_seq(dates)
-  expect_equal(result, seq.Date(from = as.Date("2023-07-01"), to = as.Date("2023-07-05"), by = "day"))
+  expect_equal(
+    result,
+    seq.Date(
+      from = as.Date("2023-07-01"),
+      to = as.Date("2023-07-05"),
+      by = "day"
+    )
+  )
 })
 
 test_that("named vector date range in ISO format", {
   dates <- c(start = "2023-07-01", end = "2023-07-05")
   result <- spod_dates_argument_to_dates_seq(dates)
-  expect_equal(result, seq.Date(from = as.Date("2023-07-01"), to = as.Date("2023-07-05"), by = "day"))
+  expect_equal(
+    result,
+    seq.Date(
+      from = as.Date("2023-07-01"),
+      to = as.Date("2023-07-05"),
+      by = "day"
+    )
+  )
 })
 
 test_that("named vector date range in YYYYMMDD format", {
   dates <- c(start = "20230701", end = "20230705")
   result <- spod_dates_argument_to_dates_seq(dates)
-  expect_equal(result, seq.Date(from = as.Date("2023-07-01"), to = as.Date("2023-07-05"), by = "day"))
+  expect_equal(
+    result,
+    seq.Date(
+      from = as.Date("2023-07-01"),
+      to = as.Date("2023-07-05"),
+      by = "day"
+    )
+  )
 })
 
 test_that("regex pattern matching dates", {
   dates <- "^202307"
   result <- spod_dates_argument_to_dates_seq(dates)
-  expected_dates <- seq.Date(from = as.Date("2023-07-01"), to = as.Date("2023-07-31"), by = "day")
+  expected_dates <- seq.Date(
+    from = as.Date("2023-07-01"),
+    to = as.Date("2023-07-31"),
+    by = "day"
+  )
   expect_equal(result, expected_dates)
 })
 
 test_that("invalid input type", {
   dates <- 20230701
-  expect_error(spod_dates_argument_to_dates_seq(dates), "Invalid date input format. Please provide a character vector or Date object.")
+  expect_error(
+    spod_dates_argument_to_dates_seq(dates),
+    "Invalid date input format. Please provide a character vector or Date object."
+  )
 })
 
 test_that("dates span both v1 and v2 data", {

@@ -15,7 +15,7 @@ A \code{character} vector of length 1 containing the path to the data directory 
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR.
+This function retrieves the data directory from the environment variable SPANISH_OD_DATA_DIR (and previously set by \code{\link[=spod_set_data_dir]{spod_set_data_dir()}}).
 If the environment variable is not set, it returns the temporary directory.
 }
 \examples{
