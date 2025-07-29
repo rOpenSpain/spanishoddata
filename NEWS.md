@@ -1,4 +1,12 @@
-# spanishoddata (development version)
+# spanishoddata 0.2.1 (2025-07-29)
+
+## Bug fixes
+
+* Fixed incorrect reaggregation of district level data into municipal level data for v1 (2020-2021) data (PR [#170](https://github.com/rOpenSpain/spanishoddata/pull/170))
+
+## Improvements
+
+* Minor documentation improvements and updates to direct users to the `spod_set_data_dir()` function to set the data directory instead of advising to set the environment variable manually.
 
 # spanishoddata 0.2.0 (2025-06-15)
 
