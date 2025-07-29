@@ -4,14 +4,10 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
     CAST(origen AS ZONES_ENUM) AS origen,
     CAST(destino AS ZONES_ENUM) AS destino,
     CAST(CASE actividad_origen
-        WHEN 'casa' THEN 'home'
-        WHEN 'otros' THEN 'other'
-        WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'trabajo' THEN 'trabajo_estudio'
         END AS ACTIV_ENUM) AS actividad_origen,
     CAST(CASE actividad_destino
-        WHEN 'casa' THEN 'home'
-        WHEN 'otros' THEN 'other'
-        WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'trabajo' THEN 'trabajo_estudio'
         END AS ACTIV_ENUM) AS actividad_destino,
     CAST(distancia AS DISTANCE_ENUM) AS distancia,
     CAST(residencia AS INE_PROV_CODE_ENUM) AS residencia,

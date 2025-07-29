@@ -15,12 +15,12 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
     CAST(CASE actividad_origen
         WHEN 'casa' THEN 'home'
         WHEN 'otros' THEN 'other'
-        WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'trabajo' THEN 'work_or_study'
         END AS ACTIV_ENUM) AS activity_origin,
     CAST(CASE actividad_destino
         WHEN 'casa' THEN 'home'
         WHEN 'otros' THEN 'other'
-        WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'trabajo' THEN 'work_or_study'
         END AS ACTIV_ENUM) AS activity_destination,
     CAST(residencia AS INE_PROV_CODE_ENUM) AS residence_province_ine_code,
     CAST (CASE residencia
