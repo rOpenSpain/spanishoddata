@@ -1,5 +1,3 @@
-# spanishoddata 0.2.1
-
 # spanishoddata 0.2.1 (2025-07-29)
 
 ## Bug fixes
