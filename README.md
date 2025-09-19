@@ -478,6 +478,7 @@ ggplot() +
 For more information on the package, see:
 
 - The [pkgdown site](https://rOpenSpain.github.io/spanishoddata/)
+
   - [Functions
     reference](https://rOpenSpain.github.io/spanishoddata/reference/index.html)
   - [v1 data (2020-2021)
@@ -499,6 +500,32 @@ For more information on the package, see:
     with `{spanishoddata}`
   - [Quickly getting daily aggregated 2022+ data at municipality
     level](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
+
+- Learning materials that use `spanishoddata`:
+
+  - Tutorial/workshop [“Analysing massive open human mobility data using
+    spanishoddata, duckdb and
+    flowmaps”](https://www.ekotov.pro/agit-2025-spanishoddata/) by [Egor
+    Kotov](http://github.com/e-kotov) (held at [Applied Geoinformatics
+    (AGIT) Conference 2025](https://agit.at/en/program/), Salzburg,
+    Austria)
+    [![DOI:10.5281/zenodo.15794849](https://zenodo.org/badge/DOI/10.5281/zenodo.15794849.svg)](https://doi.org/10.5281/zenodo.15794849)
+
+  - Tutorial [“Mobility Flows and Accessibility Using R and Big Open
+    Data”](https://www.ekotov.pro/spanish-open-mobility-workshop-ic2s2-2025/)
+    by [Egor Kotov](http://github.com/e-kotov) and [Johannes
+    Mast](https://github.com/JohMast) (held at [IC2S2
+    2025](https://www.ic2s2-2025.org/) (11th International Conference on
+    Computational Social Science), Norrköping, Sweden)
+    [![DOI:10.5281/zenodo.16238597](https://zenodo.org/badge/DOI/10.5281/zenodo.16238597.svg)](https://doi.org/10.5281/zenodo.16238597)
+
+  - [Data Science for Transport
+    Planning](https://tdscience.github.io/dstp/) course by [Robin
+    Lovelace](https://github.com/robinlovelace), [Juan P.
+    Fonseca-Zamora](https://github.com/juanfonsecaLS1), and [Yuanxuan
+    Yang](https://github.com/yyuanxuan) (held at the [Institute for
+    Transport Studies, University of
+    Leeds](https://environment.leeds.ac.uk/transport))
 
 ### Citation
 

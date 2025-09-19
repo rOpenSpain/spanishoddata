@@ -14,16 +14,48 @@ authors:
     href: "https://www.robinlovelace.net/"
 
 articles:
-- title: Documentation
-  navbar: ~
-  contents:
-  - v1-2020-2021-mitma-data-codebook
-  - v2-2022-onwards-mitma-data-codebook
-  - quick-get
-  - convert
-  - disaggregation
-  - flowmaps-static
-  - flowmaps-interactive
+  - title: "Codebooks"
+    navbar: "Codebooks"
+    contents:
+      - v1-2020-2021-mitma-data-codebook
+      - v2-2022-onwards-mitma-data-codebook
+
+  - title: "Get or convert data for analysis"
+    navbar: "Get/convert"
+    contents:
+      - quick-get
+      - convert
+
+  - title: "Visualise flows"
+    navbar: "Visualise"
+    contents:
+      - flowmaps-static
+      - flowmaps-interactive
+      - disaggregation
+  
+  - title: "Tutorials"
+    navbar: "Tutorials"     # puts them as a group in the Articles dropdown
+    contents:
+      - agit-tutorial
+      - ic2s2-tutorial
+      - dstp-course
+
+external-articles:
+- name: agit-tutorial
+  title: "Analysing massive open human mobility data using spanishoddata, duckdb and flowmaps"
+  description: |
+    Tutorial/workshop by [Egor Kotov](http://github.com/e-kotov),held at [Applied Geoinformatics (AGIT) Conference 2025](https://agit.at/en/program/), Salzburg, Austria) [![DOI:10.5281/zenodo.15794849](https://zenodo.org/badge/DOI/10.5281/zenodo.15794849.svg)](https://doi.org/10.5281/zenodo.15794849)
+  href: https://www.ekotov.pro/agit-2025-spanishoddata/
+- name: ic2s2-tutorial
+  title: "Mobility Flows and Accessibility Using R and Big Open Data"
+  description: |
+    Tutorial by [Egor Kotov](http://github.com/e-kotov) and [Johannes Mast](https://github.com/JohMast), held at [IC2S2 2025](https://www.ic2s2-2025.org/) (11th International Conference on Computational Social Science), Norrköping, Sweden) [![DOI:10.5281/zenodo.16238597](https://zenodo.org/badge/DOI/10.5281/zenodo.16238597.svg)](https://doi.org/10.5281/zenodo.16238597)
+  href: https://www.ekotov.pro/spanish-open-mobility-workshop-ic2s2-2025/
+- name: dstp-course
+  title: "Data Science for Transport Planning"
+  description: |
+    Course by [Robin Lovelace](https://github.com/robinlovelace), [Juan P. Fonseca-Zamora](https://github.com/juanfonsecaLS1), and [Yuanxuan Yang](https://github.com/yyuanxuan) (held at the [Institute for Transport Studies, University of Leeds](https://environment.leeds.ac.uk/transport))
+  href: https://tdscience.github.io/dstp/
 
 navbar:
   structure:
