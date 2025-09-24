@@ -47,13 +47,24 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/v1-2020-2021-mitma-data-codebook.html">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a></li>
+<li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Codebooks</h6></li>
+    <li><a class="dropdown-item" href="articles/v1-2020-2021-mitma-data-codebook.html">Codebook and cookbook for v1 (2020-2021) Spanish mobility data</a></li>
     <li><a class="dropdown-item" href="articles/v2-2022-onwards-mitma-data-codebook.html">Codebook and cookbook for v2 (2022 onwards) Spanish mobility data</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Get/convert</h6></li>
     <li><a class="dropdown-item" href="articles/quick-get.html">Quicky get daily data</a></li>
     <li><a class="dropdown-item" href="articles/convert.html">Download and convert mobility datasets</a></li>
-    <li><a class="dropdown-item" href="articles/disaggregation.html">OD data disaggregation</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Visualise</h6></li>
     <li><a class="dropdown-item" href="articles/flowmaps-static.html">Making static flow maps</a></li>
     <li><a class="dropdown-item" href="articles/flowmaps-interactive.html">Making interactive flow maps</a></li>
+    <li><a class="dropdown-item" href="articles/disaggregation.html">OD data disaggregation</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.ekotov.pro/agit-2025-spanishoddata/">Analysing massive open human mobility data using spanishoddata, duckdb and flowmaps</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.ekotov.pro/spanish-open-mobility-workshop-ic2s2-2025/">Mobility Flows and Accessibility Using R and Big Open Data</a></li>
+    <li><a class="external-link dropdown-item" href="https://tdscience.github.io/dstp/">Data Science for Transport Planning</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -170,7 +181,7 @@ Setting data directory for advanced users
 <p>To run the code in this README we will use the following setup:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html" class="external-link">sf_use_s2</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Get metadata for the datasets as follows (we are using version 2 data covering years 2022 and onwards):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -336,7 +347,8 @@ Setting data directory for advanced users
 </h2>
 <p>For more information on the package, see:</p>
 <ul>
-<li>The <a href="https://rOpenSpain.github.io/spanishoddata/">pkgdown site</a>
+<li>
+<p>The <a href="https://rOpenSpain.github.io/spanishoddata/">pkgdown site</a></p>
 <ul>
 <li><a href="https://rOpenSpain.github.io/spanishoddata/reference/index.html">Functions reference</a></li>
 <li><a href="https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.html">v1 data (2020-2021) codebook</a></li>
@@ -350,6 +362,14 @@ Setting data directory for advanced users
 <a href="https://rOpenSpain.github.io/spanishoddata/articles/flowmaps-interactive.html">Making interactive flowmaps</a> shows how to create an interactive flowmap using the data acquired with <a href="https://rOpenSpain.github.io/spanishoddata/">spanishoddata</a>
 </li>
 <li><a href="https://ropenspain.github.io/spanishoddata/articles/quick-get.html" class="external-link">Quickly getting daily aggregated 2022+ data at municipality level</a></li>
+</ul>
+</li>
+<li>
+<p>Learning materials that use <code>spanishoddata</code>:</p>
+<ul>
+<li><p>Tutorial/workshop <a href="https://www.ekotov.pro/agit-2025-spanishoddata/" class="external-link">“Analysing massive open human mobility data using spanishoddata, duckdb and flowmaps”</a> by <a href="http://github.com/e-kotov" class="external-link">Egor Kotov</a> (held at <a href="https://agit.at/en/program/" class="external-link">Applied Geoinformatics (AGIT) Conference 2025</a>, Salzburg, Austria) <a href="https://doi.org/10.5281/zenodo.15794849" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.15794849.svg" alt="DOI:10.5281/zenodo.15794849"></a></p></li>
+<li><p>Tutorial <a href="https://www.ekotov.pro/spanish-open-mobility-workshop-ic2s2-2025/" class="external-link">“Mobility Flows and Accessibility Using R and Big Open Data”</a> by <a href="http://github.com/e-kotov" class="external-link">Egor Kotov</a> and <a href="https://github.com/JohMast" class="external-link">Johannes Mast</a> (held at <a href="https://www.ic2s2-2025.org/" class="external-link">IC2S2 2025</a> (11th International Conference on Computational Social Science), Norrköping, Sweden) <a href="https://doi.org/10.5281/zenodo.16238597" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.16238597.svg" alt="DOI:10.5281/zenodo.16238597"></a></p></li>
+<li><p><a href="https://tdscience.github.io/dstp/" class="external-link">Data Science for Transport Planning</a> course by <a href="https://github.com/robinlovelace" class="external-link">Robin Lovelace</a>, <a href="https://github.com/juanfonsecaLS1" class="external-link">Juan P. Fonseca-Zamora</a>, and <a href="https://github.com/yyuanxuan" class="external-link">Yuanxuan Yang</a> (held at the <a href="https://environment.leeds.ac.uk/transport" class="external-link">Institute for Transport Studies, University of Leeds</a>)</p></li>
 </ul>
 </li>
 </ul>
