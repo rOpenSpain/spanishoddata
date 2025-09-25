@@ -157,7 +157,9 @@ You can also explore the package and the data in an interactive RStudio
 container right in your web browser thanks to Binder, just click [the
 link](https://mybinder.org/v2/gh/e-kotov/spanishoddata-playground/HEAD?urlpath=rstudio)
 or the button:
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/e-kotov/spanishoddata-playground/HEAD?urlpath=rstudio)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/e-kotov/spanishoddata-playground/HEAD?urlpath=rstudio).
+Note that the session will be limited by memory and you will only be
+able to work with one full day of data.
 
 Load it as follows:
 
