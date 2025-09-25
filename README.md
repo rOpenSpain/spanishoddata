@@ -153,6 +153,12 @@ devtools::load_all()
 
 </details>
 
+You can also explore the package and the data in an interactive RStudio
+container right in your web browser thanks to Binder, just click [the
+link](https://mybinder.org/v2/gh/e-kotov/spanishoddata-playground/HEAD?urlpath=rstudio)
+or the button:
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/e-kotov/spanishoddata-playground/HEAD?urlpath=rstudio)
+
 Load it as follows:
 
 ``` r
@@ -501,7 +507,7 @@ For more information on the package, see:
   - [Quickly getting daily aggregated 2022+ data at municipality
     level](https://ropenspain.github.io/spanishoddata/articles/quick-get.html)
 
-- Learning materials that use `spanishoddata`:
+- Teaching materials that use `spanishoddata`:
 
   - Tutorial/workshop [“Analysing massive open human mobility data using
     spanishoddata, duckdb and
