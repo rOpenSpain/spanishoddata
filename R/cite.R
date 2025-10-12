@@ -12,17 +12,17 @@
 #' @examples
 #' # Cite everything in all formats
 #' \dontrun{
-#'  spod_cite()
+#' spod_cite()
 #' }
 #'
 #' # Cite just the package in BibTeX format
 #' \dontrun{
-#'  spod_cite(what = "package", format = "bibtex")
+#' spod_cite(what = "package", format = "bibtex")
 #' }
 #'
 #' # Cite both methodologies in plain text
 #' \dontrun{
-#'  spod_cite(what = c("methodology_v1", "methodology_v2"), format = "text")
+#' spod_cite(what = c("methodology_v1", "methodology_v2"), format = "text")
 #' }
 spod_cite <- function(
   what = "all",
@@ -57,7 +57,7 @@ spod_cite <- function(
 
   # 5. Function to get citation by key
   get_citation_by_key <- function(key) {
-    idx <- which(sapply(cit, function(x) x$key == key))
+    idx <- which(purrr::map_lgl(cit, ~ .x$key == key))
     if (length(idx) > 0) {
       return(cit[idx])
     }
