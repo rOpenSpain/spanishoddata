@@ -35,10 +35,10 @@
 #' # download and convert data
 #' dates_1 <- c(start = "2020-02-17", end = "2020-02-18")
 #' db_2 <- spod_convert(
-#'  type = "number_of_trips",
-#'  zones = "distr",
-#'  dates = dates_1,
-#'  overwrite = TRUE
+#'   type = "number_of_trips",
+#'   zones = "distr",
+#'   dates = dates_1,
+#'   overwrite = TRUE
 #' )
 #'
 #' # now connect to the converted data
@@ -204,7 +204,7 @@ spod_convert <- function(
       duckdb_target <- save_path
       # else check if it is a path to a folder
       # basically check that the path does not end with any other file extension other than .duckdb and then consider it as path to folder
-    } else if (!grepl('\\.[a-zA-Z0-9]+$', save_path)) {
+    } else if (!grepl("\\.[a-zA-Z0-9]+$", save_path)) {
       save_format <- "parquet"
     }
   }
@@ -322,7 +322,7 @@ spod_convert <- function(
     # find all views that contain csv in any case
     tables_list <- tables_list[stringr::str_detect(tables_list, "csv")]
     if (length(tables_list) > 0) {
-      for (i in 1:length(tables_list)) {
+      for (i in seq_along(tables_list)) {
         sql_drop_view <- dplyr::sql(
           glue::glue(
             "DROP VIEW IF EXISTS {tables_list[i]};"
@@ -339,7 +339,7 @@ spod_convert <- function(
   # if save_format is parquet
   need_to_return_parquet_files <- FALSE # will change in the if below if needed
   if (save_format == "parquet") {
-    if (overwrite == FALSE | overwrite == 'update') {
+    if (overwrite == FALSE | overwrite == "update") {
       # check if there are any existing parquet files in the save_path
       parquet_files <- fs::dir_ls(
         save_path,
@@ -355,14 +355,14 @@ spod_convert <- function(
           "What should be done? [D]elete all existing files in the target folder and convert all requested data from scratch? [U]pdate the folder with any new data while keeping the existing files? [C]ancel and quit? (D/U/C): "
         )
       }
-      if (overwrite == 'update' & length(parquet_files) > 0) {
+      if (overwrite == "update" & length(parquet_files) > 0) {
         response <- overwrite
       }
       if (
-        (overwrite == 'update' | overwrite == FALSE) &
+        (overwrite == "update" | overwrite == FALSE) &
           length(parquet_files) == 0
       ) {
-        response <- 'skip'
+        response <- "skip"
         overwrite <- TRUE
       }
 
