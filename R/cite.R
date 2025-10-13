@@ -53,11 +53,27 @@ spod_cite <- function(
   format <- setdiff(format, "all")
 
   # 4. Get the citation object
-  cit <- utils::citation("spanishoddata")
+  cit <- tryCatch(
+    {
+      suppressWarnings(utils::citation("spanishoddata"))
+    },
+    error = function(e) {
+      # Fallback for devtools::load_all() or test environments
+      citation_file <- system.file("CITATION", package = "spanishoddata")
+      if (citation_file == "") {
+        stop("CITATION file not found.")
+      }
+      readCitationFile(citation_file, meta = list(Encoding = "UTF-8"))
+    }
+  )
 
   # 5. Function to get citation by key
   get_citation_by_key <- function(key) {
-    idx <- which(purrr::map_lgl(cit, ~ .x$key == key))
+    idx <- which(purrr::map_lgl(cit, function(x) {
+      # Try multiple ways to access the key
+      entry_key <- x$key %||% attr(x, "key") %||% x[["key"]]
+      isTRUE(entry_key == key)
+    }))
     if (length(idx) > 0) {
       return(cit[idx])
     }
