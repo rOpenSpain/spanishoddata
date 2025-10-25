@@ -8,7 +8,8 @@ spod_download_zones_v1(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
     "municip", "municipios"),
   data_dir = spod_get_data_dir(),
-  quiet = FALSE
+  quiet = FALSE,
+  metadata = NULL
 )
 }
 \arguments{
@@ -17,6 +18,8 @@ spod_download_zones_v1(
 \item{data_dir}{The directory where the data is stored.}
 
 \item{quiet}{Boolean flag to control the display of messages.}
+
+\item{metadata}{Optional metadata table returned by \code{spod_available_data()}.}
 }
 \value{
 A \code{character} string containing the path to the downloaded and extracted file.
