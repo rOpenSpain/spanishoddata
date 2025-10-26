@@ -60,7 +60,8 @@
 <span>  zones <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"districts"</span>, <span class="st">"dist"</span>, <span class="st">"distr"</span>, <span class="st">"distritos"</span>, <span class="st">"municipalities"</span>, <span class="st">"muni"</span>,</span>
 <span>    <span class="st">"municip"</span>, <span class="st">"municipios"</span><span class="op">)</span>,</span>
 <span>  data_dir <span class="op">=</span> <span class="fu"><a href="spod_get_data_dir.html">spod_get_data_dir</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  metadata <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -78,6 +79,10 @@
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
 <dd><p>Boolean flag to control the display of messages.</p></dd>
+
+
+<dt id="arg-metadata">metadata<a class="anchor" aria-label="anchor" href="#arg-metadata"></a></dt>
+<dd><p>Optional metadata table returned by <code><a href="spod_available_data.html">spod_available_data()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
