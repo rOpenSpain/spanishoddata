@@ -24,16 +24,16 @@ Cite the package and the data
 \examples{
 # Cite everything in all formats
 \dontrun{
- spod_cite()
+spod_cite()
 }
 
 # Cite just the package in BibTeX format
 \dontrun{
- spod_cite(what = "package", format = "bibtex")
+spod_cite(what = "package", format = "bibtex")
 }
 
 # Cite both methodologies in plain text
 \dontrun{
- spod_cite(what = c("methodology_v1", "methodology_v2"), format = "text")
+spod_cite(what = c("methodology_v1", "methodology_v2"), format = "text")
 }
 }

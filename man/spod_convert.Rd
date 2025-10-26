@@ -82,10 +82,10 @@ spod_set_data_dir(tempdir())
 # download and convert data
 dates_1 <- c(start = "2020-02-17", end = "2020-02-18")
 db_2 <- spod_convert(
- type = "number_of_trips",
- zones = "distr",
- dates = dates_1,
- overwrite = TRUE
+  type = "number_of_trips",
+  zones = "distr",
+  dates = dates_1,
+  overwrite = TRUE
 )
 
 # now connect to the converted data

@@ -145,10 +145,18 @@ spod_available_data_v1 <- function(
     fs::dir_create(metadata_folder)
   }
 
+  s3_successful <- FALSE
+
   if (use_s3) {
     files_table <- tryCatch(
       {
-        spod_available_data_s3(ver = 1, force = force, quiet = quiet)
+        files_table_s3 <- spod_available_data_s3(
+          ver = 1,
+          force = force,
+          quiet = quiet
+        )
+        s3_successful <- TRUE
+        files_table_s3
       },
       error = function(e) {
         message(
@@ -306,7 +314,7 @@ spod_available_data_v1 <- function(
     )
 
   # add known file sizes from cached data
-  if (use_s3) {
+  if (s3_successful) {
     # replace remote file sizes for v1
     replacement_file_sizes_distr <- files_table |>
       dplyr::filter(grepl("mitma-distr", .data$local_path)) |>
@@ -497,10 +505,18 @@ spod_available_data_v2 <- function(
     fs::dir_create(metadata_folder)
   }
 
+  s3_successful <- FALSE
+
   if (use_s3) {
     files_table <- tryCatch(
       {
-        spod_available_data_s3(ver = 2, force = force, quiet = quiet)
+        files_table_s3 <- spod_available_data_s3(
+          ver = 2,
+          force = force,
+          quiet = quiet
+        )
+        s3_successful <- TRUE
+        files_table_s3
       },
       error = function(e) {
         message(
@@ -630,7 +646,7 @@ spod_available_data_v2 <- function(
     )
 
   # add known file sizes from cached data
-  if (use_s3) {
+  if (s3_successful) {
     files_table$remote_file_size_mb <- round(
       files_table$file_size_bytes / 1024^2,
       2

@@ -1,5 +1,9 @@
 # spanishoddata (development version)
 
+## Bug fixes
+
+* Fixed failing fallback on XML when Amazon S3 is unavailable.
+
 # spanishoddata 0.2.1 (2025-07-29)
 
 ## Bug fixes

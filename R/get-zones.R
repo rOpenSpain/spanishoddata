@@ -148,11 +148,17 @@ spod_get_zones_v1 <- function(
   metadata <- spod_available_data(
     ver = 1,
     data_dir = data_dir,
-    check_local_files = FALSE
+    check_local_files = FALSE,
+    quiet = quiet
   )
 
   # Ensure the raw data is downloaded and extracted
-  spod_download_zones_v1(zones, data_dir, quiet)
+  spod_download_zones_v1(
+    zones = zones,
+    data_dir = data_dir,
+    quiet = quiet,
+    metadata = metadata
+  )
 
   # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
@@ -375,6 +381,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 #' @param zones The zones for which to download the data. Can be `"districts"` (or `"dist"`, `"distr"`, or the original Spanish `"distritos"`) or `"municipalities"` (or `"muni"`, `"municip"`, or the original Spanish `"municipios"`).
 #' @param data_dir The directory where the data is stored.
 #' @param quiet Boolean flag to control the display of messages.
+#' @param metadata Optional metadata table returned by `spod_available_data()`.
 #' @return A `character` string containing the path to the downloaded and extracted file.
 #' @keywords internal
 spod_download_zones_v1 <- function(
@@ -389,17 +396,21 @@ spod_download_zones_v1 <- function(
     "municipios"
   ),
   data_dir = spod_get_data_dir(),
-  quiet = FALSE
+  quiet = FALSE,
+  metadata = NULL
 ) {
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
-  metadata <- spod_available_data(
-    ver = 1,
-    data_dir = data_dir,
-    use_s3 = TRUE,
-    check_local_files = FALSE
-  )
+  if (is.null(metadata)) {
+    metadata <- spod_available_data(
+      ver = 1,
+      data_dir = data_dir,
+      use_s3 = TRUE,
+      check_local_files = FALSE,
+      quiet = quiet
+    )
+  }
 
   # download id relation files if missing
   relation_files <- metadata[
