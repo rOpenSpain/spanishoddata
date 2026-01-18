@@ -16,14 +16,16 @@ Description: Gain seamless access to origin-destination (OD) data from the
     providing tools to download zone boundaries, handle associated
     origin-destination data, and process it efficiently with the 'duckdb'
     database interface.  Local caching minimizes repeated downloads,
-    streamlining workflows for researchers and analysts. Extensive
+    streamlining workflows for researchers and analysts. Methods described
+    in Kotov et al. (2026) <doi:10.1177/23998083251415040>. Extensive
     documentation is available at
     <https://ropenspain.github.io/spanishoddata/index.html>, offering
     guides on creating static and dynamic mobility flow visualizations and
     transforming large datasets into analysis-ready formats.
 License: MIT + file LICENSE
 URL: https://rOpenSpain.github.io/spanishoddata/,
-    https://github.com/rOpenSpain/spanishoddata
+    https://github.com/rOpenSpain/spanishoddata,
+    https://doi.org/10.1177/23998083251415040
 BugReports: https://github.com/rOpenSpain/spanishoddata/issues
 Depends:
     R (>= 4.1.0)
@@ -45,6 +47,7 @@ Imports:
     parallelly,
     paws.storage (>= 0.4.0),
     purrr,
+    Rdpack,
     readr,
     rlang,
     sf,
@@ -67,8 +70,10 @@ Suggests:
     tidyverse
 VignetteBuilder:
     quarto
+RdMacros: 
+    Rdpack
 Config/Needs/website: rmarkdown
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

@@ -3,5 +3,6 @@
 
 ## usethis namespace: start
 #' @importFrom lifecycle deprecated
+#' @importFrom Rdpack reprompt
 ## usethis namespace: end
 NULL

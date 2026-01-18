@@ -37,9 +37,11 @@ A \code{tibble} containing the flows for the specified date, minimum number of j
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \strong{WARNING: this function may stop working at any time, as the API may change}. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \code{\link[=spod_get]{spod_get()}}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at \url{https://mapas-movilidad.transportes.gob.es/}. No data aggregation is performed on your computer (unlike in \code{\link[=spod_get]{spod_get()}}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \code{\link[=spod_get]{spod_get()}}.
+
+For detailed data descriptions, see package vignettes using \code{\link[=spod_codebook]{spod_codebook(ver = 1)}} and \code{\link[=spod_codebook]{spod_codebook(ver = 2)}} and official methodology documents in \strong{References} section.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 od_1000 <- spod_quick_get_od(
   date = "2022-01-01",
@@ -47,4 +49,16 @@ od_1000 <- spod_quick_get_od(
 )
 }
 \dontshow{\}) # examplesIf}
+}
+\references{
+{
+\itemize{
+\item \strong{For the official website of the mobility study}: \insertRef{mitms_mobility_web}{spanishoddata}
+\item \strong{For v1 data methodology}: \insertRef{mitma_methodology_2020_v3}{spanishoddata}
+\item \strong{For v2 data methodology}: \insertRef{mitms_methodology_2022_v8}{spanishoddata}
+\item \strong{For the \code{spanishoddata} R package}: \insertRef{spanishoddata-r-pkg}{spanishoddata}
+}
+
+Use \code{\link[=spod_cite]{spod_cite()}} to cite the package and the data with correct plain text, markdown, or BibTeX formats.
+}
 }

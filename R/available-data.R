@@ -6,6 +6,10 @@
 #'
 #' Get a table with links to available data files for the specified data version. Optionally check (see arguments) the file size and availability of data files previously downloaded into the cache directory specified with SPANISH_OD_DATA_DIR environment variable (set by [spod_set_data_dir()]) or a custom path specified with `data_dir` argument. By default the data is fetched from Amazon S3 bucket where the data is stored. If that fails, the function falls back to downloading an XML file from the Spanish Ministry of Transport website. You can also control this behaviour with `use_s3` argument.
 #'
+#' For detailed data descriptions, see package vignettes using [`spod_codebook(ver = 1)`][spod_codebook] and [`spod_codebook(ver = 2)`][spod_codebook] and official methodology documents in **References** section.
+#'
+#' @template references
+#'
 #' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with [spod_codebook()].
 #' @param check_local_files Logical. Whether to check if the local files exist and get the file size. Defaults to `FALSE`.
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.

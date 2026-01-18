@@ -6,6 +6,10 @@
 #'
 #' Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 #'
+#' For detailed data descriptions, see package vignettes using [`spod_codebook(ver = 1)`][spod_codebook] and [`spod_codebook(ver = 2)`][spod_codebook] and official methodology documents in **References** section.
+#'
+#' @template references
+#'
 #' @inheritParams spod_download
 #' @inheritParams spod_available_data
 #' @return An `sf` object (Simple Feature collection).
@@ -34,6 +38,8 @@
 #'   \item{district_ids_in_v1/municipality_ids_in_v1}{A string with semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, it is marked as `NA`.}
 #'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 #' }
+#'
+#'
 #'
 #' @export
 #' @examplesIf interactive()
@@ -436,8 +442,9 @@ spod_download_zones_v1 <- function(
   }
 
   if (!fs::file_exists(metadata_zones$local_path)) {
-    if (isFALSE(quiet))
+    if (isFALSE(quiet)) {
       message("Downloading the file to: ", metadata_zones$local_path)
+    }
     downloaded_file <- spod_download_in_batches(metadata_zones)
     # downloaded_file <- spod_multi_download_with_progress(metadata_zones)
     # disable curl::multi_download() for now
@@ -449,12 +456,15 @@ spod_download_zones_v1 <- function(
     # )
     downloaded_file <- downloaded_file$local_path
   } else {
-    if (isFALSE(quiet))
+    if (isFALSE(quiet)) {
       message("File already exists: ", metadata_zones$local_path)
+    }
     downloaded_file <- metadata_zones$local_path
   }
 
-  if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
+  if (isFALSE(quiet)) {
+    message("Unzipping the file: ", downloaded_file)
+  }
   if (!dir.exists(fs::path_dir(downloaded_file))) {
     fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
   }
@@ -465,7 +475,9 @@ spod_download_zones_v1 <- function(
 
   # remove artifacts (remove __MACOSX if exists)
   junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
-  if (dir.exists(junk_path)) fs::dir_delete(junk_path)
+  if (dir.exists(junk_path)) {
+    fs::dir_delete(junk_path)
+  }
 
   return(metadata_zones$local_path)
 }

@@ -66,9 +66,11 @@ This function creates a DuckDB lazy table connection object from the specified t
 If you want to analyse longer periods of time (especiially several months or even the whole data over several years), consider using the \code{\link{spod_convert}} and then \code{\link{spod_connect}}.
 
 If you want to quickly get the origin-destination data with flows aggregated for a single day at municipal level and without any extra socio-economic variables, consider using the \code{\link{spod_quick_get_od}} function.
+
+For detailed data descriptions, see package vignettes using \code{\link[=spod_codebook]{spod_codebook(ver = 1)}} and \code{\link[=spod_codebook]{spod_codebook(ver = 2)}} and official methodology documents in \strong{References} section.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 
 # create a connection to the v1 data
@@ -87,4 +89,16 @@ DBI::dbListTables(nt_dist$src$con)
 spod_disconnect(nt_dist)
 }
 \dontshow{\}) # examplesIf}
+}
+\references{
+{
+\itemize{
+\item \strong{For the official website of the mobility study}: \insertRef{mitms_mobility_web}{spanishoddata}
+\item \strong{For v1 data methodology}: \insertRef{mitma_methodology_2020_v3}{spanishoddata}
+\item \strong{For v2 data methodology}: \insertRef{mitms_methodology_2022_v8}{spanishoddata}
+\item \strong{For the \code{spanishoddata} R package}: \insertRef{spanishoddata-r-pkg}{spanishoddata}
+}
+
+Use \code{\link[=spod_cite]{spod_cite()}} to cite the package and the data with correct plain text, markdown, or BibTeX formats.
+}
 }

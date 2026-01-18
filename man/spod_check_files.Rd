@@ -52,7 +52,7 @@ A tibble similar to the output of \code{spod_available_data}, but with an extra 
 \strong{WARNING: The checks may fail for May 2022 data and for some 2025 data, as the remote cheksums that are used for checking the file consistency are incorrect. We are working on solving this in future updates, for now, kindly rely on the built-in file size checks of \code{\link{spod_download}}, \code{\link{spod_get}}, and \code{\link{spod_convert}}.} This function checks downloaded data files whether they are consistent with their checksums in Amazon S3 by computing ETag for each file. This involves computing MD5 for each part of the file and concatenating them and computing MD5 again on the resulting concatenated MD5s. This may take very long time if you check all files, so use with caution.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 spod_set_data_dir(tempdir())
 spod_download(

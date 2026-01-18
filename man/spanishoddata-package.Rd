@@ -8,13 +8,14 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at \url{https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad}. This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Extensive documentation is available at \url{https://ropenspain.github.io/spanishoddata/index.html}, offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.
+Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at \url{https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad}. This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Methods described in Kotov et al. (2026) \doi{10.1177/23998083251415040}. Extensive documentation is available at \url{https://ropenspain.github.io/spanishoddata/index.html}, offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://rOpenSpain.github.io/spanishoddata/}
   \item \url{https://github.com/rOpenSpain/spanishoddata}
+  \item \doi{10.1177/23998083251415040}
   \item Report bugs at \url{https://github.com/rOpenSpain/spanishoddata/issues}
 }
 

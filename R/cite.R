@@ -39,56 +39,26 @@ spod_cite <- function(
   checkmate::assertSubset(format, choices = valid_format)
 
   # 3. Expand "all" options
-  # If "all" is included in what, use all sources except the "all" string itself
   if ("all" %in% what) {
     what <- unique(c(what, valid_what[valid_what != "all"]))
   }
-  # If "all" is included in format, use all formats except the "all" string itself
   if ("all" %in% format) {
     format <- unique(c(format, valid_format[valid_format != "all"]))
   }
 
-  # Now remove the literal "all" from each to avoid confusion
+  # Remove the literal "all" from each
   what <- setdiff(what, "all")
   format <- setdiff(format, "all")
 
-  # 4. Get the citation object
-  cit <- tryCatch(
-    {
-      suppressWarnings(utils::citation("spanishoddata"))
-    },
-    error = function(e) {
-      # Fallback for devtools::load_all() or test environments
-      citation_file <- system.file("CITATION", package = "spanishoddata")
-      if (citation_file == "") {
-        stop("CITATION file not found.")
-      }
-      readCitationFile(citation_file, meta = list(Encoding = "UTF-8"))
-    }
-  )
-
-  # 5. Function to get citation by key
-  get_citation_by_key <- function(key) {
-    idx <- which(purrr::map_lgl(cit, function(x) {
-      # Try multiple ways to access the key
-      entry_key <- x$key %||% attr(x, "key") %||% x[["key"]]
-      isTRUE(entry_key == key)
-    }))
-    if (length(idx) > 0) {
-      return(cit[idx])
-    }
-    return(NULL)
-  }
-
-  # 6. Map what options to citation keys
+  # 4. Map what options to BibTeX keys in REFERENCES.bib
   citation_keys <- list(
-    package = "r-spanishoddata",
+    package = "spanishoddata-r-pkg",
     data = "mitms_mobility_web",
     methodology_v1 = "mitma_methodology_2020_v3",
     methodology_v2 = "mitms_methodology_2022_v8"
   )
 
-  # 6.1. Human‐readable labels for each “what”
+  # 4.1. Human-readable labels for each "what"
   citation_labels <- list(
     package = "To cite the spanishoddata package",
     data = "To cite the Ministry's mobility study website",
@@ -96,54 +66,33 @@ spod_cite <- function(
     methodology_v2 = "To cite the methodology for 2022 and onwards data"
   )
 
-  # 7. Collect the requested citations
+  # 5. Read REFERENCES.bib using Rdpack
+  bibs <- Rdpack::get_bibentries(package = "spanishoddata")
+
+  # 6. Collect the requested citations
   citations_to_show <- list()
   for (w in what) {
     key <- citation_keys[[w]]
-    cit_entry <- get_citation_by_key(key)
-    if (!is.null(cit_entry)) {
-      citations_to_show[[w]] <- cit_entry
+    if (key %in% names(bibs)) {
+      citations_to_show[[w]] <- bibs[key]
     }
   }
 
-  # If nothing was found (e.g., user gave an empty vector)
+  # If nothing was found
   if (length(citations_to_show) == 0) {
     message("No valid citations found for the requested 'what'.")
     return(invisible(NULL))
   }
 
-  # 8. Helper functions for formatting output
-
-  # Plain text
-  format_text <- function(citation) {
-    text <- format(citation, style = "text")
-    # remove asterisks or underscores used for emphasis in the default text
-    text <- gsub("\\*([^*]*)\\*", "\\1", text)
-    text <- gsub("_([^_]*)_", "\\1", text)
-    # Clean up URLs (remove angle brackets)
-    text <- gsub("<(http[^>]*)>", "\\1", text)
-    paste(text, collapse = "\n")
-  }
-
-  # Markdown
-  format_markdown <- function(citation) {
-    text <- format(citation, style = "text")
-    # minimal transformation to markdown: italicize text within asterisks
-    text <- gsub("\\*([^*]*)\\*", "_\\1_", text)
-    # remove angle brackets around URLs
-    text <- gsub("<(http[^>]*)>", "\\1", text)
-    paste(text, collapse = "\n")
-  }
-
-  # 9. Print the citations in requested formats
+  # 7. Print the citations in requested formats
   for (f in format) {
     if (f == "text") {
       cat("\nPlain text citations:\n---------------------\n")
       for (w in names(citations_to_show)) {
-        cit_item <- citations_to_show[[w]]
+        cit_entry <- citations_to_show[[w]]
         cat(paste0(citation_labels[[w]], ":\n"))
-        cat(format_text(cit_item), "\n\n")
-        # note for methodology_v2
+        cat(format(cit_entry, style = "text"), "\n\n")
+        # Note for methodology_v2
         if (w == "methodology_v2") {
           cat(
             "Note: A more up-to-date methodology document may be available at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/metodologia-del-estudio-de-movilidad-con-bigdata\n\n"
@@ -153,10 +102,10 @@ spod_cite <- function(
     } else if (f == "markdown") {
       cat("\nMarkdown citations:\n-------------------\n")
       for (w in names(citations_to_show)) {
-        cit_item <- citations_to_show[[w]]
+        cit_entry <- citations_to_show[[w]]
         cat(paste0("**", citation_labels[[w]], ":**\n"))
-        cat(format_markdown(cit_item), "\n\n")
-        # note for methodology_v2
+        cat(format(cit_entry, style = "text"), "\n\n")
+        # Note for methodology_v2
         if (w == "methodology_v2") {
           cat(
             "> **Note:** A more up-to-date methodology document may be available at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/metodologia-del-estudio-de-movilidad-con-bigdata\n\n"
@@ -166,10 +115,85 @@ spod_cite <- function(
     } else if (f == "bibtex") {
       cat("\nBibTeX citations:\n-----------------\n")
       for (w in names(citations_to_show)) {
+        cit_entry <- citations_to_show[[w]]
         cat(paste0("%% ", citation_labels[[w]], "\n"))
-        print(utils::toBibtex(citations_to_show[[w]]))
-        cat("\n")
-        # note for methodology_v2
+        
+        # Capture standard BibTeX output
+        bib_lines <- capture.output(print(cit_entry, style = "bibtex"))
+
+        # CUSTOM FORMATTING: Ensure "Last, First" author format with strict brace preservation
+        # 1. Generate text string for authors in "Last, First" format
+        auth_obj <- cit_entry$author
+        if (is.null(auth_obj)) {
+          # Fallback via unclass if direct access fails (unlikely for bibentry)
+          auth_obj <- unclass(cit_entry)[[1]]$author
+        }
+
+        custom_author_str <- NULL
+        if (!is.null(auth_obj) && length(auth_obj) > 0) {
+          custom_author_str <- paste(
+            sapply(auth_obj, function(p) {
+              fam <- paste(p$family, collapse = " ")
+              giv <- paste(p$given, collapse = " ")
+              
+              # Heuristic: If family name contains hyphens, spaces, or backslashes (latex),
+              # preserve it wrapped in curly braces.
+              # Note: Standard names like "Kotov" (alphanumeric) are left as is.
+              if (grepl("[-\\\\\\s]", fam)) {
+                 fam <- paste0("{", fam, "}")
+              }
+              
+              if (length(p$given) == 0 || nchar(giv) == 0) {
+                # Organization or Mononym
+                # Even if simple, organization names often benefit from braces if not broken down
+                # But our heuristic handles spaces, so "Ministry of ..." gets braces.
+                return(fam) 
+              } else {
+                return(paste0(fam, ", ", giv))
+              }
+            }),
+            collapse = " and "
+          )
+        }
+
+        # 2. Replace the 'author = { ... },' block in bib_lines
+        start_idx <- grep("^\\s*author\\s*=", bib_lines)
+        
+        if (length(start_idx) == 1 && !is.null(custom_author_str)) {
+          # Find end of the author block by brace balancing
+          current_line_idx <- start_idx
+          brace_balance <- 0
+          
+          # Iterate to find the closing brace
+          for (i in start_idx:length(bib_lines)) {
+            line <- bib_lines[i]
+            # Simple count of { and }
+            # Note: R's toBibtex output is regular and clean
+            n_open <- stringr::str_count(line, "\\{")
+            n_close <- stringr::str_count(line, "\\}")
+            brace_balance <- brace_balance + n_open - n_close
+            
+            if (brace_balance == 0) {
+              current_line_idx <- i
+              break
+            }
+          }
+          end_idx <- current_line_idx
+          
+          # Replace the block with the single formatted line
+          new_line <- paste0("  author = {", custom_author_str, "},")
+          
+          # Construct new lines vector
+          pre_block <- if (start_idx > 1) bib_lines[1:(start_idx - 1)] else character(0)
+          post_block <- if (end_idx < length(bib_lines)) bib_lines[(end_idx + 1):length(bib_lines)] else character(0)
+          
+          bib_lines <- c(pre_block, new_line, post_block)
+        }
+        
+        cat(bib_lines, sep = "\n")
+        cat("\n\n")
+        
+        # Note for methodology_v2
         if (w == "methodology_v2") {
           cat(
             "%% Note: A more up-to-date methodology document may be available at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/metodologia-del-estudio-de-movilidad-con-bigdata\n\n"

@@ -1,6 +1,6 @@
 ---
 format: gfm
-bibliography: vignettes/references.bib
+bibliography: inst/REFERENCES.bib
 execute: 
   message: false
   warning: false
@@ -364,7 +364,7 @@ BibTeX:
 #| eval: true
 #| echo: false
 #| results: 'asis'
-toBibtex(citation("spanishoddata"))
+spanishoddata::spod_cite(format = "bibtex")
 ```
 ```
 

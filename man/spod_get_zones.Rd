@@ -53,9 +53,11 @@ The columns for v2 (2022 onwards) data include:
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
+
+For detailed data descriptions, see package vignettes using \code{\link[=spod_codebook]{spod_codebook(ver = 1)}} and \code{\link[=spod_codebook]{spod_codebook(ver = 2)}} and official methodology documents in \strong{References} section.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 # get polygons for municipalities for the v2 data
 municip_v2 <- spod_get_zones(zones = "municipalities", ver = 2)
@@ -64,4 +66,16 @@ municip_v2 <- spod_get_zones(zones = "municipalities", ver = 2)
 distr_v1 <- spod_get_zones(zones = "districts", ver = 1)
 }
 \dontshow{\}) # examplesIf}
+}
+\references{
+{
+\itemize{
+\item \strong{For the official website of the mobility study}: \insertRef{mitms_mobility_web}{spanishoddata}
+\item \strong{For v1 data methodology}: \insertRef{mitma_methodology_2020_v3}{spanishoddata}
+\item \strong{For v2 data methodology}: \insertRef{mitms_methodology_2022_v8}{spanishoddata}
+\item \strong{For the \code{spanishoddata} R package}: \insertRef{spanishoddata-r-pkg}{spanishoddata}
+}
+
+Use \code{\link[=spod_cite]{spod_cite()}} to cite the package and the data with correct plain text, markdown, or BibTeX formats.
+}
 }

@@ -16,11 +16,18 @@ A \code{sf} object with the municipalities geometries to match with the data ret
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This function fetches the municipalities (for now this is the  only option) geometries from the mapas-movilidad website and returns a \code{sf} object with the municipalities geometries. This is intended for use with the flows data retrieved by the \code{\link[=spod_quick_get_od]{spod_quick_get_od()}} function. An interactive web map with this data is available at \url{https://mapas-movilidad.transportes.gob.es/}. These municipality geometries only include Spanish municipalities (and not the NUTS3 regions in Portugal and France) and do not contain extra columns that you can get with the \code{\link[=spod_get_zones]{spod_get_zones()}} function. The function caches the retrieved geometries in memory of the current R session to reduce the number of requests to the mapas-movilidad website.
+
+For detailed zone definitions and methodology, see
+\insertRef{mitma_methodology_2020_v3}{spanishoddata} for v1 data and
+\insertRef{mitms_methodology_2022_v8}{spanishoddata} for v2 data.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 municipalities_sf <- spod_quick_get_zones()
 }
 \dontshow{\}) # examplesIf}
+}
+\references{
+\insertRef{mitms_mobility_web}{spanishoddata}
 }
