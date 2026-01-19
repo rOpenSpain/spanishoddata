@@ -1,5 +1,9 @@
 # spanishoddata (development version)
 
+## Breaking changes
+
+* `time_slot` column has been removed from the output of `spod_get()` and `spod_convert()`. Please use the `hour` column instead. Deprecation message removed.
+
 ## Bug fixes
 
 * Fixed failing fallback on XML when Amazon S3 is unavailable.

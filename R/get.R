@@ -122,16 +122,6 @@ spod_get <- function(
   # normalise type
   type <- spod_match_data_type(type = type)
 
-  # deprecation message for od time_slot column
-  if (type == "od") {
-    lifecycle::deprecate_warn(
-      when = "0.1.0.9000",
-      what = I("`time slot`"),
-      with = I("`hour`"),
-      details = "`time_slot` column in origin destination data is now called `hour`. `time_slot` will be available in addition to `hour` and contain the same data in the outputs of `spod_get()` and `spod_convert()` until the end of 2025."
-    )
-  }
-
   # normalise zones
   zones <- spod_zone_names_en2es(zones)
 
