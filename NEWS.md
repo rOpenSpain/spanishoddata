@@ -8,6 +8,8 @@
 
 * Fixed failing fallback on XML when Amazon S3 is unavailable.
 
+* `spanishoddata` package and paper are now featured in [DuckDB Library](https://duckdb.org/library/spanishoddata-r-package/)
+
 # spanishoddata 0.2.1 (2025-07-29)
 
 ## Bug fixes
