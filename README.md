@@ -62,6 +62,13 @@ To effectively work with multiple data files, it’s recommended you set
 up a data directory where the package can search for the data and
 download only the files that are not already present.
 
+Under the hood, **spanishoddata** uses the efficient
+[DuckDB](https://duckdb.org/) database engine via
+<a href="https://r.duckdb.org/"
+target="_blank"><code>{duckdb}</code></a> R package and is featured in
+the <a href="https://duckdb.org/library/spanishoddata-r-package/"
+target="_blank">DuckDB Library</a>.
+
 ## Examples of available data
 
 <div id="fig-barcelona-flows">

@@ -32,6 +32,8 @@ See the [package website](https://rOpenSpain.github.io/spanishoddata/) and vigne
 
 **spanishoddata** is designed to save time by providing the data in analysis-ready formats. Automating the process of downloading, cleaning, and importing the data can also reduce the risk of errors in the laborious process of data preparation. It also reduces computational resources by using computationally efficient packages behind the scenes. To effectively work with multiple data files, it’s recommended you set up a data directory where the package can search for the data and download only the files that are not already present.
 
+Under the hood, **spanishoddata** uses the efficient [DuckDB](https://duckdb.org/) database engine via [`{duckdb}`](https://r.duckdb.org/){target="_blank"} R package and is featured in the [DuckDB Library](https://duckdb.org/library/spanishoddata-r-package/){target="_blank"}.
+
 ## Examples of available data
 
 ![Example of the data available through the package: daily flows in Barcelona on 7 April 2021](vignettes/media/flows_plot_barcelona.svg){#fig-barcelona-flows width=100%}
