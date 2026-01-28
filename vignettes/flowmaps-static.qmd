@@ -361,7 +361,7 @@ ggsave(
 ```{r}
 #| include: false
 ggsave(
-  "./vignettes/media/flows_plot_barcelona.svg",
+  "./man/figures/flows_plot_barcelona.svg",
   plot = flows_plot_barcelona,
   width = 10,
   height = 10,
