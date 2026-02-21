@@ -431,22 +431,22 @@ spod_unique_separated_ids <- function(column) {
 spod_convert_dates_to_ranges <- function(dates) {
   dates <- as.Date(dates) # Ensure dates are in Date format
   ranges <- tibble::tibble(date = dates) |>
-    dplyr::arrange(date) |>
+    dplyr::arrange(.data$date) |>
     dplyr::mutate(
-      diff = c(0, diff(date)), # Calculate differences
-      group = cumsum(diff != 1) # Create groups for consecutive ranges
+      diff = c(0, diff(.data$date)), # Calculate differences
+      group = cumsum(.data$diff != 1) # Create groups for consecutive ranges
     ) |>
-    dplyr::group_by(group) |>
+    dplyr::group_by(.data$group) |>
     dplyr::summarise(
-      start = dplyr::first(date),
-      end = dplyr::last(date),
+      start = dplyr::first(.data$date),
+      end = dplyr::last(.data$date),
       .groups = "drop"
     )
 
   # Create a character vector of ranges
   range_strings <- ranges |>
-    dplyr::mutate(range = paste(start, "to", end)) |>
-    dplyr::pull(range)
+    dplyr::mutate(range = paste(.data$start, "to", .data$end)) |>
+    dplyr::pull(.data$range)
 
   return(range_strings)
 }
@@ -488,9 +488,9 @@ spod_graphql_valid_dates <- function() {
     dplyr::rename(start_date = "startDate", end_date = "endDate") |>
     dplyr::mutate(
       end_date = dplyr::if_else(
-        condition = end_date == "2024-09-31",
+        condition = .data$end_date == "2024-09-31",
         true = "2024-09-30",
-        false = end_date
+        false = .data$end_date
       )
     )
 

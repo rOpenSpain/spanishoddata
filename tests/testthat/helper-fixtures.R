@@ -57,18 +57,17 @@ setup_test_data_dir <- function() {
   # 3. Setup Raw OD Data
   # --------------------
   # spod_duckdb_od expects 'raw_data_cache/v{ver}/estudios_basicos/por-distritos/viajes/ficheros-diarios/'
-  raw_od <- file.path(test_dir, "raw_data_cache/v2/estudios_basicos/por-distritos/viajes/ficheros-diarios")
-  dir.create(raw_od, recursive = TRUE)
+  # and 'raw_data_cache/v{ver}/distritos/viajes/ficheros-diarios/'
   
-  od_fixtures <- list.files(file.path(fixture_path, "raw_data/v2/estudios_basicos/por-distritos/viajes/ficheros-diarios"), full.names = TRUE)
-  
+  # Recreate Hive structure
+  raw_od_hive <- file.path(test_dir, "raw_data_cache/v2/estudios_basicos/por-distritos/viajes/ficheros-diarios/year=2022/month=2/day=1")
+  dir.create(raw_od_hive, recursive = TRUE)
+  file.copy(file.path(fixture_path, "raw_data/v2/od_hive_data.csv.gz"), file.path(raw_od_hive, "data.csv.gz"))
 
-  
-  if (length(od_fixtures) > 0) {
-    file.copy(od_fixtures, raw_od, recursive = TRUE)
-  }
-  
-  files_in_dest <- list.files(raw_od, recursive = TRUE)
+  # Recreate standard daily structure
+  raw_od_day <- file.path(test_dir, "raw_data_cache/v2/distritos/viajes/ficheros-diarios")
+  dir.create(raw_od_day, recursive = TRUE)
+  file.copy(file.path(fixture_path, "raw_data/v2/od_dist_day.csv.gz"), file.path(raw_od_day, "viajes_distrito_2022-02-01.csv.gz"))
   
   return(test_dir)
 }

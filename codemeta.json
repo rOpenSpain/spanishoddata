@@ -57,6 +57,18 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "cli",
+      "name": "cli",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=cli"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "flowmapblue",
       "name": "flowmapblue",
       "provider": {
@@ -200,6 +212,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=tidyverse"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "withr",
+      "name": "withr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=withr"
     }
   ],
   "softwareRequirements": {
@@ -506,7 +530,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2141.948KB",
+  "fileSize": "3532.508KB",
   "citation": [
     {
       "@type": "ScholarlyArticle",
@@ -609,6 +633,5 @@
   "releaseNotes": "https://github.com/rOpenSpain/spanishoddata/blob/master/NEWS.md",
   "readme": "https://github.com/rOpenSpain/spanishoddata/blob/main/README.md",
   "contIntegration": "https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml",
-  "developmentStatus": "https://www.repostatus.org/#active",
-  "keywords": ["cdr", "data", "data-package", "mobility", "origin-destination", "rstats", "mobile-telephone-data"]
+  "developmentStatus": "https://www.repostatus.org/#active"
 }

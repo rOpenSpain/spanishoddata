@@ -280,15 +280,15 @@ spod_clean_zones_v1 <- function(zones_path, zones, quiet = FALSE) {
       relations_municipalities |>
         dplyr::group_by(.data$municipality_mitma) |>
         dplyr::summarize(
-          municipalities = paste(municipality, collapse = "; ")
+          municipalities = paste(.data$municipality, collapse = "; ")
         ),
       by = "municipality_mitma"
     ) |>
     dplyr::group_by(.data$district_mitma) |>
     dplyr::summarize(
-      census_districts = paste(census_district, collapse = "; "),
-      municipalities_mitma = paste(municipality_mitma, collapse = "; "),
-      municipalities = paste(municipalities, collapse = "; ")
+      census_districts = paste(.data$census_district, collapse = "; "),
+      municipalities_mitma = paste(.data$municipality_mitma, collapse = "; "),
+      municipalities = paste(.data$municipalities, collapse = "; ")
     )
 
   # summarise municipalities relations
@@ -297,16 +297,16 @@ spod_clean_zones_v1 <- function(zones_path, zones, quiet = FALSE) {
       relations_districts |>
         dplyr::group_by(.data$municipality_mitma) |>
         dplyr::summarize(
-          census_districts = paste(census_district, collapse = "; "),
-          districts_mitma = paste(district_mitma, collapse = "; ")
+          census_districts = paste(.data$census_district, collapse = "; "),
+          districts_mitma = paste(.data$district_mitma, collapse = "; ")
         ),
       by = "municipality_mitma"
     ) |>
     dplyr::group_by(.data$municipality_mitma) |>
     dplyr::summarize(
-      municipalities = paste(municipality, collapse = "; "),
-      districts_mitma = paste(districts_mitma, collapse = "; "),
-      census_districts = paste(census_districts, collapse = "; ")
+      municipalities = paste(.data$municipality, collapse = "; "),
+      districts_mitma = paste(.data$districts_mitma, collapse = "; "),
+      census_districts = paste(.data$census_districts, collapse = "; ")
     )
 
   # cleanup duplacate ids in municipalities
@@ -356,8 +356,8 @@ spod_clean_zones_v1 <- function(zones_path, zones, quiet = FALSE) {
   v2_v_1ref <- v2_to_v1 |>
     dplyr::group_by(.data$id) |>
     dplyr::summarize(
-      names_in_v2_data = paste(name_in_v2, collapse = "; "),
-      ids_in_v2_data = paste(id_in_v2, collapse = "; ")
+      names_in_v2_data = paste(.data$name_in_v2, collapse = "; "),
+      ids_in_v2_data = paste(.data$id_in_v2, collapse = "; ")
     )
   eng_zones <- dplyr::if_else(
     zones == "distritos",
@@ -726,7 +726,7 @@ spod_clean_zones_v2 <- function(zones_path) {
     v2_v_1ref <- v2_to_v1 |>
       dplyr::group_by(.data$id) |>
       dplyr::summarize(
-        ids_in_v1_data = paste(id_in_v1, collapse = "; ")
+        ids_in_v1_data = paste(.data$id_in_v1, collapse = "; ")
       )
     eng_zones <- dplyr::if_else(
       zones == "distritos",

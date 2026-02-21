@@ -16,11 +16,8 @@ Description: Gain seamless access to origin-destination (OD) data from the
     providing tools to download zone boundaries, handle associated
     origin-destination data, and process it efficiently with the 'duckdb'
     database interface.  Local caching minimizes repeated downloads,
-    streamlining workflows for researchers and analysts. Sample data
-    subsets included for testing are "Datos abiertos Ministerio de
-    Transportes y Movilidad Sostenible" and are subject to the license
-    at <https://www.transportes.gob.es/el-ministerio/buen-gobierno/licencia_datos>.
-    Methods described in Kotov et al. (2026) <doi:10.1177/23998083251415040>.
+    streamlining workflows for researchers and analysts.  Methods
+    described in Kotov et al. (2026) <doi:10.1177/23998083251415040>.
     Extensive documentation is available at
     <https://ropenspain.github.io/spanishoddata/index.html>, offering
     guides on creating static and dynamic mobility flow visualizations and
@@ -59,6 +56,7 @@ Imports:
     tibble,
     xml2
 Suggests: 
+    cli,
     flowmapblue,
     flowmapper (>= 0.1.2),
     furrr,
@@ -70,7 +68,8 @@ Suggests:
     remotes,
     scales,
     testthat (>= 3.0.0),
-    tidyverse
+    tidyverse,
+    withr
 VignetteBuilder:
     quarto
 RdMacros: 
