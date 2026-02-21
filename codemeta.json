@@ -320,18 +320,6 @@
     },
     "9": {
       "@type": "SoftwareApplication",
-      "identifier": "here",
-      "name": "here",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=here"
-    },
-    "10": {
-      "@type": "SoftwareApplication",
       "identifier": "httr2",
       "name": "httr2",
       "provider": {
@@ -342,7 +330,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=httr2"
     },
-    "11": {
+    "10": {
       "@type": "SoftwareApplication",
       "identifier": "jsonlite",
       "name": "jsonlite",
@@ -354,7 +342,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=jsonlite"
     },
-    "12": {
+    "11": {
       "@type": "SoftwareApplication",
       "identifier": "lifecycle",
       "name": "lifecycle",
@@ -366,7 +354,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lifecycle"
     },
-    "13": {
+    "12": {
       "@type": "SoftwareApplication",
       "identifier": "lubridate",
       "name": "lubridate",
@@ -378,7 +366,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lubridate"
     },
-    "14": {
+    "13": {
       "@type": "SoftwareApplication",
       "identifier": "memoise",
       "name": "memoise",
@@ -390,7 +378,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=memoise"
     },
-    "15": {
+    "14": {
       "@type": "SoftwareApplication",
       "identifier": "openssl",
       "name": "openssl",
@@ -402,7 +390,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=openssl"
     },
-    "16": {
+    "15": {
       "@type": "SoftwareApplication",
       "identifier": "parallelly",
       "name": "parallelly",
@@ -414,7 +402,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=parallelly"
     },
-    "17": {
+    "16": {
       "@type": "SoftwareApplication",
       "identifier": "paws.storage",
       "name": "paws.storage",
@@ -427,7 +415,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=paws.storage"
     },
-    "18": {
+    "17": {
       "@type": "SoftwareApplication",
       "identifier": "purrr",
       "name": "purrr",
@@ -439,7 +427,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=purrr"
     },
-    "19": {
+    "18": {
       "@type": "SoftwareApplication",
       "identifier": "Rdpack",
       "name": "Rdpack",
@@ -451,7 +439,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=Rdpack"
     },
-    "20": {
+    "19": {
       "@type": "SoftwareApplication",
       "identifier": "readr",
       "name": "readr",
@@ -463,7 +451,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=readr"
     },
-    "21": {
+    "20": {
       "@type": "SoftwareApplication",
       "identifier": "rlang",
       "name": "rlang",
@@ -475,7 +463,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rlang"
     },
-    "22": {
+    "21": {
       "@type": "SoftwareApplication",
       "identifier": "sf",
       "name": "sf",
@@ -487,12 +475,12 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=sf"
     },
-    "23": {
+    "22": {
       "@type": "SoftwareApplication",
       "identifier": "stats",
       "name": "stats"
     },
-    "24": {
+    "23": {
       "@type": "SoftwareApplication",
       "identifier": "stringr",
       "name": "stringr",
@@ -504,7 +492,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=stringr"
     },
-    "25": {
+    "24": {
       "@type": "SoftwareApplication",
       "identifier": "tibble",
       "name": "tibble",
@@ -516,7 +504,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=tibble"
     },
-    "26": {
+    "25": {
       "@type": "SoftwareApplication",
       "identifier": "xml2",
       "name": "xml2",
@@ -530,7 +518,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "3532.508KB",
+  "fileSize": "3533.286KB",
   "citation": [
     {
       "@type": "ScholarlyArticle",
@@ -633,5 +621,6 @@
   "releaseNotes": "https://github.com/rOpenSpain/spanishoddata/blob/master/NEWS.md",
   "readme": "https://github.com/rOpenSpain/spanishoddata/blob/main/README.md",
   "contIntegration": "https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml",
-  "developmentStatus": "https://www.repostatus.org/#active"
+  "developmentStatus": "https://www.repostatus.org/#active",
+  "keywords": ["cdr", "data", "data-package", "mobility", "origin-destination", "rstats", "mobile-telephone-data"]
 }

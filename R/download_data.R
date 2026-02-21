@@ -166,14 +166,17 @@ spod_download <- function(
       # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
       # the decision was to use distrcit data and aggregate it to replicate municipal data
       grepl(
-        glue::glue("v{ver}.*{type}.*distritos"),
+        paste0("v", ver, ".*", type, ".*distritos"),
         available_data$local_path
       ) &
         available_data$data_ymd %in% dates_to_use,
     ]
   } else if (ver == 2) {
     requested_files <- available_data[
-      grepl(glue::glue("v{ver}.*{zones}.*{type}"), available_data$local_path) &
+      grepl(
+        paste0("v", ver, ".*", zones, ".*", type),
+        available_data$local_path
+      ) &
         available_data$data_ymd %in% dates_to_use,
     ]
   }
@@ -270,7 +273,6 @@ spod_download <- function(
     return(requested_files$local_path)
   }
 }
-
 
 
 #' Download multiple files with progress bar in parallel

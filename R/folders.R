@@ -19,7 +19,7 @@ spod_subfolder_raw_data_cache <- function(ver = 1) {
     stop("Invalid version number. Must be 1 or 2.")
   }
   base_subdir_name <- "raw_data_cache"
-  return(paste0(base_subdir_name, "/v", ver, "/"))
+  return(paste0(base_subdir_name, "/v", ver))
 }
 
 #' Get clean data subfolder name
@@ -34,7 +34,7 @@ spod_subfolder_clean_data_cache <- function(ver = 1) {
     stop("Invalid version number. Must be 1 or 2.")
   }
   base_subdir_name <- "clean_data"
-  return(paste0(base_subdir_name, "/v", ver, "/"))
+  return(paste0(base_subdir_name, "/v", ver))
 }
 
 #' Get temporary directory for DuckDB intermediate spilling

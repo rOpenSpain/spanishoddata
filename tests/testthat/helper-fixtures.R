@@ -18,8 +18,14 @@ setup_test_data_dir <- function() {
     fixture_path <- testthat::test_path("../../inst/testdata")
   }
   
+  if (!dir.exists(fixture_path)) {
+    # Try another fallback for R CMD check where inst/ is gone
+    fixture_path <- testthat::test_path("../..", "testdata")
+  }
   
-
+  if (!dir.exists(fixture_path)) {
+    stop("Could not find test fixtures at: ", fixture_path)
+  }
   
   # 1. Setup Metadata Cache
   # -----------------------
@@ -33,13 +39,17 @@ setup_test_data_dir <- function() {
   if (file.exists(mock_meta_v2)) {
     # Use a future date to ensure it's NEVER considered stale by spod_available_data_s3
     target_name <- paste0("metadata_s3_v2_", Sys.Date() + 30, ".rds")
-    file.copy(mock_meta_v2, file.path(meta_cache, target_name))
+    if (!file.copy(mock_meta_v2, file.path(meta_cache, target_name))) {
+      stop("Failed to copy v2 mock metadata")
+    }
   }
   
   mock_meta_v1 <- file.path(fixture_path, "metadata/available_data_s3_v1_mock.rds")
   if (file.exists(mock_meta_v1)) {
     target_name <- paste0("metadata_s3_v1_", Sys.Date() + 30, ".rds")
-    file.copy(mock_meta_v1, file.path(meta_cache, target_name))
+    if (!file.copy(mock_meta_v1, file.path(meta_cache, target_name))) {
+      stop("Failed to copy v1 mock metadata")
+    }
   }
   
   # 2. Setup Zone Cache
@@ -51,7 +61,9 @@ setup_test_data_dir <- function() {
   # Copy all bundled zone GPKGs
   zone_fixtures <- list.files(file.path(fixture_path, "clean_data/v2/zones"), full.names = TRUE)
   if (length(zone_fixtures) > 0) {
-    file.copy(zone_fixtures, clean_zones)
+    if (!all(file.copy(zone_fixtures, clean_zones))) {
+      stop("Failed to copy zone fixtures")
+    }
   }
   
   # 3. Setup Raw OD Data
@@ -62,12 +74,24 @@ setup_test_data_dir <- function() {
   # Recreate Hive structure
   raw_od_hive <- file.path(test_dir, "raw_data_cache/v2/estudios_basicos/por-distritos/viajes/ficheros-diarios/year=2022/month=2/day=1")
   dir.create(raw_od_hive, recursive = TRUE)
-  file.copy(file.path(fixture_path, "raw_data/v2/od_hive_data.csv.gz"), file.path(raw_od_hive, "data.csv.gz"))
+  hive_src <- file.path(fixture_path, "raw_data/v2/od_hive_data.csv.gz")
+  if (!file.exists(hive_src)) {
+    stop("Hive OD fixture missing at: ", hive_src)
+  }
+  if (!file.copy(hive_src, file.path(raw_od_hive, "data.csv.gz"))) {
+    stop("Failed to copy Hive OD fixture")
+  }
 
   # Recreate standard daily structure
   raw_od_day <- file.path(test_dir, "raw_data_cache/v2/distritos/viajes/ficheros-diarios")
   dir.create(raw_od_day, recursive = TRUE)
-  file.copy(file.path(fixture_path, "raw_data/v2/od_dist_day.csv.gz"), file.path(raw_od_day, "viajes_distrito_2022-02-01.csv.gz"))
+  day_src <- file.path(fixture_path, "raw_data/v2/od_dist_day.csv.gz")
+  if (!file.exists(day_src)) {
+    stop("Daily OD fixture missing at: ", day_src)
+  }
+  if (!file.copy(day_src, file.path(raw_od_day, "viajes_distrito_2022-02-01.csv.gz"))) {
+    stop("Failed to copy daily OD fixture")
+  }
   
   return(test_dir)
 }

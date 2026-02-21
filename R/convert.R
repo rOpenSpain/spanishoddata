@@ -183,7 +183,8 @@ spod_convert <- function(
     save_path <- fs::path(
       data_dir,
       spod_subfolder_clean_data_cache(ver = ver),
-      "tabular/duckdb/",
+      "tabular",
+      "duckdb",
       glue::glue("{type}_{zones}.duckdb")
     )
     if (isFALSE(quiet)) {
@@ -196,8 +197,9 @@ spod_convert <- function(
     save_path <- fs::path(
       data_dir,
       spod_subfolder_clean_data_cache(ver = ver),
-      "tabular/parquet/",
-      glue::glue("{type}_{zones}/")
+      "tabular",
+      "parquet",
+      glue::glue("{type}_{zones}")
     )
     if (isFALSE(quiet)) {
       message("Using default save_path: ", save_path)

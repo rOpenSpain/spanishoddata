@@ -106,8 +106,10 @@ spod_get_latest_v1_file_list <- function(
   }
 
   current_date <- format(Sys.Date(), format = "%Y-%m-%d")
-  current_filename <- glue::glue(
-    "{data_dir}/{spod_subfolder_metadata_cache()}/data_links_v1_{current_date}.xml"
+  current_filename <- fs::path(
+    data_dir,
+    spod_subfolder_metadata_cache(),
+    glue::glue("data_links_v1_{current_date}.xml")
   )
 
   # ensure dir exists
@@ -147,7 +149,7 @@ spod_available_data_v1 <- function(
   force = FALSE,
   quiet = FALSE
 ) {
-  metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
+  metadata_folder <- fs::path(data_dir, spod_subfolder_metadata_cache())
   if (!dir.exists(metadata_folder)) {
     fs::dir_create(metadata_folder)
   }
@@ -207,12 +209,13 @@ spod_available_data_v1 <- function(
   ))
   # order by pub_ts
   files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
-  files_table$local_path <- file.path(
+  files_table$local_path <- fs::path(
     data_dir,
+    spod_subfolder_raw_data_cache(ver = 1),
     stringr::str_replace(
       files_table$target_url,
       ".*mitma.es/",
-      spod_subfolder_raw_data_cache(ver = 1)
+      ""
     )
   )
 
@@ -484,8 +487,10 @@ spod_get_latest_v2_file_list <- function(
   }
 
   current_date <- format(Sys.Date(), format = "%Y-%m-%d")
-  current_filename <- glue::glue(
-    "{data_dir}/{spod_subfolder_metadata_cache()}/data_links_v2_{current_date}.xml"
+  current_filename <- fs::path(
+    data_dir,
+    spod_subfolder_metadata_cache(),
+    glue::glue("data_links_v2_{current_date}.xml")
   )
 
   # ensure dir exists
@@ -526,7 +531,7 @@ spod_available_data_v2 <- function(
   force = FALSE,
   quiet = FALSE
 ) {
-  metadata_folder <- glue::glue("{data_dir}/{spod_subfolder_metadata_cache()}")
+  metadata_folder <- fs::path(data_dir, spod_subfolder_metadata_cache())
   if (!dir.exists(metadata_folder)) {
     fs::dir_create(metadata_folder)
   }
@@ -586,12 +591,13 @@ spod_available_data_v2 <- function(
   ))
   # order by pub_ts
   files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
-  files_table$local_path <- file.path(
+  files_table$local_path <- fs::path(
     data_dir,
+    spod_subfolder_raw_data_cache(ver = 2),
     stringr::str_replace(
       files_table$target_url,
       ".*mitma.es/",
-      spod_subfolder_raw_data_cache(ver = 2)
+      ""
     )
   )
   files_table$local_path <- stringr::str_replace_all(

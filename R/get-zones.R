@@ -168,10 +168,9 @@ spod_get_zones_v1 <- function(
   # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
     data_dir,
-    glue::glue(
-      spod_subfolder_clean_data_cache(ver = 1),
-      "/zones/{zones}_mitma.gpkg"
-    )
+    spod_subfolder_clean_data_cache(ver = 1),
+    "zones",
+    glue::glue("{zones}_mitma.gpkg")
   )
   if (fs::file_exists(expected_gpkg_path)) {
     if (isFALSE(quiet)) {
@@ -228,9 +227,8 @@ spod_clean_zones_v1 <- function(zones_path, zones, quiet = FALSE) {
 
   # load and prepare id relations for districts
   relations_districts <- readr::read_delim(
-    file = paste0(
+    file = fs::path(
       spod_get_data_dir(),
-      "/",
       spod_subfolder_raw_data_cache(1),
       "relaciones_distrito_mitma.csv"
     ),
@@ -257,9 +255,8 @@ spod_clean_zones_v1 <- function(zones_path, zones, quiet = FALSE) {
 
   # load and prepare id relations for municipalities
   relations_municipalities <- readr::read_delim(
-    file = paste0(
+    file = fs::path(
       spod_get_data_dir(),
-      "/",
       spod_subfolder_raw_data_cache(1),
       "relaciones_municipio_mitma.csv"
     ),
@@ -522,10 +519,9 @@ spod_get_zones_v2 <- function(
   # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
     data_dir,
-    glue::glue(
-      spod_subfolder_clean_data_cache(ver = 2),
-      "/zones/{zones}_mitma.gpkg"
-    )
+    spod_subfolder_clean_data_cache(ver = 2),
+    "zones",
+    glue::glue("{zones}_mitma.gpkg")
   )
 
   if (fs::file_exists(expected_gpkg_path)) {
@@ -647,11 +643,11 @@ spod_clean_zones_v2 <- function(zones_path) {
 
   # zones reference
   zones_ref <- readr::read_delim(
-    glue::glue(
+    fs::path(
       spod_get_data_dir(quiet = TRUE),
-      "/",
       spod_subfolder_raw_data_cache(ver = 2),
-      "zonificacion/relacion_ine_zonificacionMitma.csv"
+      "zonificacion",
+      "relacion_ine_zonificacionMitma.csv"
     ),
     delim = "|",
     col_types = rep("c", 6)

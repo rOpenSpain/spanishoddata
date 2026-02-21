@@ -68,7 +68,6 @@ distr_v1 <- spod_get_zones(zones = "districts", ver = 1)
 \dontshow{\}) # examplesIf}
 }
 \references{
-{
 \itemize{
 \item \strong{For the official website of the mobility study}: \insertRef{mitms_mobility_web}{spanishoddata}
 \item \strong{For v1 data methodology}: \insertRef{mitma_methodology_2020_v3}{spanishoddata}
@@ -77,5 +76,4 @@ distr_v1 <- spod_get_zones(zones = "districts", ver = 1)
 }
 
 Use \code{\link[=spod_cite]{spod_cite()}} to cite the package and the data with correct plain text, markdown, or BibTeX formats.
-}
 }

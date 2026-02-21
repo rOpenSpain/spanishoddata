@@ -88,23 +88,28 @@ spod_duckdb_od <- function(
     # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
     # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
     # the decision was to use distrcit data and aggregate it to replicate municipal data
-    csv_folder <- paste0(
+    csv_folder <- fs::path(
       data_dir,
-      "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/maestra1-mitma-distritos",
-      "/ficheros-diarios/"
+      "maestra1-mitma-distritos",
+      "ficheros-diarios"
     )
   } else if (ver == 2) {
-    csv_folder <- paste0(
+    csv_folder <- fs::path(
       data_dir,
-      "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/estudios_basicos/por-",
-      spod_zone_names_en2es(zones),
-      "/viajes/ficheros-diarios/"
+      "estudios_basicos",
+      paste0("por-", spod_zone_names_en2es(zones)),
+      "viajes",
+      "ficheros-diarios"
     )
   }
+
+  # Ensure it ends with a separator for the glob pattern if needed, 
+  # but DuckDB's read_csv_auto works with either.
+  # Given the SQL template has '{csv_folder}**/*.csv.gz', we need to ensure 
+  # csv_folder ends with a separator.
+  csv_folder <- paste0(csv_folder, "/")
 
   # create view to the raw TXT/CSV.gz files
   DBI::dbExecute(
@@ -181,7 +186,7 @@ spod_duckdb_od <- function(
   # create od_csv_clean view
   if (ver == 1 && zones == "municipios") {
     # this will be picked up by the sql loaded below if neccessary
-    relations_districts_municipalities <- here::here(
+    relations_districts_municipalities <- fs::path(
       data_dir,
       spod_subfolder_raw_data_cache(1),
       "relaciones_distrito_mitma.csv"
@@ -250,23 +255,24 @@ spod_duckdb_number_of_trips <- function(
     # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
     # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
     # the decision was to use distrcit data and aggregate it to replicate municipal data
-    csv_folder <- paste0(
+    csv_folder <- fs::path(
       data_dir,
-      "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/maestra2-mitma-distritos",
-      "/ficheros-diarios/"
+      "maestra2-mitma-distritos",
+      "ficheros-diarios"
     )
   } else if (ver == 2) {
-    csv_folder <- paste0(
+    csv_folder <- fs::path(
       data_dir,
-      "/",
       spod_subfolder_raw_data_cache(ver = ver),
-      "/estudios_basicos/por-",
-      spod_zone_names_en2es(zones),
-      "/personas/ficheros-diarios/"
+      "estudios_basicos",
+      paste0("por-", spod_zone_names_en2es(zones)),
+      "personas",
+      "ficheros-diarios"
     )
   }
+
+  csv_folder <- paste0(csv_folder, "/")
 
   # create view of csv files and preset variable types
 
@@ -324,7 +330,7 @@ spod_duckdb_number_of_trips <- function(
   # create od_csv_clean view
   if (ver == 1 && zones == "municipios") {
     # this will be picked up by the sql loaded below if neccessary
-    relations_districts_municipalities <- here::here(
+    relations_districts_municipalities <- fs::path(
       data_dir,
       spod_subfolder_raw_data_cache(1),
       "relaciones_distrito_mitma.csv"
@@ -384,14 +390,16 @@ spod_duckdb_overnight_stays <- function(
   zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
-  csv_folder <- paste0(
+  csv_folder <- fs::path(
     data_dir,
-    "/",
     spod_subfolder_raw_data_cache(ver = ver),
-    "/estudios_basicos/por-",
-    spod_zone_names_en2es(zones),
-    "/pernoctaciones/ficheros-diarios/"
+    "estudios_basicos",
+    paste0("por-", spod_zone_names_en2es(zones)),
+    "pernoctaciones",
+    "ficheros-diarios"
   )
+
+  csv_folder <- paste0(csv_folder, "/")
 
   # create view of csv files and preset variable types
 

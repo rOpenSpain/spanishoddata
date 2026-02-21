@@ -235,19 +235,6 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.glue
 - type: software
-  title: here
-  abstract: 'here: A Simpler Way to Find Your Files'
-  notes: Imports
-  url: https://here.r-lib.org/
-  repository: https://CRAN.R-project.org/package=here
-  authors:
-  - family-names: Müller
-    given-names: Kirill
-    email: kirill@cynkra.com
-    orcid: https://orcid.org/0000-0002-1416-3412
-  year: '2026'
-  doi: 10.32614/CRAN.package.here
-- type: software
   title: httr2
   abstract: 'httr2: Perform HTTP Requests and Process the Responses'
   notes: Imports
