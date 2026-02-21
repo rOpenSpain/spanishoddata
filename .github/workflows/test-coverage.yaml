@@ -15,9 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      RUN_JAVA_DOWNLOAD_TESTS: "TRUE"
-      RUN_JAVA_DOWNLOAD_TESTS_QUIET: "FALSE"
-      RUN_JAVA_DOWNLOAD_TESTS_QUIET_DOWNLOAD: "TRUE"
+      RUN_LIVE_TESTS: "FALSE"
 
     steps:
       - uses: actions/checkout@v4
