@@ -1,6 +1,12 @@
 ^data-raw$
-^.*\.csv$
-^.*\.csv\.gz$
+^data-raw/.*\.csv$
+^data-raw/.*\.csv\.gz$
+^.*\.db$
+^.*\.duckdb$
+^.*\.parquet$
+# Ignore large cached data but allow test fixtures
+^data/.*\.csv$
+^data/.*\.csv\.gz$
 README.qmd
 .db$
 ^draft-code$

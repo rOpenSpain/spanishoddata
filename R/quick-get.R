@@ -198,8 +198,8 @@ spod_query_od_raw <- function(
     httr2::req_progress(type = "down")
   # req |> httr2::req_dry_run()
   resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(simplifyVector = TRUE)
+    spod_httr2_req_perform() |>
+    spod_httr2_resp_body_json(simplifyVector = TRUE)
 
   # Handle empty data
   if (length(resp$data[[1]]) == 0) {
@@ -213,13 +213,13 @@ spod_query_od_raw <- function(
   # Tidy and return
   od <- tibble::as_tibble(resp$data[[1]]) |>
     dplyr::select(
-      id_origin = .data$origin,
-      id_destination = .data$destination,
-      n_trips = .data$journeys,
-      trips_total_length_km = .data$journeysKm
+      id_origin = "origin",
+      id_destination = "destination",
+      n_trips = "journeys",
+      trips_total_length_km = "journeysKm"
     ) |>
     dplyr::mutate(date = lubridate::ymd(date_fmt)) |>
-    dplyr::relocate(.data$date, .before = id_origin)
+    dplyr::relocate("date", .before = id_origin)
 
   return(od)
 }
@@ -280,15 +280,37 @@ spod_quick_get_zones <- function(
 spod_fetch_municipalities_json_memoised <- memoise::memoise(
   function() {
     municip_geometries_url <- "https://mapas-movilidad.transportes.gob.es/api/static/data/municipios60.json"
-    municipalities_sf <- sf::st_read(municip_geometries_url, quiet = TRUE) |>
-      dplyr::rename(id = .data$ID) |>
+    municipalities_sf <- spod_sf_st_read(municip_geometries_url, quiet = TRUE) |>
+      dplyr::rename(id = "ID") |>
       dplyr::mutate(
-        population = as.numeric(dplyr::na_if(population, "NA"))
+        population = as.numeric(dplyr::na_if(.data$population, "NA"))
       ) |>
-      dplyr::select(.data$id, .data$name, .data$population)
+      dplyr::select("id", "name", "population")
     return(municipalities_sf)
   }
 )
+
+
+#' Internal wrappers for httr2 and sf calls to enable mocking
+#' @keywords internal
+spod_httr2_req_perform <- function(req) {
+  httr2::req_perform(req)
+}
+
+#' @keywords internal
+spod_httr2_resp_body_string <- function(resp) {
+  httr2::resp_body_string(resp)
+}
+
+#' @keywords internal
+spod_httr2_resp_body_json <- function(resp, ...) {
+  httr2::resp_body_json(resp, ...)
+}
+
+#' @keywords internal
+spod_sf_st_read <- function(dsn, ...) {
+  sf::st_read(dsn, ...)
+}
 
 
 #' Get the HMAC secret from the mapas-movilidad website
@@ -300,8 +322,8 @@ spod_get_hmac_secret <- function(
 ) {
   # Fetch the homepage HTML
   homepage <- httr2::request(base_url) |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+    spod_httr2_req_perform() |>
+    spod_httr2_resp_body_string()
 
   # Parse and find the inline <script> that mentions import_meta_env
   doc <- xml2::read_html(homepage)

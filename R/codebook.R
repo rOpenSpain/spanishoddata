@@ -9,7 +9,6 @@
 #' 
 #' @param ver An `integer` or `numeric` value. The version of the data. Defaults to 1. Can be `1` for v1 (2020-2021) data and 2 for v2 (2022 onwards) data.
 #' @return Nothing, opens vignette if it is installed. If vignette is missing, prints a message with a link to a webpage with the codebook.
-#' @importFrom utils vignette
 #' @export
 #' @examples
 #' 
@@ -19,6 +18,7 @@
 #' # View codebook for v2 (2022 onwards) data
 #' spod_codebook(ver = 2)
 #' 
+#' @importFrom utils vignette
 spod_codebook <- function(ver = 1) {
   # Validate input
   checkmate::assertIntegerish(ver, max.len = 1)

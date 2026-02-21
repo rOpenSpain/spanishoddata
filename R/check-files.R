@@ -1,3 +1,38 @@
+#' Filter available data by version, zones, type and dates
+#'
+#' @description
+#' Internal helper to filter available_data tibble based on version-specific
+#' grepl patterns. Extracted for testability.
+#'
+#' @param available_data Tibble from spod_available_data
+#' @param ver Integer. Data version (1 or 2)
+#' @param zones Character. Zone name in Spanish (e.g., "distritos")
+#' @param matched_type Character. Data type in Spanish (e.g., "viajes")
+#' @param dates_to_use Date vector. Dates to filter by
+#' @return Filtered tibble
+#' @keywords internal
+spod_filter_available_files <- function(available_data, ver, zones, matched_type, dates_to_use) {
+  if (ver == 1) {
+    # For v1, always use distritos due to data quality issues
+    # See: http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    available_data[
+      grepl(
+        glue::glue("v{ver}.*{matched_type}.*distritos"),
+        available_data$local_path
+      ) &
+        available_data$data_ymd %in% dates_to_use,
+    ]
+  } else {
+    available_data[
+      grepl(
+        glue::glue("v{ver}.*{zones}.*{matched_type}"),
+        available_data$local_path
+      ) &
+        available_data$data_ymd %in% dates_to_use,
+    ]
+  }
+}
+
 #' Check cached files consistency against checksums from S3
 #'
 #' @description
@@ -130,40 +165,26 @@ spod_check_files <- function(
   if (all(as.character(dates) %in% c("cached_v1", "cached_v2"))) {
     dates_to_use <- available_data |>
       dplyr::filter(.data$downloaded == TRUE & !is.na(.data$data_ymd)) |>
-      dplyr::pull(.data$data_ymd)
+      dplyr::pull("data_ymd")
     available_data <- available_data |>
       dplyr::filter(.data$downloaded == TRUE & !is.na(.data$data_ymd))
   }
 
   # match the available_data to type, zones, version and dates
-  if (ver == 1) {
-    requested_files <- available_data[
-      # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
-      # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-      # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
-      # the decision was to use distrcit data and aggregate it to replicate municipal data
-      grepl(
-        glue::glue("v{ver}.*{matched_type}.*distritos"),
-        available_data$local_path
-      ) &
-        available_data$data_ymd %in% dates_to_use,
-    ]
-  } else if (ver == 2) {
-    requested_files <- available_data[
-      grepl(
-        glue::glue("v{ver}.*{zones}.*{matched_type}"),
-        available_data$local_path
-      ) &
-        available_data$data_ymd %in% dates_to_use,
-    ]
-  }
+  requested_files <- spod_filter_available_files(
+    available_data = available_data,
+    ver = ver,
+    zones = zones,
+    matched_type = matched_type,
+    dates_to_use = dates_to_use
+  )
 
   # if some requested files are missing issue a warning
   if (!all(requested_files$downloaded)) {
     dates_missing_downloads <- requested_files |>
       dplyr::filter(.data$downloaded == FALSE) |>
       dplyr::filter(.data$data_ymd %in% dates_to_use) |>
-      dplyr::pull(.data$data_ymd)
+      dplyr::pull("data_ymd")
     warning(glue::glue(
       'Some files for the requested dates are missing ({paste(spod_convert_dates_to_ranges(dates_missing_downloads), collapse = ", ")}). Make sure you have downloaded all files requested to be checked for consistency with `spod_download()`. For now, `spod_check_files()` will only check the files that were previously downloaded and currently exist on disk.',
     ))
@@ -208,7 +229,7 @@ spod_check_files <- function(
     if (!all(requested_files$local_file_consistent)) {
       broken_dates <- requested_files |>
         dplyr::filter(.data$local_file_consistent == FALSE) |>
-        dplyr::pull(.data$data_ymd)
+        dplyr::pull("data_ymd")
       warning(glue::glue(
         'Some files are inconsistent with the reference data ({paste(spod_convert_dates_to_ranges(broken_dates), collapse = ", ")}). Please inspect the returned table by filtering the output table by "local_file_consistent == FALSE". To re-download the inconsistent files, use `spod_download()` and specify the missing dates.'
       ))

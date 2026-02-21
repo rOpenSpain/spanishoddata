@@ -59,6 +59,9 @@ This function downloads the data files of the specified type, zones, dates and d
 
 For detailed data descriptions, see package vignettes using \code{\link[=spod_codebook]{spod_codebook(ver = 1)}} and \code{\link[=spod_codebook]{spod_codebook(ver = 2)}} and official methodology documents in \strong{References} section.
 }
+\details{
+Download the data files of specified type, zones, and dates
+}
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{

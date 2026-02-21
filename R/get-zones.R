@@ -148,7 +148,6 @@ spod_get_zones_v1 <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE
 ) {
-  zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
   metadata <- spod_available_data(
@@ -190,7 +189,7 @@ spod_get_zones_v1 <- function(
     recurse = TRUE
   )
 
-  zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
+  zones_sf <- spod_clean_zones_v1(zones_path, zones = zones, quiet = quiet)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
   sf::st_write(
     zones_sf,
@@ -213,7 +212,7 @@ spod_get_zones_v1 <- function(
 #' @keywords internal
 #' @importFrom rlang .data
 #'
-spod_clean_zones_v1 <- function(zones_path, zones) {
+spod_clean_zones_v1 <- function(zones_path, zones, quiet = FALSE) {
   if (fs::file_exists(zones_path) == FALSE) {
     stop("File does not exist: ", zones_path)
   }
@@ -281,15 +280,15 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
       relations_municipalities |>
         dplyr::group_by(.data$municipality_mitma) |>
         dplyr::summarize(
-          municipalities = paste(.data$municipality, collapse = "; ")
+          municipalities = paste(municipality, collapse = "; ")
         ),
       by = "municipality_mitma"
     ) |>
     dplyr::group_by(.data$district_mitma) |>
     dplyr::summarize(
-      census_districts = paste(.data$census_district, collapse = "; "),
-      municipalities_mitma = paste(.data$municipality_mitma, collapse = "; "),
-      municipalities = paste(.data$municipalities, collapse = "; ")
+      census_districts = paste(census_district, collapse = "; "),
+      municipalities_mitma = paste(municipality_mitma, collapse = "; "),
+      municipalities = paste(municipalities, collapse = "; ")
     )
 
   # summarise municipalities relations
@@ -298,23 +297,23 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
       relations_districts |>
         dplyr::group_by(.data$municipality_mitma) |>
         dplyr::summarize(
-          census_districts = paste(.data$census_district, collapse = "; "),
-          districts_mitma = paste(.data$district_mitma, collapse = "; ")
+          census_districts = paste(census_district, collapse = "; "),
+          districts_mitma = paste(district_mitma, collapse = "; ")
         ),
       by = "municipality_mitma"
     ) |>
     dplyr::group_by(.data$municipality_mitma) |>
     dplyr::summarize(
-      municipalities = paste(.data$municipality, collapse = "; "),
-      districts_mitma = paste(.data$districts_mitma, collapse = "; "),
-      census_districts = paste(.data$census_districts, collapse = "; ")
+      municipalities = paste(municipality, collapse = "; "),
+      districts_mitma = paste(districts_mitma, collapse = "; "),
+      census_districts = paste(census_districts, collapse = "; ")
     )
 
   # cleanup duplacate ids in municipalities
   relations_municipalities_aggregated <- relations_municipalities_aggregated |>
     dplyr::mutate(
       dplyr::across(
-        c(.data$municipalities, .data$districts_mitma, .data$census_districts),
+        c("municipalities", "districts_mitma", "census_districts"),
         spod_unique_separated_ids
       )
     )
@@ -326,7 +325,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   relations_districts_aggregated <- relations_districts_aggregated |>
     dplyr::mutate(
       dplyr::across(
-        c(.data$census_districts, .data$municipalities_mitma),
+        c("census_districts", "municipalities_mitma"),
         spod_unique_separated_ids
       )
     )
@@ -337,15 +336,15 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   if (zones == "distritos") {
     zones_sf <- zones_sf |>
       dplyr::left_join(relations_districts_aggregated, by = "id") |>
-      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+      dplyr::relocate("geometry", .after = dplyr::last_col())
   } else if (zones == "municipios") {
     zones_sf <- zones_sf |>
       dplyr::left_join(relations_municipalities_aggregated, by = "id") |>
-      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+      dplyr::relocate("geometry", .after = dplyr::last_col())
   }
 
   # add metadata from v2 zones
-  zones_v2_sf <- spod_get_zones_v2(zones = zones)
+  zones_v2_sf <- spod_get_zones_v2(zones = zones, quiet = quiet)
   zones_v2_sf <- zones_v2_sf[, c("id", "name")]
   names(zones_v2_sf)[names(zones_v2_sf) == "id"] <- "id_in_v2"
   names(zones_v2_sf)[names(zones_v2_sf) == "name"] <- "name_in_v2"
@@ -357,8 +356,8 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   v2_v_1ref <- v2_to_v1 |>
     dplyr::group_by(.data$id) |>
     dplyr::summarize(
-      names_in_v2_data = paste(.data$name_in_v2, collapse = "; "),
-      ids_in_v2_data = paste(.data$id_in_v2, collapse = "; ")
+      names_in_v2_data = paste(name_in_v2, collapse = "; "),
+      ids_in_v2_data = paste(id_in_v2, collapse = "; ")
     )
   eng_zones <- dplyr::if_else(
     zones == "distritos",
@@ -374,7 +373,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 
   zones_sf <- zones_sf |>
     dplyr::left_join(v2_v_1ref, by = "id") |>
-    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+    dplyr::relocate("geometry", .after = dplyr::last_col())
 
   return(zones_sf)
 }
@@ -518,7 +517,6 @@ spod_get_zones_v2 <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE
 ) {
-  zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
   # check if gpkg files are already saved and load them if available
@@ -529,6 +527,7 @@ spod_get_zones_v2 <- function(
       "/zones/{zones}_mitma.gpkg"
     )
   )
+
   if (fs::file_exists(expected_gpkg_path)) {
     if (isFALSE(quiet)) {
       message(
@@ -601,7 +600,7 @@ spod_get_zones_v2 <- function(
 #'
 spod_clean_zones_v2 <- function(zones_path) {
   # detect what kind of zones find out if it is distritos, municipios or GAU
-  zones <- stringr::str_extract(zones_path, "distritos|municipios|gaus")
+  zones <- stringr::str_extract(zones_path, "distritos|municipios|gau")
 
   if (fs::file_exists(zones_path) == FALSE) {
     stop("File does not exist: ", zones_path)
@@ -627,7 +626,7 @@ spod_clean_zones_v2 <- function(zones_path) {
     col_types = c("c", "i")
   )
 
-  if (zones %in% c("distritos", "gaus")) {
+  if (zones %in% c("distritos", "gau")) {
     zone_names <- readr::read_delim(
       glue::glue(fs::path_dir(zones_path), "/nombres_{zones}.csv"),
       skip = 1,
@@ -668,7 +667,7 @@ spod_clean_zones_v2 <- function(zones_path) {
       districts_mitma = "distrito_mitma",
       municipalities_mitma = "municipio_mitma",
       luas_mitma = "gau_mitma",
-      id = zone_mitma
+      id = dplyr::all_of(zone_mitma)
     )
 
   zones_ref_aggregated <- zones_ref_renamed |>
@@ -695,10 +694,10 @@ spod_clean_zones_v2 <- function(zones_path) {
     dplyr::left_join(zone_names, by = "id") |>
     dplyr::left_join(population, by = "id") |>
     dplyr::left_join(zones_ref_aggregated, by = "id") |>
-    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+    dplyr::relocate("geometry", .after = dplyr::last_col())
 
   # load v1 zones to join ids, unless it's gau zones
-  if (zones != "gaus") {
+  if (zones != "gau") {
     spod_download_zones_v1(zones = zones, quiet = TRUE)
     zones_v1_path <- fs::dir_ls(
       path = fs::path(
@@ -727,7 +726,7 @@ spod_clean_zones_v2 <- function(zones_path) {
     v2_v_1ref <- v2_to_v1 |>
       dplyr::group_by(.data$id) |>
       dplyr::summarize(
-        ids_in_v1_data = paste(.data$id_in_v1, collapse = "; ")
+        ids_in_v1_data = paste(id_in_v1, collapse = "; ")
       )
     eng_zones <- dplyr::if_else(
       zones == "distritos",
@@ -740,7 +739,7 @@ spod_clean_zones_v2 <- function(zones_path) {
 
     zones_sf <- zones_sf |>
       dplyr::left_join(v2_v_1ref, by = "id") |>
-      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+      dplyr::relocate("geometry", .after = dplyr::last_col())
   }
 
   return(zones_sf)

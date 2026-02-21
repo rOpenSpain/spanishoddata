@@ -15,29 +15,60 @@ if (length(gz_files) == 0) {
 test_data_dir <- tempfile()
 dir.create(test_data_dir, recursive = TRUE)
 # Create metadata directory
+# Create metadata directory
 metadata_dir <- paste0(test_data_dir, "/", spod_subfolder_metadata_cache())
 dir.create(metadata_dir, recursive = TRUE)
 
 current_date <- format(Sys.time(), format = "%Y-%m-%d", usetz = FALSE)
 
-# Copy and rename gzipped XML files to the temporary directory
-for (gz_file in gz_files) {
-  if (grepl("v1", gz_file)) {
-    file.copy(
-      gz_file,
-      file.path(metadata_dir, paste0("data_links_v1_", current_date, ".xml.gz"))
-    )
-  } else if (grepl("v2", gz_file)) {
-    file.copy(
-      gz_file,
-      file.path(metadata_dir, paste0("data_links_v2_", current_date, ".xml.gz"))
-    )
+# Generate comprehensive fake XML metadata
+v1_dates <- seq.Date(as.Date("2020-01-01"), as.Date("2021-12-31"), by = "day")
+v2_dates <- seq.Date(as.Date("2022-01-01"), as.Date("2024-12-31"), by = "day")
+
+generate_xml_content <- function(dates, version) {
+  base_url <- if (version == 1) {
+    "https://example.com/maestra1-mitma-distritos/ficheros-diarios/"
+  } else {
+    "https://example.com/viajes/ficheros-diarios/"
   }
+  items <- paste0(
+    "<item><link>", base_url, format(dates, "%Y%m%d"), "_test.csv.gz</link>",
+    "<pubDate>", format(dates, "%a, %d %b %Y %H:%M:%S GMT"), "</pubDate></item>",
+    collapse = "\n"
+  )
+  paste0("<rss><channel>", items, "</channel></rss>")
 }
+
+v1_xml_path <- file.path(
+  metadata_dir,
+  paste0("data_links_v1_", current_date, ".xml.gz")
+)
+v1_con <- gzfile(v1_xml_path, "w")
+writeLines(generate_xml_content(v1_dates, 1), v1_con)
+close(v1_con)
+
+v2_xml_path <- file.path(
+  metadata_dir,
+  paste0("data_links_v2_", current_date, ".xml.gz")
+)
+v2_con <- gzfile(v2_xml_path, "w")
+writeLines(generate_xml_content(v2_dates, 2), v2_con)
+close(v2_con)
 
 # Set the environment variable to the test directory
 Sys.setenv(SPANISH_OD_DATA_DIR = test_data_dir)
 # Sys.getenv("SPANISH_OD_DATA_DIR")
+
+# Global setup: clear cache and mock S3 once
+memoise::forget(spanishoddata:::spod_get_valid_dates_memoised)
+if (exists("read_data_links_memoised", envir = asNamespace("spanishoddata"))) {
+  memoise::forget(spanishoddata:::read_data_links_memoised)
+}
+# Mock S3 globally for this file
+local_mocked_bindings(
+  spod_available_data_s3 = function(...) stop("S3 disabled"),
+  .package = "spanishoddata"
+)
 
 test_that("single ISO date input", {
   dates <- "2023-07-01"

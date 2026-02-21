@@ -98,7 +98,8 @@ spod_available_data <- function(
 #' @keywords internal
 spod_get_latest_v1_file_list <- function(
   data_dir = spod_get_data_dir(),
-  xml_url = "https://opendata-movilidad.mitma.es/RSS.xml"
+  xml_url = "https://opendata-movilidad.mitma.es/RSS.xml",
+  quiet = FALSE
 ) {
   if (!dir.exists(data_dir)) {
     fs::dir_create(data_dir)
@@ -114,7 +115,9 @@ spod_get_latest_v1_file_list <- function(
     fs::dir_create(dirname(current_filename), recurse = TRUE)
   }
 
-  message("Saving the file to: ", current_filename)
+  if (!quiet) {
+    message("Saving the file to: ", current_filename)
+  }
   utils::download.file(xml_url, current_filename, mode = "wb")
   # disable curl::multi_download() for now
   # xml_requested <- curl::multi_download(
@@ -163,17 +166,20 @@ spod_available_data_v1 <- function(
         files_table_s3
       },
       error = function(e) {
-        message(
-          "S3 fetch failed (",
-          e$message,
-          "); falling back to XML sequence."
-        )
+        if (!quiet) {
+          message(
+            "S3 fetch failed (",
+            e$message,
+            "); falling back to XML sequence."
+          )
+        }
         read_data_links_xml(
           metadata_folder = metadata_folder,
           data_dir = data_dir,
           force = force,
           quiet = quiet,
-          latest_file_function = spod_get_latest_v1_file_list
+          latest_file_function = spod_get_latest_v1_file_list,
+          ver = 1
         )
       }
     )
@@ -183,7 +189,8 @@ spod_available_data_v1 <- function(
       data_dir = data_dir,
       force = force,
       quiet = quiet,
-      latest_file_function = spod_get_latest_v1_file_list
+      latest_file_function = spod_get_latest_v1_file_list,
+      ver = 1
     )
   }
 
@@ -322,7 +329,7 @@ spod_available_data_v1 <- function(
     # replace remote file sizes for v1
     replacement_file_sizes_distr <- files_table |>
       dplyr::filter(grepl("mitma-distr", .data$local_path)) |>
-      dplyr::select(.data$target_url, .data$file_size_bytes)
+      dplyr::select("target_url", "file_size_bytes")
     replaced_file_sizes_municip <- files_table |>
       dplyr::filter(grepl("mitma-municip", .data$local_path)) |>
       dplyr::select(-"file_size_bytes") |>
@@ -394,6 +401,11 @@ spod_available_data_v1 <- function(
       ) |>
       dplyr::select(-"true_etag")
 
+    files_table$remote_file_size_mb <- round(
+      files_table$file_size_bytes / 1024^2,
+      2
+    )
+
     # if there are files with missing sizes, impute them
     if (any(is.na(files_table$remote_file_size_mb))) {
       # impute uknown file sizes
@@ -423,6 +435,13 @@ spod_available_data_v1 <- function(
       files_table$remote_file_size_mb[is.na(
         files_table$remote_file_size_mb
       )] <- mean(files_table$mean_file_size_mb)
+
+      # Update file_size_bytes if NA based on remote_file_size_mb
+      files_table$file_size_bytes <- dplyr::if_else(
+        condition = is.na(files_table$file_size_bytes),
+        true = round(files_table$remote_file_size_mb * 1024^2),
+        false = files_table$file_size_bytes
+      )
 
       # Clean up temporary columns
       files_table <- files_table |>
@@ -457,7 +476,8 @@ spod_available_data_v1 <- function(
 #' @keywords internal
 spod_get_latest_v2_file_list <- function(
   data_dir = spod_get_data_dir(),
-  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
+  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
+  quiet = FALSE
 ) {
   if (!dir.exists(data_dir)) {
     fs::dir_create(data_dir)
@@ -473,7 +493,9 @@ spod_get_latest_v2_file_list <- function(
     fs::dir_create(dirname(current_filename), recurse = TRUE)
   }
 
-  message("Saving the file to: ", current_filename)
+  if (!quiet) {
+    message("Saving the file to: ", current_filename)
+  }
   utils::download.file(xml_url, current_filename, mode = "wb")
   # disable curl::multi_download() for now
   # xml_requested <- curl::multi_download(
@@ -523,17 +545,20 @@ spod_available_data_v2 <- function(
         files_table_s3
       },
       error = function(e) {
-        message(
-          "S3 fetch failed (",
-          e$message,
-          "); falling back to XML sequence."
-        )
+        if (!quiet) {
+          message(
+            "S3 fetch failed (",
+            e$message,
+            "); falling back to XML sequence."
+          )
+        }
         read_data_links_memoised(
           metadata_folder = metadata_folder,
           data_dir = data_dir,
           force = force,
           quiet = quiet,
-          latest_file_function = spod_get_latest_v2_file_list
+          latest_file_function = spod_get_latest_v2_file_list,
+          ver = 2
         )
       }
     )
@@ -543,7 +568,8 @@ spod_available_data_v2 <- function(
       data_dir = data_dir,
       force = force,
       quiet = quiet,
-      latest_file_function = spod_get_latest_v2_file_list
+      latest_file_function = spod_get_latest_v2_file_list,
+      ver = 2
     )
   }
 
@@ -723,6 +749,11 @@ spod_available_data_v2 <- function(
         size_by_file_category,
         by = "file_category"
       )
+      
+      if (!"file_size_bytes" %in% names(files_table)) {
+        files_table$file_size_bytes <- NA_real_
+      }
+
       files_table <- files_table |>
         dplyr::mutate(
           size_imputed = ifelse(is.na(.data$remote_file_size_mb), TRUE, FALSE)
@@ -739,6 +770,12 @@ spod_available_data_v2 <- function(
               is.na(.data$remote_file_size_mb),
               .data$mean_file_size_mb,
               .data$remote_file_size_mb
+            ),
+            # Update file_size_bytes if NA based on remote_file_size_mb
+            file_size_bytes = dplyr::if_else(
+              condition = is.na(.data$file_size_bytes),
+              true = round(.data$remote_file_size_mb * 1024^2),
+              false = .data$file_size_bytes
             )
           )
       }
@@ -772,12 +809,13 @@ read_data_links_xml <- function(
   data_dir,
   force = FALSE,
   quiet = FALSE,
-  latest_file_function
+  latest_file_function,
+  ver
 ) {
   xml_files_list <- fs::dir_ls(
     metadata_folder,
     type = "file",
-    regexp = "data_links_v1"
+    regexp = glue::glue("data_links_v{ver}")
   ) |>
     sort()
   latest_file <- utils::tail(xml_files_list, 1)
@@ -794,7 +832,8 @@ read_data_links_xml <- function(
       message("Fetching latest data links xml")
     }
     latest_data_links_xml_path <- latest_file_function(
-      data_dir = data_dir
+      data_dir = data_dir,
+      quiet = quiet
     )
   } else {
     if (!quiet) {

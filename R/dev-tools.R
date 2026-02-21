@@ -6,7 +6,7 @@
 #'
 #' @keywords internal
 #'
-spod_files_sizes <- function(ver = 2) {
+spod_files_sizes <- function(ver = 2) { # nocov start
   data_dir <- spod_get_data_dir()
 
   if (any(ver %in% 1)) {
@@ -60,7 +60,6 @@ spod_files_sizes <- function(ver = 2) {
 #' Get file size from URL
 #' @param x_url URL
 #' @return File size in MB
-#' @importFrom utils URLencode
 #' @keywords internal
 spod_get_file_size_from_url <- function(x_url) {
   url <- utils::URLencode(x_url)
@@ -90,3 +89,4 @@ spod_store_etags <- function() {
     dplyr::as_tibble()
   return(available_data)
 }
+# nocov end

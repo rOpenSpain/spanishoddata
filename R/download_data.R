@@ -1,5 +1,10 @@
+# internal wrappers to allow mocking of base/utils functions
+spod_download_file <- function(...) utils::download.file(...)
+spod_interactive <- function(...) base::interactive(...)
+spod_readline <- function(...) base::readline(...)
+
 #' Download the data files of specified type, zones, and dates
-#'
+#' @title Download the data files of specified type, zones, and dates
 #' @description
 #'
 #' `r lifecycle::badge("stable")`
@@ -49,7 +54,7 @@
 #'   dates = "2020032[0-4]"
 #' )
 #' }
-#'
+
 spod_download <- function(
   type = c(
     "od",
@@ -199,7 +204,7 @@ spod_download <- function(
         "Approximately {round(total_size_to_download_gb, 2)} GB of data will be downloaded."
       ))
       # ask for confirmation
-      response <- readline(
+      response <- spod_readline(
         prompt = "Are you sure you would like to continue with this download? (yes/no) "
       )
       response <- tolower(response) %in% c("y", "yes", "Yes")
@@ -248,10 +253,10 @@ spod_download <- function(
       dplyr::rows_update(
         downloaded_files |>
           dplyr::select(
-            .data$local_path,
-            .data$local_file_size,
-            .data$downloaded,
-            .data$complete_download
+            "local_path",
+            "local_file_size",
+            "downloaded",
+            "complete_download"
           ),
         by = "local_path"
       )
@@ -266,197 +271,7 @@ spod_download <- function(
   }
 }
 
-#' Download multiple files with progress bar sequentially
-#'
-#' @description
-#' Download multiple files with a progress bar. Retries failed downloads up to 3 times.
-#'
-#' @param files_to_download A data frame with columns `target_url`, `local_path` and `file_size_bytes`.
-#' @param chunk_size Number of bytes to download at a time.
-#' @param bar_width Width of the progress bar.
-#' @param show_progress Whether to show the progress bar.
-#'
-#' @return A data frame with columns `target_url`, `local_path`, `file_size_bytes` and `local_file_size`.
-#'
-#' @keywords internal
-#'
-spod_multi_download_with_progress <- function(
-  files_to_download,
-  chunk_size = 1024 * 1024,
-  bar_width = 20,
-  show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
-) {
-  if (!interactive() || isTRUE(getOption("knitr.in.progress"))) {
-    show_progress <- FALSE
-  }
 
-  # Sort and create directories
-  files_to_download <- files_to_download[order(files_to_download$data_ymd), ]
-  dirs <- unique(dirname(files_to_download$local_path))
-  for (d in dirs) {
-    if (!dir.exists(d)) {
-      dir.create(d, recursive = TRUE, showWarnings = FALSE)
-    }
-  }
-
-  total_files <- nrow(files_to_download)
-  total_expected_bytes <- sum(files_to_download$file_size_bytes, na.rm = TRUE)
-  total_gb <- total_expected_bytes / 2^30
-
-  cum_bytes <- 0L
-  files_counted <- 0L
-
-  if (!"downloaded" %in% names(files_to_download)) {
-    files_to_download$downloaded <- FALSE
-  }
-  if (!"complete_download" %in% names(files_to_download)) {
-    files_to_download$complete_download <- FALSE
-  }
-
-  # Helper: ETA formatter
-  format_eta <- function(eta_secs) {
-    if (is.na(eta_secs) || eta_secs < 0) {
-      return("--")
-    }
-    if (eta_secs > 3600) {
-      return(sprintf("%.1fh", eta_secs / 3600))
-    } else if (eta_secs > 60) {
-      return(sprintf("%.0fm", eta_secs / 60))
-    } else {
-      return(sprintf("%.0fs", eta_secs))
-    }
-  }
-
-  # Initial redraw function
-  if (show_progress) {
-    redraw_bar <- function(date_str, bytes_so_far, file_bytes = 0L) {
-      pct <- bytes_so_far / total_expected_bytes
-      nfill <- floor(pct * bar_width)
-      bar <- if (nfill < bar_width) {
-        paste0(strrep("=", nfill), ">", strrep(" ", bar_width - nfill - 1))
-      } else {
-        strrep("=", bar_width)
-      }
-
-      elapsed <- as.numeric(Sys.time() - start_time, units = "secs")
-      speed <- (bytes_so_far) / max(elapsed, 0.1) # bytes/sec
-      speed_mb <- speed / 2^20
-      eta <- (total_expected_bytes - bytes_so_far) / speed
-      eta_str <- format_eta(eta)
-
-      msg <- sprintf(
-        "Downloading: %s [%s] %3.0f%%  (%d/%d files, %.2f/%.2f GB, %.1f MB/s, ETA: %s)",
-        date_str,
-        bar,
-        pct * 100,
-        files_counted,
-        total_files,
-        bytes_so_far / 2^30,
-        total_gb,
-        speed_mb,
-        eta_str
-      )
-      cat(sprintf("\r%-120s", msg))
-      utils::flush.console()
-    }
-
-    start_time <- Sys.time()
-    redraw_bar("----", 0)
-  }
-
-  # Download loop
-  for (i in seq_len(total_files)) {
-    if (!is.na(files_to_download$data_ymd[i])) {
-      date_str <- format(files_to_download$data_ymd[i], "%Y-%m-%d")
-    } else {
-      date_str <- basename(files_to_download$local_path[i])
-    }
-    url <- files_to_download$target_url[i]
-    dest <- files_to_download$local_path[i]
-    exp_bytes <- files_to_download$file_size_bytes[i]
-
-    local_sz <- if (file.exists(dest)) file.info(dest)$size else NA_real_
-    if (!is.na(local_sz) && local_sz == exp_bytes) {
-      cum_bytes <- cum_bytes + local_sz
-      files_counted <- files_counted + 1L
-      files_to_download$local_file_size[i] <- local_sz
-      files_to_download$downloaded[i] <- TRUE
-      files_to_download$complete_download[i] <- TRUE
-      if (show_progress) {
-        redraw_bar(date_str, cum_bytes)
-      }
-      next
-    }
-
-    success <- FALSE
-    actual_sz <- 0L
-    for (attempt in 1:3) {
-      file_bytes <- 0L
-      con_in <- url(url, "rb")
-      con_out <- file(dest, "wb")
-
-      repeat {
-        chunk <- readBin(con_in, "raw", n = chunk_size)
-        if (length(chunk) == 0) {
-          break
-        }
-        writeBin(chunk, con_out)
-        file_bytes <- file_bytes + length(chunk)
-
-        if (show_progress) {
-          redraw_bar(date_str, cum_bytes + file_bytes, file_bytes)
-        }
-      }
-
-      close(con_in)
-      close(con_out)
-      actual_sz <- file.info(dest)$size
-
-      if (identical(actual_sz, exp_bytes)) {
-        success <- TRUE
-        break
-      } else if (attempt == 1) {
-        warning(
-          sprintf(
-            "Size mismatch on %s (expected %d, got %d). Retrying...",
-            date_str,
-            exp_bytes,
-            actual_sz
-          ),
-          call. = FALSE
-        )
-      }
-    }
-
-    if (!success) {
-      warning(
-        sprintf(
-          "After retry, %s still mismatched: expected %d, got %d. Proceeding.",
-          date_str,
-          exp_bytes,
-          actual_sz
-        ),
-        call. = FALSE
-      )
-    }
-
-    cum_bytes <- cum_bytes + actual_sz
-    files_counted <- files_counted + 1L
-    if (!"local_file_size" %in% names(files_to_download)) {
-      files_to_download$local_file_size <- NA_real_
-    }
-    files_to_download$local_file_size[i] <- actual_sz
-    files_to_download$downloaded[i] <- TRUE
-    files_to_download$complete_download[i] <- identical(actual_sz, exp_bytes)
-
-    if (show_progress) redraw_bar(date_str, cum_bytes)
-  }
-
-  if (show_progress) {
-    cat("\nAll downloads complete.\n")
-  }
-  return(files_to_download)
-}
 
 #' Download multiple files with progress bar in parallel
 #'
@@ -482,7 +297,7 @@ spod_download_in_batches <- function(
   test_size = 10 * 1024 * 1024, # 10 MB test
   max_retries = 3L,
   timeout = 900,
-  show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
+  show_progress = spod_interactive() && !isTRUE(getOption("knitr.in.progress"))
 ) {
   # Check interactive context
   if (!interactive() || isTRUE(getOption("knitr.in.progress"))) {
@@ -649,7 +464,7 @@ spod_download_in_batches <- function(
     urls <- files_to_download$target_url[batch]
     dests <- files_to_download$local_path[batch]
 
-    res <- utils::download.file(
+    res <- spod_download_file(
       url = urls,
       destfile = dests,
       method = "libcurl",
@@ -672,7 +487,7 @@ spod_download_in_batches <- function(
         attempts <- 1L
         while (attempts < max_retries) {
           attempts <- attempts + 1L
-          status2 <- utils::download.file(
+          status2 <- spod_download_file(
             url = urls[k],
             destfile = dest,
             method = "libcurl",
@@ -690,7 +505,12 @@ spod_download_in_batches <- function(
 
     for (k in seq_along(batch)) {
       i <- batch[k]
-      if (res[k] == 0L && file.exists(dests[k])) {
+      expected <- files_to_download$file_size_bytes[i]
+      if (
+        res[k] == 0L &&
+          file.exists(dests[k]) &&
+          file.info(dests[k])$size == expected
+      ) {
         sz <- file.info(dests[k])$size
         files_to_download$downloaded[i] <- TRUE
         files_to_download$complete_download[i] <- TRUE

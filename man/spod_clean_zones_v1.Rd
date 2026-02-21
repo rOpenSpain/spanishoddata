@@ -4,12 +4,14 @@
 \alias{spod_clean_zones_v1}
 \title{Fixes common issues in the zones data and cleans up variable names}
 \usage{
-spod_clean_zones_v1(zones_path, zones)
+spod_clean_zones_v1(zones_path, zones, quiet = FALSE)
 }
 \arguments{
 \item{zones_path}{The path to the zones spatial data file.}
 
 \item{zones}{The zones for which to download the data. Can be \code{"districts"} (or \code{"dist"}, \code{"distr"}, or the original Spanish \code{"distritos"}) or \code{"municipalities"} (or \code{"muni"}, \code{"municip"}, or the original Spanish \code{"municipios"}) for both data versions. Additionaly, these can be \code{"large_urban_areas"} (or \code{"lua"}, or the original Spanish \code{"grandes_areas_urbanas"}, or \code{"gau"}) for v2 data (2022 onwards).}
+
+\item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }
 \value{
 A spatial object containing the cleaned zones data.

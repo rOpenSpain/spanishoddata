@@ -117,7 +117,7 @@ spod_convert <- function(
     null.ok = TRUE
   )
   checkmate::assert_character(save_path, len = 1, null.ok = TRUE)
-  checkmate::assert_flag(overwrite)
+  # overwrite validation moved to after "update" check (line ~235)
   checkmate::assert_directory_exists(data_dir, access = "rw")
   checkmate::assert_flag(quiet)
   checkmate::assert_number(max_mem_gb, lower = 0.1, null.ok = TRUE)
@@ -154,11 +154,15 @@ spod_convert <- function(
       "Invalid save_format. Please select 'duckdb' or 'parquet', or leave empty to use the default, which is 'duckdb'."
     )
   }
-  # if (is.null(save_format) & is.null(save_path)) {
-  #   save_format <- "duckdb"
-  # } # maybe don't need this, see line with
-  # infer format from `save_path`
-  # below
+  # Set default if NULL
+  if (is.null(save_format)) {
+    if (!is.null(save_path) && grepl("\\.parquet$", save_path, ignore.case = TRUE)) {
+      save_format <- "parquet"
+    } else {
+      save_format <- "duckdb"
+    }
+  }
+  
   if (!save_format %in% c("duckdb", "parquet")) {
     stop(
       "Invalid save_format. Please set `save_format` to 'duckdb' or 'parquet', or leave empty to use the default, which is 'duckdb'."
@@ -226,20 +230,25 @@ spod_convert <- function(
     fs::dir_create(save_dir, recurse = TRUE)
   }
 
-  # check if overwrite update conflicts with `save_format`
-  if (overwrite == "update" & save_format == "duckdb") {
+  # check if overwrite update conflicts with `save_format` BEFORE validating as flag
+  if (identical(overwrite, "update") && save_format == "duckdb") {
     stop(
       "You are trying to save to a duckdb file with `overwrite = 'update'`. This is not supported. Please set `overwrite=TRUE` to remove the existing duckdb file and create a new one with the requested data."
     )
+  }
+  
+  # Now validate overwrite if it's not "update"
+  if (!identical(overwrite, "update")) {
+    checkmate::assert_flag(overwrite)
   }
 
   # check if duckdb file already exists
   # for conversion to duckdb we need to initialise a writeable database file
   # therefore  this check is before we create a database with `spod_get()` below
   if (save_format == "duckdb" && fs::file_exists(save_path)) {
-    if (!overwrite) {
+    if (!overwrite && isFALSE(quiet)) {
       message("Duckdb file already exists: ", save_path)
-      response <- readline(prompt = "Overwrite existing duckdb file? (yes/no) ")
+      response <- spod_readline(prompt = "Overwrite existing duckdb file? (yes/no) ")
       overwrite <- tolower(response) %in% c("y", "yes", "Yes")
 
       if (!overwrite) {
@@ -351,13 +360,17 @@ spod_convert <- function(
         recurse = TRUE
       )
       if (overwrite == FALSE & length(parquet_files) > 0) {
-        message(
-          "You have set `overwrite = FALSE`, but there are already parquet files in ",
-          save_path
-        )
-        response <- readline(
-          "What should be done? [D]elete all existing files in the target folder and convert all requested data from scratch? [U]pdate the folder with any new data while keeping the existing files? [C]ancel and quit? (D/U/C): "
-        )
+        if (isFALSE(quiet)) {
+          message(
+            "You have set `overwrite = FALSE`, but there are already parquet files in ",
+            save_path
+          )
+          response <- spod_readline(
+            "What should be done? [D]elete all existing files in the target folder and convert all requested data from scratch? [U]pdate the folder with any new data while keeping the existing files? [C]ancel and quit? (D/U/C): "
+          )
+        } else {
+          response <- "cancel"
+        }
       }
       if (overwrite == "update" & length(parquet_files) > 0) {
         response <- overwrite
@@ -371,11 +384,13 @@ spod_convert <- function(
       }
 
       if (tolower(response) %in% c("c", "cancel")) {
-        message(
-          "Cancelled by the user. Exiting without overwriting existing parquet files. You may delete them from ",
-          save_path,
-          " manually and rerun the function. Or rerun the function with `overwrite = TRUE` or `overwrite = 'update'`."
-        )
+        if (isFALSE(quiet)) {
+          message(
+            "Cancelled by the user. Exiting without overwriting existing parquet files. You may delete them from ",
+            save_path,
+            " manually and rerun the function. Or rerun the function with `overwrite = TRUE` or `overwrite = 'update'`."
+          )
+        }
         return(invisible(NULL))
       }
 
@@ -460,7 +475,9 @@ spod_convert <- function(
     fs::dir_delete(temp_path)
   }
 
-  message("Data imported into ", save_format, " at: ", save_path)
+  if (isFALSE(quiet)) {
+    message("Data imported into ", save_format, " at: ", save_path)
+  }
 
   # a few instructions on how to use the duckdb file
   if (isFALSE(quiet)) {
