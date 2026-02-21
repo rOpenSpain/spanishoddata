@@ -5,96 +5,92 @@ library(spanishoddata)
 # It hits real APIs and S3 buckets to ensure the data provider infrastructure
 # and the package's parsing logic remain compatible.
 
-test_that("live integration: available data and single day download/get/convert", {
+test_that("live integration: v1 and v2 data validation with numerical expectations", {
   skip_on_cran()
   skip_if_not(
     Sys.getenv("RUN_LIVE_TESTS") == "TRUE",
     "Skipping live integration tests. Set RUN_LIVE_TESTS='TRUE' to run."
   )
   
-  # 1. Setup temporary directory
+  # Setup temporary directory for isolation
   test_dir <- tempfile("spod_live_")
   dir.create(test_dir)
   withr::defer(unlink(test_dir, recursive = TRUE))
   withr::local_envvar(c("SPANISH_OD_DATA_DIR" = test_dir))
   
-  test_date <- "2023-11-05"
+  v1_date <- "2020-02-14"
+  v2_date <- "2023-11-05"
   
-  # 2. Test Available Data
-  cli::cli_h2("Testing Available Data (v2)")
-  meta <- spod_available_data(ver = 2, quiet = TRUE)
-  expect_s3_class(meta, "tbl_df")
-  expect_true(nrow(meta) > 10000)
-  expect_true(all(c("target_url", "data_ymd", "file_size_bytes") %in% names(meta)))
+  # --- V1 INTEGRATION TESTS ---
+  cli::cli_h1("Testing V1 Integration (2020-2021)")
   
-  # 3. Test spod_get (Origin-Destination)
-  cli::cli_h2("Testing spod_get (OD)")
-  od_data <- spod_get(
-    type = "od", 
-    zones = "dist", 
-    dates = test_date, 
-    quiet = TRUE
-  )
+  # 1. Get Zones V1
+  cli::cli_h2("Testing spod_get_zones (V1)")
+  v1_zones <- spod_get_zones("distr", ver = 1, quiet = TRUE)
+  expect_s3_class(v1_zones, "sf")
+  expect_equal(nrow(v1_zones), 2850) # Exact match for districts
   
-  # Expected columns from exploration
-  expected_od_cols <- c(
-    "date", "hour", "id_origin", "id_destination", "distance", 
-    "activity_origin", "activity_destination", "study_possible_origin", 
-    "study_possible_destination", "residence_province_ine_code", 
-    "residence_province_name", "income", "age", "sex", "n_trips", 
-    "trips_total_length_km", "year", "month", "day"
-  )
+  # 2. Get OD V1
+  cli::cli_h2("Testing spod_get OD (V1)")
+  v1_od <- spod_get(type = "od", zones = "dist", dates = v1_date, quiet = TRUE)
+  expect_s3_class(v1_od, "tbl_duckdb_connection")
   
-  expect_s3_class(od_data, "tbl_duckdb_connection")
-  expect_true(all(expected_od_cols %in% colnames(od_data)))
+  v1_summary <- v1_od |> 
+    dplyr::summarise(
+      total_trips = sum(n_trips, na.rm = TRUE),
+      total_rows = dplyr::n()
+    ) |> 
+    dplyr::collect()
   
-  # Verify we can collect data
-  od_sample <- od_data |> head(10) |> dplyr::collect()
-  expect_true(nrow(od_sample) > 0)
-  expect_equal(as.character(od_sample$date[1]), test_date)
+  # Verify summary statistics with small tolerance (0.1% for trips)
+  expect_equal(v1_summary$total_rows, 7232427)
+  expect_equal(v1_summary$total_trips, 145131837, tolerance = 0.001)
   
-  # 4. Test spod_get (Number of Trips)
-  cli::cli_h2("Testing spod_get (NT)")
-  nt_data <- spod_get(
-    type = "nt", 
-    zones = "dist", 
-    dates = test_date, 
-    quiet = TRUE
-  )
   
-  expected_nt_cols <- c(
-    "date", "id", "age", "sex", "n_trips", "n_persons", 
-    "year", "month", "day"
-  )
-  expect_true(all(expected_nt_cols %in% colnames(nt_data)))
+  # --- V2 INTEGRATION TESTS ---
+  cli::cli_h1("Testing V2 Integration (2022 onwards)")
   
-  # 5. Test Quick OD (GraphQL API)
-  cli::cli_h2("Testing Quick OD (GraphQL)")
-  qod <- spod_quick_get_od(
-    date = test_date, 
-    id_origin = "01001" # Alegría-Dulantzi
-  )
+  # 1. Get Zones V2
+  cli::cli_h2("Testing spod_get_zones (V2)")
+  v2_zones <- spod_get_zones("distr", ver = 2, quiet = TRUE)
+  expect_s3_class(v2_zones, "sf")
+  expect_equal(nrow(v2_zones), 3909) # Exact match for V2 districts
+  
+  # 2. Get OD V2
+  cli::cli_h2("Testing spod_get OD (V2)")
+  v2_od <- spod_get(type = "od", zones = "dist", dates = v2_date, quiet = TRUE)
+  expect_s3_class(v2_od, "tbl_duckdb_connection")
+  
+  v2_od_summary <- v2_od |> 
+    dplyr::summarise(
+      total_trips = sum(n_trips, na.rm = TRUE),
+      total_rows = dplyr::n()
+    ) |> 
+    dplyr::collect()
+  
+  expect_equal(v2_od_summary$total_rows, 15257106)
+  expect_equal(v2_od_summary$total_trips, 104758528, tolerance = 0.001)
+  
+  # 3. Get NT V2
+  cli::cli_h2("Testing spod_get NT (V2)")
+  v2_nt <- spod_get(type = "nt", zones = "dist", dates = v2_date, quiet = TRUE)
+  
+  v2_nt_summary <- v2_nt |> 
+    dplyr::summarise(
+      total_persons = sum(n_persons, na.rm = TRUE),
+      total_rows = dplyr::n()
+    ) |> 
+    dplyr::collect()
+  
+  expect_equal(v2_nt_summary$total_rows, 118717)
+  expect_equal(v2_nt_summary$total_persons, 47399843, tolerance = 0.001)
+  
+  # 4. Quick OD (GraphQL)
+  cli::cli_h2("Testing spod_quick_get_od (GraphQL)")
+  qod <- spod_quick_get_od(date = v2_date, id_origin = "01001")
   expect_s3_class(qod, "tbl_df")
-  expect_true(nrow(qod) > 0)
-  expect_true(all(c("date", "n_trips") %in% names(qod)))
+  expect_equal(nrow(qod), 4)
+  expect_equal(sum(qod$n_trips), 3590, tolerance = 0.001)
   
-  # 6. Test Conversion to Parquet
-  cli::cli_h2("Testing Conversion to Parquet")
-  save_path <- spod_convert(
-    type = "od", 
-    zones = "dist", 
-    dates = test_date, 
-    save_format = "parquet",
-    quiet = TRUE
-  )
-  
-  # Verify file existence in Hive structure
-  parquet_file <- file.path(
-    test_dir, 
-    "clean_data/v2/tabular/parquet/od_distritos/year=2023/month=11/day=5/data_0.parquet"
-  )
-  expect_true(file.exists(parquet_file))
-  expect_true(file.info(parquet_file)$size > 0)
-  
-  cli::cli_alert_success("Live integration tests completed successfully.")
+  cli::cli_alert_success("Live integration tests for v1 and v2 completed successfully.")
 })
