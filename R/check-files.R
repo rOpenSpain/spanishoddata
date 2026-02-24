@@ -11,10 +11,16 @@
 #' @param dates_to_use Date vector. Dates to filter by
 #' @return Filtered tibble
 #' @keywords internal
-spod_filter_available_files <- function(available_data, ver, zones, matched_type, dates_to_use) {
+spod_filter_available_files <- function(
+  available_data,
+  ver,
+  zones,
+  matched_type,
+  dates_to_use
+) {
   if (ver == 1) {
     # For v1, always use distritos due to data quality issues
-    # See: http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    # See: https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
     available_data[
       grepl(
         glue::glue("v{ver}.*{matched_type}.*distritos"),

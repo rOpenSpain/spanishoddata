@@ -262,8 +262,8 @@ spod_available_data_v1 <- function(
 
   # replace all municipal data download links with districts links
   # this is to address the bugs described in detail in:
-  # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-  # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+  # https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+  # https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
   # the decision was to use distrcit data and aggregate it to replicate municipal data
   files_table$target_url <- gsub(
     "mitma-municipios",
@@ -755,7 +755,7 @@ spod_available_data_v2 <- function(
         size_by_file_category,
         by = "file_category"
       )
-      
+
       if (!"file_size_bytes" %in% names(files_table)) {
         files_table$file_size_bytes <- NA_real_
       }

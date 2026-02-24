@@ -54,7 +54,7 @@ test_that("spod_graphql_valid_dates works (mocked)", {
       structure(
         list(
           method = "GET",
-          url = "http://mock",
+          url = "https://mock",
           status_code = 200,
           headers = list(),
           body = charToRaw(
@@ -82,7 +82,7 @@ test_that("spod_graphql_valid_dates works (mocked)", {
     .package = "httr2"
   )
 
-  withr::local_options(spanishoddata.graphql_api_endpoint = "http://mock")
+  withr::local_options(spanishoddata.graphql_api_endpoint = "https://mock")
 
   dates <- spod_graphql_valid_dates()
   expect_equal(dates, as.Date(c("2024-01-01", "2024-01-02")))

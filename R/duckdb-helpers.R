@@ -85,8 +85,8 @@ spod_duckdb_od <- function(
 
   if (ver == 1) {
     # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
-    # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-    # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+    # https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    # https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
     # the decision was to use distrcit data and aggregate it to replicate municipal data
     csv_folder <- fs::path(
       data_dir,
@@ -105,9 +105,9 @@ spod_duckdb_od <- function(
     )
   }
 
-  # Ensure it ends with a separator for the glob pattern if needed, 
+  # Ensure it ends with a separator for the glob pattern if needed,
   # but DuckDB's read_csv_auto works with either.
-  # Given the SQL template has '{csv_folder}**/*.csv.gz', we need to ensure 
+  # Given the SQL template has '{csv_folder}**/*.csv.gz', we need to ensure
   # csv_folder ends with a separator.
   csv_folder <- paste0(csv_folder, "/")
 
@@ -252,8 +252,8 @@ spod_duckdb_number_of_trips <- function(
 
   if (ver == 1) {
     # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
-    # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-    # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+    # https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+    # https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
     # the decision was to use distrcit data and aggregate it to replicate municipal data
     csv_folder <- fs::path(
       data_dir,

@@ -49,12 +49,10 @@ test_that("spod_convert works for duckdb output", {
     NA # Expect no error
   )
   
-  # If successful, check file existence
-  if (file.exists(out_file)) {
-    con <- spod_connect(out_file)
-    expect_s3_class(con, "tbl_duckdb_connection")
-    spod_disconnect(con)
-  }
+  expect_true(file.exists(out_file))
+  con <- spod_connect(out_file)
+  expect_s3_class(con, "tbl_duckdb_connection")
+  spod_disconnect(con)
 })
 
 test_that("spod_convert works for parquet output", {

@@ -269,6 +269,7 @@ spod_convert <- function(
   }
 
   # create duckdb view with a file target
+  con <- NULL
   con <- spod_get(
     type = type,
     zones = zones,
@@ -280,6 +281,18 @@ spod_convert <- function(
     max_download_size_gb = max_download_size_gb,
     duckdb_target = duckdb_target,
     ignore_missing_dates = ignore_missing_dates
+  )
+  on.exit(
+    {
+      if (
+        exists("con", inherits = FALSE) &&
+          !is.null(con) &&
+          inherits(con, "tbl_duckdb_connection")
+      ) {
+        try(spod_disconnect(con, free_mem = TRUE), silent = TRUE)
+      }
+    },
+    add = TRUE
   )
 
   # resolve the actual database connection from the returned table
@@ -464,8 +477,8 @@ spod_convert <- function(
     )
   }
 
-  DBI::dbDisconnect(db_con, shutdown = TRUE)
-  # duckdb::duckdb_shutdown(drv)
+  spod_disconnect(con, free_mem = TRUE)
+  con <- NULL
 
   # time to move back the pre-existing parquet files if we moved them to temp folder
   if (need_to_return_parquet_files) {

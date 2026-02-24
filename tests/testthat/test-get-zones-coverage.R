@@ -346,9 +346,9 @@ test_that("spod_download_zones_v1 calls download and unzip logic", {
   # Mock metadata
   metadata <- tibble::tibble(
     target_url = c(
-      "http://mock/relaciones_distrito_mitma.csv",
-      "http://mock/relaciones_municipio_mitma.csv",
-      "http://mock/zonificacion_distritos.zip"
+      "https://mock/relaciones_distrito_mitma.csv",
+      "https://mock/relaciones_municipio_mitma.csv",
+      "https://mock/zonificacion_distritos.zip"
     ),
     local_path = c(
       file.path(test_dir, "raw_data_cache/v1/relaciones_distrito_mitma.csv"),

@@ -162,8 +162,8 @@ spod_download <- function(
   if (ver == 1) {
     requested_files <- available_data[
       # selecting districts files for v1 to avoid issues with municipalities # this is to address the bugs described in detail in:
-      # http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-      # http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+      # https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+      # https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
       # the decision was to use distrcit data and aggregate it to replicate municipal data
       grepl(
         paste0("v", ver, ".*", type, ".*distritos"),

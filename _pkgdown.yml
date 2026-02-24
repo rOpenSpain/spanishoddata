@@ -44,12 +44,12 @@ external-articles:
 - name: agit-tutorial
   title: "Analysing massive open human mobility data using spanishoddata, duckdb and flowmaps"
   description: |
-    Tutorial/workshop by [Egor Kotov](http://github.com/e-kotov),held at [Applied Geoinformatics (AGIT) Conference 2025](https://agit.at/en/program/), Salzburg, Austria) [![DOI:10.5281/zenodo.15794849](https://zenodo.org/badge/DOI/10.5281/zenodo.15794849.svg)](https://doi.org/10.5281/zenodo.15794849)
+    Tutorial/workshop by [Egor Kotov](https://github.com/e-kotov),held at [Applied Geoinformatics (AGIT) Conference 2025](https://agit.at/en/program/), Salzburg, Austria) [![DOI:10.5281/zenodo.15794849](https://zenodo.org/badge/DOI/10.5281/zenodo.15794849.svg)](https://doi.org/10.5281/zenodo.15794849)
   href: https://www.ekotov.pro/agit-2025-spanishoddata/
 - name: ic2s2-tutorial
   title: "Mobility Flows and Accessibility Using R and Big Open Data"
   description: |
-    Tutorial by [Egor Kotov](http://github.com/e-kotov) and [Johannes Mast](https://github.com/JohMast), held at [IC2S2 2025](https://web.archive.org/web/20260113100927/https://ic2s2-2025.org/) (11th International Conference on Computational Social Science), Norrköping, Sweden) [![DOI:10.5281/zenodo.16238597](https://zenodo.org/badge/DOI/10.5281/zenodo.16238597.svg)](https://doi.org/10.5281/zenodo.16238597)
+    Tutorial by [Egor Kotov](https://github.com/e-kotov) and [Johannes Mast](https://github.com/JohMast), held at [IC2S2 2025](https://web.archive.org/web/20260113100927/https://ic2s2-2025.org/) (11th International Conference on Computational Social Science), Norrköping, Sweden) [![DOI:10.5281/zenodo.16238597](https://zenodo.org/badge/DOI/10.5281/zenodo.16238597.svg)](https://doi.org/10.5281/zenodo.16238597)
   href: https://www.ekotov.pro/spanish-open-mobility-workshop-ic2s2-2025/
 - name: dstp-course
   title: "Data Science for Transport Planning"
