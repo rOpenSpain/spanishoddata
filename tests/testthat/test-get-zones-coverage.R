@@ -1,10 +1,12 @@
-
 test_that("spod_get_zones validation works", {
   test_dir <- setup_test_data_dir()
   withr::defer(unlink(test_dir, recursive = TRUE))
   withr::local_envvar(c("SPANISH_OD_DATA_DIR" = test_dir))
 
-  expect_error(spod_get_zones(zones = "districts", ver = 3), "Invalid version number")
+  expect_error(
+    spod_get_zones(zones = "districts", ver = 3),
+    "Invalid version number"
+  )
   expect_error(spod_get_zones(zones = "invalid"), "Must be element of set")
 })
 
@@ -41,35 +43,43 @@ test_that("spod_get_zones dispatcher works (mocked)", {
 
 test_that("spod_clean_zones_v1 handles invalid geometries", {
   # Create a simple valid sf object first
-  valid_poly <- sf::st_polygon(list(matrix(c(0,0, 1,0, 1,1, 0,1, 0,0), ncol=2, byrow=TRUE)))
+  valid_poly <- sf::st_polygon(list(matrix(
+    c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+    ncol = 2,
+    byrow = TRUE
+  )))
   # Create an invalid one (self-intersection)
-  invalid_poly <- sf::st_polygon(list(matrix(c(0,0, 1,1, 0,1, 1,0, 0,0), ncol=2, byrow=TRUE)))
-  
+  invalid_poly <- sf::st_polygon(list(matrix(
+    c(0, 0, 1, 1, 0, 1, 1, 0, 0, 0),
+    ncol = 2,
+    byrow = TRUE
+  )))
+
   mock_sf <- sf::st_sf(
     ID = c("1", "2"),
     geometry = sf::st_sfc(valid_poly, invalid_poly)
   )
-  
+
   # Mock sf::read_sf
   local_mocked_bindings(
     read_sf = function(...) mock_sf,
     .package = "sf"
   )
-  
+
   # Mock fs::file_exists
   local_mocked_bindings(
     file_exists = function(...) TRUE,
     .package = "fs"
   )
-  
+
   # Mock readr::read_delim
   local_mocked_bindings(
     read_delim = function(...) {
       # Return minimal structure expected by joins
       if (grepl("relaciones_distrito", ..1)) {
         return(data.frame(
-          distrito_mitma = "1", 
-          municipio_mitma = "101", 
+          distrito_mitma = "1",
+          municipio_mitma = "101",
           census_district = "1"
           # district_mitma removed to avoid duplication after renaming
         ))
@@ -84,38 +94,45 @@ test_that("spod_clean_zones_v1 handles invalid geometries", {
     },
     .package = "readr"
   )
-  
+
   # Also need to mock spod_get_zones_v2 as it is called inside clean_zones_v1 for metadata
   local_mocked_bindings(
     spod_get_zones_v2 = function(...) {
       sf::st_sf(
-        id = "1", 
+        id = "1",
         name = "Zone1",
         geometry = sf::st_sfc(valid_poly)
       )
     }
   )
 
-  cleaned <- spanishoddata:::spod_clean_zones_v1("dummy_path.shp", "districts")
-  
+  cleaned <- spod_clean_zones_v1("dummy_path.shp", "districts")
+
   # Check if invalid geometry was fixed (st_make_valid usually splits strict bowtie into multipolygon or fixes it)
   expect_true(all(sf::st_is_valid(cleaned)))
 })
 
 test_that("spod_clean_zones_v1 aggregates relations data correctly for districts", {
-  valid_poly <- sf::st_polygon(list(matrix(c(0,0, 1,0, 1,1, 0,1, 0,0), ncol=2, byrow=TRUE)))
-  mock_sf <- sf::st_sf(ID = c("D001", "D002"), geometry = sf::st_sfc(valid_poly, valid_poly))
-  
+  valid_poly <- sf::st_polygon(list(matrix(
+    c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+    ncol = 2,
+    byrow = TRUE
+  )))
+  mock_sf <- sf::st_sf(
+    ID = c("D001", "D002"),
+    geometry = sf::st_sfc(valid_poly, valid_poly)
+  )
+
   local_mocked_bindings(
     read_sf = function(...) mock_sf,
     .package = "sf"
   )
-  
+
   local_mocked_bindings(
     file_exists = function(...) TRUE,
     .package = "fs"
   )
-  
+
   # Mock relations to test aggregation
   local_mocked_bindings(
     read_delim = function(...) {
@@ -136,35 +153,45 @@ test_that("spod_clean_zones_v1 aggregates relations data correctly for districts
     },
     .package = "readr"
   )
-  
+
   local_mocked_bindings(
     spod_get_zones_v2 = function(...) {
-      sf::st_sf(id = c("D001", "D002"), name = c("Name1", "Name2"), 
-                geometry = sf::st_sfc(valid_poly, valid_poly))
+      sf::st_sf(
+        id = c("D001", "D002"),
+        name = c("Name1", "Name2"),
+        geometry = sf::st_sfc(valid_poly, valid_poly)
+      )
     }
   )
-  
-  cleaned <- spanishoddata:::spod_clean_zones_v1("dummy.shp", "distritos")
-  
+
+  cleaned <- spod_clean_zones_v1("dummy.shp", "distritos")
+
   expect_true("census_districts" %in% names(cleaned))
   expect_true("municipalities_mitma" %in% names(cleaned))
   expect_equal(nrow(cleaned), 2)
 })
 
 test_that("spod_clean_zones_v1 aggregates relations data correctly for municipalities", {
-  valid_poly <- sf::st_polygon(list(matrix(c(0,0, 1,0, 1,1, 0,1, 0,0), ncol=2, byrow=TRUE)))
-  mock_sf <- sf::st_sf(ID = c("M001", "M002"), geometry = sf::st_sfc(valid_poly, valid_poly))
-  
+  valid_poly <- sf::st_polygon(list(matrix(
+    c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+    ncol = 2,
+    byrow = TRUE
+  )))
+  mock_sf <- sf::st_sf(
+    ID = c("M001", "M002"),
+    geometry = sf::st_sfc(valid_poly, valid_poly)
+  )
+
   local_mocked_bindings(
     read_sf = function(...) mock_sf,
     .package = "sf"
   )
-  
+
   local_mocked_bindings(
     file_exists = function(...) TRUE,
     .package = "fs"
   )
-  
+
   local_mocked_bindings(
     read_delim = function(...) {
       if (grepl("relaciones_distrito", ..1)) {
@@ -184,40 +211,53 @@ test_that("spod_clean_zones_v1 aggregates relations data correctly for municipal
     },
     .package = "readr"
   )
-  
+
   local_mocked_bindings(
     spod_get_zones_v2 = function(...) {
-      sf::st_sf(id = c("M001", "M002"), name = c("Name1", "Name2"),
-                geometry = sf::st_sfc(valid_poly, valid_poly))
+      sf::st_sf(
+        id = c("M001", "M002"),
+        name = c("Name1", "Name2"),
+        geometry = sf::st_sfc(valid_poly, valid_poly)
+      )
     }
   )
-  
-  cleaned <- spanishoddata:::spod_clean_zones_v1("dummy.shp", "municipios")
-  
+
+  cleaned <- spod_clean_zones_v1("dummy.shp", "municipios")
+
   expect_true("municipalities" %in% names(cleaned))
   expect_true("districts_mitma" %in% names(cleaned))
   expect_equal(nrow(cleaned), 2)
 })
 
 test_that("spod_clean_zones_v2 joins population and name data correctly", {
-  valid_poly <- sf::st_polygon(list(matrix(c(0,0, 1,0, 1,1, 0,1, 0,0), ncol=2, byrow=TRUE)))
-  mock_sf <- sf::st_sf(ID = c("01001", "01002"), geometry = sf::st_sfc(valid_poly, valid_poly))
-  
+  valid_poly <- sf::st_polygon(list(matrix(
+    c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+    ncol = 2,
+    byrow = TRUE
+  )))
+  mock_sf <- sf::st_sf(
+    ID = c("01001", "01002"),
+    geometry = sf::st_sfc(valid_poly, valid_poly)
+  )
+
   local_mocked_bindings(
     read_sf = function(...) mock_sf,
     .package = "sf"
   )
-  
+
   local_mocked_bindings(
     file_exists = function(...) TRUE,
     .package = "fs"
   )
-  
+
   # Mock population and name files
   local_mocked_bindings(
     read_delim = function(file, ...) {
       if (grepl("poblacion", file)) {
-        return(data.frame(id = c("01001", "01002"), population = c(1000L, 2000L)))
+        return(data.frame(
+          id = c("01001", "01002"),
+          population = c(1000L, 2000L)
+        ))
       } else if (grepl("nombres", file)) {
         return(data.frame(id = c("01001", "01002"), name = c("Zone1", "Zone2")))
       } else if (grepl("relacion_ine", file)) {
@@ -234,20 +274,20 @@ test_that("spod_clean_zones_v2 joins population and name data correctly", {
     },
     .package = "readr"
   )
-  
+
   # Mock download zones v1 (called for v1-v2 mapping)
   local_mocked_bindings(
     spod_download_zones_v1 = function(...) NULL
   )
-  
+
   # Mock dir_ls for v1 zones
   local_mocked_bindings(
     dir_ls = function(...) "mock_v1.shp",
     .package = "fs"
   )
-  
-  cleaned <- spanishoddata:::spod_clean_zones_v2("mock_path/zonificacion_distritos.shp")
-  
+
+  cleaned <- spod_clean_zones_v2("mock_path/zonificacion_distritos.shp")
+
   expect_true("population" %in% names(cleaned))
   expect_true("name" %in% names(cleaned))
   expect_equal(cleaned$population, c(1000L, 2000L))
@@ -255,19 +295,23 @@ test_that("spod_clean_zones_v2 joins population and name data correctly", {
 })
 
 test_that("spod_clean_zones_v2 handles GAU zones (no v1 mapping)", {
-  valid_poly <- sf::st_polygon(list(matrix(c(0,0, 1,0, 1,1, 0,1, 0,0), ncol=2, byrow=TRUE)))
+  valid_poly <- sf::st_polygon(list(matrix(
+    c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+    ncol = 2,
+    byrow = TRUE
+  )))
   mock_sf <- sf::st_sf(ID = c("G001"), geometry = sf::st_sfc(valid_poly))
-  
+
   local_mocked_bindings(
     read_sf = function(...) mock_sf,
     .package = "sf"
   )
-  
+
   local_mocked_bindings(
     file_exists = function(...) TRUE,
     .package = "fs"
   )
-  
+
   local_mocked_bindings(
     read_delim = function(file, ...) {
       if (grepl("poblacion", file)) {
@@ -288,17 +332,17 @@ test_that("spod_clean_zones_v2 handles GAU zones (no v1 mapping)", {
     },
     .package = "readr"
   )
-  
-  cleaned <- spanishoddata:::spod_clean_zones_v2("mock_path/zonificacion_gau.shp")
-  
+
+  cleaned <- spod_clean_zones_v2("mock_path/zonificacion_gau.shp")
+
   expect_true("population" %in% names(cleaned))
   expect_true("name" %in% names(cleaned))
-  expect_false("district_ids_in_v1" %in% names(cleaned))  # GAU should not have v1 mapping
+  expect_false("district_ids_in_v1" %in% names(cleaned)) # GAU should not have v1 mapping
 })
 
 test_that("spod_download_zones_v1 calls download and unzip logic", {
   test_dir <- withr::local_tempdir()
-  
+
   # Mock metadata
   metadata <- tibble::tibble(
     target_url = c(
@@ -312,11 +356,11 @@ test_that("spod_download_zones_v1 calls download and unzip logic", {
       file.path(test_dir, "raw_data_cache/v1/zonificacion_distritos.zip")
     )
   )
-  
+
   local_mocked_bindings(
     spod_available_data = function(...) metadata
   )
-  
+
   # Mock file_exists to say files don't exist
   local_mocked_bindings(
     file_exists = function(path) {
@@ -325,10 +369,10 @@ test_that("spod_download_zones_v1 calls download and unzip logic", {
     },
     .package = "fs"
   )
-  
+
   download_called <- FALSE
   unzip_called <- FALSE
-  
+
   # Mock download
   local_mocked_bindings(
     spod_download_in_batches = function(files) {
@@ -341,7 +385,7 @@ test_that("spod_download_zones_v1 calls download and unzip logic", {
       return(files)
     }
   )
-  
+
   # Mock unzip
   local_mocked_bindings(
     unzip = function(zipfile, exdir, ...) {
@@ -352,14 +396,14 @@ test_that("spod_download_zones_v1 calls download and unzip logic", {
     },
     .package = "utils"
   )
-  
-  result <- spanishoddata:::spod_download_zones_v1(
+
+  result <- spod_download_zones_v1(
     zones = "distritos",
     data_dir = test_dir,
     quiet = TRUE,
     metadata = metadata
   )
-  
+
   expect_true(download_called)
   expect_true(unzip_called)
   expect_true(length(result) > 0)

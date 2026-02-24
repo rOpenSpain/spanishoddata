@@ -1,11 +1,11 @@
 test_that("spod_quick_get_od fails out of range dates", {
   skip_on_ci()
   skip_on_cran()
-  
+
   # Mock valid dates to return something that makes "2021-12-31" technically out of range but valid for checking
   # Actually, the error happens because the function calls spod_graphql_valid_dates which does a network call.
   # We should mock that helper to avoid network calls.
-  
+
   local_mocked_bindings(
     spod_graphql_valid_dates_memoised = function() {
       return(as.Date("2022-01-01"))
@@ -78,17 +78,27 @@ test_that("spod_quick_get_od fails on invalid municipality IDs", {
 })
 
 test_that("spod_quick_get_od fetches data (mocked)", {
-  
   # Mock valid dates
-  orig_dates_func <- spanishoddata:::spod_graphql_valid_dates_memoised
+  orig_dates_func <- spod_graphql_valid_dates_memoised
   mock_dates_func <- function() {
     return(as.Date("2022-01-01"))
   }
-  assignInNamespace("spod_graphql_valid_dates_memoised", mock_dates_func, ns = "spanishoddata")
-  on.exit(assignInNamespace("spod_graphql_valid_dates_memoised", orig_dates_func, ns = "spanishoddata"), add = TRUE)
-  
+  assignInNamespace(
+    "spod_graphql_valid_dates_memoised",
+    mock_dates_func,
+    ns = "spanishoddata"
+  )
+  on.exit(
+    assignInNamespace(
+      "spod_graphql_valid_dates_memoised",
+      orig_dates_func,
+      ns = "spanishoddata"
+    ),
+    add = TRUE
+  )
+
   # Mock query function
-  orig_query_func <- spanishoddata:::spod_query_od_memoised
+  orig_query_func <- spod_query_od_memoised
   mock_query_func <- function(date_fmt, id_origin, ...) {
     # Return dummy tibble matching structure
     dplyr::tibble(
@@ -99,13 +109,24 @@ test_that("spod_quick_get_od fetches data (mocked)", {
       trips_total_length_km = 500
     )
   }
-  assignInNamespace("spod_query_od_memoised", mock_query_func, ns = "spanishoddata")
-  on.exit(assignInNamespace("spod_query_od_memoised", orig_query_func, ns = "spanishoddata"), add = TRUE)
-  
+  assignInNamespace(
+    "spod_query_od_memoised",
+    mock_query_func,
+    ns = "spanishoddata"
+  )
+  on.exit(
+    assignInNamespace(
+      "spod_query_od_memoised",
+      orig_query_func,
+      ns = "spanishoddata"
+    ),
+    add = TRUE
+  )
+
   # Run test
   # Note: 01001 is a valid municipality code (Alegría-Dulantzi)
   res <- spod_quick_get_od(date = "2022-01-01", id_origin = "01001")
-  
+
   expect_s3_class(res, "data.frame")
   expect_equal(nrow(res), 1)
   expect_equal(res$n_trips, 100)
@@ -113,19 +134,34 @@ test_that("spod_quick_get_od fetches data (mocked)", {
 })
 
 test_that("spod_quick_get_zones fetches geometries (mocked)", {
-  
   # Mock geometry fetch
-  orig_geo_func <- spanishoddata:::spod_fetch_municipalities_json_memoised
+  orig_geo_func <- spod_fetch_municipalities_json_memoised
   mock_geo_func <- function() {
     # Create simple sf object
     geom <- sf::st_sfc(sf::st_point(c(0, 0)))
-    sf::st_sf(id = "01001", name = "Mock Muni", population = 1000, geometry = geom)
+    sf::st_sf(
+      id = "01001",
+      name = "Mock Muni",
+      population = 1000,
+      geometry = geom
+    )
   }
-  assignInNamespace("spod_fetch_municipalities_json_memoised", mock_geo_func, ns = "spanishoddata")
-  on.exit(assignInNamespace("spod_fetch_municipalities_json_memoised", orig_geo_func, ns = "spanishoddata"), add = TRUE)
-  
+  assignInNamespace(
+    "spod_fetch_municipalities_json_memoised",
+    mock_geo_func,
+    ns = "spanishoddata"
+  )
+  on.exit(
+    assignInNamespace(
+      "spod_fetch_municipalities_json_memoised",
+      orig_geo_func,
+      ns = "spanishoddata"
+    ),
+    add = TRUE
+  )
+
   res <- spod_quick_get_zones(zones = "muni")
-  
+
   expect_s3_class(res, "sf")
   expect_true("population" %in% names(res))
   expect_equal(res$id[1], "01001")

@@ -32,8 +32,13 @@ generate_xml_content <- function(dates, version) {
     "https://example.com/viajes/ficheros-diarios/"
   }
   items <- paste0(
-    "<item><link>", base_url, format(dates, "%Y%m%d"), "_test.csv.gz</link>",
-    "<pubDate>", format(dates, "%a, %d %b %Y %H:%M:%S GMT"), "</pubDate></item>",
+    "<item><link>",
+    base_url,
+    format(dates, "%Y%m%d"),
+    "_test.csv.gz</link>",
+    "<pubDate>",
+    format(dates, "%a, %d %b %Y %H:%M:%S GMT"),
+    "</pubDate></item>",
     collapse = "\n"
   )
   paste0("<rss><channel>", items, "</channel></rss>")
@@ -60,9 +65,9 @@ Sys.setenv(SPANISH_OD_DATA_DIR = test_data_dir)
 # Sys.getenv("SPANISH_OD_DATA_DIR")
 
 # Global setup: clear cache and mock S3 once
-memoise::forget(spanishoddata:::spod_get_valid_dates_memoised)
+memoise::forget(spod_get_valid_dates_memoised)
 if (exists("read_data_links_memoised", envir = asNamespace("spanishoddata"))) {
-  memoise::forget(spanishoddata:::read_data_links_memoised)
+  memoise::forget(read_data_links_memoised)
 }
 # Mock S3 globally for this file
 local_mocked_bindings(

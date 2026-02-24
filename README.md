@@ -530,8 +530,9 @@ For more information on the package, see:
     Data”](https://www.ekotov.pro/spanish-open-mobility-workshop-ic2s2-2025/)
     by [Egor Kotov](http://github.com/e-kotov) and [Johannes
     Mast](https://github.com/JohMast) (held at [IC2S2
-    2025](https://www.ic2s2-2025.org/) (11th International Conference on
-    Computational Social Science), Norrköping, Sweden)
+    2025](https://web.archive.org/web/20260113100927/https://ic2s2-2025.org/)
+    (11th International Conference on Computational Social Science),
+    Norrköping, Sweden)
     [![DOI:10.5281/zenodo.16238597](https://zenodo.org/badge/DOI/10.5281/zenodo.16238597.svg)](https://doi.org/10.5281/zenodo.16238597)
 
   - [Data Science for Transport
@@ -604,6 +605,7 @@ BibTeX:
       title = {Estudio de la movilidad con Big Data (Study of mobility with Big Data)},
       url = {https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data},
       year = {2024},
+      note = {Data License: \url{https://www.transportes.gob.es/el-ministerio/buen-gobierno/licencia_datos}},
     }
 
 

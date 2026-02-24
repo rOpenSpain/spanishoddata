@@ -17,7 +17,7 @@ execute:
 You can view this vignette any time by running:
 
 ```{r}
-spanishoddata::spod_codebook(ver = 2)
+spod_codebook(ver = 2)
 ```
 
 The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitms_methodology_2022_v8].

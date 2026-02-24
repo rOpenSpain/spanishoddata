@@ -17,7 +17,7 @@ execute:
 You can view this vignette any time by running:
 
 ```{r}
-spanishoddata::spod_codebook(ver = 1)
+spod_codebook(ver = 1)
 ```
 
 The mobility data v1 (2020-2021) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now [Ministerio de Transportes y Movilidad Sostenible (MITMS)](https://www.transportes.gob.es/) [@mitma_methodology_2020_v3]. 
