@@ -72,9 +72,11 @@ Path to saved \code{DuckDB} database file or to a folder with \code{parquet} fil
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 Converts data for faster analysis into either \code{DuckDB} file or into \code{parquet} files in a hive-style directory structure. Running analysis on these files is sometimes 100x times faster than working with raw CSV files, espetially when these are in gzip archives. To connect to converted data, please use 'mydata <- \link{spod_connect}(data_path = path_returned_by_spod_convert)' passing the path to where the data was saved. The connected \code{mydata} can be analysed using \code{dplyr} functions such as \link[dplyr]{select}, \link[dplyr]{filter}, \link[dplyr]{mutate}, \link[dplyr]{group_by}, \link[dplyr]{summarise}, etc. In the end of any sequence of commands you will need to add \link[dplyr]{collect} to execute the whole chain of data manipulations and load the results into memory in an R \code{data.frame}/\code{tibble}. For more in-depth usage of such data, please refer to DuckDB documentation and examples at \url{https://duckdb.org/docs/api/r#dbplyr} . Some more useful examples can be found here \url{https://arrow-user2022.netlify.app/data-wrangling#combining-arrow-with-duckdb} . You may also use \code{arrow} package to work with parquet files \url{https://arrow.apache.org/docs/r/}.
+
+For detailed data descriptions, see package vignettes using \code{\link[=spod_codebook]{spod_codebook(ver = 1)}} and \code{\link[=spod_codebook]{spod_codebook(ver = 2)}} and official methodology documents in \strong{References} section.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 # Set data dir for file downloads
 spod_set_data_dir(tempdir())
@@ -95,4 +97,14 @@ my_od_data_2 <- spod_connect(db_2)
 spod_disconnect(my_od_data_2)
 }
 \dontshow{\}) # examplesIf}
+}
+\references{
+\itemize{
+\item \strong{For the official website of the mobility study}: \insertRef{mitms_mobility_web}{spanishoddata}
+\item \strong{For v1 data methodology}: \insertRef{mitma_methodology_2020_v3}{spanishoddata}
+\item \strong{For v2 data methodology}: \insertRef{mitms_methodology_2022_v8}{spanishoddata}
+\item \strong{For the \code{spanishoddata} R package}: \insertRef{spanishoddata-r-pkg}{spanishoddata}
+}
+
+Use \code{\link[=spod_cite]{spod_cite()}} to cite the package and the data with correct plain text, markdown, or BibTeX formats.
 }

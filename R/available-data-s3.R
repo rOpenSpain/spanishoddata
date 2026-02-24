@@ -134,10 +134,10 @@ spod_available_data_s3_function <- function(
       etag = gsub('\\"', '', .data$ETag)
     ) |>
     dplyr::select(
-      .data$target_url,
-      .data$pub_ts,
-      .data$file_size_bytes,
-      .data$etag
+      "target_url",
+      "pub_ts",
+      "file_size_bytes",
+      "etag"
     )
 
   return(all_objects)

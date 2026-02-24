@@ -12,7 +12,7 @@ spod_download_in_batches(
   test_size = 10 * 1024 * 1024,
   max_retries = 3L,
   timeout = 900,
-  show_progress = interactive() && !isTRUE(getOption("knitr.in.progress"))
+  show_progress = spod_interactive() && !isTRUE(getOption("knitr.in.progress"))
 )
 }
 \arguments{

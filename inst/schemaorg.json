@@ -26,7 +26,7 @@
         "familyName": "Vidal-Tortosa",
         "givenName": "Eugeni"
       },
-      "description": "Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Extensive documentation is available at <https://ropenspain.github.io/spanishoddata/index.html>, offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.",
+      "description": "Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Methods described in Kotov et al. (2026) <doi:10.1177/23998083251415040>. Extensive documentation is available at <https://ropenspain.github.io/spanishoddata/index.html>, offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.",
       "license": "https://spdx.org/licenses/MIT",
       "name": "spanishoddata: Get Spanish Origin-Destination Data",
       "programmingLanguage": {
@@ -40,8 +40,8 @@
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "runtimePlatform": "R version 4.5.1 (2025-06-13)",
-      "version": "0.2.1"
+      "runtimePlatform": "R version 4.5.2 (2025-10-31)",
+      "version": "0.2.1.9000"
     },
     {
       "type": "SoftwareSourceCode",
@@ -49,7 +49,7 @@
         "type": "Organization",
         "name": "Ministerio de Transportes y Movilidad Sostenible (MITMS)"
       },
-      "name": "Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)"
+      "name": "Estudio de movilidad de viajeros de {\\'a}mbito nacional aplicando la tecnolog{\\'i}a Big Data. Informe metodol{\\'o}gico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)"
     },
     {
       "type": "SoftwareSourceCode",
@@ -57,28 +57,7 @@
         "type": "Organization",
         "name": "Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA)"
       },
-      "name": "Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)"
-    },
-    {
-      "id": "https://doi.org/10.32614/CRAN.package.spanishoddata",
-      "type": "SoftwareSourceCode",
-      "author": [
-        {
-          "id": "https://orcid.org/0000-0001-6690-5345",
-          "type": "Person",
-          "email": "kotov.egor@gmail.com",
-          "familyName": "Kotov",
-          "givenName": "Egor"
-        },
-        {
-          "id": "https://orcid.org/0000-0001-5679-6536",
-          "type": "Person",
-          "email": "rob00x@gmail.com",
-          "familyName": "Lovelace",
-          "givenName": "Robin"
-        }
-      ],
-      "name": "spanishoddata"
+      "name": "An{\\'a}lisis de la movilidad en Espa{\\~n}a con tecnolog{\\'i}a Big Data durante el estado de alarma para la gesti{\\'o}n de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)"
     }
   ]
 }

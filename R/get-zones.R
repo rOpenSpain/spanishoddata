@@ -6,6 +6,10 @@
 #'
 #' Get spatial zones for the specified data version. Supports both v1 (2020-2021) and v2 (2022 onwards) data.
 #'
+#' For detailed data descriptions, see package vignettes using [`spod_codebook(ver = 1)`][spod_codebook] and [`spod_codebook(ver = 2)`][spod_codebook] and official methodology documents in **References** section.
+#'
+#' @template references
+#'
 #' @inheritParams spod_download
 #' @inheritParams spod_available_data
 #' @return An `sf` object (Simple Feature collection).
@@ -34,6 +38,8 @@
 #'   \item{district_ids_in_v1/municipality_ids_in_v1}{A string with semicolon-separated district identifiers from v1 data corresponding to each district in v2. If no match exists, it is marked as `NA`.}
 #'   \item{geometry}{A `MULTIPOLYGON` column containing the spatial geometry of each district, stored as an sf object. The geometry is projected in the ETRS89 / UTM zone 30N coordinate reference system (CRS), with XY dimensions.}
 #' }
+#'
+#'
 #'
 #' @export
 #' @examplesIf interactive()
@@ -142,7 +148,6 @@ spod_get_zones_v1 <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE
 ) {
-  zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
   metadata <- spod_available_data(
@@ -163,10 +168,9 @@ spod_get_zones_v1 <- function(
   # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
     data_dir,
-    glue::glue(
-      spod_subfolder_clean_data_cache(ver = 1),
-      "/zones/{zones}_mitma.gpkg"
-    )
+    spod_subfolder_clean_data_cache(ver = 1),
+    "zones",
+    glue::glue("{zones}_mitma.gpkg")
   )
   if (fs::file_exists(expected_gpkg_path)) {
     if (isFALSE(quiet)) {
@@ -184,7 +188,7 @@ spod_get_zones_v1 <- function(
     recurse = TRUE
   )
 
-  zones_sf <- spod_clean_zones_v1(zones_path, zones = zones)
+  zones_sf <- spod_clean_zones_v1(zones_path, zones = zones, quiet = quiet)
   fs::dir_create(fs::path_dir(expected_gpkg_path), recurse = TRUE)
   sf::st_write(
     zones_sf,
@@ -207,7 +211,7 @@ spod_get_zones_v1 <- function(
 #' @keywords internal
 #' @importFrom rlang .data
 #'
-spod_clean_zones_v1 <- function(zones_path, zones) {
+spod_clean_zones_v1 <- function(zones_path, zones, quiet = FALSE) {
   if (fs::file_exists(zones_path) == FALSE) {
     stop("File does not exist: ", zones_path)
   }
@@ -223,9 +227,8 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 
   # load and prepare id relations for districts
   relations_districts <- readr::read_delim(
-    file = paste0(
+    file = fs::path(
       spod_get_data_dir(),
-      "/",
       spod_subfolder_raw_data_cache(1),
       "relaciones_distrito_mitma.csv"
     ),
@@ -252,9 +255,8 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 
   # load and prepare id relations for municipalities
   relations_municipalities <- readr::read_delim(
-    file = paste0(
+    file = fs::path(
       spod_get_data_dir(),
-      "/",
       spod_subfolder_raw_data_cache(1),
       "relaciones_municipio_mitma.csv"
     ),
@@ -308,7 +310,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   relations_municipalities_aggregated <- relations_municipalities_aggregated |>
     dplyr::mutate(
       dplyr::across(
-        c(.data$municipalities, .data$districts_mitma, .data$census_districts),
+        c("municipalities", "districts_mitma", "census_districts"),
         spod_unique_separated_ids
       )
     )
@@ -320,7 +322,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   relations_districts_aggregated <- relations_districts_aggregated |>
     dplyr::mutate(
       dplyr::across(
-        c(.data$census_districts, .data$municipalities_mitma),
+        c("census_districts", "municipalities_mitma"),
         spod_unique_separated_ids
       )
     )
@@ -331,15 +333,15 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
   if (zones == "distritos") {
     zones_sf <- zones_sf |>
       dplyr::left_join(relations_districts_aggregated, by = "id") |>
-      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+      dplyr::relocate("geometry", .after = dplyr::last_col())
   } else if (zones == "municipios") {
     zones_sf <- zones_sf |>
       dplyr::left_join(relations_municipalities_aggregated, by = "id") |>
-      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+      dplyr::relocate("geometry", .after = dplyr::last_col())
   }
 
   # add metadata from v2 zones
-  zones_v2_sf <- spod_get_zones_v2(zones = zones)
+  zones_v2_sf <- spod_get_zones_v2(zones = zones, quiet = quiet)
   zones_v2_sf <- zones_v2_sf[, c("id", "name")]
   names(zones_v2_sf)[names(zones_v2_sf) == "id"] <- "id_in_v2"
   names(zones_v2_sf)[names(zones_v2_sf) == "name"] <- "name_in_v2"
@@ -368,7 +370,7 @@ spod_clean_zones_v1 <- function(zones_path, zones) {
 
   zones_sf <- zones_sf |>
     dplyr::left_join(v2_v_1ref, by = "id") |>
-    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+    dplyr::relocate("geometry", .after = dplyr::last_col())
 
   return(zones_sf)
 }
@@ -436,8 +438,9 @@ spod_download_zones_v1 <- function(
   }
 
   if (!fs::file_exists(metadata_zones$local_path)) {
-    if (isFALSE(quiet))
+    if (isFALSE(quiet)) {
       message("Downloading the file to: ", metadata_zones$local_path)
+    }
     downloaded_file <- spod_download_in_batches(metadata_zones)
     # downloaded_file <- spod_multi_download_with_progress(metadata_zones)
     # disable curl::multi_download() for now
@@ -449,12 +452,15 @@ spod_download_zones_v1 <- function(
     # )
     downloaded_file <- downloaded_file$local_path
   } else {
-    if (isFALSE(quiet))
+    if (isFALSE(quiet)) {
       message("File already exists: ", metadata_zones$local_path)
+    }
     downloaded_file <- metadata_zones$local_path
   }
 
-  if (isFALSE(quiet)) message("Unzipping the file: ", downloaded_file)
+  if (isFALSE(quiet)) {
+    message("Unzipping the file: ", downloaded_file)
+  }
   if (!dir.exists(fs::path_dir(downloaded_file))) {
     fs::dir_create(fs::path_dir(downloaded_file), recurse = TRUE)
   }
@@ -465,7 +471,9 @@ spod_download_zones_v1 <- function(
 
   # remove artifacts (remove __MACOSX if exists)
   junk_path <- paste0(fs::path_dir(downloaded_file), "/__MACOSX")
-  if (dir.exists(junk_path)) fs::dir_delete(junk_path)
+  if (dir.exists(junk_path)) {
+    fs::dir_delete(junk_path)
+  }
 
   return(metadata_zones$local_path)
 }
@@ -506,17 +514,16 @@ spod_get_zones_v2 <- function(
   data_dir = spod_get_data_dir(),
   quiet = FALSE
 ) {
-  zones <- match.arg(zones)
   zones <- spod_zone_names_en2es(zones)
 
   # check if gpkg files are already saved and load them if available
   expected_gpkg_path <- fs::path(
     data_dir,
-    glue::glue(
-      spod_subfolder_clean_data_cache(ver = 2),
-      "/zones/{zones}_mitma.gpkg"
-    )
+    spod_subfolder_clean_data_cache(ver = 2),
+    "zones",
+    glue::glue("{zones}_mitma.gpkg")
   )
+
   if (fs::file_exists(expected_gpkg_path)) {
     if (isFALSE(quiet)) {
       message(
@@ -589,7 +596,7 @@ spod_get_zones_v2 <- function(
 #'
 spod_clean_zones_v2 <- function(zones_path) {
   # detect what kind of zones find out if it is distritos, municipios or GAU
-  zones <- stringr::str_extract(zones_path, "distritos|municipios|gaus")
+  zones <- stringr::str_extract(zones_path, "distritos|municipios|gau")
 
   if (fs::file_exists(zones_path) == FALSE) {
     stop("File does not exist: ", zones_path)
@@ -615,7 +622,7 @@ spod_clean_zones_v2 <- function(zones_path) {
     col_types = c("c", "i")
   )
 
-  if (zones %in% c("distritos", "gaus")) {
+  if (zones %in% c("distritos", "gau")) {
     zone_names <- readr::read_delim(
       glue::glue(fs::path_dir(zones_path), "/nombres_{zones}.csv"),
       skip = 1,
@@ -636,11 +643,11 @@ spod_clean_zones_v2 <- function(zones_path) {
 
   # zones reference
   zones_ref <- readr::read_delim(
-    glue::glue(
+    fs::path(
       spod_get_data_dir(quiet = TRUE),
-      "/",
       spod_subfolder_raw_data_cache(ver = 2),
-      "zonificacion/relacion_ine_zonificacionMitma.csv"
+      "zonificacion",
+      "relacion_ine_zonificacionMitma.csv"
     ),
     delim = "|",
     col_types = rep("c", 6)
@@ -656,7 +663,7 @@ spod_clean_zones_v2 <- function(zones_path) {
       districts_mitma = "distrito_mitma",
       municipalities_mitma = "municipio_mitma",
       luas_mitma = "gau_mitma",
-      id = zone_mitma
+      id = dplyr::all_of(zone_mitma)
     )
 
   zones_ref_aggregated <- zones_ref_renamed |>
@@ -683,10 +690,10 @@ spod_clean_zones_v2 <- function(zones_path) {
     dplyr::left_join(zone_names, by = "id") |>
     dplyr::left_join(population, by = "id") |>
     dplyr::left_join(zones_ref_aggregated, by = "id") |>
-    dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+    dplyr::relocate("geometry", .after = dplyr::last_col())
 
   # load v1 zones to join ids, unless it's gau zones
-  if (zones != "gaus") {
+  if (zones != "gau") {
     spod_download_zones_v1(zones = zones, quiet = TRUE)
     zones_v1_path <- fs::dir_ls(
       path = fs::path(
@@ -728,7 +735,7 @@ spod_clean_zones_v2 <- function(zones_path) {
 
     zones_sf <- zones_sf |>
       dplyr::left_join(v2_v_1ref, by = "id") |>
-      dplyr::relocate(.data$geometry, .after = dplyr::last_col())
+      dplyr::relocate("geometry", .after = dplyr::last_col())
   }
 
   return(zones_sf)

@@ -1,3 +1,4 @@
+# nocov start
 .onLoad <- function(libname, pkgname) {
   op <- options()
   op.spanishoddata <- list(
@@ -5,7 +6,10 @@
     spanishoddata.user_agent = "spanishoddata R package, https://github.com/rOpenSpain/spanishoddata/"
   )
   toset <- !(names(op.spanishoddata) %in% names(op))
-  if (any(toset)) options(op.spanishoddata[toset])
+  if (any(toset)) {
+    options(op.spanishoddata[toset])
+  }
 
   invisible()
 }
+# nocov end

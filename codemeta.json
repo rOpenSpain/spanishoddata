@@ -2,19 +2,19 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "spanishoddata",
-  "description": "Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Extensive documentation is available at <https://ropenspain.github.io/spanishoddata/index.html>, offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.",
+  "description": "Gain seamless access to origin-destination (OD) data from the Spanish Ministry of Transport, hosted at <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/opendata-movilidad>. This package simplifies the management of these large datasets by providing tools to download zone boundaries, handle associated origin-destination data, and process it efficiently with the 'duckdb' database interface. Local caching minimizes repeated downloads, streamlining workflows for researchers and analysts. Methods described in Kotov et al. (2026) <doi:10.1177/23998083251415040>. Extensive documentation is available at <https://ropenspain.github.io/spanishoddata/index.html>, offering guides on creating static and dynamic mobility flow visualizations and transforming large datasets into analysis-ready formats.",
   "name": "spanishoddata: Get Spanish Origin-Destination Data",
-  "relatedLink": "https://rOpenSpain.github.io/spanishoddata/",
+  "relatedLink": ["https://rOpenSpain.github.io/spanishoddata/", "https://doi.org/10.1177/23998083251415040"],
   "codeRepository": "https://github.com/rOpenSpain/spanishoddata",
   "issueTracker": "https://github.com/rOpenSpain/spanishoddata/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.2.1",
+  "version": "0.2.1.9000",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.5.1 (2025-06-13)",
+  "runtimePlatform": "R version 4.5.2 (2025-10-31)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -55,6 +55,18 @@
     }
   ],
   "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "cli",
+      "name": "cli",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=cli"
+    },
     {
       "@type": "SoftwareApplication",
       "identifier": "flowmapblue",
@@ -200,6 +212,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=tidyverse"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "withr",
+      "name": "withr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=withr"
     }
   ],
   "softwareRequirements": {
@@ -296,18 +320,6 @@
     },
     "9": {
       "@type": "SoftwareApplication",
-      "identifier": "here",
-      "name": "here",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=here"
-    },
-    "10": {
-      "@type": "SoftwareApplication",
       "identifier": "httr2",
       "name": "httr2",
       "provider": {
@@ -318,7 +330,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=httr2"
     },
-    "11": {
+    "10": {
       "@type": "SoftwareApplication",
       "identifier": "jsonlite",
       "name": "jsonlite",
@@ -330,7 +342,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=jsonlite"
     },
-    "12": {
+    "11": {
       "@type": "SoftwareApplication",
       "identifier": "lifecycle",
       "name": "lifecycle",
@@ -342,7 +354,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lifecycle"
     },
-    "13": {
+    "12": {
       "@type": "SoftwareApplication",
       "identifier": "lubridate",
       "name": "lubridate",
@@ -354,7 +366,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lubridate"
     },
-    "14": {
+    "13": {
       "@type": "SoftwareApplication",
       "identifier": "memoise",
       "name": "memoise",
@@ -366,7 +378,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=memoise"
     },
-    "15": {
+    "14": {
       "@type": "SoftwareApplication",
       "identifier": "openssl",
       "name": "openssl",
@@ -378,7 +390,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=openssl"
     },
-    "16": {
+    "15": {
       "@type": "SoftwareApplication",
       "identifier": "parallelly",
       "name": "parallelly",
@@ -390,7 +402,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=parallelly"
     },
-    "17": {
+    "16": {
       "@type": "SoftwareApplication",
       "identifier": "paws.storage",
       "name": "paws.storage",
@@ -403,7 +415,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=paws.storage"
     },
-    "18": {
+    "17": {
       "@type": "SoftwareApplication",
       "identifier": "purrr",
       "name": "purrr",
@@ -414,6 +426,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=purrr"
+    },
+    "18": {
+      "@type": "SoftwareApplication",
+      "identifier": "Rdpack",
+      "name": "Rdpack",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=Rdpack"
     },
     "19": {
       "@type": "SoftwareApplication",
@@ -494,11 +518,11 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "2123.967KB",
+  "fileSize": "3533.286KB",
   "citation": [
     {
-      "@type": "SoftwareSourceCode",
-      "datePublished": "2024",
+      "@type": "ScholarlyArticle",
+      "datePublished": "2026",
       "author": [
         {
           "@type": "Person",
@@ -509,17 +533,53 @@
         },
         {
           "@type": "Person",
+          "givenName": "Eugeni",
+          "familyName": "Vidal-Tortosa",
+          "@id": "https://orcid.org/0000-0001-5199-4103"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Oliva G.",
+          "familyName": "Cant{\\'u}-Ros",
+          "@id": "https://orcid.org/0000-0002-5809-5546"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Javier",
+          "familyName": "Burrieza-Gal{\\'a}n",
+          "@id": "https://orcid.org/0000-0002-6165-8434"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Ricardo",
+          "familyName": "Herranz",
+          "@id": "https://orcid.org/0000-0002-3663-0747"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Tania",
+          "familyName": "Gull{\\'o}n Mu{\\~n}oz-Repiso"
+        },
+        {
+          "@type": "Person",
           "givenName": "Robin",
           "familyName": "Lovelace",
           "email": "rob00x@gmail.com",
           "@id": "https://orcid.org/0000-0001-5679-6536"
         }
       ],
-      "name": "spanishoddata",
-      "identifier": "10.32614/CRAN.package.spanishoddata",
-      "url": "https://github.com/rOpenSpain/spanishoddata",
-      "@id": "https://doi.org/10.32614/CRAN.package.spanishoddata",
-      "sameAs": "https://doi.org/10.32614/CRAN.package.spanishoddata"
+      "name": "{spanishoddata}: {A} package for accessing and working with {Spanish Open Mobility Big Data}",
+      "identifier": "10.1177/23998083251415040",
+      "@id": "https://doi.org/10.1177/23998083251415040",
+      "sameAs": "https://doi.org/10.1177/23998083251415040",
+      "isPartOf": {
+        "@type": "PublicationIssue",
+        "datePublished": "2026",
+        "isPartOf": {
+          "@type": ["PublicationVolume", "Periodical"],
+          "name": "Environment and Planning B: Urban Analytics and City Science"
+        }
+      }
     },
     {
       "@type": "CreativeWork",
@@ -542,7 +602,7 @@
           "name": "Ministerio de Transportes y Movilidad Sostenible (MITMS)"
         }
       ],
-      "name": "Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)",
+      "name": "Estudio de movilidad de viajeros de {\\'a}mbito nacional aplicando la tecnolog{\\'i}a Big Data. Informe metodol{\\'o}gico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)",
       "url": "https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf"
     },
     {
@@ -554,7 +614,7 @@
           "name": "Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA)"
         }
       ],
-      "name": "Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)",
+      "name": "An{\\'a}lisis de la movilidad en Espa{\\~n}a con tecnolog{\\'i}a Big Data durante el estado de alarma para la gesti{\\'o}n de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)",
       "url": "https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf"
     }
   ],

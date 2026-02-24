@@ -1,0 +1,52 @@
+# GitHub Actions workflow to run the scheduled live integration tests.
+# These tests download real data and hit provider APIs to ensure compatibility.
+# It is run on a schedule to avoid slowing down PR checks and minimize data costs.
+
+name: Scheduled Live Integration Tests
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  schedule:
+    # Runs at 06:00 UTC on Saturday.
+    - cron: '0 6 * * 6'
+
+jobs:
+  integration-tests:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest, r: 'release'}
+          - {os: macos-latest,  r: 'release'}
+          - {os: windows-latest, r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      RUN_LIVE_TESTS: "TRUE"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::rcmdcheck
+            any::duckdb
+            any::arrow
+          needs: check
+
+      - name: Run Integration Tests
+        run: |
+          Rscript -e "testthat::test_file('tests/testthat/test-live-integration.R')"
+        shell: bash

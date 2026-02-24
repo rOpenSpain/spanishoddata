@@ -6,6 +6,10 @@
 #'
 #' **WARNING: this function may stop working at any time, as the API may change**. This function provides a quick way to get daily aggregated (no hourly data) trip counts per origin-destination municipality from v2 data (2022 onward). Compared to \code{\link[=spod_get]{spod_get()}}, which downloads large CSV files, this function downloads the data directly from the GraphQL API. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). No data aggregation is performed on your computer (unlike in \code{\link[=spod_get]{spod_get()}}), so you do not need to worry about memory usage and do not have to use a powerful computer with multiple CPU cores just to get this simple data. Only about 1 MB of data is downloaded for a single day. The limitation of this function is that it can only retrieve data for a single day at a time and only with total number of trips and total km travelled. So it is not possible to get any of the extra variables available in the full dataset via \code{\link[=spod_get]{spod_get()}}.
 #'
+#' For detailed data descriptions, see package vignettes using [`spod_codebook(ver = 1)`][spod_codebook] and [`spod_codebook(ver = 2)`][spod_codebook] and official methodology documents in **References** section.
+#'
+#' @template references
+#'
 #' @param date A character or Date object specifying the date for which to retrieve the data. If date is a character, the date must be in "YYYY-MM-DD" or "YYYYMMDD" format.
 #' @param min_trips A numeric value specifying the minimum number of journeys per origin-destination pair to retrieve. Defaults to 100 to reduce the amount of data returned. Can be set to 0 to retrieve all data.
 #' @param distances A character vector specifying the distances to retrieve. Valid values are "500m-2km", "2-10km", "10-50km", and "50+km". Defaults to `c("500m-2km", "2-10km", "10-50km", "50+km")`. The resulting data will not have number of trips per category of distance. Therefore, if you want to retrieve the number of trips per distance category, you need to make 4 separate calls to this function or use \code{\link[=spod_get]{spod_get()}} instead to get the full data from source CSV files.
@@ -194,8 +198,8 @@ spod_query_od_raw <- function(
     httr2::req_progress(type = "down")
   # req |> httr2::req_dry_run()
   resp <- req |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(simplifyVector = TRUE)
+    spod_httr2_req_perform() |>
+    spod_httr2_resp_body_json(simplifyVector = TRUE)
 
   # Handle empty data
   if (length(resp$data[[1]]) == 0) {
@@ -209,13 +213,13 @@ spod_query_od_raw <- function(
   # Tidy and return
   od <- tibble::as_tibble(resp$data[[1]]) |>
     dplyr::select(
-      id_origin = .data$origin,
-      id_destination = .data$destination,
-      n_trips = .data$journeys,
-      trips_total_length_km = .data$journeysKm
+      id_origin = "origin",
+      id_destination = "destination",
+      n_trips = "journeys",
+      trips_total_length_km = "journeysKm"
     ) |>
     dplyr::mutate(date = lubridate::ymd(date_fmt)) |>
-    dplyr::relocate(.data$date, .before = id_origin)
+    dplyr::relocate("date", .before = id_origin)
 
   return(od)
 }
@@ -232,6 +236,14 @@ spod_query_od_memoised <- memoise::memoise(spod_query_od_raw)
 #' `r lifecycle::badge("experimental")`
 #'
 #' This function fetches the municipalities (for now this is the  only option) geometries from the mapas-movilidad website and returns a `sf` object with the municipalities geometries. This is intended for use with the flows data retrieved by the \code{\link[=spod_quick_get_od]{spod_quick_get_od()}} function. An interactive web map with this data is available at [https://mapas-movilidad.transportes.gob.es/](https://mapas-movilidad.transportes.gob.es/). These municipality geometries only include Spanish municipalities (and not the NUTS3 regions in Portugal and France) and do not contain extra columns that you can get with the \code{\link[=spod_get_zones]{spod_get_zones()}} function. The function caches the retrieved geometries in memory of the current R session to reduce the number of requests to the mapas-movilidad website.
+#'
+#' For detailed zone definitions and methodology, see
+#' \insertRef{mitma_methodology_2020_v3}{spanishoddata} for v1 data and
+#' \insertRef{mitms_methodology_2022_v8}{spanishoddata} for v2 data.
+#'
+#' @references
+#' \insertRef{mitms_mobility_web}{spanishoddata}
+#'
 #' @param zones A character string specifying the zones to retrieve. Valid values are "municipalities", "muni", "municip", and "municipios". Defaults to "municipalities".
 #' @return A `sf` object with the municipalities geometries to match with the data retrieved with \code{\link[=spod_quick_get_od]{spod_quick_get_od()}}.
 #'
@@ -268,15 +280,37 @@ spod_quick_get_zones <- function(
 spod_fetch_municipalities_json_memoised <- memoise::memoise(
   function() {
     municip_geometries_url <- "https://mapas-movilidad.transportes.gob.es/api/static/data/municipios60.json"
-    municipalities_sf <- sf::st_read(municip_geometries_url, quiet = TRUE) |>
-      dplyr::rename(id = .data$ID) |>
+    municipalities_sf <- spod_sf_st_read(municip_geometries_url, quiet = TRUE) |>
+      dplyr::rename(id = "ID") |>
       dplyr::mutate(
-        population = as.numeric(dplyr::na_if(population, "NA"))
+        population = as.numeric(dplyr::na_if(.data$population, "NA"))
       ) |>
-      dplyr::select(.data$id, .data$name, .data$population)
+      dplyr::select("id", "name", "population")
     return(municipalities_sf)
   }
 )
+
+
+#' Internal wrappers for httr2 and sf calls to enable mocking
+#' @keywords internal
+spod_httr2_req_perform <- function(req) {
+  httr2::req_perform(req)
+}
+
+#' @keywords internal
+spod_httr2_resp_body_string <- function(resp) {
+  httr2::resp_body_string(resp)
+}
+
+#' @keywords internal
+spod_httr2_resp_body_json <- function(resp, ...) {
+  httr2::resp_body_json(resp, ...)
+}
+
+#' @keywords internal
+spod_sf_st_read <- function(dsn, ...) {
+  sf::st_read(dsn, ...)
+}
 
 
 #' Get the HMAC secret from the mapas-movilidad website
@@ -288,8 +322,8 @@ spod_get_hmac_secret <- function(
 ) {
   # Fetch the homepage HTML
   homepage <- httr2::request(base_url) |>
-    httr2::req_perform() |>
-    httr2::resp_body_string()
+    spod_httr2_req_perform() |>
+    spod_httr2_resp_body_string()
 
   # Parse and find the inline <script> that mentions import_meta_env
   doc <- xml2::read_html(homepage)

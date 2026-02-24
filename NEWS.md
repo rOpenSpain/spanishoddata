@@ -1,8 +1,20 @@
 # spanishoddata (development version)
 
+## Breaking changes
+
+* `time_slot` column has been removed from the output of `spod_get()` and `spod_convert()`. Please use the `hour` column instead. Deprecation message removed.
+
 ## Bug fixes
 
 * Fixed failing fallback on XML when Amazon S3 is unavailable.
+
+## Other changes
+
+* `spanishoddata` paper is out: **Kotov, E.**, Vidal-Tortosa, E., Cantú-Ros, O. G., Burrieza-Galán, J., Herranz, R., Gullón Muñoz-Repiso, T., & Lovelace, R. (2026). spanishoddata: A package for accessing and working with Spanish Open Mobility Big Data. *Environment and Planning B: Urban Analytics and City Science*. [DOI:10.1177/23998083251415040](https://doi.org/10.1177/23998083251415040){target='_blank'}
+
+* Increased test coverage.
+
+* `spanishoddata` package and paper are now featured in [DuckDB Library](https://duckdb.org/library/spanishoddata-r-package/)
 
 # spanishoddata 0.2.1 (2025-07-29)
 

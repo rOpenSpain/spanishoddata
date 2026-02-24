@@ -4,7 +4,7 @@ vignette: >
   %\VignetteIndexEntry{Download and convert mobility datasets}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
-bibliography: references.bib
+bibliography: ../inst/REFERENCES.bib
 number-sections: true
 format:
   html:

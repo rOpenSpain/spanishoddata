@@ -18,7 +18,7 @@ A vector of type \code{Date} with all possible valid dates for the specified dat
 Get all metadata for requested data version and identify all dates available for download.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 # Get all valid dates for v1 (2020-2021) data
 spod_get_valid_dates(ver = 1)

@@ -56,9 +56,14 @@ Nothing. If \code{return_local_file_paths = TRUE}, a \code{character} vector of 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 This function downloads the data files of the specified type, zones, dates and data version.
+
+For detailed data descriptions, see package vignettes using \code{\link[=spod_codebook]{spod_codebook(ver = 1)}} and \code{\link[=spod_codebook]{spod_codebook(ver = 2)}} and official methodology documents in \strong{References} section.
+}
+\details{
+Download the data files of specified type, zones, and dates
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 
 # Set data dir for file downloads
@@ -84,4 +89,14 @@ spod_download(
 )
 }
 \dontshow{\}) # examplesIf}
+}
+\references{
+\itemize{
+\item \strong{For the official website of the mobility study}: \insertRef{mitms_mobility_web}{spanishoddata}
+\item \strong{For v1 data methodology}: \insertRef{mitma_methodology_2020_v3}{spanishoddata}
+\item \strong{For v2 data methodology}: \insertRef{mitms_methodology_2022_v8}{spanishoddata}
+\item \strong{For the \code{spanishoddata} R package}: \insertRef{spanishoddata-r-pkg}{spanishoddata}
+}
+
+Use \code{\link[=spod_cite]{spod_cite()}} to cite the package and the data with correct plain text, markdown, or BibTeX formats.
 }

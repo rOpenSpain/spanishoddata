@@ -3,6 +3,7 @@
 
 # Exceptions for gz files in inst/extdata
 !inst/extdata/*.gz
+!inst/testdata/**/*.gz
 
 movilidad.duckdb
 .Rhistory

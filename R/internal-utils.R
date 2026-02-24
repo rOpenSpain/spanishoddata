@@ -143,6 +143,7 @@ spod_infer_data_v_from_dates <- function(
   # Check if all dates are missing
   missing_dates <- dates[!dates %in% c(v1_dates, v2_dates)]
   if (length(missing_dates) == length(dates)) {
+    if (isTRUE(ignore_missing_dates)) return(NULL)
     stop(paste0(
       "All requested dates are missing from the available data.\nThe valid dates range for v1 is: ",
       paste(spod_convert_dates_to_ranges(v1_dates), collapse = ", "),
@@ -164,7 +165,7 @@ spod_infer_data_v_from_dates <- function(
     # Handle missing dates based on ignore_missing_dates argument
     missing_dates <- dates[!dates %in% c(v1_dates, v2_dates)]
     if (length(missing_dates) > 0) {
-      if (ignore_missing_dates == TRUE) {
+      if (isTRUE(ignore_missing_dates)) {
         # Filter out missing dates and infer version based on the remaining ones
         valid_dates <- dates[dates %in% c(v1_dates, v2_dates)]
         if (all(valid_dates %in% v1_dates)) {
@@ -175,7 +176,7 @@ spod_infer_data_v_from_dates <- function(
           # If no valid dates remain, or none fully match a version
           return(NULL)
         }
-      } else if (ignore_missing_dates == FALSE) {
+      } else if (isFALSE(ignore_missing_dates)) {
         # Stop with an error if ignore_missing_dates is FALSE
         stop(paste0(
           "Some dates do not match the available data.\nThe valid dates range for v1 is: ",
@@ -231,28 +232,8 @@ spod_expand_dates_from_regex <- function(date_regex) {
   return(matching_dates)
 }
 
-#' Get valid dates for the specified data version
-#'
-#' @description
-#'
-#' `r lifecycle::badge("stable")`
-#'
-#' Get all metadata for requested data version and identify all dates available for download.
-#'
-#' @inheritParams spod_available_data
-#'
-#' @return A vector of type `Date` with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
-#' @export
-#' @examplesIf interactive()
-#' \donttest{
-#' # Get all valid dates for v1 (2020-2021) data
-#' spod_get_valid_dates(ver = 1)
-#'
-#' # Get all valid dates for v2 (2020 onwards) data
-#' spod_get_valid_dates(ver = 2)
-#' }
-#'
-spod_get_valid_dates <- function(ver = NULL) {
+#' @keywords internal
+spod_get_valid_dates_impl <- function(ver = NULL) {
   # Validate input
   checkmate::assertIntegerish(ver, max.len = 1)
   if (!ver %in% c(1, 2)) {
@@ -281,6 +262,33 @@ spod_get_valid_dates <- function(ver = NULL) {
   }
   all_dates <- sort(all_dates)
   return(all_dates)
+}
+
+spod_get_valid_dates_memoised <- memoise::memoise(spod_get_valid_dates_impl)
+
+#' Get valid dates for the specified data version
+#'
+#' @description
+#'
+#' `r lifecycle::badge("stable")`
+#'
+#' Get all metadata for requested data version and identify all dates available for download.
+#'
+#' @inheritParams spod_available_data
+#'
+#' @return A vector of type `Date` with all possible valid dates for the specified data version (v1 for 2020-2021 and v2 for 2020 onwards).
+#' @export
+#' @examplesIf interactive()
+#' \donttest{
+#' # Get all valid dates for v1 (2020-2021) data
+#' spod_get_valid_dates(ver = 1)
+#'
+#' # Get all valid dates for v2 (2020 onwards) data
+#' spod_get_valid_dates(ver = 2)
+#' }
+#'
+spod_get_valid_dates <- function(ver = NULL) {
+  spod_get_valid_dates_memoised(ver)
 }
 # TODO: currently checks for date range for od data only. not all datasets may be available for all dates, so this function may need to be updated to check for the availability of the specific for the requested dates. spod_match_data_type() helper in the same file may be useful here.
 
@@ -311,7 +319,7 @@ spod_zone_names_en2es <- function(
   } else if (zones %in% c("municipalities", "muni", "municip", "municipios")) {
     return("municipios")
   } else if (
-    zones %in% c("lua", "large_urban_areas", "gau", "grandes_areas_urbanas")
+    zones %in% c("gaus", "lua", "large_urban_areas", "gau", "grandes_areas_urbanas")
   ) {
     return("gau")
   }
@@ -423,22 +431,22 @@ spod_unique_separated_ids <- function(column) {
 spod_convert_dates_to_ranges <- function(dates) {
   dates <- as.Date(dates) # Ensure dates are in Date format
   ranges <- tibble::tibble(date = dates) |>
-    dplyr::arrange(date) |>
+    dplyr::arrange(.data$date) |>
     dplyr::mutate(
-      diff = c(0, diff(date)), # Calculate differences
-      group = cumsum(diff != 1) # Create groups for consecutive ranges
+      diff = c(0, diff(.data$date)), # Calculate differences
+      group = cumsum(.data$diff != 1) # Create groups for consecutive ranges
     ) |>
     dplyr::group_by(.data$group) |>
     dplyr::summarise(
-      start = dplyr::first(date),
-      end = dplyr::last(date),
+      start = dplyr::first(.data$date),
+      end = dplyr::last(.data$date),
       .groups = "drop"
     )
 
   # Create a character vector of ranges
   range_strings <- ranges |>
     dplyr::mutate(range = paste(.data$start, "to", .data$end)) |>
-    dplyr::pull(range)
+    dplyr::pull(.data$range)
 
   return(range_strings)
 }
@@ -472,12 +480,12 @@ spod_graphql_valid_dates <- function() {
     httr2::req_body_json(graphql_query) |>
     httr2::req_progress(type = "down")
 
-  resp <- req |> httr2::req_perform()
+  resp <- req |> spod_httr2_req_perform()
 
   # parse the response
-  response_data <- httr2::resp_body_json(resp, simplifyVector = TRUE)
+  response_data <- spod_httr2_resp_body_json(resp, simplifyVector = TRUE)
   dates_table <- response_data$data$dates_find_available_dates_basic |>
-    dplyr::rename(start_date = .data$startDate, end_date = .data$endDate) |>
+    dplyr::rename(start_date = "startDate", end_date = "endDate") |>
     dplyr::mutate(
       end_date = dplyr::if_else(
         condition = .data$end_date == "2024-09-31",
@@ -500,7 +508,7 @@ spod_graphql_valid_dates <- function() {
   )
 
   # Flatten the list of date sequences into a single vector and remove duplicates
-  dates <- as.Date(unique(unlist(date_sequences)))
+  dates <- as.Date(as.vector(unique(unlist(date_sequences))), origin = "1970-01-01")
 
   return(dates)
 }

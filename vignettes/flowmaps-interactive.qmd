@@ -4,7 +4,7 @@ vignette: >
   %\VignetteIndexEntry{Making interactive flow maps}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
-bibliography: references.bib
+bibliography: ../inst/REFERENCES.bib
 number-sections: true
 format:
   html:

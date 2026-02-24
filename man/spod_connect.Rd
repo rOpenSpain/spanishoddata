@@ -35,7 +35,7 @@ a \code{DuckDB} table connection object.
 This function allows the user to quickly connect to the data converted to DuckDB with the \link{spod_convert} function. This function simplifies the connection process. The user is free to use the \code{DBI} and \code{DuckDB} packages to connect to the data manually, or to use the \code{arrow} package to connect to the \code{parquet} files folder.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 \donttest{
 # Set data dir for file downloads
 spod_set_data_dir(tempdir())

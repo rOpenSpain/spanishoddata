@@ -26,7 +26,7 @@ spod_set_data_dir <- function(
     {
       # Check if the directory exists; if not, attempt to create it
       if (!dir.exists(data_dir_abs_path)) {
-        if (quiet == FALSE) {
+        if (isFALSE(quiet)) {
           message(
             "Data directory ",
             data_dir_abs_path,
@@ -40,14 +40,14 @@ spod_set_data_dir <- function(
       test_file <- fs::path(data_dir_abs_path, ".test_write")
       file.create(test_file)
       fs::file_delete(test_file)
-      if (quiet == FALSE) {
+      if (isFALSE(quiet)) {
         message("Data directory is writeable.")
       }
 
       # Set the environment variable
       Sys.setenv(SPANISH_OD_DATA_DIR = data_dir_abs_path)
 
-      if (quiet == FALSE) {
+      if (isFALSE(quiet)) {
         message("Data directory successfully set to: ", data_dir_abs_path)
       }
     },
