@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html"><img src="../apple-touch-icon.png" alt="spanishoddata logo" height="34" width="34" class="d-inline-block me-1">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,20 +59,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="spanishoddata-development-version">spanishoddata (development version)<a class="anchor" aria-label="anchor" href="#spanishoddata-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.2" id="spanishoddata-022">spanishoddata 0.2.2<a class="anchor" aria-label="anchor" href="#spanishoddata-022"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-2-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-2"></a></h3>
 <ul><li>
 <code>time_slot</code> column has been removed from the output of <code><a href="../reference/spod_get.html">spod_get()</a></code> and <code><a href="../reference/spod_convert.html">spod_convert()</a></code>. Please use the <code>hour</code> column instead. Deprecation message removed.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-2-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-2"></a></h3>
 <ul><li>Fixed failing fallback on XML when Amazon S3 is unavailable.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
+<h3 id="other-changes-0-2-2">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-2-2"></a></h3>
 <ul><li><p><code>spanishoddata</code> paper is out: <strong>Kotov, E.</strong>, Vidal-Tortosa, E., Cantú-Ros, O. G., Burrieza-Galán, J., Herranz, R., Gullón Muñoz-Repiso, T., &amp; Lovelace, R. (2026). spanishoddata: A package for accessing and working with Spanish Open Mobility Big Data. <em>Environment and Planning B: Urban Analytics and City Science</em>. <a href="https://doi.org/10.1177/23998083251415040" target="_blank" class="external-link">DOI:10.1177/23998083251415040</a></p></li>
-<li><p>Increased test coverage.</p></li>
+<li><p>Package now has comprehensive unit tests coverage.</p></li>
+<li><p>Tests on live data run weekly on GitHub workers to alert maintainers of any issues.</p></li>
 <li><p><code>spanishoddata</code> package and paper are now featured in <a href="https://duckdb.org/library/spanishoddata-r-package/" class="external-link">DuckDB Library</a></p></li>
 </ul></div>
 </div>

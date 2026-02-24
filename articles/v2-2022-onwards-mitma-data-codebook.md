@@ -3,7 +3,7 @@
 You can view this vignette any time by running:
 
 ``` r
-spanishoddata::spod_codebook(ver = 2)
+spod_codebook(ver = 2)
 ```
 
 The mobility data v2 (2022 onwards) was originally released by the
@@ -440,11 +440,13 @@ od_mean_trips_by_ses_over_the_4_days <- od_dist |>
   group_by(date, age, sex, income) |>
   summarise(
     n_trips = sum(n_trips, na.rm = TRUE),
-    .groups = "drop") |> 
+    .groups = "drop"
+  ) |>
   group_by(age, sex, income) |>
   summarise(
     daily_mean_n_trips = mean(n_trips, na.rm = TRUE),
-    .groups = "drop") |> 
+    .groups = "drop"
+  ) |>
   collect()
 od_mean_trips_by_ses_over_the_4_days
 ```
@@ -549,20 +551,20 @@ nt_dist_tbl <- nt_dist |> dplyr::collect()
 This dataset provides the number of people who spend the night in each
 location, also identifying their place of residence down to the census
 district level according to the [INE
-encoding](https://www.ine.es/ss/Satellite?c=Page&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout&cid=1259952026632&L=1).
+encoding](https://www.ine.es/dyngs/SER/en/index.htm?cid=1389).
 
 Here are the variables you can find in the `district`, `municipality`
 and `large urban area` level data:
 
-| **English Variable Name** | **Original Variable Name** | **Type**  | **Description**                                                                                                                                                                               |
-|---------------------------|----------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `date`                    | `fecha`                    | `Date`    | The date of the recorded data, formatted as `YYYY-MM-DD`.                                                                                                                                     |
-| `id_residence`            | `zona_residencia`          | `factor`  | The identifier of the census district according to the [INE encoding](https://www.ine.es/ss/Satellite?c=Page&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout&cid=1259952026632&L=1). |
-| `id_overnight_stay`       | `zona_pernoctacion`        | `factor`  | The identifier of the `district`, `municipality`, or `large urban area (LUA)` zone.                                                                                                           |
-| `n_persons`               | `personas`                 | `factor`  | The number of persons making the trips from `district`, `municipality`, or `large urban area` with zone `id`.                                                                                 |
-| `year`                    | `year`                     | `integer` | The year of the recorded data, extracted from the date.                                                                                                                                       |
-| `month`                   | `month`                    | `integer` | The month of the recorded data, extracted from the date.                                                                                                                                      |
-| `day`                     | `day`                      | `integer` | The day of the recorded data, extracted from the date.                                                                                                                                        |
+| **English Variable Name** | **Original Variable Name** | **Type**  | **Description**                                                                                                            |
+|---------------------------|----------------------------|-----------|----------------------------------------------------------------------------------------------------------------------------|
+| `date`                    | `fecha`                    | `Date`    | The date of the recorded data, formatted as `YYYY-MM-DD`.                                                                  |
+| `id_residence`            | `zona_residencia`          | `factor`  | The identifier of the census district according to the [INE encoding](https://www.ine.es/dyngs/SER/en/index.htm?cid=1389). |
+| `id_overnight_stay`       | `zona_pernoctacion`        | `factor`  | The identifier of the `district`, `municipality`, or `large urban area (LUA)` zone.                                        |
+| `n_persons`               | `personas`                 | `factor`  | The number of persons making the trips from `district`, `municipality`, or `large urban area` with zone `id`.              |
+| `year`                    | `year`                     | `integer` | The year of the recorded data, extracted from the date.                                                                    |
+| `month`                   | `month`                    | `integer` | The month of the recorded data, extracted from the date.                                                                   |
+| `day`                     | `day`                      | `integer` | The day of the recorded data, extracted from the date.                                                                     |
 
 **Getting the data**
 

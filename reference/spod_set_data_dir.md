@@ -33,5 +33,5 @@ confirmation that the path exists.
 ``` r
 spod_set_data_dir(tempdir())
 #> Data directory is writeable.
-#> Data directory successfully set to: /tmp/RtmpSHggxc
+#> Data directory successfully set to: /tmp/RtmpfZEhU5
 ```

@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html"><img src="../apple-touch-icon.png" alt="spanishoddata logo" height="34" width="34" class="d-inline-block me-1">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,7 +106,7 @@
     <p>You can view this vignette any time by running:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">spanishoddata</span><span class="fu">::</span><span class="fu"><a href="../reference/spod_codebook.html">spod_codebook</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/spod_codebook.html">spod_codebook</a></span><span class="op">(</span>ver <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The mobility data v2 (2022 onwards) was originally released by the Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA) , now <a href="https://www.transportes.gob.es/" class="external-link">Ministerio de Transportes y Movilidad Sostenible (MITMS)</a> <span class="citation" data-cites="mitms_methodology_2022_v8">(<a href="#ref-mitms_methodology_2022_v8" role="doc-biblioref">Ministerio de Transportes y Movilidad Sostenible (MITMS) 2024</a>)</span>.</p>
 <p>The dataset is produced by <a href="https://www.nommon.es/" target="_blank" class="external-link">Nommon</a> using the raw data from <a href="https://www.orange.es/" target="_blank" class="external-link">Orange España</a>. Even though the raw data is only from one mobile phone operator, the resulting flows and other counts of number of individuals in the data set are already resampled to be representative of the total population of Spain (see details in the official methodology).</p>
@@ -541,11 +541,13 @@ Figure 1: The overview of package functions to get the data
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">age</span>, <span class="va">sex</span>, <span class="va">income</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span>, <span class="va">income</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    daily_mean_n_trips <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">n_trips</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">od_mean_trips_by_ses_over_the_4_days</span></span></code></pre></div>
 </div>
@@ -653,7 +655,7 @@ Figure 1: The overview of package functions to get the data
 </div>
 </section><section class="level3"><h3 id="pos-data">2.3. Population by overnight stay data<a class="anchor" aria-label="anchor" href="#pos-data"></a>
 </h3>
-<p>This dataset provides the number of people who spend the night in each location, also identifying their place of residence down to the census district level according to the <a href="https://www.ine.es/ss/Satellite?c=Page&amp;p=1259952026632&amp;pagename=ProductosYServicios%2FPYSLayout&amp;cid=1259952026632&amp;L=1" target="_blank" class="external-link">INE encoding</a>.</p>
+<p>This dataset provides the number of people who spend the night in each location, also identifying their place of residence down to the census district level according to the <a href="https://www.ine.es/dyngs/SER/en/index.htm?cid=1389" target="_blank" class="external-link">INE encoding</a>.</p>
 <p>Here are the variables you can find in the <code>district</code>, <code>municipality</code> and <code>large urban area</code> level data:</p>
 <table class="table caption-top">
 <thead><tr class="header">
@@ -673,7 +675,7 @@ Figure 1: The overview of package functions to get the data
 <td><code>id_residence</code></td>
 <td><code>zona_residencia</code></td>
 <td><code>factor</code></td>
-<td>The identifier of the census district according to the <a href="https://www.ine.es/ss/Satellite?c=Page&amp;p=1259952026632&amp;pagename=ProductosYServicios%2FPYSLayout&amp;cid=1259952026632&amp;L=1" target="_blank" class="external-link">INE encoding</a>.</td>
+<td>The identifier of the census district according to the <a href="https://www.ine.es/dyngs/SER/en/index.htm?cid=1389" target="_blank" class="external-link">INE encoding</a>.</td>
 </tr>
 <tr class="odd">
 <td><code>id_overnight_stay</code></td>

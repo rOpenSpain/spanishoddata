@@ -1,6 +1,6 @@
 # Changelog
 
-## spanishoddata (development version)
+## spanishoddata 0.2.2
 
 ### Breaking changes
 
@@ -23,7 +23,10 @@
   *Environment and Planning B: Urban Analytics and City Science*.
   [DOI:10.1177/23998083251415040](https://doi.org/10.1177/23998083251415040)
 
-- Increased test coverage.
+- Package now has comprehensive unit tests coverage.
+
+- Tests on live data run weekly on GitHub workers to alert maintainers
+  of any issues.
 
 - `spanishoddata` package and paper are now featured in [DuckDB
   Library](https://duckdb.org/library/spanishoddata-r-package/)

@@ -3,7 +3,7 @@
 You can view this vignette any time by running:
 
 ``` r
-spanishoddata::spod_codebook(ver = 1)
+spod_codebook(ver = 1)
 ```
 
 The mobility data v1 (2020-2021) was originally released by the
@@ -332,9 +332,9 @@ The original data is stored in the
 folder with suffixes `distritos` (for district zoning) and `municipios`
 (for municipality zoning). We only use the `district` level data because
 of several data issues with the `municipality` data documented
-[here](http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.md)
+[here](https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html)
 and
-[here](http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.md),
+[here](https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html),
 but also because the distric level data contains more columns with
 useful origin-destination flow characteristics. As a result, you get
 both the `district` level data and the `municipality` level data with
@@ -473,9 +473,9 @@ The original data is stored in the
 folder with suffixes `distritos` (for district zoning) and `municipios`
 (for municipality zoning). We only use the `district` level data because
 of several data issues with the `municipality` data documented
-[here](http://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.md)
+[here](https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html)
 and
-[here](http://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.md),
+[here](https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html),
 but also because the distric level data contains more columns with
 useful origin-destination flow characteristics. As a result, you get
 both the `district` level data and the `municipality` level data with
