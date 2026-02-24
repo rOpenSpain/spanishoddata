@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/rOpenSpain/spanishoddata/blob/v0.2.2/inst/CITATION)
+[`inst/CITATION`](https://github.com/rOpenSpain/spanishoddata/blob/main/inst/CITATION)
 
 Kotov E, Vidal-Tortosa E, Cantú-Ros O, Burrieza-Galán J, Herranz R,
 Gullón Muñoz-Repiso T, Lovelace R (2026). “spanishoddata: A package for
