@@ -8,7 +8,7 @@ message: 'To cite package "spanishoddata" in publications use:'
 type: software
 license: MIT
 title: 'spanishoddata: Get Spanish Origin-Destination Data'
-version: 0.2.1.9000
+version: 0.2.2
 doi: 10.1177/23998083251415040
 identifiers:
 - type: doi
