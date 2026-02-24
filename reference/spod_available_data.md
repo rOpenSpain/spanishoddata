@@ -13,6 +13,12 @@ fails, the function falls back to downloading an XML file from the
 Spanish Ministry of Transport website. You can also control this
 behaviour with `use_s3` argument.
 
+For detailed data descriptions, see package vignettes using
+[`spod_codebook(ver = 1)`](https://rOpenSpain.github.io/spanishoddata/reference/spod_codebook.md)
+and
+[`spod_codebook(ver = 2)`](https://rOpenSpain.github.io/spanishoddata/reference/spod_codebook.md)
+and official methodology documents in **References** section.
+
 ## Usage
 
 ``` r
@@ -119,6 +125,42 @@ coverage, local paths to files, and the download status.
 
   `logical`. Indicator of whether the data file has been downloaded
   locally. This is only available if `check_local_files` is `TRUE`.
+
+## References
+
+- **For the official website of the mobility study**: Ministerio de
+  Transportes y Movilidad Sostenible (MITMS) (2024). “Estudio de la
+  movilidad con Big Data (Study of mobility with Big Data).” Data
+  License:
+  <https://www.transportes.gob.es/el-ministerio/buen-gobierno/licencia_datos>,
+  <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
+
+- **For v1 data methodology**: Ministerio de Transportes, Movilidad y
+  Agenda Urbana (MITMA) (2021). *Análisis de la movilidad en España con
+  tecnología Big Data durante el estado de alarma para la gestión de la
+  crisis del COVID-19 (Analysis of mobility in Spain with Big Data
+  technology during the state of alarm for COVID-19 crisis management)*.
+  <https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf>.
+
+- **For v2 data methodology**: Ministerio de Transportes y Movilidad
+  Sostenible (MITMS) (2024). *Estudio de movilidad de viajeros de ámbito
+  nacional aplicando la tecnología Big Data. Informe metodológico (Study
+  of National Traveler mobility Using Big Data Technology.
+  Methodological Report)*.
+  <https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf>.
+
+- **For the `spanishoddata` R package**: Kotov E, Vidal-Tortosa E,
+  Cantú-Ros OG, Burrieza-Galán J, Herranz R, Gullón Muñoz-Repiso T,
+  Lovelace R (2026). “spanishoddata: A package for accessing and working
+  with Spanish Open Mobility Big Data.” *Environment and Planning B:
+  Urban Analytics and City Science*. ISSN 2399-8083,
+  [doi:10.1177/23998083251415040](https://doi.org/10.1177/23998083251415040)
+  .
+
+Use
+[`spod_cite()`](https://rOpenSpain.github.io/spanishoddata/reference/spod_cite.md)
+to cite the package and the data with correct plain text, markdown, or
+BibTeX formats.
 
 ## Examples
 

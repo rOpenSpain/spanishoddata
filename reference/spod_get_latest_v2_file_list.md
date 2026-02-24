@@ -8,7 +8,8 @@ onwards)
 ``` r
 spod_get_latest_v2_file_list(
   data_dir = spod_get_data_dir(),
-  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml"
+  xml_url = "https://movilidad-opendata.mitma.es/RSS.xml",
+  quiet = FALSE
 )
 ```
 

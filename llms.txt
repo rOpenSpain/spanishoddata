@@ -3,7 +3,7 @@
 **spanishoddata** is an R package that provides functions for
 downloading and formatting Spanish open mobility data released by the
 Spanish government (Ministerio de Transportes y Movilidad Sostenible
-MITMS 2024).
+(MITMS) 2024).
 
 It supports the two versions of the Spanish mobility data. [The first
 version (2020 to
@@ -34,6 +34,11 @@ resources by using computationally efficient packages behind the scenes.
 To effectively work with multiple data files, it’s recommended you set
 up a data directory where the package can search for the data and
 download only the files that are not already present.
+
+Under the hood, **spanishoddata** uses the efficient
+[DuckDB](https://duckdb.org/) database engine via
+[`{duckdb}`](https://r.duckdb.org/) R package and is featured in the
+[DuckDB Library](https://duckdb.org/library/spanishoddata-r-package/).
 
 ## Examples of available data
 
@@ -493,12 +498,14 @@ For more information on the package, see:
 
 ### Citation
 
-To cite the `spanishoddata` R package use:
+To cite the `spanishoddata` R package in publications use:
 
-Kotov E, Lovelace R, Vidal-Tortosa E (2024). *spanishoddata*.
-<doi:10.32614/CRAN.package.spanishoddata>
-<https://doi.org/10.32614/CRAN.package.spanishoddata>,
-<https://github.com/rOpenSpain/spanishoddata>.
+Kotov E, Vidal-Tortosa E, Cantú-Ros O, Burrieza-Galán J, Herranz R,
+Gullón Muñoz-Repiso T, Lovelace R (2026). “spanishoddata: A package for
+accessing and working with Spanish Open Mobility Big Data.” *Environment
+and Planning B: Urban Analytics and City Science*. ISSN 2399-8083,
+<doi:10.1177/23998083251415040>
+<https://doi.org/10.1177/23998083251415040>.
 
 To cite the official website of the mobility study use:
 
@@ -530,34 +537,49 @@ See package website for more details:
 BibTeX:
 
 ``` R
-@Manual{r-spanishoddata,
-  title = {spanishoddata},
-  author = {Egor Kotov and Robin Lovelace and Eugeni Vidal-Tortosa},
-  year = {2024},
-  url = {https://github.com/rOpenSpain/spanishoddata},
-  doi = {10.32614/CRAN.package.spanishoddata},
+BibTeX citations:
+-----------------
+%% To cite the spanishoddata package
+@Article{spanishoddata-r-pkg,
+  author = {Kotov, Egor and {Vidal-Tortosa}, Eugeni and {Cant{\'u}-Ros}, Oliva G. and {Burrieza-Gal{\'a}n}, Javier and Herranz, Ricardo and {Gull{\'o}n Mu{\~n}oz-Repiso}, Tania and Lovelace, Robin},
+  title = {spanishoddata: {{A}} package for accessing and working with {{Spanish Open Mobility Big Data}}},
+  issn = {2399-8083},
+  doi = {10.1177/23998083251415040},
+  url = {https://doi.org/10.1177/23998083251415040},
+  shorttitle = {spanishoddata},
+  year = {2026},
+  journal = {Environment and Planning B: Urban Analytics and City Science},
 }
 
+
+%% To cite the Ministry's mobility study website
 @Misc{mitms_mobility_web,
+  author = {{Ministerio de Transportes y Movilidad Sostenible (MITMS)}},
   title = {Estudio de la movilidad con Big Data (Study of mobility with Big Data)},
-  author = {{Ministerio de Transportes y Movilidad Sostenible (MITMS)}},
-  year = {2024},
   url = {https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data},
-}
-
-@Manual{mitms_methodology_2022_v8,
-  title = {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
-  author = {{Ministerio de Transportes y Movilidad Sostenible (MITMS)}},
   year = {2024},
-  url = {https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf},
 }
 
+
+%% To cite the methodology for 2020-2021 data
 @Manual{mitma_methodology_2020_v3,
-  title = {Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)},
   author = {{Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA)}},
-  year = {2021},
+  title = {An{\'a}lisis de la movilidad en Espa{\~n}a con tecnolog{\'\i}a Big Data durante el estado de alarma para la gesti{\'o}n de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)},
   url = {https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf},
+  year = {2021},
 }
+
+
+%% To cite the methodology for 2022 and onwards data
+@Manual{mitms_methodology_2022_v8,
+  author = {{Ministerio de Transportes y Movilidad Sostenible (MITMS)}},
+  title = {Estudio de movilidad de viajeros de {\'a}mbito nacional aplicando la tecnolog{\'\i}a Big Data. Informe metodol{\'o}gico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
+  url = {https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf},
+  year = {2024},
+}
+
+
+%% Note: A more up-to-date methodology document may be available at https://www.transportes.gob.es/ministerio/proyectos-singulares/estudios-de-movilidad-con-big-data/metodologia-del-estudio-de-movilidad-con-bigdata
 ```
 
 ### Working with Python?
@@ -567,11 +589,10 @@ Try the new work-in-progress package:
 
 ## References
 
-Lovelace, Robin, and Malcolm Morgan. 2024. “Od: Manipulate and Map
-Origin-Destination Data,” August.
-<https://doi.org/10.32614/CRAN.package.od>.
+Lovelace, Robin, and Malcolm Morgan. 2024. *Od: Manipulate and Map
+Origin-Destination Data*. <https://doi.org/10.32614/CRAN.package.od>.
 
-Ministerio de Transportes y Movilidad Sostenible MITMS. 2024. “Estudio
+Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. “Estudio
 de La Movilidad Con Big Data (Study of Mobility with Big Data).”
 <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 

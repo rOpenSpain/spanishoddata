@@ -8,7 +8,8 @@ Get latest file list from the XML for MITMA open mobility data v1
 ``` r
 spod_get_latest_v1_file_list(
   data_dir = spod_get_data_dir(),
-  xml_url = "https://opendata-movilidad.mitma.es/RSS.xml"
+  xml_url = "https://opendata-movilidad.mitma.es/RSS.xml",
+  quiet = FALSE
 )
 ```
 

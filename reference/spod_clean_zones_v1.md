@@ -6,7 +6,7 @@ the "ID" column to "id".
 ## Usage
 
 ``` r
-spod_clean_zones_v1(zones_path, zones)
+spod_clean_zones_v1(zones_path, zones, quiet = FALSE)
 ```
 
 ## Arguments
@@ -23,6 +23,11 @@ spod_clean_zones_v1(zones_path, zones)
   `"municipios"`) for both data versions. Additionaly, these can be
   `"large_urban_areas"` (or `"lua"`, or the original Spanish
   `"grandes_areas_urbanas"`, or `"gau"`) for v2 data (2022 onwards).
+
+- quiet:
+
+  A `logical` value indicating whether to suppress messages. Default is
+  `FALSE`.
 
 ## Value
 

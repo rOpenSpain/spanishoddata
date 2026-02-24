@@ -16,16 +16,20 @@
 Source:
 [`inst/CITATION`](https://github.com/rOpenSpain/spanishoddata/blob/main/inst/CITATION)
 
-Kotov E, Lovelace R, Vidal-Tortosa E (2024). *spanishoddata*.
-[doi:10.32614/CRAN.package.spanishoddata](https://doi.org/10.32614/CRAN.package.spanishoddata),
-<https://github.com/rOpenSpain/spanishoddata>.
+Kotov E, Vidal-Tortosa E, Cantú-Ros O, Burrieza-Galán J, Herranz R,
+Gullón Muñoz-Repiso T, Lovelace R (2026). “spanishoddata: A package for
+accessing and working with Spanish Open Mobility Big Data.” *Environment
+and Planning B: Urban Analytics and City Science*. ISSN 2399-8083,
+[doi:10.1177/23998083251415040](https://doi.org/10.1177/23998083251415040).
 
-    @Manual{r-spanishoddata,
-      title = {spanishoddata},
-      author = {Egor Kotov and Robin Lovelace and Eugeni Vidal-Tortosa},
-      year = {2024},
-      url = {https://github.com/rOpenSpain/spanishoddata},
-      doi = {10.32614/CRAN.package.spanishoddata},
+    @Article{spanishoddata-r-pkg,
+      title = {{spanishoddata}: {A} package for accessing and working with {Spanish Open Mobility Big Data}},
+      shorttitle = {spanishoddata},
+      author = {Egor Kotov and Eugeni Vidal-Tortosa and Oliva G. Cant{\'u}-Ros and Javier Burrieza-Gal{\'a}n and Ricardo Herranz and Tania {Gull{\'o}n Mu{\~n}oz-Repiso} and Robin Lovelace},
+      year = {2026},
+      journal = {Environment and Planning B: Urban Analytics and City Science},
+      issn = {2399-8083},
+      doi = {10.1177/23998083251415040},
     }
 
 Ministerio de Transportes y Movilidad Sostenible (MITMS) (2024).
@@ -47,7 +51,7 @@ mobility Using Big Data Technology. Methodological Report)*.
 <https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf>.
 
     @Manual{mitms_methodology_2022_v8,
-      title = {Estudio de movilidad de viajeros de ámbito nacional aplicando la tecnología Big Data. Informe metodológico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
+      title = {Estudio de movilidad de viajeros de {\'a}mbito nacional aplicando la tecnolog{\'i}a Big Data. Informe metodol{\'o}gico (Study of National Traveler mobility Using Big Data Technology. Methodological Report)},
       author = {{Ministerio de Transportes y Movilidad Sostenible (MITMS)}},
       year = {2024},
       url = {https://www.transportes.gob.es/recursos_mfom/paginabasica/recursos/a3_informe_metodologico_estudio_movilidad_mitms_v8.pdf},
@@ -61,7 +65,7 @@ COVID-19 crisis management)*.
 <https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf>.
 
     @Manual{mitma_methodology_2020_v3,
-      title = {Análisis de la movilidad en España con tecnología Big Data durante el estado de alarma para la gestión de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)},
+      title = {An{\'a}lisis de la movilidad en Espa{\~n}a con tecnolog{\'i}a Big Data durante el estado de alarma para la gesti{\'o}n de la crisis del COVID-19 (Analysis of mobility in Spain with Big Data technology during the state of alarm for COVID-19 crisis management)},
       author = {{Ministerio de Transportes, Movilidad y Agenda Urbana (MITMA)}},
       year = {2021},
       url = {https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf},
