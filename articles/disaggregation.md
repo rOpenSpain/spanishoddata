@@ -14,10 +14,10 @@ This vignette demonstrates origin-destination (OD) data disaggregation
 using the `{odjitter}` package. The package is an implementation of the
 method described in the paper “Jittering: A Computationally Efficient
 Method for Generating Realistic Route Networks from Origin-Destination
-Data” ([Lovelace, Félix, and Carlino 2022](#ref-lovelace2022jittering))
-for adding value to OD data by disaggregating desire lines. This can be
-especially useful for transport planning purposes in which high levels
-of geographic resolution are required (see also the
+Data” ([Lovelace et al. 2022](#ref-lovelace2022jittering)) for adding
+value to OD data by disaggregating desire lines. This can be especially
+useful for transport planning purposes in which high levels of
+geographic resolution are required (see also the
 [`od2net`](https://od2net.org/) for direct network generation from OD
 data).
 

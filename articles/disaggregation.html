@@ -11,7 +11,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -114,7 +115,7 @@
 <section class="level2" data-number="1"><h2 data-number="1" id="introduction">
 <span class="header-section-number">1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette demonstrates origin-destination (OD) data disaggregation using the <code>{odjitter}</code> package. The package is an implementation of the method described in the paper “Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data” <span class="citation" data-cites="lovelace2022jittering">(<a href="#ref-lovelace2022jittering" role="doc-biblioref">Lovelace, Félix, and Carlino 2022</a>)</span> for adding value to OD data by disaggregating desire lines. This can be especially useful for transport planning purposes in which high levels of geographic resolution are required (see also the <a href="https://od2net.org/" target="_blank" class="external-link"><code>od2net</code></a> for direct network generation from OD data).</p>
+<p>This vignette demonstrates origin-destination (OD) data disaggregation using the <code>{odjitter}</code> package. The package is an implementation of the method described in the paper “Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data” <span class="citation" data-cites="lovelace2022jittering">(<a href="#ref-lovelace2022jittering" role="doc-biblioref">Lovelace et al. 2022</a>)</span> for adding value to OD data by disaggregating desire lines. This can be especially useful for transport planning purposes in which high levels of geographic resolution are required (see also the <a href="https://od2net.org/" target="_blank" class="external-link"><code>od2net</code></a> for direct network generation from OD data).</p>
 </section><section class="level2" data-number="2"><h2 data-number="2" id="data-preparation">
 <span class="header-section-number">2</span> Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a>
 </h2>
@@ -203,7 +204,7 @@
 <p><img src="media/disaggregated.png"></p>
 <p>The results show that you can add value to the OD data by disaggregating the desire lines with the <code>{odjitter}</code> package. This can be useful for understanding the spatial distribution of trips within a zone for transport planning.</p>
 <p>We have plotted the disaggregated desire lines on top of the major road network in Salamanca. A next step could be routing to help prioritise infrastructure improvements.</p>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-lovelace2022jittering" class="csl-entry" role="listitem">
 Lovelace, Robin, Rosa Félix, and Dustin Carlino. 2022. <span>“Jittering: A Computationally Efficient Method for Generating Realistic Route Networks from Origin-Destination Data.”</span> <em>Findings</em>.
 </div>

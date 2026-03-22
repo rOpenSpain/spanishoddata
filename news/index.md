@@ -4,6 +4,8 @@
 
 ## spanishoddata 0.2.2
 
+CRAN release: 2026-02-24
+
 ### Breaking changes
 
 - `time_slot` column has been removed from the output of

@@ -715,8 +715,8 @@ sticker(
 
 ![](../reference/figures/logo.png)
 
-Hernangómez, Diego. 2024. *mapSpain: Administrative Boundaries of Spain*
-(version 0.9.2). <https://doi.org/10.5281/zenodo.5366622>.
+Hernangómez, Diego. 2024. *mapSpain: Administrative Boundaries of
+Spain*. Version 0.9.2. <https://doi.org/10.5281/zenodo.5366622>.
 
 Mast, Johannes. 2024. *Flowmapper: Draw Flows (Migration, Goods, Money,
 Information) on ’Ggplot2’ Plots*.
