@@ -596,7 +596,11 @@ spod_get_zones_v2 <- function(
 #'
 spod_clean_zones_v2 <- function(zones_path) {
   # detect what kind of zones find out if it is distritos, municipios or GAU
-  zones <- stringr::str_extract(zones_path, "distritos|municipios|gau")
+  zones <- stringr::str_extract(zones_path, "distritos|municipios|gaus?")
+
+  if (!is.na(zones) && zones == "gau") {
+    zones <- "gaus"
+  }
 
   if (fs::file_exists(zones_path) == FALSE) {
     stop("File does not exist: ", zones_path)
@@ -622,7 +626,7 @@ spod_clean_zones_v2 <- function(zones_path) {
     col_types = c("c", "i")
   )
 
-  if (zones %in% c("distritos", "gau")) {
+  if (zones %in% c("distritos", "gaus")) {
     zone_names <- readr::read_delim(
       glue::glue(fs::path_dir(zones_path), "/nombres_{zones}.csv"),
       skip = 1,
@@ -693,7 +697,7 @@ spod_clean_zones_v2 <- function(zones_path) {
     dplyr::relocate("geometry", .after = dplyr::last_col())
 
   # load v1 zones to join ids, unless it's gau zones
-  if (zones != "gau") {
+  if (zones != "gaus") {
     spod_download_zones_v1(zones = zones, quiet = TRUE)
     zones_v1_path <- fs::dir_ls(
       path = fs::path(
