@@ -1,4 +1,8 @@
-# spanishoddata (development version)
+# spanishoddata 0.2.3
+
+## Bug fixes
+
+* Fixed a bug where 'gau' ('grandes areas urbanas' aka 'lua' for large urban areas) zones could not be reloaded with `spod_get_zones`
 
 # spanishoddata 0.2.2
 

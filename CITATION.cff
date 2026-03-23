@@ -8,7 +8,7 @@ message: 'To cite package "spanishoddata" in publications use:'
 type: software
 license: MIT
 title: 'spanishoddata: Get Spanish Origin-Destination Data'
-version: 0.2.2
+version: 0.2.3
 doi: 10.1177/23998083251415040
 identifiers:
 - type: doi
@@ -212,10 +212,8 @@ references:
     given-names: Jim
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@posit.co
   - family-names: Csárdi
     given-names: Gábor
-    email: csardi.gabor@gmail.com
   year: '2026'
   doi: 10.32614/CRAN.package.fs
 - type: software
@@ -499,100 +497,6 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.cli
 - type: software
-  title: flowmapblue
-  abstract: 'flowmapblue: Flow Map Rendering'
-  notes: Suggests
-  url: https://flowmapblue.github.io/flowmapblue.R/
-  repository: https://CRAN.R-project.org/package=flowmapblue
-  authors:
-  - family-names: Boyandin
-    given-names: Ilya
-    email: ilya@boyandin.me
-    orcid: https://orcid.org/0000-0001-5585-7587
-  year: '2026'
-  doi: 10.32614/CRAN.package.flowmapblue
-- type: software
-  title: flowmapper
-  abstract: 'flowmapper: Draw Flows (Migration, Goods, Money, Information) on ''ggplot2''
-    Plots'
-  notes: Suggests
-  url: https://github.com/JohMast/flowmapper
-  repository: https://CRAN.R-project.org/package=flowmapper
-  authors:
-  - family-names: Mast
-    given-names: Johannes
-    email: johannes.mast@dlr.de
-    orcid: https://orcid.org/0000-0001-6595-5834
-  year: '2026'
-  doi: 10.32614/CRAN.package.flowmapper
-  version: '>= 0.1.2'
-- type: software
-  title: furrr
-  abstract: 'furrr: Apply Mapping Functions in Parallel using Futures'
-  notes: Suggests
-  url: https://furrr.futureverse.org/
-  repository: https://CRAN.R-project.org/package=furrr
-  authors:
-  - family-names: Vaughan
-    given-names: Davis
-    email: davis@rstudio.com
-  - family-names: Dancho
-    given-names: Matt
-    email: mdancho@business-science.io
-  year: '2026'
-  doi: 10.32614/CRAN.package.furrr
-- type: software
-  title: future
-  abstract: 'future: Unified Parallel and Distributed Processing in R for Everyone'
-  notes: Suggests
-  url: https://future.futureverse.org
-  repository: https://CRAN.R-project.org/package=future
-  authors:
-  - family-names: Bengtsson
-    given-names: Henrik
-    email: henrikb@braju.com
-    orcid: https://orcid.org/0000-0002-7579-5165
-  year: '2026'
-  doi: 10.32614/CRAN.package.future
-- type: software
-  title: future.mirai
-  abstract: 'future.mirai: A ''Future'' API for Parallel Processing using ''mirai'''
-  notes: Suggests
-  url: https://future.mirai.futureverse.org
-  repository: https://CRAN.R-project.org/package=future.mirai
-  authors:
-  - family-names: Bengtsson
-    given-names: Henrik
-    email: henrikb@braju.com
-    orcid: https://orcid.org/0000-0002-7579-5165
-  year: '2026'
-  doi: 10.32614/CRAN.package.future.mirai
-- type: software
-  title: hexSticker
-  abstract: 'hexSticker: Create Hexagon Sticker in R'
-  notes: Suggests
-  url: https://github.com/GuangchuangYu/hexSticker
-  repository: https://CRAN.R-project.org/package=hexSticker
-  authors:
-  - family-names: Yu
-    given-names: Guangchuang
-    email: guangchuangyu@gmail.com
-  year: '2026'
-  doi: 10.32614/CRAN.package.hexSticker
-- type: software
-  title: mapSpain
-  abstract: 'mapSpain: Administrative Boundaries of Spain'
-  notes: Suggests
-  url: https://ropenspain.github.io/mapSpain/
-  repository: https://CRAN.R-project.org/package=mapSpain
-  authors:
-  - family-names: Hernangómez
-    given-names: Diego
-    email: diego.hernangomezherrero@gmail.com
-    orcid: https://orcid.org/0000-0001-8457-4658
-  year: '2026'
-  doi: 10.32614/CRAN.package.mapSpain
-- type: software
   title: quarto
   abstract: 'quarto: R Interface to ''Quarto'' Markdown Publishing System'
   notes: Suggests
@@ -632,24 +536,6 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.remotes
 - type: software
-  title: scales
-  abstract: 'scales: Scale Functions for Visualization'
-  notes: Suggests
-  url: https://scales.r-lib.org
-  repository: https://CRAN.R-project.org/package=scales
-  authors:
-  - family-names: Wickham
-    given-names: Hadley
-    email: hadley@posit.co
-  - family-names: Pedersen
-    given-names: Thomas Lin
-    email: thomas.pedersen@posit.co
-    orcid: https://orcid.org/0000-0002-5147-4711
-  - family-names: Seidel
-    given-names: Dana
-  year: '2026'
-  doi: 10.32614/CRAN.package.scales
-- type: software
   title: testthat
   abstract: 'testthat: Unit Testing for R'
   notes: Suggests
@@ -662,18 +548,6 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.testthat
   version: '>= 3.0.0'
-- type: software
-  title: tidyverse
-  abstract: 'tidyverse: Easily Install and Load the ''Tidyverse'''
-  notes: Suggests
-  url: https://tidyverse.tidyverse.org
-  repository: https://CRAN.R-project.org/package=tidyverse
-  authors:
-  - family-names: Wickham
-    given-names: Hadley
-    email: hadley@rstudio.com
-  year: '2026'
-  doi: 10.32614/CRAN.package.tidyverse
 - type: software
   title: withr
   abstract: 'withr: Run Code ''With'' Temporarily Modified Global State'

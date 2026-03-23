@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/rOpenSpain/spanishoddata",
   "issueTracker": "https://github.com/rOpenSpain/spanishoddata/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.5.2 (2025-10-31)",
+  "runtimePlatform": "R version 4.5.3 (2026-03-11)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -518,7 +518,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "6809.095KB",
+  "fileSize": "6809.333KB",
   "citation": [
     {
       "@type": "ScholarlyArticle",
@@ -618,7 +618,7 @@
       "url": "https://cdn.mitma.gob.es/portal-web-drupal/covid-19/bigdata/mitma_-_estudio_movilidad_covid-19_informe_metodologico_v3.pdf"
     }
   ],
-  "releaseNotes": "https://github.com/rOpenSpain/spanishoddata/blob/master/NEWS.md",
+  "releaseNotes": "https://github.com/rOpenSpain/spanishoddata/blob/main/NEWS.md",
   "readme": "https://github.com/rOpenSpain/spanishoddata/blob/main/README.md",
   "contIntegration": "https://github.com/rOpenSpain/spanishoddata/actions/workflows/R-CMD-check.yaml",
   "developmentStatus": "https://www.repostatus.org/#active",
