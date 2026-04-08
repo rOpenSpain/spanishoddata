@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW os_csv_clean AS SELECT
     fecha AS date,
-    CAST(zona_residencia AS RESID_ZONES_ENUM) AS id_residence,
-    CAST(zona_pernoctacion AS OVERNIGHT_ZONES_ENUM) AS id_overnight_stay,
+    CAST (CASE zona_residencia WHEN 'NA' THEN NULL ELSE zona_residencia END AS RESID_ZONES_ENUM) AS id_residence,
+    CAST (CASE zona_pernoctacion WHEN 'NA' THEN NULL ELSE zona_pernoctacion END AS OVERNIGHT_ZONES_ENUM) AS id_overnight_stay,
     personas AS n_persons,
     CAST(year AS INTEGER) AS year,
     CAST(month AS INTEGER) AS month,

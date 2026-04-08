@@ -17,15 +17,19 @@ FROM
 CREATE OR REPLACE VIEW od_csv_clean AS 
 SELECT
     d.fecha AS fecha,
-    CAST(m1.municipio_mitma AS ZONES_ENUM) AS origen,
-    CAST(m2.municipio_mitma AS ZONES_ENUM) AS destino,
-    CAST(CASE d.actividad_origen
+    CAST (CASE m1.municipio_mitma WHEN 'NA' THEN NULL ELSE m1.municipio_mitma END AS ZONES_ENUM) AS origen,
+    CAST (CASE m2.municipio_mitma WHEN 'NA' THEN NULL ELSE m2.municipio_mitma END AS ZONES_ENUM) AS destino,
+    CAST (CASE d.actividad_origen
         WHEN 'trabajo' THEN 'trabajo_estudio'
+        WHEN 'NA' THEN NULL
+        ELSE d.actividad_origen
         END AS ACTIV_ENUM) AS actividad_origen,
-    CAST(CASE d.actividad_destino
+    CAST (CASE d.actividad_destino
         WHEN 'trabajo' THEN 'trabajo_estudio'
+        WHEN 'NA' THEN NULL
+        ELSE d.actividad_destino
         END AS ACTIV_ENUM) AS actividad_destino,
-    CAST(d.residencia AS INE_PROV_CODE_ENUM) AS residencia,
+    CAST (CASE d.residencia WHEN 'NA' THEN NULL ELSE d.residencia END AS INE_PROV_CODE_ENUM) AS residencia,
     CAST(CASE d.residencia
         WHEN '01' THEN 'Araba/Álava'
         WHEN '02' THEN 'Albacete'
@@ -81,7 +85,7 @@ SELECT
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM) AS residencia_nombre,
     d.periodo AS periodo,
-    CAST(d.distancia AS DISTANCE_ENUM) AS distancia,
+    CAST (CASE d.distancia WHEN 'NA' THEN NULL ELSE d.distancia END AS DISTANCE_ENUM) AS distancia,
     SUM(d.viajes) AS viajes,
     SUM(d.viajes_km) AS viajes_km,
     CAST(d.year AS INTEGER) AS ano,

@@ -17,8 +17,8 @@ FROM
 CREATE OR REPLACE VIEW nt_csv_clean AS 
 SELECT
     d.fecha AS fecha,
-    CAST(r.municipio_mitma AS ZONES_ENUM) AS municipio_mitma,
-    CAST(d.numero_viajes AS N_TRIPS_ENUM) AS numero_viajes,
+    CAST (CASE municipio_mitma WHEN 'NA' THEN NULL ELSE municipio_mitma END AS ZONES_ENUM) AS municipio,
+    CAST (CASE numero_viajes WHEN 'NA' THEN NULL ELSE numero_viajes END AS N_TRIPS_ENUM) AS numero_viajes,
     SUM(d.personas) AS personas,
     CAST(d.year AS INTEGER) AS ano,
     CAST(d.month AS INTEGER) AS mes,

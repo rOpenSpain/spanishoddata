@@ -18,19 +18,21 @@ CREATE OR REPLACE VIEW od_csv_clean AS
 SELECT
     d.fecha AS date,
     d.periodo AS hour,
-    CAST(m1.municipio_mitma AS ZONES_ENUM) AS id_origin,
-    CAST(m2.municipio_mitma AS ZONES_ENUM) AS id_destination,
+    CAST (CASE m1.municipio_mitma WHEN 'NA' THEN NULL ELSE m1.municipio_mitma END AS ZONES_ENUM) AS id_origin,
+    CAST (CASE m2.municipio_mitma WHEN 'NA' THEN NULL ELSE m2.municipio_mitma END AS ZONES_ENUM) AS id_destination,
     CAST(CASE d.actividad_origen
         WHEN 'casa' THEN 'home'
         WHEN 'otros' THEN 'other'
         WHEN 'trabajo' THEN 'work_or_study'
+        WHEN 'NA' THEN NULL
         END AS ACTIV_ENUM) AS activity_origin,
     CAST(CASE d.actividad_destino
         WHEN 'casa' THEN 'home'
         WHEN 'otros' THEN 'other'
         WHEN 'trabajo' THEN 'work_or_study'
+        WHEN 'NA' THEN NULL
         END AS ACTIV_ENUM) AS activity_destination,
-    CAST(d.residencia AS INE_PROV_CODE_ENUM) AS residence_province_ine_code,
+    CAST (CASE d.residencia WHEN 'NA' THEN NULL ELSE d.residencia END AS INE_PROV_CODE_ENUM) AS residence_province_ine_code,
     CAST(CASE d.residencia
         WHEN '01' THEN 'Araba/Álava'
         WHEN '02' THEN 'Albacete'
@@ -85,7 +87,7 @@ SELECT
         WHEN '51' THEN 'Ceuta'
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM) AS residence_province_name,
-    CAST(d.distancia AS DISTANCE_ENUM) AS distance,
+    CAST (CASE d.distancia WHEN 'NA' THEN NULL ELSE d.distancia END AS DISTANCE_ENUM) AS distance,
     SUM(d.viajes) AS n_trips,
     SUM(d.viajes_km) AS trips_total_length_km,
     CAST(d.year AS INTEGER) AS year,

@@ -1,10 +1,12 @@
 # spanishoddata (development version)
 
+## Bug fixes
+
+* Fixed a bug ([#186](https://github.com/rOpenSpain/spanishoddata/issues/186)) where literal `'NA'` strings in the source MITMA CSV files caused DuckDB conversion errors when casting to enums or other non-string types. This fix handles `'NA'` values in columns like `renta`, `distancia`, `residencia`, `origen`, `destino`, `actividad`, and others across v1 and v2 data.
+
 # spanishoddata 0.2.3
 
 ## Bug fixes
-
-* Fixed a bug where literal `'NA'` strings in the source MITMA CSV files caused DuckDB conversion errors when casting to enums or other non-string types. This fix handles `'NA'` values in columns like `renta`, `distancia`, `residencia`, `origen`, `destino`, `actividad`, and others across v1 and v2 data.
 
 * Fixed a bug where 'gau' ('grandes areas urbanas' aka 'lua' for large urban areas) zones could not be reloaded with `spod_get_zones`
 

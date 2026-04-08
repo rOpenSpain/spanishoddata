@@ -3,26 +3,30 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
     periodo AS hour,
     CAST (CASE origen
         WHEN 'externo' THEN 'external'
+        WHEN 'NA' THEN NULL
         ELSE origen
         END AS ZONES_ENUM)
         AS id_origin,
     CAST (CASE destino
         WHEN 'externo' THEN 'external'
+        WHEN 'NA' THEN NULL
         ELSE destino
         END AS ZONES_ENUM)
         AS id_destination,
-    CAST(distancia AS DISTANCE_ENUM) AS distance,
-    CAST(CASE actividad_origen
+    CAST (CASE distancia WHEN 'NA' THEN NULL ELSE distancia END AS DISTANCE_ENUM) AS distance,
+    CAST (CASE actividad_origen
         WHEN 'casa' THEN 'home'
         WHEN 'otros' THEN 'other'
         WHEN 'trabajo' THEN 'work_or_study'
+        WHEN 'NA' THEN NULL
         END AS ACTIV_ENUM) AS activity_origin,
-    CAST(CASE actividad_destino
+    CAST (CASE actividad_destino
         WHEN 'casa' THEN 'home'
         WHEN 'otros' THEN 'other'
         WHEN 'trabajo' THEN 'work_or_study'
+        WHEN 'NA' THEN NULL
         END AS ACTIV_ENUM) AS activity_destination,
-    CAST(residencia AS INE_PROV_CODE_ENUM) AS residence_province_ine_code,
+    CAST (CASE residencia WHEN 'NA' THEN NULL ELSE residencia END AS INE_PROV_CODE_ENUM) AS residence_province_ine_code,
     CAST (CASE residencia
         WHEN '01' THEN 'Araba/Álava'
         WHEN '02' THEN 'Albacete'

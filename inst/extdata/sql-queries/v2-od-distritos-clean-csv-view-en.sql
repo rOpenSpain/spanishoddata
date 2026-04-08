@@ -11,7 +11,7 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
         ELSE destino
         END AS ZONES_ENUM)
         AS id_destination,
-    CAST (distancia AS DISTANCE_ENUM) AS distance,
+    CAST (CASE distancia WHEN 'NA' THEN NULL ELSE distancia END AS DISTANCE_ENUM) AS distance,
     CAST (CASE actividad_origen
         WHEN 'casa' THEN 'home'
         WHEN 'frecuente' THEN 'frequent_activity'
@@ -34,7 +34,7 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
         WHEN 'si' THEN TRUE
         WHEN 'no' THEN FALSE
         END AS study_possible_destination,
-    CAST(residencia AS INE_PROV_CODE_ENUM) AS residence_province_ine_code,
+    CAST (CASE residencia WHEN 'NA' THEN NULL ELSE residencia END AS INE_PROV_CODE_ENUM) AS residence_province_ine_code,
     CAST (CASE residencia
         WHEN '01' THEN 'Araba/Álava'
         WHEN '02' THEN 'Albacete'
@@ -90,7 +90,7 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM)
         AS residence_province_name,
-    CAST (renta AS INCOME_ENUM) AS income,
+    CAST (CASE renta WHEN 'NA' THEN NULL ELSE renta END AS INCOME_ENUM) AS income,
     CAST (CASE edad
         WHEN 'NA' THEN NULL
         WHEN '0-25' THEN '0-25'

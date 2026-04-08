@@ -1,16 +1,20 @@
 CREATE OR REPLACE VIEW od_csv_clean AS SELECT
     fecha AS date,
     periodo,
-    CAST(origen AS ZONES_ENUM) AS origen,
-    CAST(destino AS ZONES_ENUM) AS destino,
-    CAST(CASE actividad_origen
+    CAST (CASE origen WHEN 'NA' THEN NULL ELSE origen END AS ZONES_ENUM) AS origen,
+    CAST (CASE destino WHEN 'NA' THEN NULL ELSE destino END AS ZONES_ENUM) AS destino,
+    CAST (CASE actividad_origen
         WHEN 'trabajo' THEN 'trabajo_estudio'
+        WHEN 'NA' THEN NULL
+        ELSE actividad_origen
         END AS ACTIV_ENUM) AS actividad_origen,
-    CAST(CASE actividad_destino
+    CAST (CASE actividad_destino
         WHEN 'trabajo' THEN 'trabajo_estudio'
+        WHEN 'NA' THEN NULL
+        ELSE actividad_destino
         END AS ACTIV_ENUM) AS actividad_destino,
-    CAST(distancia AS DISTANCE_ENUM) AS distancia,
-    CAST(residencia AS INE_PROV_CODE_ENUM) AS residencia,
+    CAST (CASE distancia WHEN 'NA' THEN NULL ELSE distancia END AS DISTANCE_ENUM) AS distancia,
+    CAST (CASE residencia WHEN 'NA' THEN NULL ELSE residencia END AS INE_PROV_CODE_ENUM) AS residencia,
     CAST (CASE residencia
         WHEN '01' THEN 'Araba/Álava'
         WHEN '02' THEN 'Albacete'
