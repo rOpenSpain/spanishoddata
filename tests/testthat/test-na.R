@@ -22,17 +22,28 @@ test_that("spod_convert handles 'NA' in renta column using mini fixtures", {
   
   # 3. Modify one of the mini fixtures to include 'NA' in renta for testing
   raw_file <- file.path(test_dir, "raw_data_cache/v2/estudios_basicos/por-distritos/viajes/ficheros-diarios/year=2022/month=2/day=1/data.csv.gz")
+  
+  # Use cross-platform R functions to handle gz files
   tmp_csv <- tempfile(fileext = ".csv")
-  system2("gzcat", c(raw_file, ">", tmp_csv))
-  lines <- readLines(tmp_csv)
+  gz_con <- gzfile(raw_file, "rt")
+  lines <- readLines(gz_con)
+  close(gz_con)
+  
+  # Change the first data row's renta to 'NA'
   parts <- strsplit(lines[2], "|", fixed = TRUE)[[1]]
   parts[11] <- "NA" # renta
   lines[2] <- paste(parts, collapse = "|")
+  
   writeLines(lines, tmp_csv)
-  system2("gzip", c("-c", tmp_csv, ">", raw_file))
+  # Re-compress
+  dest_gz <- gzfile(raw_file, "wt")
+  writeLines(lines, dest_gz)
+  close(dest_gz)
   
   # 4. Run conversion
-  out_db <- file.path(test_dir, "test_renta_na.duckdb")
+  # Use a name without dots other than .duckdb to avoid spod_connect guessing issues
+  out_db_name <- "testrentana"
+  out_db <- file.path(test_dir, paste0(out_db_name, ".duckdb"))
   expect_error(
     spod_convert(
       type = "od", zones = "distr", dates = "2022-02-01",
@@ -43,7 +54,8 @@ test_that("spod_convert handles 'NA' in renta column using mini fixtures", {
   )
   
   # 5. Verify data
-  tbl_con <- spod_connect(out_db)
+  # Provide explicit table name to avoid guessing failures in CI
+  tbl_con <- spod_connect(out_db, target_table_name = out_db_name)
   res <- tbl_con %>% dplyr::collect()
   spod_disconnect(tbl_con)
   expect_true(any(is.na(res$income)))
@@ -73,17 +85,25 @@ test_that("spod_convert handles 'NA' in distancia column using mini fixtures", {
   
   # 3. Modify one of the mini fixtures to include 'NA' in distancia for testing
   raw_file <- file.path(test_dir, "raw_data_cache/v2/estudios_basicos/por-distritos/viajes/ficheros-diarios/year=2022/month=2/day=1/data.csv.gz")
-  tmp_csv <- tempfile(fileext = ".csv")
-  system2("gzcat", c(raw_file, ">", tmp_csv))
-  lines <- readLines(tmp_csv)
+  
+  # Use cross-platform R functions to handle gz files
+  gz_con <- gzfile(raw_file, "rt")
+  lines <- readLines(gz_con)
+  close(gz_con)
+  
+  # Change the first data row's distancia to 'NA'
   parts <- strsplit(lines[2], "|", fixed = TRUE)[[1]]
   parts[5] <- "NA" # distancia
   lines[2] <- paste(parts, collapse = "|")
-  writeLines(lines, tmp_csv)
-  system2("gzip", c("-c", tmp_csv, ">", raw_file))
+  
+  # Re-compress
+  dest_gz <- gzfile(raw_file, "wt")
+  writeLines(lines, dest_gz)
+  close(dest_gz)
   
   # 4. Run conversion
-  out_db <- file.path(test_dir, "test_distancia_na.duckdb")
+  out_db_name <- "testdistanciana"
+  out_db <- file.path(test_dir, paste0(out_db_name, ".duckdb"))
   expect_error(
     spod_convert(
       type = "od", zones = "distr", dates = "2022-02-01",
@@ -94,7 +114,7 @@ test_that("spod_convert handles 'NA' in distancia column using mini fixtures", {
   )
   
   # 5. Verify data
-  tbl_con <- spod_connect(out_db)
+  tbl_con <- spod_connect(out_db, target_table_name = out_db_name)
   res <- tbl_con %>% dplyr::collect()
   spod_disconnect(tbl_con)
   expect_true(any(is.na(res$distance)))
