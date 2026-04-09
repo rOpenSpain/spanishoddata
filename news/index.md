@@ -12,6 +12,8 @@
   `distancia`, `residencia`, `origen`, `destino`, `actividad`, and
   others across v1 and v2 data.
 
+- Improve reliability on network failures.
+
 ## spanishoddata 0.2.3
 
 CRAN release: 2026-03-23
