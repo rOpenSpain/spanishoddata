@@ -120,14 +120,25 @@ spod_get_latest_v1_file_list <- function(
   if (!quiet) {
     message("Saving the file to: ", current_filename)
   }
-  utils::download.file(xml_url, current_filename, mode = "wb")
+  tryCatch(
+    {
+      utils::download.file(xml_url, current_filename, mode = "wb", quiet = quiet)
+    },
+    error = function(e) {
+      if (!quiet) message("Failed to download the XML file: ", e$message)
+    },
+    warning = function(w) {
+      if (!quiet) message("Warning during XML download: ", w$message)
+    }
+  )
   # disable curl::multi_download() for now
   # xml_requested <- curl::multi_download(
   #   urls = xml_url,
   #   destfiles = current_filename
   # )
   if (!fs::file_exists(current_filename)) {
-    stop("Failed to download XML file.")
+    if (!quiet) message("Graceful exit: XML file could not be retrieved.")
+    return(NULL)
   }
   return(current_filename)
 }
@@ -501,14 +512,25 @@ spod_get_latest_v2_file_list <- function(
   if (!quiet) {
     message("Saving the file to: ", current_filename)
   }
-  utils::download.file(xml_url, current_filename, mode = "wb")
+  tryCatch(
+    {
+      utils::download.file(xml_url, current_filename, mode = "wb", quiet = quiet)
+    },
+    error = function(e) {
+      if (!quiet) message("Failed to download the XML file: ", e$message)
+    },
+    warning = function(w) {
+      if (!quiet) message("Warning during XML download: ", w$message)
+    }
+  )
   # disable curl::multi_download() for now
   # xml_requested <- curl::multi_download(
   #   urls = xml_url,
   #   destfiles = current_filename
   # )
   if (!fs::file_exists(current_filename)) {
-    stop("Failed to download the XML file.")
+    if (!quiet) message("Graceful exit: XML file could not be retrieved.")
+    return(NULL)
   }
 
   return(current_filename)
@@ -841,6 +863,12 @@ read_data_links_xml <- function(
       data_dir = data_dir,
       quiet = quiet
     )
+    if (is.null(latest_data_links_xml_path)) {
+      return(tibble::tibble(
+        target_url = character(0),
+        pub_ts = as.POSIXct(numeric(0), origin = "1970-01-01", tz = "UTC")
+      ))
+    }
   } else {
     if (!quiet) {
       message("Using existing data links xml: ", latest_file)
@@ -860,3 +888,4 @@ read_data_links_xml <- function(
 }
 
 read_data_links_memoised <- memoise::memoise(read_data_links_xml)
+

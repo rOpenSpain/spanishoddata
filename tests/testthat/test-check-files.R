@@ -8,7 +8,13 @@ test_that("spod_check_files detects inconsistency in fixtures", {
   withr::defer(unlink(test_dir, recursive = TRUE))
   withr::local_envvar(c("SPANISH_OD_DATA_DIR" = test_dir))
 
+  mock_meta_path <- system.file("testdata", "metadata", "available_data_s3_v2_mock.rds", package = "spanishoddata")
+  if (mock_meta_path == "") mock_meta_path <- testthat::test_path("../../inst/testdata/metadata/available_data_s3_v2_mock.rds")
+  mock_meta <- readRDS(mock_meta_path)
+
   testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) mock_meta,
+    read_data_links_memoised = function(...) tibble::tibble(),
     spod_get_valid_dates = function(ver, ...) {
       if (ver == 1) {
         return(as.Date(character(0)))
@@ -62,7 +68,14 @@ test_that("spod_check_files reports consistency when metadata matches", {
   meta$etag <- real_etag
   saveRDS(meta, rds_files[1])
 
+  mock_meta_path <- system.file("testdata", "metadata", "available_data_s3_v2_mock.rds", package = "spanishoddata")
+  if (mock_meta_path == "") mock_meta_path <- testthat::test_path("../../inst/testdata/metadata/available_data_s3_v2_mock.rds")
+  mock_meta <- readRDS(mock_meta_path)
+  mock_meta$etag <- real_etag
+
   testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) mock_meta,
+    read_data_links_memoised = function(...) tibble::tibble(),
     spod_get_valid_dates = function(ver, ...) {
       if (ver == 1) {
         return(as.Date(character(0)))
@@ -99,7 +112,13 @@ test_that("spod_check_files detects missing files in fixtures", {
   )
   unlink(target_file)
 
+  mock_meta_path <- system.file("testdata", "metadata", "available_data_s3_v2_mock.rds", package = "spanishoddata")
+  if (mock_meta_path == "") mock_meta_path <- testthat::test_path("../../inst/testdata/metadata/available_data_s3_v2_mock.rds")
+  mock_meta <- readRDS(mock_meta_path)
+
   testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) mock_meta,
+    read_data_links_memoised = function(...) tibble::tibble(),
     spod_get_valid_dates = function(ver, ...) {
       if (ver == 1) {
         return(as.Date(character(0)))

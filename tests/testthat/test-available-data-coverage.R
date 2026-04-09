@@ -118,9 +118,8 @@ test_that("spod_get_latest_v1_file_list handles download failure", {
     .package = "utils"
   )
 
-  expect_error(
-    spod_get_latest_v1_file_list(data_dir = test_dir, quiet = TRUE),
-    "Network error"
+  expect_null(
+    spod_get_latest_v1_file_list(data_dir = test_dir, quiet = TRUE)
   )
 })
 
@@ -133,9 +132,8 @@ test_that("spod_get_latest_v2_file_list handles download failure", {
     .package = "utils"
   )
 
-  expect_error(
-    spod_get_latest_v2_file_list(data_dir = test_dir, quiet = TRUE),
-    "Network error"
+  expect_null(
+    spod_get_latest_v2_file_list(data_dir = test_dir, quiet = TRUE)
   )
 })
 
