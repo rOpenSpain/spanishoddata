@@ -1,14 +1,15 @@
 CREATE OR REPLACE VIEW od_csv_clean AS SELECT
     fecha,
     periodo,
-    CAST (origen AS ZONES_ENUM) AS origen,
-    CAST (destino AS ZONES_ENUM) AS destino,
-    CAST (distancia AS DISTANCE_ENUM) AS distancia,
+    CAST (CASE origen WHEN 'NA' THEN NULL ELSE origen END AS ZONES_ENUM) AS origen,
+    CAST (CASE destino WHEN 'NA' THEN NULL ELSE destino END AS ZONES_ENUM) AS destino,
+    CAST (CASE distancia WHEN 'NA' THEN NULL ELSE distancia END AS DISTANCE_ENUM) AS distancia,
     CAST (CASE actividad_origen
         WHEN 'casa' THEN 'home'
         WHEN 'frecuente' THEN 'frequent_activity'
         WHEN 'no_frecuente' THEN 'infrequent_activity'
         WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'NA' THEN NULL
         END AS ACTIV_ENUM)
         AS actividad_origen,
     CAST (CASE actividad_destino
@@ -16,17 +17,20 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
         WHEN 'frecuente' THEN 'frequent_activity'
         WHEN 'no_frecuente' THEN 'infrequent_activity'
         WHEN 'trabajo_estudio' THEN 'work_or_study'
+        WHEN 'NA' THEN NULL
         END AS ACTIV_ENUM)
         AS actividad_destino,
     CASE estudio_origen_posible
         WHEN 'si' THEN TRUE
         WHEN 'no' THEN FALSE
+        WHEN 'NA' THEN NULL
         END AS estudio_origen_posible,
     CASE estudio_destino_posible
         WHEN 'si' THEN TRUE
         WHEN 'no' THEN FALSE
+        WHEN 'NA' THEN NULL
         END AS estudio_destino_posible,
-    CAST(residencia AS INE_PROV_CODE_ENUM) AS residencia,
+    CAST (CASE residencia WHEN 'NA' THEN NULL ELSE residencia END AS INE_PROV_CODE_ENUM) AS residencia,
     CAST (CASE residencia
         WHEN '01' THEN 'Araba/Álava'
         WHEN '02' THEN 'Albacete'
@@ -82,7 +86,7 @@ CREATE OR REPLACE VIEW od_csv_clean AS SELECT
         WHEN '52' THEN 'Melilla'
         END AS INE_PROV_NAME_ENUM)
         AS residencia_nombre,
-    CAST (renta AS INCOME_ENUM) AS renta,
+    CAST (CASE renta WHEN 'NA' THEN NULL ELSE renta END AS INCOME_ENUM) AS renta,
     CAST (CASE edad
         WHEN 'NA' THEN NULL
         WHEN '0-25' THEN '0-25'

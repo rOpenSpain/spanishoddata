@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW nt_csv_clean AS SELECT
     fecha,
-    CAST(zona_pernoctacion AS ZONES_ENUM) AS zona_pernoctacion,
+    CAST (CASE zona_pernoctacion WHEN 'NA' THEN NULL ELSE zona_pernoctacion END AS ZONES_ENUM) AS id,
     CAST(CASE edad
         WHEN 'NA' THEN NULL
         WHEN '0-25' THEN '0-25'
@@ -10,12 +10,13 @@ CREATE OR REPLACE VIEW nt_csv_clean AS SELECT
         ELSE NULL
         END AS AGE_ENUM)
         AS edad,
-    CAST (CASE sexo
+    CAST(CASE sexo
         WHEN 'NA' THEN NULL
-        ELSE sexo
+        WHEN 'mujer' THEN 'mujer'
+        WHEN 'hombre' THEN 'hombre'
         END AS SEX_ENUM)
         AS sexo,
-    CAST(numero_viajes AS N_TRIPS_ENUM) AS numero_viajes,
+    CAST (CASE numero_viajes WHEN 'NA' THEN NULL ELSE numero_viajes END AS N_TRIPS_ENUM) AS numero_viajes,
     personas,
     CAST(year AS INTEGER) AS ano,
     CAST(month AS INTEGER) AS mes,
