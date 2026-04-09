@@ -14,7 +14,13 @@ test_that("spod_download uses local metadata fixture (no mock on available_data)
   withr::defer(unlink(test_dir, recursive = TRUE))
   withr::local_envvar(c("SPANISH_OD_DATA_DIR" = test_dir))
 
+  mock_meta_path <- system.file("testdata", "metadata", "available_data_s3_v2_mock.rds", package = "spanishoddata")
+  if (mock_meta_path == "") mock_meta_path <- testthat::test_path("../../inst/testdata/metadata/available_data_s3_v2_mock.rds")
+  mock_meta <- readRDS(mock_meta_path)
+
   testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) mock_meta,
+    read_data_links_memoised = function(...) tibble::tibble(),
     spod_get_valid_dates = function(ver, ...) {
       if (ver == 1) {
         return(as.Date(character(0)))
@@ -54,7 +60,13 @@ test_that("spod_download triggers download when local file is missing", {
     unlink(target_file)
   }
 
+  mock_meta_path <- system.file("testdata", "metadata", "available_data_s3_v2_mock.rds", package = "spanishoddata")
+  if (mock_meta_path == "") mock_meta_path <- testthat::test_path("../../inst/testdata/metadata/available_data_s3_v2_mock.rds")
+  mock_meta <- readRDS(mock_meta_path)
+
   testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) mock_meta,
+    read_data_links_memoised = function(...) tibble::tibble(),
     spod_get_valid_dates = function(ver, ...) {
       if (ver == 1) {
         return(as.Date(character(0)))
@@ -125,7 +137,13 @@ test_that("spod_download integration with file size mismatch", {
   )
   writeLines("short", target_file)
 
+  mock_meta_path <- system.file("testdata", "metadata", "available_data_s3_v2_mock.rds", package = "spanishoddata")
+  if (mock_meta_path == "") mock_meta_path <- testthat::test_path("../../inst/testdata/metadata/available_data_s3_v2_mock.rds")
+  mock_meta <- readRDS(mock_meta_path)
+
   testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) mock_meta,
+    read_data_links_memoised = function(...) tibble::tibble(),
     spod_get_valid_dates = function(ver, ...) {
       if (ver == 1) {
         return(as.Date(character(0)))

@@ -118,9 +118,8 @@ test_that("spod_get_latest_v1_file_list handles download failure", {
     .package = "utils"
   )
 
-  expect_error(
-    spod_get_latest_v1_file_list(data_dir = test_dir, quiet = TRUE),
-    "Network error"
+  expect_null(
+    spod_get_latest_v1_file_list(data_dir = test_dir, quiet = TRUE)
   )
 })
 
@@ -133,9 +132,8 @@ test_that("spod_get_latest_v2_file_list handles download failure", {
     .package = "utils"
   )
 
-  expect_error(
-    spod_get_latest_v2_file_list(data_dir = test_dir, quiet = TRUE),
-    "Network error"
+  expect_null(
+    spod_get_latest_v2_file_list(data_dir = test_dir, quiet = TRUE)
   )
 })
 
@@ -315,3 +313,161 @@ test_that("spod_available_data v2 falls back to XML on S3 error", {
 
   expect_s3_class(res, "data.frame")
 })
+
+test_that("spod_available_data v1 falls back to XML on S3 error", {
+  test_dir <- setup_test_data_dir()
+  withr::defer(unlink(test_dir, recursive = TRUE))
+  withr::local_envvar(c("SPANISH_OD_DATA_DIR" = test_dir))
+
+  # Mock S3 to fail
+  testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) stop("S3 error"),
+    read_data_links_xml = function(...) {
+      tibble::tibble(
+        target_url = "https://opendata-movilidad.mitma.es/maestra1-mitma-distritos/ficheros-diarios/2020-02/20200215_maestra1_mitma_distrito.txt.gz",
+        pub_ts = as.POSIXct("2020-02-15", tz = "UTC"),
+        file_size_bytes = 1000,
+        etag = "mock_etag"
+      )
+    }
+  )
+
+  # Should fall back to XML and show message
+  msgs <- capture_messages(
+    capture.output(
+      res <- spod_available_data(ver = 1, use_s3 = TRUE, quiet = FALSE),
+      file = NULL
+    )
+  )
+  expect_match(msgs, "S3 fetch failed", all = FALSE)
+
+  expect_s3_class(res, "data.frame")
+})
+
+test_that("spod_get_latest_v1_file_list handles download failure with messages", {
+  test_dir <- withr::local_tempdir()
+  testthat::local_mocked_bindings(
+    download.file = function(...) stop("Network error"),
+    .package = "utils"
+  )
+  msgs <- capture_messages(
+    res <- spod_get_latest_v1_file_list(data_dir = test_dir, quiet = FALSE)
+  )
+  expect_true(any(grepl("Failed to download the XML file", msgs)))
+  expect_true(any(grepl("Graceful exit", msgs)))
+  expect_null(res)
+})
+
+test_that("spod_get_latest_v1_file_list handles download warning with messages", {
+  test_dir <- withr::local_tempdir()
+  testthat::local_mocked_bindings(
+    download.file = function(...) { warning("some warning"); return(1) },
+    .package = "utils"
+  )
+  msgs <- capture_messages(
+    res <- spod_get_latest_v1_file_list(data_dir = test_dir, quiet = FALSE)
+  )
+  expect_true(any(grepl("Warning during XML download", msgs)))
+  expect_true(any(grepl("Graceful exit", msgs)))
+  expect_null(res)
+})
+
+test_that("spod_get_latest_v2_file_list handles download failure with messages", {
+  test_dir <- withr::local_tempdir()
+  testthat::local_mocked_bindings(
+    download.file = function(...) stop("Network error"),
+    .package = "utils"
+  )
+  msgs <- capture_messages(
+    res <- spod_get_latest_v2_file_list(data_dir = test_dir, quiet = FALSE)
+  )
+  expect_true(any(grepl("Failed to download the XML file", msgs)))
+  expect_true(any(grepl("Graceful exit", msgs)))
+  expect_null(res)
+})
+
+test_that("spod_get_latest_v2_file_list handles download warning with messages", {
+  test_dir <- withr::local_tempdir()
+  testthat::local_mocked_bindings(
+    download.file = function(...) { warning("some warning"); return(1) },
+    .package = "utils"
+  )
+  msgs <- capture_messages(
+    res <- spod_get_latest_v2_file_list(data_dir = test_dir, quiet = FALSE)
+  )
+  expect_true(any(grepl("Warning during XML download", msgs)))
+  expect_true(any(grepl("Graceful exit", msgs)))
+  expect_null(res)
+})
+
+
+test_that("read_data_links_xml returns empty tibble on NULL path", {
+  test_dir <- withr::local_tempdir()
+  metadata_folder <- file.path(test_dir, spod_subfolder_metadata_cache())
+  dir.create(metadata_folder, recursive = TRUE)
+  
+  expect_message(
+    res <- read_data_links_xml(
+      metadata_folder = metadata_folder,
+      data_dir = test_dir,
+      force = TRUE,
+      quiet = FALSE,
+      latest_file_function = function(...) NULL,
+      ver = 1
+    ),
+    "Fetching latest data links xml"
+  )
+  expect_s3_class(res, "tbl_df")
+  expect_equal(nrow(res), 0)
+  expect_true(all(c("target_url", "pub_ts") %in% names(res)))
+})
+
+test_that("read_data_links_xml shows message when using existing XML", {
+  test_dir <- withr::local_tempdir()
+  metadata_folder <- file.path(test_dir, spod_subfolder_metadata_cache())
+  dir.create(metadata_folder, recursive = TRUE)
+  
+  # Create fresh XML
+  fresh_xml <- file.path(metadata_folder, paste0("data_links_v1_", Sys.Date(), ".xml"))
+  writeLines("<xml><link>test</link><pubDate>Mon, 14 Feb 2020 00:00:00 +0000</pubDate></xml>", fresh_xml)
+  
+  expect_message(
+    read_data_links_xml(
+      metadata_folder = metadata_folder,
+      data_dir = test_dir,
+      force = FALSE,
+      quiet = FALSE,
+      latest_file_function = function(...) stop("Should not be called"),
+      ver = 1
+    ),
+    "Using existing data links xml"
+  )
+})
+
+test_that("spod_available_data handles complete failure (S3 and XML fail)", {
+  test_dir <- setup_test_data_dir()
+  withr::defer(unlink(test_dir, recursive = TRUE))
+  withr::local_envvar(c("SPANISH_OD_DATA_DIR" = test_dir))
+
+  # Mock S3 and XML to both fail
+  testthat::local_mocked_bindings(
+    spod_available_data_s3 = function(...) stop("S3 down"),
+    spod_get_latest_v2_file_list = function(...) NULL, # Simulation of download failure
+    .package = "spanishoddata"
+  )
+
+  # Should fall back to XML, then XML should fail, resulting in empty tibble
+  msgs <- capture_messages(
+    res <- suppressWarnings(spod_available_data(ver = 2, quiet = FALSE))
+  )
+  
+  expect_match(msgs, "S3 fetch failed", all = FALSE)
+  # Message "Graceful exit" won't show because we mocked the function to return NULL directly
+  
+  expect_s3_class(res, "tbl_df")
+  expect_equal(nrow(res), 0)
+
+  expect_true("target_url" %in% names(res))
+})
+
+
