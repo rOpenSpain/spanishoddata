@@ -41,7 +41,7 @@
         "url": "https://cran.r-project.org"
       },
       "runtimePlatform": "R version 4.5.3 (2026-03-11)",
-      "version": "0.2.3"
+      "version": "0.2.4"
     },
     {
       "type": "SoftwareSourceCode",
