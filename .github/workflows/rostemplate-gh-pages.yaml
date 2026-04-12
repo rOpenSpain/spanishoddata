@@ -32,6 +32,11 @@ jobs:
             ropenspain/rostemplate
           needs: website
 
+      - name: Create Google Search Console verification file
+        run: |
+          mkdir -p pkgdown/assets
+          echo -n "google-site-verification: google791d291f91311a84.html" > pkgdown/assets/google791d291f91311a84.html
+
       - name: Deploy package
         run: |
           git config --local user.name "github-actions[bot]"
