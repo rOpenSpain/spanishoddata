@@ -2,6 +2,8 @@
 
 ## spanishoddata 0.2.4
 
+CRAN release: 2026-04-09
+
 ### Bug fixes
 
 - Fixed a bug
