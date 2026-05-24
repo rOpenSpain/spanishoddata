@@ -13,7 +13,7 @@
 #' @param ver Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with [spod_codebook()].
 #' @param check_local_files Logical. Whether to check if the local files exist and get the file size. Defaults to `FALSE`.
 #' @param data_dir The directory where the data is stored. Defaults to the value returned by `spod_get_data_dir()`.
-#' @param use_s3 `r lifecycle::badge("experimental")` Logical. If `TRUE`, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If `FALSE`, use the XML file to get available data list.
+#' @param use_s3 `r lifecycle::badge("experimental")` Logical. If `TRUE`, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If `FALSE`, use the XML file to get available data list. Defaults to `FALSE` for `ver = 1` because the v1 Amazon S3 bucket is incomplete (truncates at March 2021). Defaults to `TRUE` for `ver = 2` as the S3 API is faster and complete for newer data.
 #' @param force Logical. If `TRUE`, force re-download of metadata. For Amazon S3 this queries the S3 bucket for the XML file it re-downloads. If `FALSE`, only update the available data list if it is older than 1 day.
 #' @inheritParams spod_available_data_v1
 #' @inheritParams global_quiet_param
