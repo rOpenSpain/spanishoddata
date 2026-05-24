@@ -131,20 +131,18 @@ spod_get_latest_v1_file_list <- function(
       )
     },
     error = function(e) {
-      if (!quiet) message("utils::download.file failed or warned (", conditionMessage(e), "). Retrying with curl::curl_download.")
+      if (!quiet) message("utils::download.file failed or warned (", conditionMessage(e), "). Retrying with httr2.")
       tryCatch(
-        curl::curl_download(xml_url, destfile = current_filename, quiet = quiet),
-        error = function(e_curl) {
-          if (!quiet) message("Failed to download the XML file: ", e_curl$message)
+        {
+          resp <- httr2::req_perform(httr2::request(xml_url))
+          writeBin(httr2::resp_body_raw(resp), current_filename)
+        },
+        error = function(e_httr2) {
+          if (!quiet) message("Failed to download the XML file: ", e_httr2$message)
         }
       )
     }
   )
-  # disable curl::multi_download() for now
-  # xml_requested <- curl::multi_download(
-  #   urls = xml_url,
-  #   destfiles = current_filename
-  # )
   if (!fs::file_exists(current_filename)) {
     if (!quiet) message("Graceful exit: XML file could not be retrieved.")
     return(NULL)
@@ -544,20 +542,18 @@ spod_get_latest_v2_file_list <- function(
       )
     },
     error = function(e) {
-      if (!quiet) message("utils::download.file failed or warned (", conditionMessage(e), "). Retrying with curl::curl_download.")
+      if (!quiet) message("utils::download.file failed or warned (", conditionMessage(e), "). Retrying with httr2.")
       tryCatch(
-        curl::curl_download(xml_url, destfile = current_filename, quiet = quiet),
-        error = function(e_curl) {
-          if (!quiet) message("Failed to download the XML file: ", e_curl$message)
+        {
+          resp <- httr2::req_perform(httr2::request(xml_url))
+          writeBin(httr2::resp_body_raw(resp), current_filename)
+        },
+        error = function(e_httr2) {
+          if (!quiet) message("Failed to download the XML file: ", e_httr2$message)
         }
       )
     }
   )
-  # disable curl::multi_download() for now
-  # xml_requested <- curl::multi_download(
-  #   urls = xml_url,
-  #   destfiles = current_filename
-  # )
   if (!fs::file_exists(current_filename)) {
     if (!quiet) message("Graceful exit: XML file could not be retrieved.")
     return(NULL)

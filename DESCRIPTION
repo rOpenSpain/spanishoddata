@@ -29,7 +29,7 @@ URL: https://rOpenSpain.github.io/spanishoddata/,
 BugReports: https://github.com/rOpenSpain/spanishoddata/issues
 Depends:
     R (>= 4.1.0)
-Imports: 
+Imports:
     checkmate,
     DBI,
     digest,

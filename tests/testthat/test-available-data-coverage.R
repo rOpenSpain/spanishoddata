@@ -112,10 +112,14 @@ test_that("spod_available_data rejects invalid version number", {
 test_that("spod_get_latest_v1_file_list handles download failure", {
   test_dir <- withr::local_tempdir()
 
-  # Mock download.file to fail
+  # Mock both download.file and httr2::req_perform fallback to fail
   testthat::local_mocked_bindings(
     download.file = function(...) stop("Network error"),
     .package = "utils"
+  )
+  testthat::local_mocked_bindings(
+    req_perform = function(...) stop("httr2 error"),
+    .package = "httr2"
   )
 
   expect_null(
@@ -126,10 +130,14 @@ test_that("spod_get_latest_v1_file_list handles download failure", {
 test_that("spod_get_latest_v2_file_list handles download failure", {
   test_dir <- withr::local_tempdir()
 
-  # Mock download.file to fail
+  # Mock both download.file and httr2::req_perform fallback to fail
   testthat::local_mocked_bindings(
     download.file = function(...) stop("Network error"),
     .package = "utils"
+  )
+  testthat::local_mocked_bindings(
+    req_perform = function(...) stop("httr2 error"),
+    .package = "httr2"
   )
 
   expect_null(
@@ -350,6 +358,10 @@ test_that("spod_get_latest_v1_file_list handles download failure with messages",
     download.file = function(...) stop("Network error"),
     .package = "utils"
   )
+  testthat::local_mocked_bindings(
+    req_perform = function(...) stop("httr2 error"),
+    .package = "httr2"
+  )
   msgs <- capture_messages(
     res <- spod_get_latest_v1_file_list(data_dir = test_dir, quiet = FALSE)
   )
@@ -365,8 +377,8 @@ test_that("spod_get_latest_v1_file_list handles download warning with messages",
     .package = "utils"
   )
   testthat::local_mocked_bindings(
-    curl_download = function(...) stop("curl error"),
-    .package = "curl"
+    req_perform = function(...) stop("httr2 error"),
+    .package = "httr2"
   )
   msgs <- capture_messages(
     res <- spod_get_latest_v1_file_list(data_dir = test_dir, quiet = FALSE)
@@ -383,8 +395,8 @@ test_that("spod_get_latest_v2_file_list handles download failure with messages",
     .package = "utils"
   )
   testthat::local_mocked_bindings(
-    curl_download = function(...) stop("curl error"),
-    .package = "curl"
+    req_perform = function(...) stop("httr2 error"),
+    .package = "httr2"
   )
   msgs <- capture_messages(
     res <- spod_get_latest_v2_file_list(data_dir = test_dir, quiet = FALSE)
@@ -402,8 +414,8 @@ test_that("spod_get_latest_v2_file_list handles download warning with messages",
     .package = "utils"
   )
   testthat::local_mocked_bindings(
-    curl_download = function(...) stop("curl error"),
-    .package = "curl"
+    req_perform = function(...) stop("httr2 error"),
+    .package = "httr2"
   )
   msgs <- capture_messages(
     res <- spod_get_latest_v2_file_list(data_dir = test_dir, quiet = FALSE)
