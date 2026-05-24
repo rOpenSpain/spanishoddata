@@ -1,6 +1,6 @@
 Package: spanishoddata
 Title: Get Spanish Origin-Destination Data
-Version: 0.2.4
+Version: 0.2.4.9000
 Authors@R: c(
     person("Egor", "Kotov", , "kotov.egor@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6690-5345")),
@@ -29,7 +29,7 @@ URL: https://rOpenSpain.github.io/spanishoddata/,
 BugReports: https://github.com/rOpenSpain/spanishoddata/issues
 Depends:
     R (>= 4.1.0)
-Imports: 
+Imports:
     checkmate,
     DBI,
     digest,
@@ -61,7 +61,9 @@ Suggests:
     furrr,
     future,
     future.mirai,
+    ggiraph,
     hexSticker,
+    htmlwidgets,
     mapSpain,
     quarto,
     remotes,

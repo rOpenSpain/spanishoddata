@@ -1,0 +1,92 @@
+# GitHub Actions workflow to generate a weekly data availability plot.
+# The plot shows which dates have origin-destination data available
+# and is pushed to an orphan branch so the README can reference it
+# without polluting the main branch history with weekly image commits.
+
+name: Data Availability Plot
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  schedule:
+    # Runs at 04:00 UTC on Saturday
+    - cron: '0 4 * * 6'
+
+jobs:
+  generate-plot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            local::.
+            any::ggplot2
+            any::tidyr
+            any::ggiraph
+            any::htmlwidgets
+          needs: check
+
+      - name: Generate Data Availability Plot
+        run: |
+          Rscript tools/generate_data_availability_plot.R data_availability.png
+        shell: bash
+
+      - name: Deploy Plot and Badges to Orphan Branch
+        if: success()
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          # Save the generated image, interactive HTML, and JSON files
+          cp data_availability.png /tmp/data_availability.png
+          cp data_availability.html /tmp/data_availability.html || true
+          cp latest_v1.json /tmp/latest_v1.json || true
+          cp latest_v2.json /tmp/latest_v2.json || true
+
+          # Try to switch to existing branch, or create new orphan one
+          if git ls-remote --exit-code --heads origin data-avail-plot >/dev/null 2>&1; then
+            git fetch origin data-avail-plot
+            git checkout data-avail-plot
+            git pull --ff-only origin data-avail-plot
+          else
+            git checkout --orphan data-avail-plot
+            git rm -rf .
+          fi
+
+          # Copy files back and commit
+          cp /tmp/data_availability.png .
+          cp /tmp/data_availability.html . || true
+          cp /tmp/latest_v1.json . || true
+          cp /tmp/latest_v2.json . || true
+
+          # Create a small README for the branch
+          cat > README.md << 'EOF'
+          # Data Availability Plot & Shields.io Endpoint Badges
+
+          This branch contains the auto-generated plot and endpoint JSON files showing data availability
+          for the `spanishoddata` R package. It is updated weekly by a GitHub Action.
+
+          **Do not commit to this branch manually.**
+
+          ### Raw Assets
+          - **Plot Image:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.png`
+          - **Interactive Plot:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.html`
+          - **v1 Latest JSON:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v1.json`
+          - **v2 Latest JSON:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v2.json`
+          EOF
+
+          git add --force data_availability.png data_availability.html latest_v1.json latest_v2.json README.md || git add --force data_availability.png README.md
+          git commit -m "Update data availability plot and badges ($(date -u '+%Y-%m-%d'))" || echo "No changes to commit"
+          git push origin data-avail-plot --force-with-lease

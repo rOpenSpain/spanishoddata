@@ -164,8 +164,7 @@ spod_check_files <- function(
     ver = ver,
     check_local_files = TRUE,
     data_dir = data_dir,
-    quiet = quiet,
-    use_s3 = TRUE
+    quiet = quiet
   )
 
   if (all(as.character(dates) %in% c("cached_v1", "cached_v2"))) {

@@ -154,8 +154,7 @@ spod_download <- function(
     ver = ver,
     check_local_files = check_local_files,
     data_dir = data_dir,
-    quiet = quiet,
-    use_s3 = TRUE
+    quiet = quiet
   )
 
   # match the available_data to type, zones, version and dates

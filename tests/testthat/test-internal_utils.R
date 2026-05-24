@@ -178,5 +178,23 @@ test_that("dates span both v1 and v2 data", {
   )
 })
 
+test_that("spod_get_file_size_from_url robust parsing", {
+  local_mocked_bindings(
+    spod_curl_get_headers = function(url) {
+      if (grepl("error", url)) stop("connection failure")
+      if (grepl("nocontent", url)) return(c("HTTP/1.1 200 OK"))
+      if (grepl("redirect", url)) return(c("HTTP/1.1 302 Found", "Content-Length: 0", "HTTP/1.1 200 OK", "content-length: 98765"))
+      return(c("HTTP/1.1 200 OK", "Content-Length: 12345"))
+    },
+    .package = "spanishoddata"
+  )
+
+  expect_equal(spod_get_file_size_from_url("https://example.com/test"), 12345)
+  expect_equal(spod_get_file_size_from_url("https://example.com/redirect"), 98765)
+  expect_true(is.na(spod_get_file_size_from_url("https://example.com/nocontent")))
+  expect_true(is.na(spod_get_file_size_from_url("https://example.com/error")))
+})
+
 # clean up
 unlink(test_data_dir, recursive = TRUE)
+

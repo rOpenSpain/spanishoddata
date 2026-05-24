@@ -7,7 +7,7 @@
 spod_available_data_v1(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
-  use_s3 = TRUE,
+  use_s3 = FALSE,
   force = FALSE,
   quiet = FALSE
 )
@@ -17,7 +17,7 @@ spod_available_data_v1(
 
 \item{check_local_files}{Logical. Whether to check if the local files exist and get the file size. Defaults to \code{FALSE}.}
 
-\item{use_s3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If \code{FALSE}, use the XML file to get available data list.}
+\item{use_s3}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}} Logical. If \code{TRUE}, use Amazon S3 to get available data list, which does not require downloading the XML file and caching it locally, which may be a bit faster. If \code{FALSE}, use the XML file to get available data list. Defaults to \code{FALSE} for \code{ver = 1} because the v1 Amazon S3 bucket is incomplete (truncates at March 2021). Defaults to \code{TRUE} for \code{ver = 2} as the S3 API is faster and complete for newer data.}
 
 \item{force}{Logical. If \code{TRUE}, force re-download of metadata. For Amazon S3 this queries the S3 bucket for the XML file it re-downloads. If \code{FALSE}, only update the available data list if it is older than 1 day.}
 

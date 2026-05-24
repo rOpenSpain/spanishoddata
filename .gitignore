@@ -28,3 +28,10 @@ vignettes/.quarto
 .Rprofile
 
 **/*.quarto_ipynb
+
+# Plot generation artifacts
+data_availability.png
+data_availability.html
+latest_v1.json
+latest_v2.json
+RSS_v1.xml

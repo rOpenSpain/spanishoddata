@@ -408,7 +408,6 @@ spod_download_zones_v1 <- function(
     metadata <- spod_available_data(
       ver = 1,
       data_dir = data_dir,
-      use_s3 = TRUE,
       check_local_files = FALSE,
       quiet = quiet
     )

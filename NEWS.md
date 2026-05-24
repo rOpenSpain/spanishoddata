@@ -1,10 +1,16 @@
+# spanishoddata 0.2.4.9000
+
+## Bug fixes
+
+* Improve reliability on network failures, including falling back to `curl::curl_download` for fetching XML data when `utils::download.file` warns or fails (such as TLS/SSL failures).
+
+* Fixed incomplete data availability for v1 data (2020-2021) by switching back to fetching the metadata from the XML feed. The previously used Amazon S3 API bucket was artificially truncated at March 18, 2021.
+
 # spanishoddata 0.2.4
 
 ## Bug fixes
 
 * Fixed a bug ([#186](https://github.com/rOpenSpain/spanishoddata/issues/186)) where literal `'NA'` strings in the source MITMA CSV files caused DuckDB conversion errors when casting to enums or other non-string types. This fix handles `'NA'` values in columns like `renta`, `distancia`, `residencia`, `origen`, `destino`, `actividad`, and others across v1 and v2 data.
-
-* Improve reliability on network failures.
 
 # spanishoddata 0.2.3
 
