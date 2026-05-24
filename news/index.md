@@ -1,5 +1,20 @@
 # Changelog
 
+## spanishoddata 0.2.4.9000
+
+### Bug fixes
+
+- Improve reliability on network failures, including falling back to
+  [`curl::curl_download`](https://jeroen.r-universe.dev/curl/reference/curl_download.html)
+  for fetching XML data when
+  [`utils::download.file`](https://rdrr.io/r/utils/download.file.html)
+  warns or fails (such as TLS/SSL failures).
+
+- Fixed incomplete data availability for v1 data (2020-2021) by
+  switching back to fetching the metadata from the XML feed. The
+  previously used Amazon S3 API bucket was artificially truncated at
+  March 18, 2021.
+
 ## spanishoddata 0.2.4
 
 CRAN release: 2026-04-09
@@ -13,8 +28,6 @@ CRAN release: 2026-04-09
   types. This fix handles `'NA'` values in columns like `renta`,
   `distancia`, `residencia`, `origen`, `destino`, `actividad`, and
   others across v1 and v2 data.
-
-- Improve reliability on network failures.
 
 ## spanishoddata 0.2.3
 

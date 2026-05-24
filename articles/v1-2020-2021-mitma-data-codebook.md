@@ -3,6 +3,7 @@
 You can view this vignette any time by running:
 
 ``` r
+
 spod_codebook(ver = 1)
 ```
 
@@ -63,6 +64,7 @@ steps:
 Install from CRAN:
 
 ``` r
+
 install.packages("spanishoddata")
 ```
 
@@ -72,6 +74,7 @@ You can also install the latest development version of the package from
 rOpenSpain R universe:
 
 ``` r
+
 install.packages("spanishoddata",
   repos = c("https://ropenspain.r-universe.dev",
     "https://cloud.r-project.org"))
@@ -80,6 +83,7 @@ install.packages("spanishoddata",
 Alternative way to install the development version from GitHub:
 
 ``` r
+
 if (!require("remotes")) install.packages("remotes")
 
 remotes::install_github("rOpenSpain/spanishoddata",
@@ -101,6 +105,7 @@ rstudio spanishoddata/spanishoddata.Rproj
 Then run the following command from the R console:
 
 ``` r
+
 devtools::load_all()
 ```
 
@@ -115,6 +120,7 @@ able to work with one full day of data.
 Load it as follows:
 
 ``` r
+
 library(spanishoddata)
 ```
 
@@ -135,6 +141,7 @@ download (and convert) the data by setting the data directory following
 command:
 
 ``` r
+
 spod_set_data_dir(data_dir = "~/spanish_od_data")
 ```
 
@@ -146,6 +153,7 @@ Setting data directory for advanced users
 You can also set the data directory with an environment variable:
 
 ``` r
+
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 ```
 
@@ -157,6 +165,7 @@ data directory globally by setting the `SPANISH_OD_DATA_DIR` environment
 variable, e.g. with the following command:
 
 ``` r
+
 usethis::edit_r_environ()
 # Then set the data directory globally, by typing this line in the file:
 ```
@@ -168,6 +177,7 @@ project. Set the ‘envar’ in the working directory by editing `.Renviron`
 file in the root of the project:
 
 ``` r
+
 file.edit(".Renviron")
 ```
 
@@ -230,6 +240,7 @@ which they are based.
 To access it:
 
 ``` r
+
 districts_v1 <- spod_get_zones("dist", ver = 1)
 ```
 
@@ -237,14 +248,14 @@ The `districts_v1` object is of class `sf` consisting of polygons.
 
 Data structure:
 
-| Variable Name          | **Description**                                                                                                                                                                                                                                                                                    |
-|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                   | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#ptc-data).                                                                                                     |
-| `census_districts`     | A string with semicolon-separated list of census district semicolon-separated identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above.                                                                                          |
-| `municipalities_mitma` | A string with semicolon-separated list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` .                                                                                                               |
-| `municipalities`       | A string with semicolon-separated list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above.                                                                                                                              |
-| `district_names_in_v2` | A string with semicolon-separated list of names of district polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above.       |
-| `district_ids_in_v2`   | A string with semicolon-separated list of identifiers of district polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| Variable Name | **Description** |
+|----|----|
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in district level [origin-destination data](#od-data) and [number of trips data](#ptc-data). |
+| `census_districts` | A string with semicolon-separated list of census district semicolon-separated identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
+| `municipalities_mitma` | A string with semicolon-separated list of municipality identifiers as assigned by the data provider in municipality zones spatial dataset that correspond to a given district `id` . |
+| `municipalities` | A string with semicolon-separated list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
+| `district_names_in_v2` | A string with semicolon-separated list of names of district polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `district_ids_in_v2` | A string with semicolon-separated list of identifiers of district polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
 
 ### 1.2 `Municipalities`
 
@@ -256,6 +267,7 @@ to the 8,125 official municipalities on which they are based.
 To access it:
 
 ``` r
+
 municipalities_v1 <- spod_get_zones("muni", ver = 1)
 ```
 
@@ -264,14 +276,14 @@ polygons.
 
 Data structure:
 
-| Variable Name              | **Description**                                                                                                                                                                                                                                                        |
-|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                       | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in municipality level [origin-destination data](#od-data) and [population by trip count](#pop-tc).                                                                   |
-| `municipalities`           | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above.                                                                                                                                  |
-| `districts_mitma`          | A list of district identifiers as assigned by the data provider in districts zones spatial dataset that correspond to a given municipality `id` .                                                                                                                      |
-| `census_districts`         | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above.                                                                                                                  |
-| `municipality_names_in_v2` | A list of names of municipality polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above.       |
-| `municipality_ids_in_v2`   | A list of identifiers of municipality polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| Variable Name | **Description** |
+|----|----|
+| `id` | District `id` assigned by the data provider. Matches with `id_origin`, `id_destination`, and `id` in municipality level [origin-destination data](#od-data) and [population by trip count](#pop-tc). |
+| `municipalities` | A list of municipality identifiers as classified by the Spanish Statistical Office (INE) that correspond to polygons with `id` above. |
+| `districts_mitma` | A list of district identifiers as assigned by the data provider in districts zones spatial dataset that correspond to a given municipality `id` . |
+| `census_districts` | A list of census district identifiers as classified by the Spanish Statistical Office (INE) that are spatially bound within polygons with `id` above. |
+| `municipality_names_in_v2` | A list of names of municipality polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
+| `municipality_ids_in_v2` | A list of identifiers of municipality polygons defined in the [v2 version of this data](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md) that covers the year 2022 and onwards that correspond to polygons with `id` above. |
 
 The spatial data you get via `spanishoddata` package is downloaded
 directly from the source, the geometries of polygons are automatically
@@ -308,22 +320,22 @@ Figure 2: Origin destination flows in Barcelona on 2020-02-14
 Here are the variables you can find in both the `district` and
 `municipality` level origin-destination data:
 
-| **English Variable Name**     | **Original Variable Name** | **Type**  | **Description**                                                                                                                                                                                                             |
-|-------------------------------|----------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `date`                        | `fecha`                    | `Date`    | The date of the recorded data, formatted as `YYYY-MM-DD`.                                                                                                                                                                   |
-| `hour`                        | `periodo`                  | `integer` | The time slot during which the trips occurred.                                                                                                                                                                              |
-| `id_origin`                   | `origen`                   | `factor`  | The origin zone `id` of `district` or `municipalitity`.                                                                                                                                                                     |
-| `id_destination`              | `destino`                  | `factor`  | The destination zone `id` of `district` or `municipalitity`.                                                                                                                                                                |
-| `distance`                    | `distancia`                | `factor`  | The distance range of the trip, categorized into specific intervals such as `0005-002` (500 m to 2 km), `002-005` (2-5 km), `005-010` (5-10km), `010-050` (10-50 km), `050-100` (50-100 km), and `100+` (more than 100 km). |
-| `activity_origin`             | `actividad_origen`         | `factor`  | The type of activity at the origin zone, recoded from `casa`, `otros`, `trabajo_estudio` to `home`, `other`, `work_or_study` respectively.                                                                                  |
-| `activity_destination`        | `actividad_destino`        | `factor`  | The type of activity at the destination zone, similarly recoded as for `activity_origin` above.                                                                                                                             |
-| `residence_province_ine_code` | `residencia`               | `factor`  | The province code of residence if individuals who were making the trips in `n_trips`, encoded as province codes as classified by the Spanish Statistical Office (INE).                                                      |
-| `residence_province_name`     | Derived from `residencia`  | `factor`  | The full name of the residence province, derived from the province code above.                                                                                                                                              |
-| `n_trips`                     | `viajes`                   | `numeric` | The number of trips for that specific origin-destination pair and time slot.                                                                                                                                                |
-| `trips_total_length_km`       | `viajes_km`                | `numeric` | The total length of trips in kilometers, summing up all trips between the origin and destination zones.                                                                                                                     |
-| `year`                        | `year`                     | `integer` | The year of the recorded data, extracted from the date.                                                                                                                                                                     |
-| `month`                       | `month`                    | `integer` | The month of the recorded data, extracted from the date.                                                                                                                                                                    |
-| `day`                         | `day`                      | `integer` | The day of the recorded data, extracted from the date.                                                                                                                                                                      |
+| **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
+|----|----|----|----|
+| `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
+| `hour` | `periodo` | `integer` | The time slot during which the trips occurred. |
+| `id_origin` | `origen` | `factor` | The origin zone `id` of `district` or `municipalitity`. |
+| `id_destination` | `destino` | `factor` | The destination zone `id` of `district` or `municipalitity`. |
+| `distance` | `distancia` | `factor` | The distance range of the trip, categorized into specific intervals such as `0005-002` (500 m to 2 km), `002-005` (2-5 km), `005-010` (5-10km), `010-050` (10-50 km), `050-100` (50-100 km), and `100+` (more than 100 km). |
+| `activity_origin` | `actividad_origen` | `factor` | The type of activity at the origin zone, recoded from `casa`, `otros`, `trabajo_estudio` to `home`, `other`, `work_or_study` respectively. |
+| `activity_destination` | `actividad_destino` | `factor` | The type of activity at the destination zone, similarly recoded as for `activity_origin` above. |
+| `residence_province_ine_code` | `residencia` | `factor` | The province code of residence if individuals who were making the trips in `n_trips`, encoded as province codes as classified by the Spanish Statistical Office (INE). |
+| `residence_province_name` | Derived from `residencia` | `factor` | The full name of the residence province, derived from the province code above. |
+| `n_trips` | `viajes` | `numeric` | The number of trips for that specific origin-destination pair and time slot. |
+| `trips_total_length_km` | `viajes_km` | `numeric` | The total length of trips in kilometers, summing up all trips between the origin and destination zones. |
+| `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
+| `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
+| `day` | `day` | `integer` | The day of the recorded data, extracted from the date. |
 
 Data transformation note
 
@@ -351,6 +363,7 @@ To access the data, use the
 function. In this example we will use a short interval of dates:
 
 ``` r
+
 dates <- c(start = "2020-02-14", end = "2020-02-17")
 od_dist <- spod_get(type = "od", zones = "dist", dates = dates)
 od_muni <- spod_get(type = "od", zones = "muni", dates = dates)
@@ -363,15 +376,15 @@ be re-downloaded.
 **Working with the data**
 
 The resulting objects `od_dist` and `od_muni` are of class
-`tbl_duckdb_connection`[¹](#fn1). Basically, you can treat these as
-regular `data.frame`s or `tibble`s. One important difference is that the
-data is not actually loaded into memory, because if you requested more
-dates, e.g. a whole month or a year, all that data would most likely not
-fit into your computer’s memory. A `tbl_duckdb_connection` is mapped to
-the downloaded CSV files that are cached on disk and the data is only
-loaded in small chunks as needed at the time of computation. You can
-manipulate `od_dist` and `od_muni` using
-[dplyr](https://dplyr.tidyverse.org) functions such as
+`tbl_duckdb_connection`[^1]. Basically, you can treat these as regular
+`data.frame`s or `tibble`s. One important difference is that the data is
+not actually loaded into memory, because if you requested more dates,
+e.g. a whole month or a year, all that data would most likely not fit
+into your computer’s memory. A `tbl_duckdb_connection` is mapped to the
+downloaded CSV files that are cached on disk and the data is only loaded
+in small chunks as needed at the time of computation. You can manipulate
+`od_dist` and `od_muni` using [dplyr](https://dplyr.tidyverse.org)
+functions such as
 [`select()`](https://dplyr.tidyverse.org/reference/select.html),
 [`filter()`](https://dplyr.tidyverse.org/reference/filter.html),
 [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html),
@@ -383,6 +396,7 @@ execute the whole chain of data manipulations and load the results into
 memory in an R `data.frame`/`tibble` like so:
 
 ``` r
+
 library(dplyr)
 od_mean_hourly_trips_over_the_4_days <- od_dist |>
   group_by(hour) |>
@@ -456,15 +470,15 @@ The population by trip count data shows the number of individuals in
 each district or municipality, categorized by the trips they make: 0, 1,
 2, or more than 2.
 
-| **English Variable Name** | **Original Variable Name** | **Type**  | **Description**                                                                              |
-|---------------------------|----------------------------|-----------|----------------------------------------------------------------------------------------------|
-| `date`                    | `fecha`                    | `Date`    | The date of the recorded data, formatted as `YYYY-MM-DD`.                                    |
-| `id`                      | `distrito`                 | `factor`  | The identifier of the `district` or `municipality` zone.                                     |
-| `n_trips`                 | `numero_viajes`            | `factor`  | The number of individuals who made trips, categorized by `0`, `1`, `2`, or `2+` trips.       |
-| `n_persons`               | `personas`                 | `factor`  | The number of individuals making the trips from `district` or `municipality` with zone `id`. |
-| `year`                    | `year`                     | `integer` | The year of the recorded data, extracted from the date.                                      |
-| `month`                   | `month`                    | `integer` | The month of the recorded data, extracted from the date.                                     |
-| `day`                     | `day`                      | `integer` | The day of the recorded data, extracted from the date.                                       |
+| **English Variable Name** | **Original Variable Name** | **Type** | **Description** |
+|----|----|----|----|
+| `date` | `fecha` | `Date` | The date of the recorded data, formatted as `YYYY-MM-DD`. |
+| `id` | `distrito` | `factor` | The identifier of the `district` or `municipality` zone. |
+| `n_trips` | `numero_viajes` | `factor` | The number of individuals who made trips, categorized by `0`, `1`, `2`, or `2+` trips. |
+| `n_persons` | `personas` | `factor` | The number of individuals making the trips from `district` or `municipality` with zone `id`. |
+| `year` | `year` | `integer` | The year of the recorded data, extracted from the date. |
+| `month` | `month` | `integer` | The month of the recorded data, extracted from the date. |
+| `day` | `day` | `integer` | The day of the recorded data, extracted from the date. |
 
 Data transformation note
 
@@ -494,6 +508,7 @@ with `type` set to “number_of_trips”, or just “nt”. We can also set
 to get all the data, as this data is relatively small (under 200 Mb).
 
 ``` r
+
 dates <- c(start = "2020-02-14", end = "2021-05-09")
 nt_dist <- spod_get(type = "number_of_trips", zones = "dist", dates = dates)
 ```
@@ -502,6 +517,7 @@ Because this data is small, we can actually load it completely into
 memory:
 
 ``` r
+
 nt_dist_tbl <- nt_dist |> dplyr::collect()
 ```
 
@@ -522,7 +538,5 @@ Mühleisen, Hannes, and Mark Raasveldt. 2024. *Duckdb: DBI Package for
 the DuckDB Database Management System*.
 <https://doi.org/10.32614/CRAN.package.duckdb>.
 
-------------------------------------------------------------------------
-
-1.  For reference: this object also has classes: `tbl_dbi` ,`tbl_sql`,
+[^1]: For reference: this object also has classes: `tbl_dbi` ,`tbl_sql`,
     `tbl_lazy` ,and `tbl` .

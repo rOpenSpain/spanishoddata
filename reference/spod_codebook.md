@@ -27,6 +27,7 @@ prints a message with a link to a webpage with the codebook.
 ## Examples
 
 ``` r
+
 # View codebook for v1 (2020-2021) data
 spod_codebook(ver = 1)
 #> Warning: vignette ‘v1-2020-2021-mitma-data-codebook’ not found

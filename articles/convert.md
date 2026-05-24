@@ -126,6 +126,7 @@ For reference, here is a simple query we used for speed comparison in
 [Figure 1](#fig-csv-duckdb-parquet-speed):
 
 ``` r
+
 # data represents either CSV files acquired from `spod_get()`, a `DuckDB` database or a folder of Parquet files connected with `spod_connect()`
 data |>
   group_by(id_origin, id_destination, hour) |> 
@@ -199,6 +200,7 @@ analysis.
 Make sure you have loaded the package:
 
 ``` r
+
 library(spanishoddata)
 ```
 
@@ -210,6 +212,7 @@ download (and convert) the data by setting the data directory following
 command:
 
 ``` r
+
 spod_set_data_dir(data_dir = "~/spanish_od_data")
 ```
 
@@ -221,6 +224,7 @@ Setting data directory for advanced users
 You can also set the data directory with an environment variable:
 
 ``` r
+
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 ```
 
@@ -232,6 +236,7 @@ data directory globally by setting the `SPANISH_OD_DATA_DIR` environment
 variable, e.g. with the following command:
 
 ``` r
+
 usethis::edit_r_environ()
 # Then set the data directory globally, by typing this line in the file:
 ```
@@ -243,6 +248,7 @@ project. Set the ‘envar’ in the working directory by editing `.Renviron`
 file in the root of the project:
 
 ``` r
+
 file.edit(".Renviron")
 ```
 
@@ -257,6 +263,7 @@ with
 [`spod_get()`](https://rOpenSpain.github.io/spanishoddata/reference/spod_get.md):
 
 ``` r
+
 dates <- c("2024-03-01")
 d_1 <- spod_get(type = "od", zones = "distr", dates = dates)
 class(d_1)
@@ -292,6 +299,7 @@ manually (note: we use `dates_2` to refer to the fact that we are using
 v2 data):
 
 ``` r
+
 dates_2 <- c(start = "2023-02-14", end = "2023-02-17")
 spod_download(type = "od", zones = "distr", dates = dates_2)
 ```
@@ -305,6 +313,7 @@ with other dates or date intervals) into `DuckDB` like so
 (`dates = "cached_v2"` means use *all* downloaded files):
 
 ``` r
+
 db_2 <- spod_convert(type = "od", zones = "distr", dates = "cached_v2", save_format = "duckdb", overwrite = TRUE)
 db_2 # check the path to the saved `DuckDB` database
 ```
@@ -323,6 +332,7 @@ desired save location with the `save_path` argument of
 You can also convert any dates range or dates list to `DuckDB`:
 
 ``` r
+
 dates_1 <- c(start = "2020-02-17", end = "2020-02-19")
 db_2 <- spod_convert(type = "od", zones = "distr", dates = dates_1, overwrite = TRUE)
 ```
@@ -342,6 +352,7 @@ for you we created a helper function. So to connect to the data stored
 in at path `db_1` and `db_2` you can do the following:
 
 ``` r
+
 my_od_data_2 <- spod_connect(db_2)
 ```
 
@@ -364,6 +375,7 @@ After finishing working with `my_od_data_2` we advise that you
 “disconnect” this data using:
 
 ``` r
+
 spod_disconnect(my_od_data_2)
 ```
 
@@ -400,6 +412,7 @@ wait for March and April 2020 to be converted again.
 Let us convert a few dates to `parquet` format:
 
 ``` r
+
 type <- "od"
 zones <- "distr"
 dates <- c(start = "2020-02-14", end = "2020-02-17")
@@ -411,6 +424,7 @@ converted data like so and specifiy argument `overwrite = 'update'` we
 will update the existing `parquet` files with the new data:
 
 ``` r
+
 dates <- c(start = "2020-02-16", end = "2020-02-19")
 od_parquet <- spod_convert(type = type, zones = zones, dates = dates, save_format = "parquet", overwrite = 'update')
 ```
@@ -431,6 +445,7 @@ function
 to connect to the `parquet` files:
 
 ``` r
+
 my_od_data_3 <- spod_connect(od_parquet)
 ```
 
@@ -443,6 +458,7 @@ the `od_parquet` contains the path to all this data, and therefore
 You can check this like so:
 
 ``` r
+
 my_od_data_3 |> 
   dplyr::distinct(date) |>
   dplyr::arrange(date)
@@ -458,6 +474,7 @@ To prepare origin-destination data v1 (2020-2021) for analysis over the
 whole period of data availability, please follow the steps below:
 
 ``` r
+
 dates_v1 <- spod_get_valid_dates(ver = 1)
 dates_v2 <- spod_get_valid_dates(ver = 2)
 ```
@@ -492,6 +509,7 @@ as it has many more datasets in addition to “origin-destination” and
 “number_of_trips”.
 
 ``` r
+
 type <- "origin-destination"
 zones <- "districts"
 spod_download(
@@ -506,6 +524,7 @@ spod_download(
 ### 9.2 Convert all data into analysis ready format
 
 ``` r
+
 save_format <- "duckdb"
 
 analysis_data_storage <- spod_convert_data(
@@ -556,9 +575,10 @@ You can pass the `analysis_data_storage` path to
 [`spod_connect()`](https://rOpenSpain.github.io/spanishoddata/reference/spod_connect.md)
 function, whether it is `DuckDB` or `Parquet`. The function will
 determine the data type automatically and give you back a
-`tbl_duckdb_connection`[¹](#fn1).
+`tbl_duckdb_connection`[^1].
 
 ``` r
+
 my_data <- spod_connect(
   data_path = analysis_data_storage, 
   max_mem_gb = 16
@@ -593,6 +613,7 @@ After finishing working with `my_data` we advise that you “disconnect”
 to free up memory:
 
 ``` r
+
 spod_disconnect(my_data)
 ```
 
@@ -600,7 +621,5 @@ Mühleisen, Hannes, and Mark Raasveldt. 2024. *Duckdb: DBI Package for
 the DuckDB Database Management System*.
 <https://doi.org/10.32614/CRAN.package.duckdb>.
 
-------------------------------------------------------------------------
-
-1.  For reference: this object also has classes: `tbl_dbi` ,`tbl_sql`,
+[^1]: For reference: this object also has classes: `tbl_dbi` ,`tbl_sql`,
     `tbl_lazy` ,and `tbl` .

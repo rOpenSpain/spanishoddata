@@ -220,7 +220,7 @@ A DuckDB lazy table connection object of class `tbl_duckdb_connection`.
   Cantú-Ros OG, Burrieza-Galán J, Herranz R, Gullón Muñoz-Repiso T,
   Lovelace R (2026). “spanishoddata: A package for accessing and working
   with Spanish Open Mobility Big Data.” *Environment and Planning B:
-  Urban Analytics and City Science*. ISSN 2399-8083,
+  Urban Analytics and City Science*. ISSN 2399-8083.
   [doi:10.1177/23998083251415040](https://doi.org/10.1177/23998083251415040)
   .
 

@@ -70,6 +70,7 @@ To create interactive maps see our vignette
 Install from CRAN:
 
 ``` r
+
 install.packages("spanishoddata")
 ```
 
@@ -79,6 +80,7 @@ You can also install the latest development version of the package from
 rOpenSpain R universe:
 
 ``` r
+
 install.packages("spanishoddata",
   repos = c("https://ropenspain.r-universe.dev",
     "https://cloud.r-project.org"))
@@ -87,6 +89,7 @@ install.packages("spanishoddata",
 Alternative way to install the development version from GitHub:
 
 ``` r
+
 if (!require("remotes")) install.packages("remotes")
 
 remotes::install_github("rOpenSpain/spanishoddata",
@@ -108,6 +111,7 @@ rstudio spanishoddata/spanishoddata.Rproj
 Then run the following command from the R console:
 
 ``` r
+
 devtools::load_all()
 ```
 
@@ -122,6 +126,7 @@ able to work with one full day of data.
 Load it as follows:
 
 ``` r
+
 library(spanishoddata)
 ```
 
@@ -133,6 +138,7 @@ download (and convert) the data by setting the data directory following
 command:
 
 ``` r
+
 spod_set_data_dir(data_dir = "~/spanish_od_data")
 ```
 
@@ -144,6 +150,7 @@ Setting data directory for advanced users
 You can also set the data directory with an environment variable:
 
 ``` r
+
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 ```
 
@@ -155,6 +162,7 @@ data directory globally by setting the `SPANISH_OD_DATA_DIR` environment
 variable, e.g. with the following command:
 
 ``` r
+
 usethis::edit_r_environ()
 # Then set the data directory globally, by typing this line in the file:
 ```
@@ -168,6 +176,7 @@ project. Set the ‘envar’ in the working directory by editing `.Renviron`
 file in the root of the project:
 
 ``` r
+
 file.edit(".Renviron")
 ```
 
@@ -213,6 +222,7 @@ Figure 4: The overview of package functions to get the data
 To run the code in this README we will use the following setup:
 
 ``` r
+
 library(tidyverse)
 theme_set(theme_minimal())
 sf::sf_use_s2(FALSE)
@@ -222,6 +232,7 @@ Get metadata for the datasets as follows (we are using version 2 data
 covering years 2022 and onwards):
 
 ``` r
+
 metadata <- spod_available_data(ver = 2) # for version 2 of the data
 metadata
 ```
@@ -244,11 +255,37 @@ metadata
 # ℹ 1 more variable: local_path <chr>
 ```
 
+### Data availability
+
+The following plot shows the dates for which origin-destination data is
+currently available. It is updated weekly by a [GitHub
+Action](https://github.com/rOpenSpain/spanishoddata/actions/workflows/data-availability-plot.yaml).
+
+> \[!NOTE\]
+>
+> ### Latest Data Availability
+>
+> - **v1 (2020–2021)**: Data available from **14 February 2020** to **09
+>   May 2021** (Districts and Municipalities).
+> - **v2 (2022 onwards)**: Data available from **01 January 2022**
+>   onwards (Districts, Municipalities, and Large Urban Areas).
+>
+> | Version | Live Status Badge |
+> |----|----|
+> | **v1** | ![Latest v1 data](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v1.json) |
+> | **v2** | ![Latest v2 data](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v2.json) |
+
+![Dates for which origin-destination data is
+available](https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.png)
+
+Dates for which origin-destination data is available
+
 ### Zones
 
 Zones can be downloaded as follows:
 
 ``` r
+
 distritos <- spod_get_zones("distritos", ver = 2)
 distritos_wgs84 <- distritos |>
   sf::st_simplify(dTolerance = 200) |>
@@ -261,6 +298,7 @@ plot(sf::st_geometry(distritos_wgs84), lwd = 0.2)
 ### OD data
 
 ``` r
+
 od_db <- spod_get(
   type = "origin-destination",
   zones = "districts",
@@ -275,6 +313,7 @@ class(od_db)
 ```
 
 ``` r
+
 colnames(od_db)
 ```
 
@@ -297,6 +336,7 @@ data is not loaded into memory until it is needed. Let’s do an
 aggregation to find the total number trips per hour over the 7 days:
 
 ``` r
+
 n_per_hour <- od_db |>
   group_by(date, hour) |>
   summarise(n = n(), Trips = sum(n_trips)) |>
@@ -351,6 +391,7 @@ We’ll use the same input data to pick-out the most important flows in
 Spain, with a focus on longer trips for visualisation:
 
 ``` r
+
 od_national_aggregated <- od_db |>
   group_by(id_origin, id_destination) |>
   summarise(Trips = sum(n_trips), .groups = "drop") |>
@@ -381,6 +422,7 @@ The results show that the largest flows are intra-zonal. Let’s keep only
 the inter-zonal flows:
 
 ``` r
+
 od_national_interzonal <- od_national_aggregated |>
   filter(id_origin != id_destination)
 ```
@@ -389,6 +431,7 @@ We can convert these to geographic data with the {od} package (Lovelace
 and Morgan 2024):
 
 ``` r
+
 od_national_sf <- od::od_to_sf(
   od_national_interzonal,
   z = distritos_wgs84
@@ -408,6 +451,7 @@ distritos_wgs84 |>
 Let’s focus on trips in and around a particular area (Salamanca):
 
 ``` r
+
 salamanca_zones <- zonebuilder::zb_zone("Salamanca")
 distritos_salamanca <- distritos_wgs84[salamanca_zones, ]
 plot(distritos_salamanca)
@@ -419,6 +463,7 @@ We will use this information to subset the rows, to capture all movement
 within the study area:
 
 ``` r
+
 ids_salamanca <- distritos_salamanca$id
 od_salamanca <- od_national_sf |>
   filter(id_origin %in% ids_salamanca) |>
@@ -429,6 +474,7 @@ od_salamanca <- od_national_sf |>
 Let’s plot the results:
 
 ``` r
+
 od_salamanca_sf <- od::od_to_sf(
   od_salamanca,
   z = distritos_salamanca
@@ -504,7 +550,7 @@ To cite the `spanishoddata` R package in publications use:
 Kotov E, Vidal-Tortosa E, Cantú-Ros O, Burrieza-Galán J, Herranz R,
 Gullón Muñoz-Repiso T, Lovelace R (2026). “spanishoddata: A package for
 accessing and working with Spanish Open Mobility Big Data.” *Environment
-and Planning B: Urban Analytics and City Science*. ISSN 2399-8083,
+and Planning B: Urban Analytics and City Science*. ISSN 2399-8083.
 <doi:10.1177/23998083251415040>
 <https://doi.org/10.1177/23998083251415040>.
 
@@ -594,8 +640,8 @@ Try the new work-in-progress package:
 Lovelace, Robin, and Malcolm Morgan. 2024. *Od: Manipulate and Map
 Origin-Destination Data*. <https://doi.org/10.32614/CRAN.package.od>.
 
-Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. “Estudio
-de La Movilidad Con Big Data (Study of Mobility with Big Data).”
+Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. *Estudio
+de La Movilidad Con Big Data (Study of Mobility with Big Data)*.
 <https://www.transportes.gob.es/ministerio/proyectos-singulares/estudio-de-movilidad-con-big-data>.
 
 # Package index

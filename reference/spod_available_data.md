@@ -27,7 +27,7 @@ spod_available_data(
   check_local_files = FALSE,
   quiet = FALSE,
   data_dir = spod_get_data_dir(),
-  use_s3 = TRUE,
+  use_s3 = if (ver == 1) FALSE else TRUE,
   force = FALSE
 )
 ```
@@ -62,7 +62,10 @@ spod_available_data(
   **\[experimental\]** Logical. If `TRUE`, use Amazon S3 to get
   available data list, which does not require downloading the XML file
   and caching it locally, which may be a bit faster. If `FALSE`, use the
-  XML file to get available data list.
+  XML file to get available data list. Defaults to `FALSE` for `ver = 1`
+  because the v1 Amazon S3 bucket is incomplete (truncates at March
+  2021). Defaults to `TRUE` for `ver = 2` as the S3 API is faster and
+  complete for newer data.
 
 - force:
 
@@ -153,7 +156,7 @@ coverage, local paths to files, and the download status.
   Cantú-Ros OG, Burrieza-Galán J, Herranz R, Gullón Muñoz-Repiso T,
   Lovelace R (2026). “spanishoddata: A package for accessing and working
   with Spanish Open Mobility Big Data.” *Environment and Planning B:
-  Urban Analytics and City Science*. ISSN 2399-8083,
+  Urban Analytics and City Science*. ISSN 2399-8083.
   [doi:10.1177/23998083251415040](https://doi.org/10.1177/23998083251415040)
   .
 

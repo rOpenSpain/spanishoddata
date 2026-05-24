@@ -26,10 +26,12 @@ Once you got the access token, you can set it in the `MAPBOX_TOKEN`
 environment variable like so:
 
 ``` r
+
 Sys.setenv(MAPBOX_TOKEN = "YOUR_MAPBOX_ACCESS_TOKEN")
 ```
 
 ``` r
+
 library(spanishoddata)
 library(flowmapblue)
 library(tidyverse)
@@ -44,6 +46,7 @@ download (and convert) the data by setting the data directory following
 command:
 
 ``` r
+
 spod_set_data_dir(data_dir = "~/spanish_od_data")
 ```
 
@@ -55,6 +58,7 @@ Setting data directory for advanced users
 You can also set the data directory with an environment variable:
 
 ``` r
+
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 ```
 
@@ -66,6 +70,7 @@ data directory globally by setting the `SPANISH_OD_DATA_DIR` environment
 variable, e.g. with the following command:
 
 ``` r
+
 usethis::edit_r_environ()
 # Then set the data directory globally, by typing this line in the file:
 ```
@@ -77,6 +82,7 @@ project. Set the ‘envar’ in the working directory by editing `.Renviron`
 file in the root of the project:
 
 ``` r
+
 file.edit(".Renviron")
 ```
 
@@ -90,6 +96,7 @@ Let us get the flows between `districts` for a tipycal working day
 `2021-04-07`:
 
 ``` r
+
 od_20210407 <- spod_get("od", zones = "distr", dates = "2021-04-07")
 
 head(od_20210407)
@@ -114,6 +121,7 @@ corresponds to the v1 data (see the relevant
 [codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.qmd)).
 
 ``` r
+
 districts_v1 <- spod_get_zones("dist", ver = 1)
 
 head(districts_v1)
@@ -150,6 +158,7 @@ for coordinates of the locations in WGS84 (EPSG: 4326) coordinate
 reference system.
 
 ``` r
+
 str(flowmapblue::ch_locations)
 ```
 
@@ -167,6 +176,7 @@ locations `data.frame` from above, and `count` is the number of trips
 between them.
 
 ``` r
+
 str(flowmapblue::ch_flows)
 ```
 
@@ -179,6 +189,7 @@ str(flowmapblue::ch_flows)
 #### 3.2.2 Aggregate data - count total flows
 
 ``` r
+
 od_20210407_total <- od_20210407 |>
   group_by(origin = id_origin, dest = id_destination) |>
   summarise(count = sum(n_trips, na.rm = TRUE), .groups = "drop") |> 
@@ -203,6 +214,7 @@ We need the coordinates for each origin and destination. We can use the
 centroids of `districts_v1` polygons for that.
 
 ``` r
+
 districts_v1_centroids <- districts_v1 |>
   st_transform(4326) |> 
   st_centroid() |>
@@ -235,6 +247,7 @@ plotting the flows between hundreds and thousands of locations, as this
 will reduce the redability of the map.
 
 ``` r
+
 flowmap <- flowmapblue(
   locations = districts_v1_centroids,
   flows = od_20210407_total,
@@ -260,6 +273,7 @@ You can play around with the arguments of the `flowmapblue` function.
 For example, you can turn on the `animation` mode:
 
 ``` r
+
 flowmap_anim <- flowmapblue(
   locations = districts_v1_centroids,
   flows = od_20210407_total,
@@ -294,6 +308,7 @@ the hour of the day) to procude timestamps, so that the flows can be
 interactively filtered by time of day.
 
 ``` r
+
 od_20210407_time <- od_20210407 |>
   mutate(time = as.POSIXct(paste0(date, "T", hour, ":00:00"))) |>
   group_by(origin = id_origin, dest = id_destination, time) |>
@@ -328,6 +343,7 @@ Barcelona and then apply the spatial join on the to select some more
 districts around the polygons that correspond to Barcelona.
 
 ``` r
+
 zones_barcelona <- districts_v1 |>
   filter(grepl("Barcelona", district_names_in_v2, ignore.case = TRUE))
 
@@ -350,6 +366,7 @@ District zone boundaries in Barcelona and nearby areas
 Now we prepare the table with coordinates for the flowmap:
 
 ``` r
+
 zones_barcelona_fua_coords <- zones_barcelona_fua |>
   st_transform(crs = 4326) |>
   st_centroid() |>
@@ -376,6 +393,7 @@ select the flows that correspond to Barcelona and the 10 km radius
 around it.
 
 ``` r
+
 od_20210407_time_barcelona <- od_20210407_time |>
   filter(origin %in% zones_barcelona_fua$id & dest %in% zones_barcelona_fua$id)
 ```
@@ -385,6 +403,7 @@ od_20210407_time_barcelona <- od_20210407_time |>
 Now, we can create a new plot with this data.
 
 ``` r
+
 flowmap_time <- flowmapblue(
   locations = zones_barcelona_fua_coords,
   flows = od_20210407_time_barcelona,

@@ -30,6 +30,7 @@ with this data is available at
 Make sure you have loaded the package:
 
 ``` r
+
 library(spanishoddata)
 library(dplyr)
 library(stringr)
@@ -43,6 +44,7 @@ download (and convert) the data by setting the data directory following
 command:
 
 ``` r
+
 spod_set_data_dir(data_dir = "~/spanish_od_data")
 ```
 
@@ -54,6 +56,7 @@ Setting data directory for advanced users
 You can also set the data directory with an environment variable:
 
 ``` r
+
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 ```
 
@@ -65,6 +68,7 @@ data directory globally by setting the `SPANISH_OD_DATA_DIR` environment
 variable, e.g. with the following command:
 
 ``` r
+
 usethis::edit_r_environ()
 # Then set the data directory globally, by typing this line in the file:
 ```
@@ -76,6 +80,7 @@ project. Set the ‘envar’ in the working directory by editing `.Renviron`
 file in the root of the project:
 
 ``` r
+
 file.edit(".Renviron")
 ```
 
@@ -100,6 +105,7 @@ the minimum number of trips to include in the data. If you set
 for the specified date.
 
 ``` r
+
 od_1000 <- spod_quick_get_od(
   date = "2022-01-01",
   min_trips = 1000
@@ -111,6 +117,7 @@ the identifiers of the origin and destination municipalities, the number
 of trips, and the total length of trips in kilometers.
 
 ``` r
+
 glimpse(od_1000)
 ```
 
@@ -124,6 +131,7 @@ glimpse(od_1000)
     $ trips_total_length_km <int> 27130, 13743, 26700, 10603, 12228, 69999,…
 
 ``` r
+
 od_1000
 ```
 
@@ -148,6 +156,7 @@ od_1000
 To get only trips of a certain length, use the `distances` argument.
 
 ``` r
+
 od_long <- spod_quick_get_od(
   date = "2022-01-01",
   min_trips = 0,
@@ -156,6 +165,7 @@ od_long <- spod_quick_get_od(
 ```
 
 ``` r
+
 glimpse(od_long)
 ```
 
@@ -168,6 +178,7 @@ glimpse(od_long)
     $ trips_total_length_km <int> 339, 161, 924, 5052, 2955, 2453, 29630, 1…
 
 ``` r
+
 od_long
 ```
 
@@ -199,6 +210,7 @@ want to [setup the data download folder](#setup) with
 `spod_setup_cache()` if you have not done so before.
 
 ``` r
+
 municipalities <- spod_quick_get_zones()
 
 # if code above fails, you can also use the following:
@@ -211,6 +223,7 @@ municipalities <- spod_quick_get_zones()
 Let us select all locations with Madrid in the name:
 
 ``` r
+
 madrid_muni_ids <- municipalities |>
   filter(str_detect(name, "Madrid")) |>
   pull(id)
@@ -224,6 +237,7 @@ Now let use use these IDs as origins to gett all trips from Madrid to
 the rest of Spain:
 
 ``` r
+
 flows_from_Madrid <- spod_quick_get_od(
   date = "2022-01-01",
   min_trips = 0,
@@ -232,6 +246,7 @@ flows_from_Madrid <- spod_quick_get_od(
 ```
 
 ``` r
+
 glimpse(flows_from_Madrid)
 ```
 
@@ -264,6 +279,7 @@ glimpse(flows_from_Madrid)
 Similarly, you can set limits on the destination municipalities:
 
 ``` r
+
 barcelona_muni_ids <- municipalities |>
   filter(str_detect(name, "Barcelona")) |>
   pull(id)
@@ -271,6 +287,7 @@ barcelona_muni_ids
 ```
 
 ``` r
+
 madrid_barcelona_od <- spod_quick_get_od(
   date = "2022-01-01",
   min_trips = 0,
@@ -280,6 +297,7 @@ madrid_barcelona_od <- spod_quick_get_od(
 ```
 
 ``` r
+
 madrid_barcelona_od
 ```
 

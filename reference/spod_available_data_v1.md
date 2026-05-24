@@ -9,7 +9,7 @@ This function provides a table of the available data list of MITMA v1
 spod_available_data_v1(
   data_dir = spod_get_data_dir(),
   check_local_files = FALSE,
-  use_s3 = TRUE,
+  use_s3 = FALSE,
   force = FALSE,
   quiet = FALSE
 )
@@ -33,7 +33,10 @@ spod_available_data_v1(
   **\[experimental\]** Logical. If `TRUE`, use Amazon S3 to get
   available data list, which does not require downloading the XML file
   and caching it locally, which may be a bit faster. If `FALSE`, use the
-  XML file to get available data list.
+  XML file to get available data list. Defaults to `FALSE` for `ver = 1`
+  because the v1 Amazon S3 bucket is incomplete (truncates at March
+  2021). Defaults to `TRUE` for `ver = 2` as the S3 API is faster and
+  complete for newer data.
 
 - force:
 

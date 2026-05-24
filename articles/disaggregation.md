@@ -1,6 +1,7 @@
 # OD data disaggregation
 
 ``` r
+
 remotes::install_dev("tmap")
 library(spanishoddata)
 library(tidyverse)
@@ -28,6 +29,7 @@ city of Salamanca, building on the example in the README (note: these
 chunks are not evaluated):
 
 ``` r
+
 od_db <- spod_get(
   type = "od",
   zones = "distritos",
@@ -64,6 +66,7 @@ od_salamanca_sf <- od::od_to_sf(
 For this you’ll need some additional dependencies:
 
 ``` r
+
 remotes::install_github("dabreegster/odjitter", subdir = "r")
 remotes::install_github("nptscot/osmactive")
 ```
@@ -71,11 +74,13 @@ remotes::install_github("nptscot/osmactive")
 We’ll get the road network from OSM:
 
 ``` r
+
 salamanca_boundary <- sf::st_union(distritos_salamanca)
 osm_full <- osmactive::get_travel_network(salamanca_boundary)
 ```
 
 ``` r
+
 osm <- osm_full[salamanca_boundary, ]
 drive_net <- osmactive::get_driving_network(osm)
 drive_net_major <- osmactive::get_driving_network_major(osm)
@@ -91,6 +96,7 @@ map_net
 We can use the road network to disaggregate the desire lines:
 
 ``` r
+
 od_jittered <- odjitter::jitter(
   od_salamanca_sf,
   zones = distritos_salamanca,
@@ -103,6 +109,7 @@ od_jittered <- odjitter::jitter(
 Let’s plot the disaggregated desire lines:
 
 ``` r
+
 od_jittered |>
   arrange(Trips) |>
   ggplot() +

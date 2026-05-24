@@ -21,6 +21,7 @@ tutorial.
 ## 1 Setup
 
 ``` r
+
 library(spanishoddata)
 library(flowmapper)
 library(tidyverse)
@@ -35,6 +36,7 @@ download (and convert) the data by setting the data directory following
 command:
 
 ``` r
+
 spod_set_data_dir(data_dir = "~/spanish_od_data")
 ```
 
@@ -46,6 +48,7 @@ Setting data directory for advanced users
 You can also set the data directory with an environment variable:
 
 ``` r
+
 Sys.setenv(SPANISH_OD_DATA_DIR = "~/spanish_od_data")
 ```
 
@@ -57,6 +60,7 @@ data directory globally by setting the `SPANISH_OD_DATA_DIR` environment
 variable, e.g. with the following command:
 
 ``` r
+
 usethis::edit_r_environ()
 # Then set the data directory globally, by typing this line in the file:
 ```
@@ -68,6 +72,7 @@ project. Set the ‘envar’ in the working directory by editing `.Renviron`
 file in the root of the project:
 
 ``` r
+
 file.edit(".Renviron")
 ```
 
@@ -81,6 +86,7 @@ Let us get the flows between `districts` for a typical working day
 `2021-04-07`:
 
 ``` r
+
 od_20210407 <- spod_get("od", zones = "distr", dates = "2021-04-07")
 
 head(od_20210407)
@@ -107,6 +113,7 @@ corresponds to the v1 data (see the relevant
 [codebook](https://rOpenSpain.github.io/spanishoddata/articles/v1-2020-2021-mitma-data-codebook.md)).
 
 ``` r
+
 districts_v1 <- spod_get_zones("dist", ver = 1)
 
 head(districts_v1)
@@ -130,6 +137,7 @@ head(districts_v1)
 ### 3.2 Aggregate data - count total flows
 
 ``` r
+
 od_20210407_total <- od_20210407 |>
   group_by(o = id_origin, d = id_destination) |>
   summarise(value = sum(n_trips, na.rm = TRUE), .groups = "drop") |>
@@ -170,6 +178,7 @@ The previous code chunk created `od_20210407_total` with the column
 names expected by [flowmapper](https://github.com/JohMast/flowmapper).
 
 ``` r
+
 head(od_20210407_total)
 ```
 
@@ -189,6 +198,7 @@ We need the coordinates for each origin and destination. We can use the
 centroids of `districts_v1` polygons for that.
 
 ``` r
+
 districts_v1_coords <- districts_v1 |>
   st_centroid() |>
   st_coordinates() |>
@@ -219,6 +229,7 @@ argument in the `add_flowmap` function can be used to reduce this
 business.
 
 ``` r
+
 # create base ggplot with boundaries removing various visual clutter
 base_plot_districts <- ggplot() +
   geom_sf(data = districts_v1, fill = NA, col = "grey60", linewidth = 0.05) +
@@ -278,6 +289,7 @@ Using the `district_names_in_v2` column in the zones data, we can easily
 identify the districts within Barcelona.
 
 ``` r
+
 zones_barcelona <- districts_v1 |>
   filter(grepl("Barcelona", district_names_in_v2, ignore.case = TRUE))
 
@@ -293,6 +305,7 @@ zones_barcelona_plot
 We also prepare the nodes for the `add_flowmap` function:
 
 ``` r
+
 zones_barcelona_coords <- zones_barcelona |>
   st_centroid() |>
   st_coordinates() |>
@@ -317,6 +330,7 @@ Now we can use the zone `id`s from the `zones_barcelona` data to select
 the flows that correspond to Barcelona.
 
 ``` r
+
 od_20210407_total_barcelona <- od_20210407_total |>
   filter(o %in% zones_barcelona$id & d %in% zones_barcelona$id)
 ```
@@ -328,6 +342,7 @@ Now, we can create a new plot with this data. Once again, we need the
 to tweak it yourself and see how the results change.
 
 ``` r
+
 # create base ggplot with boundaries removing various visual clutter
 base_plot_barcelona <- ggplot() +
   geom_sf(data = zones_barcelona, fill = NA, col = "grey60", linewidth = 0.3) +
@@ -384,6 +399,7 @@ For the advanced example we will need two additional packages:
 ([**R-hexSticker?**](#ref-R-hexSticker)).
 
 ``` r
+
 # two new packages
 library(mapSpain)
 library(hexSticker)
@@ -406,6 +422,7 @@ Let us get the origin-destination flows between `districts` for a
 typical working day `2022-04-06`:
 
 ``` r
+
 od <- spod_get("od", zones = "distr", dates = "2022-04-06")
 ```
 
@@ -415,6 +432,7 @@ corresponds to the v2 data (see the relevant
 [codebook](https://rOpenSpain.github.io/spanishoddata/articles/v2-2022-onwards-mitma-data-codebook.md)).
 
 ``` r
+
 districts <- spod_get_zones("distr", ver = 2)
 ```
 
@@ -427,6 +445,7 @@ therefore also need a nice map of Spain, which we will get using
 2024](#ref-R-mapspain)) package:
 
 ``` r
+
 spain_for_vis <- esp_get_ccaa()
 spain_for_join <- esp_get_ccaa(moveCAN = FALSE)
 ```
@@ -445,6 +464,7 @@ Let us count the total number of trips made between all locations on our
 selected day of `2022-04-06`:
 
 ``` r
+
 flows_by_district <- od |>
   group_by(id_origin, id_destination) |>
   summarise(n_trips = sum(n_trips, na.rm = TRUE), .groups = "drop") |>
@@ -479,6 +499,7 @@ autonomous community. We use `spain_for_join`. If we used
 with the boundaries of the islands.
 
 ``` r
+
 district_centroids <- districts |>
   st_centroid() |>
   st_transform(crs = st_crs(spain_for_join))
@@ -517,6 +538,7 @@ We can now add these ids to the total flows by `districts` `id` pairs
 and calculate total flows between autonomous communities:
 
 ``` r
+
 flows_by_ca <- flows_by_district |>
   left_join(
     ca_distr |>
@@ -584,6 +606,7 @@ The data we have right now in `flows_by_ca` already has the correct
 format expected by [flowmapper](https://github.com/JohMast/flowmapper).
 
 ``` r
+
 head(flows_by_ca)
 ```
 
@@ -603,6 +626,7 @@ We need the coordinates for each origin and destination. We can use the
 centroids of `districts_v1` polygons for that.
 
 ``` r
+
 spain_for_vis_coords <- spain_for_vis |>
   st_centroid() |>
   st_coordinates() |>
@@ -628,6 +652,7 @@ Now we have the data structure that match the
 format:
 
 ``` r
+
 # create base ggplot with boundaries removing any extra elements
 base_plot <- ggplot() +
   geom_sf(data = spain_for_vis, fill = NA, col = "grey30", linewidth = 0.05) +
@@ -680,6 +705,7 @@ We make the sticker using the
 2020](#ref-hexSticker-r)) package.
 
 ``` r
+
 sticker(
   flows_plot,
 
