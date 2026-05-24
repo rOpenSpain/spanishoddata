@@ -29,7 +29,7 @@ test_that("spod_available_data falls back to XML on S3 error (v1)", {
   # Should warn about S3 failure or just message?
   msgs <- capture_messages(
     capture.output(
-      res <- spod_available_data(ver = 1, quiet = FALSE),
+      res <- spod_available_data(ver = 1, use_s3 = TRUE, quiet = FALSE),
       file = NULL
     )
   )
@@ -65,7 +65,7 @@ test_that("spod_available_data v1 handles file size imputation", {
 
   msgs <- capture_messages(
     capture.output(
-      res <- spod_available_data(ver = 1, quiet = FALSE),
+      res <- spod_available_data(ver = 1, use_s3 = TRUE, quiet = FALSE),
       file = NULL
     )
   )
@@ -364,10 +364,14 @@ test_that("spod_get_latest_v1_file_list handles download warning with messages",
     download.file = function(...) { warning("some warning"); return(1) },
     .package = "utils"
   )
+  testthat::local_mocked_bindings(
+    curl_download = function(...) stop("curl error"),
+    .package = "curl"
+  )
   msgs <- capture_messages(
     res <- spod_get_latest_v1_file_list(data_dir = test_dir, quiet = FALSE)
   )
-  expect_true(any(grepl("Warning during XML download", msgs)))
+  expect_true(any(grepl("utils::download.file failed or warned", msgs)))
   expect_true(any(grepl("Graceful exit", msgs)))
   expect_null(res)
 })
@@ -378,9 +382,14 @@ test_that("spod_get_latest_v2_file_list handles download failure with messages",
     download.file = function(...) stop("Network error"),
     .package = "utils"
   )
+  testthat::local_mocked_bindings(
+    curl_download = function(...) stop("curl error"),
+    .package = "curl"
+  )
   msgs <- capture_messages(
     res <- spod_get_latest_v2_file_list(data_dir = test_dir, quiet = FALSE)
   )
+  expect_true(any(grepl("utils::download.file failed or warned", msgs)))
   expect_true(any(grepl("Failed to download the XML file", msgs)))
   expect_true(any(grepl("Graceful exit", msgs)))
   expect_null(res)
@@ -392,10 +401,14 @@ test_that("spod_get_latest_v2_file_list handles download warning with messages",
     download.file = function(...) { warning("some warning"); return(1) },
     .package = "utils"
   )
+  testthat::local_mocked_bindings(
+    curl_download = function(...) stop("curl error"),
+    .package = "curl"
+  )
   msgs <- capture_messages(
     res <- spod_get_latest_v2_file_list(data_dir = test_dir, quiet = FALSE)
   )
-  expect_true(any(grepl("Warning during XML download", msgs)))
+  expect_true(any(grepl("utils::download.file failed or warned", msgs)))
   expect_true(any(grepl("Graceful exit", msgs)))
   expect_null(res)
 })

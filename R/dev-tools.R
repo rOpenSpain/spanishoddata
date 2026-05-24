@@ -10,7 +10,7 @@ spod_files_sizes <- function(ver = 2) { # nocov start
   data_dir <- spod_get_data_dir()
 
   if (any(ver %in% 1)) {
-    v1 <- spod_available_data(1)
+    v1 <- spod_available_data(1, use_s3 = FALSE)
 
     # takes about 1 minute
     # tictoc::tic()
@@ -44,7 +44,7 @@ spod_files_sizes <- function(ver = 2) { # nocov start
       .x = v2_unknown_size$target_url,
       .f = ~ spod_get_file_size_from_url(x_url = .x),
       .progress = TRUE
-    )
+    ) / 1024^2
     future::plan(future::sequential)
 
     v2_combined <- dplyr::bind_rows(v2_known_size, v2_unknown_size)
@@ -57,20 +57,35 @@ spod_files_sizes <- function(ver = 2) { # nocov start
 }
 
 
+spod_curl_get_headers <- function(url) {
+  curlGetHeaders(url)
+}
+
 #' Get file size from URL
 #' @param x_url URL
 #' @return File size in MB
 #' @keywords internal
 spod_get_file_size_from_url <- function(x_url) {
   url <- utils::URLencode(x_url)
-  headers <- curlGetHeaders(url)
-  content_length_line <- grep("Content-Length", headers, value = TRUE)
+  headers <- tryCatch(spod_curl_get_headers(url), error = function(e) NULL)
+  if (is.null(headers)) return(NA_real_)
+
+  content_length_line <- grep("Content-Length", headers, value = TRUE, ignore.case = TRUE)
+  if (length(content_length_line) == 0) return(NA_real_)
+
+  # Take the last one in case of redirects
+  content_length_line <- utils::tail(content_length_line, 1)
+
   content_length_value <- sub(
-    "Content-Length:\\s*(\\d+).*",
+    "(?i)Content-Length:\\s*(\\d+).*",
     "\\1",
     content_length_line
   ) |>
     as.numeric()
+
+  if (length(content_length_value) == 0 || is.na(content_length_value)) {
+    return(NA_real_)
+  }
 
   return(content_length_value)
 }

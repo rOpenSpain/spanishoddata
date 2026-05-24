@@ -54,7 +54,7 @@ spod_available_data <- function(
   check_local_files = FALSE,
   quiet = FALSE,
   data_dir = spod_get_data_dir(),
-  use_s3 = TRUE,
+  use_s3 = if (ver == 1) FALSE else TRUE,
   force = FALSE
 ) {
   # Validate input
@@ -122,13 +122,22 @@ spod_get_latest_v1_file_list <- function(
   }
   tryCatch(
     {
-      utils::download.file(xml_url, current_filename, mode = "wb", quiet = quiet)
+      withCallingHandlers(
+        utils::download.file(xml_url, current_filename, mode = "wb", quiet = quiet),
+        warning = function(w) {
+          # Upgrade warning to error to trigger the error handler
+          stop(simpleError(conditionMessage(w)))
+        }
+      )
     },
     error = function(e) {
-      if (!quiet) message("Failed to download the XML file: ", e$message)
-    },
-    warning = function(w) {
-      if (!quiet) message("Warning during XML download: ", w$message)
+      if (!quiet) message("utils::download.file failed or warned (", conditionMessage(e), "). Retrying with curl::curl_download.")
+      tryCatch(
+        curl::curl_download(xml_url, destfile = current_filename, quiet = quiet),
+        error = function(e_curl) {
+          if (!quiet) message("Failed to download the XML file: ", e_curl$message)
+        }
+      )
     }
   )
   # disable curl::multi_download() for now
@@ -156,7 +165,7 @@ spod_available_data_v1 <- function(
   data_dir = spod_get_data_dir(),
   # check_local_files (below) is FALSE by default to avoid excessive filesystem access, perhaps should be TRUE. Download functions use it to load the xml file, but we probably do not want the script to check all local cache directories every time we run a get data function. Perhaps it is better to offload this check to a separate function and have a csv file or some other way to keep track of the files that were downloaded and cached. An output of curl::multi_download() could be used for this purpose.
   check_local_files = FALSE,
-  use_s3 = TRUE,
+  use_s3 = FALSE,
   force = FALSE,
   quiet = FALSE
 ) {
@@ -394,8 +403,20 @@ spod_available_data_v1 <- function(
         package = "spanishoddata"
       )
     )
+    if ("file_size_bytes" %in% colnames(files_table)) {
+      files_table_no_size <- files_table |> dplyr::select(-"file_size_bytes")
+    } else {
+      files_table_no_size <- files_table
+    }
+    join_by_cols <- "target_url"
+    if ("etag" %in% colnames(files_table_no_size)) {
+      join_by_cols <- c("target_url", "etag")
+    } else {
+      files_table_no_size <- dplyr::distinct(files_table_no_size, .data$target_url, .keep_all = TRUE)
+      file_sizes <- dplyr::distinct(file_sizes, .data$target_url, .keep_all = TRUE)
+    }
     files_table <- dplyr::left_join(
-      files_table |> dplyr::select(-"file_size_bytes"),
+      files_table_no_size,
       file_sizes |>
         dplyr::select(
           "target_url",
@@ -403,7 +424,7 @@ spod_available_data_v1 <- function(
           "true_etag",
           file_size_bytes = "true_remote_file_size_bytes"
         ),
-      by = c("target_url", "etag")
+      by = join_by_cols
     ) |>
       dplyr::relocate("file_size_bytes", .after = "pub_ts") |>
       dplyr::mutate(
@@ -514,13 +535,22 @@ spod_get_latest_v2_file_list <- function(
   }
   tryCatch(
     {
-      utils::download.file(xml_url, current_filename, mode = "wb", quiet = quiet)
+      withCallingHandlers(
+        utils::download.file(xml_url, current_filename, mode = "wb", quiet = quiet),
+        warning = function(w) {
+          # Upgrade warning to error to trigger the error handler
+          stop(simpleError(conditionMessage(w)))
+        }
+      )
     },
     error = function(e) {
-      if (!quiet) message("Failed to download the XML file: ", e$message)
-    },
-    warning = function(w) {
-      if (!quiet) message("Warning during XML download: ", w$message)
+      if (!quiet) message("utils::download.file failed or warned (", conditionMessage(e), "). Retrying with curl::curl_download.")
+      tryCatch(
+        curl::curl_download(xml_url, destfile = current_filename, quiet = quiet),
+        error = function(e_curl) {
+          if (!quiet) message("Failed to download the XML file: ", e_curl$message)
+        }
+      )
     }
   )
   # disable curl::multi_download() for now

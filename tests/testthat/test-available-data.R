@@ -64,7 +64,7 @@ test_that("spod_available_data retrieves v1 metadata from cache", {
   )
   
   # Fetch data for v1
-  meta <- suppressMessages(spod_available_data(ver = 1, check_local_files = FALSE))
+  meta <- suppressMessages(spod_available_data(ver = 1, use_s3 = TRUE, check_local_files = FALSE))
   
   expect_s3_class(meta, "tbl_df")
   expect_true(nrow(meta) > 0)
