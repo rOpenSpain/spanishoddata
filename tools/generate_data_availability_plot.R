@@ -141,31 +141,50 @@ format_date_label <- function(d) {
   paste0(format(d, "%d %b"), "\n", format(d, "%Y"))
 }
 
-start_v1_label  <- format_date_label(min(v1_dates))
-latest_v1_label <- format_date_label(max(v1_dates))
-start_v2_label  <- format_date_label(min(v2_dates))
-latest_v2_label <- format_date_label(max(v2_dates))
+date_extent <- function(dates) {
+  dates <- dates[!is.na(dates)]
+  if (length(dates) == 0) {
+    return(list(start = as.Date(NA), latest = as.Date(NA)))
+  }
+
+  list(start = min(dates), latest = max(dates))
+}
+
+v1_extent <- date_extent(v1_dates)
+v2_extent <- date_extent(v2_dates)
+
+start_v1_label  <- format_date_label(v1_extent$start)
+latest_v1_label <- format_date_label(v1_extent$latest)
+start_v2_label  <- format_date_label(v2_extent$start)
+latest_v2_label <- format_date_label(v2_extent$latest)
 
 # Write Shields.io JSON for dynamic badges
 output_dir <- dirname(output_path)
-if (length(v1_dates) > 0) {
-  v1_json <- list(
+
+write_latest_json <- function(latest_date, path, label, color) {
+  available <- !is.na(latest_date)
+  json <- list(
     schemaVersion = 1,
-    label = "latest v1 data",
-    message = as.character(max(v1_dates)),
-    color = "D35252" # Dusty coral red
+    label = label,
+    message = if (available) as.character(latest_date) else "unavailable",
+    color = if (available) color else "lightgrey"
   )
-  jsonlite::write_json(v1_json, file.path(output_dir, "latest_v1.json"), auto_unbox = TRUE)
+
+  jsonlite::write_json(json, path, auto_unbox = TRUE)
 }
-if (length(v2_dates) > 0) {
-  v2_json <- list(
-    schemaVersion = 1,
-    label = "latest v2 data",
-    message = as.character(max(v2_dates)),
-    color = "9E1B1B" # Deep crimson red
-  )
-  jsonlite::write_json(v2_json, file.path(output_dir, "latest_v2.json"), auto_unbox = TRUE)
-}
+
+write_latest_json(
+  v1_extent$latest,
+  file.path(output_dir, "latest_v1.json"),
+  "latest v1 data",
+  "D35252"
+)
+write_latest_json(
+  v2_extent$latest,
+  file.path(output_dir, "latest_v2.json"),
+  "latest v2 data",
+  "9E1B1B"
+)
 
 # --- Determine Timeline Event Dates for Vertical Lines ---
 # We place v1 date labels (2020-2021) in the blank space under the Municipalities bar (y = 1.3),
@@ -173,15 +192,16 @@ if (length(v2_dates) > 0) {
 # To keep a consistent visual rhythm and prevent vertical lines from intersecting text,
 # all date labels sit neatly to the left of their respective vertical lines (hjust = 1.15).
 vline_data <- tibble(
-  date = c(min(v1_dates), max(v1_dates), min(v2_dates), max(v2_dates)),
+  date = c(v1_extent$start, v1_extent$latest, v2_extent$start, v2_extent$latest),
   label = c(start_v1_label, latest_v1_label, start_v2_label, latest_v2_label),
   y_pos = c(1.3, 1.3, 3.4, 3.4),
   hjust = 1.15
-)
+) |>
+  filter(!is.na(date))
 
 # We draw a clean, continuous vertical segment for each timeline date behind/adjacent to the text.
 segment_data <- tibble(
-  date = c(min(v1_dates), max(v1_dates), min(v2_dates), max(v2_dates)),
+  date = vline_data$date,
   y = 0.5,
   yend = 3.25
 )
