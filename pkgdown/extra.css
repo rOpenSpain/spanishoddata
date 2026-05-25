@@ -1,11 +1,13 @@
 /* Custom styles for the pkgdown website */
 
-/*
-   Hide the static timeline image on the compiled HTML website homepage
-   in favor of the fully interactive ggiraph timeline widget.
-   On GitHub and CRAN, which ignore this CSS file, the static timeline
-   remains fully visible and functional!
-*/
-.only-static {
-  display: none !important;
+.data-availability-plot {
+  width: 100%;
+  height: 520px;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .data-availability-plot {
+    height: 480px;
+  }
 }
