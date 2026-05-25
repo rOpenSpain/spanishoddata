@@ -320,6 +320,41 @@ metadata
     # ℹ 9,432 more rows
     # ℹ 1 more variable: local_path <chr>
 
+### Data availability
+
+The following plot shows the dates for which origin-destination data is
+currently available. It is updated weekly by a [GitHub
+Action](https://github.com/rOpenSpain/spanishoddata/actions/workflows/data-availability-plot.yaml).
+
+> [!NOTE]
+>
+> ### Latest Data Availability
+>
+> - **v1 (2020–2021)**: Data available from **14 February 2020** to **09
+>   May 2021** (Districts and Municipalities).
+> - **v2 (2022 onwards)**: Data available from **01 January 2022**
+>   onwards (Districts, Municipalities, and Large Urban Areas).
+>
+> | Version | Live Status Badge |
+> |----|----|
+> | **v1** | ![Latest v1 data](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v1.json) |
+> | **v2** | ![Latest v2 data](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v2.json) |
+
+<div class="only-interactive">
+
+<iframe src="https://raw.githack.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.html" width="100%" height="480px" style="border:none;">
+
+</iframe>
+
+</div>
+
+<div class="only-static">
+
+![Dates for which origin-destination data is
+available](https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.png)
+
+</div>
+
 ### Zones
 
 Zones can be downloaded as follows:
