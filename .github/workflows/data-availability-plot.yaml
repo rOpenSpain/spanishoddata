@@ -1,7 +1,7 @@
 # GitHub Actions workflow to generate a weekly data availability plot.
 # The plot shows which dates have origin-destination data available
-# and is pushed to an orphan branch so the README can reference it
-# without polluting the main branch history with weekly image commits.
+# and is pushed to the gh-pages branch so the README and pkgdown site can
+# reference a same-origin interactive HTML plot without rebuilding pkgdown.
 
 name: Data Availability Plot
 
@@ -10,10 +10,14 @@ on:
   schedule:
     # Runs at 04:00 UTC on Saturday
     - cron: '0 4 * * 6'
+  workflow_run:
+    workflows: ["rostemplate-gh-pages"]
+    types: [completed]
 
 jobs:
   generate-plot:
     runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: write
 
@@ -34,6 +38,7 @@ jobs:
             local::.
             any::ggplot2
             any::tidyr
+            any::jsonlite
             any::ggiraph
             any::htmlwidgets
           needs: check
@@ -43,50 +48,56 @@ jobs:
           Rscript tools/generate_data_availability_plot.R data_availability.png
         shell: bash
 
-      - name: Deploy Plot and Badges to Orphan Branch
+      - name: Deploy Plot and Badges to gh-pages
         if: success()
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
+          test -f data_availability.png
+          test -f data_availability.html
+          test -f latest_v1.json
+          test -f latest_v2.json
+
           # Save the generated image, interactive HTML, and JSON files
           cp data_availability.png /tmp/data_availability.png
-          cp data_availability.html /tmp/data_availability.html || true
-          cp latest_v1.json /tmp/latest_v1.json || true
-          cp latest_v2.json /tmp/latest_v2.json || true
+          cp data_availability.html /tmp/data_availability.html
+          cp latest_v1.json /tmp/latest_v1.json
+          cp latest_v2.json /tmp/latest_v2.json
 
-          # Try to switch to existing branch, or create new orphan one
-          if git ls-remote --exit-code --heads origin data-avail-plot >/dev/null 2>&1; then
-            git fetch origin data-avail-plot
-            git checkout data-avail-plot
-            git pull --ff-only origin data-avail-plot
-          else
-            git checkout --orphan data-avail-plot
-            git rm -rf .
-          fi
+          git fetch origin gh-pages
+          git checkout -B gh-pages origin/gh-pages
 
-          # Copy files back and commit
-          cp /tmp/data_availability.png .
-          cp /tmp/data_availability.html . || true
-          cp /tmp/latest_v1.json . || true
-          cp /tmp/latest_v2.json . || true
+          # Copy files into a stable pkgdown-served directory.
+          mkdir -p data-availability
+          cp /tmp/data_availability.png data-availability/
+          cp /tmp/data_availability.html data-availability/
+          cp /tmp/latest_v1.json data-availability/
+          cp /tmp/latest_v2.json data-availability/
 
-          # Create a small README for the branch
-          cat > README.md << 'EOF'
-          # Data Availability Plot & Shields.io Endpoint Badges
+          Rscript - <<'RS'
+          index <- "index.html"
+          if (file.exists(index)) {
+            html <- paste(readLines(index, warn = FALSE), collapse = "\n")
+            pattern <- paste0(
+              '<div class="float">\\s*',
+              '<img src="https://rOpenSpain\\.github\\.io/spanishoddata/data-availability/data_availability\\.png"[^>]*>',
+              '\\s*<div class="figcaption">Dates for which origin-destination data is available</div>\\s*',
+              '</div>'
+            )
+            iframe <- paste0(
+              '<iframe class="data-availability-plot" ',
+              'src="data-availability/data_availability.html" ',
+              'title="Dates for which origin-destination data is available" ',
+              'loading="lazy" style="width:100%;height:520px;border:0;"></iframe>'
+            )
+            patched <- sub(pattern, iframe, html, perl = TRUE)
+            if (!identical(patched, html)) {
+              writeLines(patched, index, useBytes = TRUE)
+            }
+          }
+          RS
 
-          This branch contains the auto-generated plot and endpoint JSON files showing data availability
-          for the `spanishoddata` R package. It is updated weekly by a GitHub Action.
-
-          **Do not commit to this branch manually.**
-
-          ### Raw Assets
-          - **Plot Image:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.png`
-          - **Interactive Plot:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.html`
-          - **v1 Latest JSON:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v1.json`
-          - **v2 Latest JSON:** `https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v2.json`
-          EOF
-
-          git add --force data_availability.png data_availability.html latest_v1.json latest_v2.json README.md || git add --force data_availability.png README.md
+          git add --force index.html data-availability/data_availability.png data-availability/data_availability.html data-availability/latest_v1.json data-availability/latest_v2.json
           git commit -m "Update data availability plot and badges ($(date -u '+%Y-%m-%d'))" || echo "No changes to commit"
-          git push origin data-avail-plot --force-with-lease
+          git push origin gh-pages
