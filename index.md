@@ -65,6 +65,32 @@ daily flows in Barcelona with time filter
 To create interactive maps see our vignette
 [here](https://ropenspain.github.io/spanishoddata/articles/flowmaps-interactive.html).
 
+### Data availability
+
+The following plot shows the dates for which origin-destination data is
+currently available. It is updated weekly by a [GitHub
+Action](https://github.com/rOpenSpain/spanishoddata/actions/workflows/data-availability-plot.yaml).
+
+Latest Data Availability:
+
+- **v1 (2020–2021)**: Data available from **14 February 2020** to **09
+  May 2021** (Districts and Municipalities).
+- **v2 (2022 onwards)**: Data available from **01 January 2022** onwards
+  (Districts, Municipalities, and Large Urban Areas).
+
+| Version | Live Status Badge |
+|----|----|
+| **v1** | ![Latest v1 data](https://img.shields.io/endpoint?url=https://rOpenSpain.github.io/spanishoddata/data-availability/latest_v1.json) |
+| **v2** | ![Latest v2 data](https://img.shields.io/endpoint?url=https://rOpenSpain.github.io/spanishoddata/data-availability/latest_v2.json) |
+
+[Open the interactive data availability
+plot](https://rOpenSpain.github.io/spanishoddata/data-availability/data_availability.html).
+
+![Dates for which origin-destination data is
+available](https://rOpenSpain.github.io/spanishoddata/data-availability/data_availability.png)
+
+Dates for which origin-destination data is available
+
 ## Install the package
 
 Install from CRAN:
@@ -254,31 +280,6 @@ metadata
 # ℹ 9,432 more rows
 # ℹ 1 more variable: local_path <chr>
 ```
-
-### Data availability
-
-The following plot shows the dates for which origin-destination data is
-currently available. It is updated weekly by a [GitHub
-Action](https://github.com/rOpenSpain/spanishoddata/actions/workflows/data-availability-plot.yaml).
-
-> \[!NOTE\]
->
-> ### Latest Data Availability
->
-> - **v1 (2020–2021)**: Data available from **14 February 2020** to **09
->   May 2021** (Districts and Municipalities).
-> - **v2 (2022 onwards)**: Data available from **01 January 2022**
->   onwards (Districts, Municipalities, and Large Urban Areas).
->
-> | Version | Live Status Badge |
-> |----|----|
-> | **v1** | ![Latest v1 data](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v1.json) |
-> | **v2** | ![Latest v2 data](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/latest_v2.json) |
-
-![Dates for which origin-destination data is
-available](https://raw.githubusercontent.com/rOpenSpain/spanishoddata/data-avail-plot/data_availability.png)
-
-Dates for which origin-destination data is available
 
 ### Zones
 
