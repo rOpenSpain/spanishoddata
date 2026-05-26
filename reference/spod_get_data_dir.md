@@ -31,7 +31,7 @@ directory where the package will download and convert the data.
 ``` r
 spod_set_data_dir(tempdir())
 #> Data directory is writeable.
-#> Data directory successfully set to: /tmp/Rtmp9CfBHT
+#> Data directory successfully set to: /tmp/RtmpSBzAGc
 spod_get_data_dir()
-#> /tmp/Rtmp9CfBHT
+#> /tmp/RtmpSBzAGc
 ```
