@@ -414,5 +414,31 @@ if (requireNamespace("ggiraph", quietly = TRUE) && requireNamespace("htmlwidgets
   # Save to standalone interactive HTML
   html_output_path <- file.path(output_dir, "data_availability.html")
   htmlwidgets::saveWidget(x, html_output_path, selfcontained = TRUE)
+  
+  # Prevent scrollbars in iframes by forcing absolute responsive sizing on html, body, and svg
+  if (file.exists(html_output_path)) {
+    html_content <- readLines(html_output_path, warn = FALSE)
+    
+    # Inject CSS styles in head
+    css_styles <- paste0(
+      "<head>\n<style>\n",
+      "  html, body {\n",
+      "    margin: 0 !important;\n",
+      "    padding: 0 !important;\n",
+      "    width: 100% !important;\n",
+      "    height: 100% !important;\n",
+      "    overflow: hidden !important;\n",
+      "  }\n",
+      "  svg {\n",
+      "    width: 100% !important;\n",
+      "    height: 100% !important;\n",
+      "  }\n",
+      "</style>"
+    )
+    
+    html_content <- gsub("<head>", css_styles, html_content, fixed = TRUE)
+    writeLines(html_content, html_output_path, useBytes = TRUE)
+  }
+  
   cat("Interactive plot saved to:", html_output_path, "\n")
 }
