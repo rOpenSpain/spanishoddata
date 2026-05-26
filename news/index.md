@@ -1,14 +1,8 @@
 # Changelog
 
-## spanishoddata 0.2.4.9000
+## spanishoddata 0.2.5
 
 ### Bug fixes
-
-- Improve reliability on network failures, including falling back to
-  [`curl::curl_download`](https://jeroen.r-universe.dev/curl/reference/curl_download.html)
-  for fetching XML data when
-  [`utils::download.file`](https://rdrr.io/r/utils/download.file.html)
-  warns or fails (such as TLS/SSL failures).
 
 - Fixed incomplete data availability for v1 data (2020-2021) by
   switching back to fetching the metadata from the XML feed. The
