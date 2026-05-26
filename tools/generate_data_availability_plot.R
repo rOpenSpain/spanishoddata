@@ -29,6 +29,20 @@ cat("Output path:", output_path, "\n")
 
 # --- Fetch available data ---
 cat("Fetching v1 (2020-2021) metadata...\n")
+
+# In GitHub Actions, MITMS blocks the IP, causing the XML download to fail.
+# We mock the download function to fetch from the Internet Archive instead.
+if (Sys.getenv("GITHUB_ACTIONS") == "true") {
+  orig_fn <- spanishoddata:::spod_get_latest_v1_file_list
+  assignInNamespace(
+    "spod_get_latest_v1_file_list",
+    function(data_dir = spanishoddata:::spod_get_data_dir(), xml_url = "https://opendata-movilidad.mitma.es/RSS.xml", quiet = FALSE) {
+      orig_fn(data_dir, "https://web.archive.org/web/20240703091554id_/https://opendata-movilidad.mitma.es/RSS.xml", quiet)
+    },
+    ns = "spanishoddata"
+  )
+}
+
 v1 <- tryCatch(
   spod_available_data(ver = 1, use_s3 = FALSE, quiet = TRUE),
   error = function(e) {
