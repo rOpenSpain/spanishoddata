@@ -422,16 +422,20 @@ if (requireNamespace("ggiraph", quietly = TRUE) && requireNamespace("htmlwidgets
     # Inject CSS styles in head
     css_styles <- paste0(
       "<head>\n<style>\n",
-      "  html, body {\n",
+      "  html, body, #htmlwidget_container, .htmlwidget, .girafe, .html-fill-item, .html-fill-container {\n",
       "    margin: 0 !important;\n",
       "    padding: 0 !important;\n",
       "    width: 100% !important;\n",
       "    height: 100% !important;\n",
+      "    max-width: 100% !important;\n",
+      "    max-height: 100% !important;\n",
       "    overflow: hidden !important;\n",
       "  }\n",
       "  svg {\n",
       "    width: 100% !important;\n",
       "    height: 100% !important;\n",
+      "    max-width: 100% !important;\n",
+      "    max-height: 100% !important;\n",
       "  }\n",
       "</style>"
     )
