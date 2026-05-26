@@ -2,12 +2,7 @@
 
 .data-availability-plot {
   width: 100%;
-  height: 520px;
+  aspect-ratio: 10 / 6.2;
+  height: auto;
   border: 0;
-}
-
-@media (max-width: 768px) {
-  .data-availability-plot {
-    height: 480px;
-  }
 }
