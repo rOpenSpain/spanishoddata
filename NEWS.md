@@ -1,8 +1,7 @@
-# spanishoddata 0.2.4.9000
+# spanishoddata 0.2.5
 
 ## Bug fixes
 
-* Improve reliability on network failures, including falling back to `curl::curl_download` for fetching XML data when `utils::download.file` warns or fails (such as TLS/SSL failures).
 
 * Fixed incomplete data availability for v1 data (2020-2021) by switching back to fetching the metadata from the XML feed. The previously used Amazon S3 API bucket was artificially truncated at March 18, 2021.
 
