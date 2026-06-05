@@ -567,6 +567,9 @@ For more information on the package, see:
     Transport Studies, University of
     Leeds](https://environment.leeds.ac.uk/transport))
 
+  - ["Data Science for Transport Planning" course in
+    Tartu](https://tdscience.github.io/tartu26/)
+
 ### Citation
 
 To cite the `spanishoddata` R package in publications use:
