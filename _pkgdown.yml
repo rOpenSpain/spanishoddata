@@ -59,6 +59,8 @@ external-articles:
   href: https://tdscience.github.io/dstp/
 - name: tartu-course
   title: "Data Science for Transport Planning course in Tartu"
+  description: |
+    Data Science for Transport Planning course held in Tartu, 2026.
   href: https://tdscience.github.io/tartu26/
 
 navbar:
