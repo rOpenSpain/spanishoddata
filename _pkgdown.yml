@@ -60,7 +60,7 @@ external-articles:
 - name: tartu-course
   title: "Data Science for Transport Planning course in Tartu"
   description: |
-    Data Science for Transport Planning course held in Tartu, 2026.
+    Course by [Robin Lovelace](https://github.com/robinlovelace) and [Juan P. Fonseca-Zamora](https://github.com/juanfonsecaLS1) (held at the [Mobile Tartu 2026 conference](https://mobiletartu.ut.ee/))
   href: https://tdscience.github.io/tartu26/
 
 navbar:
