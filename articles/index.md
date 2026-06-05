@@ -51,3 +51,10 @@
   Yang](https://github.com/yyuanxuan) (held at the [Institute for
   Transport Studies, University of
   Leeds](https://environment.leeds.ac.uk/transport))
+
+- [Data Science for Transport Planning course in
+  Tartu](https://tdscience.github.io/tartu26/):
+
+  Course by [Robin Lovelace](https://github.com/robinlovelace) and
+  [Juan P. Fonseca-Zamora](https://github.com/juanfonsecaLS1) (held at
+  the [Mobile Tartu 2026 conference](https://mobiletartu.ut.ee/))
