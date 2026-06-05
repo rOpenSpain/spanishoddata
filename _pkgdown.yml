@@ -39,6 +39,7 @@ articles:
       - agit-tutorial
       - ic2s2-tutorial
       - dstp-course
+      - tartu-course
 
 external-articles:
 - name: agit-tutorial
@@ -56,6 +57,11 @@ external-articles:
   description: |
     Course by [Robin Lovelace](https://github.com/robinlovelace), [Juan P. Fonseca-Zamora](https://github.com/juanfonsecaLS1), and [Yuanxuan Yang](https://github.com/yyuanxuan) (held at the [Institute for Transport Studies, University of Leeds](https://environment.leeds.ac.uk/transport))
   href: https://tdscience.github.io/dstp/
+- name: tartu-course
+  title: "Data Science for Transport Planning course in Tartu"
+  description: |
+    Course by [Robin Lovelace](https://github.com/robinlovelace) and [Juan P. Fonseca-Zamora](https://github.com/juanfonsecaLS1) (held at the [Mobile Tartu 2026 conference](https://mobiletartu.ut.ee/))
+  href: https://tdscience.github.io/tartu26/
 
 navbar:
   structure:
