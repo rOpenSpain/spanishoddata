@@ -1,6 +1,3 @@
-library(testthat)
-library(spanishoddata)
-
 # Tests using real fixtures to verify ETag computation and consistency checking logic
 
 test_that("spod_check_files detects inconsistency in fixtures", {

@@ -592,3 +592,14 @@ spod_assert_package <- function(...) {
 
   rlang::is_installed(...)
 }
+
+#' Get the path to the V1 metadata RDS file
+#' @return A `character` string with the path to the RDS file, or `""` if not found.
+#' @keywords internal
+spod_get_v1_meta_path <- function() {
+  system.file(
+    "extdata",
+    "available_data_v1.rds",
+    package = "spanishoddata"
+  )
+}

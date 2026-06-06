@@ -227,6 +227,33 @@ spod_available_data_v1 <- function(
   ))
   # order by pub_ts
   files_table <- files_table[order(files_table$pub_ts, decreasing = TRUE), ]
+
+  # replace all municipal data download links with districts links
+  # this is to address the bugs described in detail in:
+  # https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
+  # https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
+  # the decision was to use distrcit data and aggregate it to replicate municipal data
+  # this substitution MUST happen before local_path generation to avoid mismatches
+  # that lead to spod_download skipping files
+
+  # create a flag to identify rows that were originally municipality entries
+  # this is needed to correctly handle file sizes later
+  files_table$is_redirected_muni <- grepl(
+    "mitma-municipios",
+    files_table$target_url
+  )
+
+  files_table$target_url <- gsub(
+    "mitma-municipios",
+    "mitma-distritos",
+    files_table$target_url
+  )
+  files_table$target_url <- gsub(
+    "mitma_municipio",
+    "mitma_distrito",
+    files_table$target_url
+  )
+
   files_table$local_path <- fs::path(
     data_dir,
     spod_subfolder_raw_data_cache(ver = 1),
@@ -278,22 +305,6 @@ spod_available_data_v1 <- function(
     files_table$local_path
   )
 
-  # replace all municipal data download links with districts links
-  # this is to address the bugs described in detail in:
-  # https://www.ekotov.pro/mitma-data-issues/issues/011-v1-tpp-mismatch-zone-ids-in-table-and-spatial-data.html
-  # https://www.ekotov.pro/mitma-data-issues/issues/012-v1-tpp-district-files-in-municipality-folders.html
-  # the decision was to use distrcit data and aggregate it to replicate municipal data
-  files_table$target_url <- gsub(
-    "mitma-municipios",
-    "mitma-distritos",
-    files_table$target_url
-  )
-  files_table$target_url <- gsub(
-    "mitma_municipio",
-    "mitma_distrito",
-    files_table$target_url
-  )
-
   files_table <- files_table |>
     dplyr::mutate(
       study = factor(
@@ -337,6 +348,7 @@ spod_available_data_v1 <- function(
 
       zones = factor(
         dplyr::case_when(
+          .data$is_redirected_muni ~ "municipalities",
           grepl("distrito", .data$target_url) ~ "districts",
           grepl("municipio", .data$target_url) ~ "municipalities",
           TRUE ~ NA_character_
@@ -348,15 +360,19 @@ spod_available_data_v1 <- function(
   # add known file sizes from cached data
   if (s3_successful) {
     # replace remote file sizes for v1
+    # this is to handle cases where we redirected a municipality URL to a district URL
+    # we need the size of the district file, not the municipality one
     replacement_file_sizes_distr <- files_table |>
-      dplyr::filter(grepl("mitma-distr", .data$local_path)) |>
+      dplyr::filter(!.data$is_redirected_muni) |>
       dplyr::select("target_url", "file_size_bytes")
+
     replaced_file_sizes_municip <- files_table |>
-      dplyr::filter(grepl("mitma-municip", .data$local_path)) |>
+      dplyr::filter(.data$is_redirected_muni) |>
       dplyr::select(-"file_size_bytes") |>
       dplyr::left_join(replacement_file_sizes_distr, by = "target_url")
+
     files_table_replaced_file_sizes <- files_table |>
-      dplyr::filter(!grepl("mitma-municip", .data$local_path)) |>
+      dplyr::filter(!.data$is_redirected_muni) |>
       dplyr::bind_rows(replaced_file_sizes_municip) |>
       dplyr::arrange(dplyr::desc(.data$pub_ts))
     files_table <- files_table_replaced_file_sizes
@@ -366,13 +382,19 @@ spod_available_data_v1 <- function(
       2
     )
 
-    file_sizes <- readRDS(
-      system.file(
-        "extdata",
-        "available_data_v1.rds",
-        package = "spanishoddata"
+    file_sizes_path <- spod_get_v1_meta_path()
+    if (file.exists(file_sizes_path)) {
+      file_sizes <- readRDS(file_sizes_path)
+    } else {
+      # Fallback to empty if not found
+      file_sizes <- tibble::tibble(
+        target_url = character(0),
+        etag = character(0),
+        true_etag = character(0),
+        true_remote_file_size_bytes = numeric(0)
       )
-    )
+    }
+
     files_table <- dplyr::left_join(
       files_table |> dplyr::select(-"file_size_bytes"),
       file_sizes |>
@@ -394,13 +416,19 @@ spod_available_data_v1 <- function(
       ) |>
       dplyr::select(-"true_etag")
   } else {
-    file_sizes <- readRDS(
-      system.file(
-        "extdata",
-        "available_data_v1.rds",
-        package = "spanishoddata"
+    file_sizes_path <- spod_get_v1_meta_path()
+    if (file.exists(file_sizes_path)) {
+      file_sizes <- readRDS(file_sizes_path)
+    } else {
+      # Fallback to empty if not found
+      file_sizes <- tibble::tibble(
+        target_url = character(0),
+        etag = character(0),
+        true_etag = character(0),
+        true_remote_file_size_bytes = numeric(0)
       )
-    )
+    }
+
     if ("file_size_bytes" %in% colnames(files_table)) {
       files_table_no_size <- files_table |> dplyr::select(-"file_size_bytes")
     } else {
@@ -496,6 +524,8 @@ spod_available_data_v1 <- function(
         )
       )
   }
+
+  files_table$is_redirected_muni <- NULL
 
   return(files_table)
 }

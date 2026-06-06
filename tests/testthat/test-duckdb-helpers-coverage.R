@@ -1,10 +1,7 @@
-library(testthat)
-library(spanishoddata)
-
 # Use setup_test_data_dir helper instead of mocks
 # This ensures we test against the real file structure and logic
 
-test_that("spod_duckdb_od validates version", {
+test_that("spod_duckdb_od creates a valid DuckDB view", {
   expect_error(spod_duckdb_od(ver = 3), "Invalid version number")
 })
 

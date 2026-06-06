@@ -1,6 +1,3 @@
-library(testthat)
-library(spanishoddata)
-
 # This test file is designed for scheduled live integration tests on CI.
 # It hits real APIs and S3 buckets to ensure the data provider infrastructure
 # and the package's parsing logic remain compatible.
