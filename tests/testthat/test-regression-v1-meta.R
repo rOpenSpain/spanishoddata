@@ -1,7 +1,6 @@
 
 library(testthat)
 library(dplyr)
-pkgload::load_all(".")
 
 test_that("V1 metadata correctly maps municipios to distritos in local_path", {
   # Mock read_data_links_xml to return a row with a municipality URL
