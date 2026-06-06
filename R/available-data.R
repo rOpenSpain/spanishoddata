@@ -382,25 +382,7 @@ spod_available_data_v1 <- function(
       2
     )
 
-    # helper to find the rds file whether installed or not
-    get_v1_meta_path <- function() {
-      p <- system.file(
-        "extdata",
-        "available_data_v1.rds",
-        package = "spanishoddata"
-      )
-      if (p == "") {
-        # try relative path for tests
-        p <- file.path("inst", "extdata", "available_data_v1.rds")
-      }
-      if (!file.exists(p)) {
-        # try another relative path (some test setups)
-        p <- "../../inst/extdata/available_data_v1.rds"
-      }
-      return(p)
-    }
-
-    file_sizes_path <- get_v1_meta_path()
+    file_sizes_path <- spod_get_v1_meta_path()
     if (file.exists(file_sizes_path)) {
       file_sizes <- readRDS(file_sizes_path)
     } else {
@@ -434,25 +416,7 @@ spod_available_data_v1 <- function(
       ) |>
       dplyr::select(-"true_etag")
   } else {
-    # helper to find the rds file whether installed or not
-    get_v1_meta_path <- function() {
-      p <- system.file(
-        "extdata",
-        "available_data_v1.rds",
-        package = "spanishoddata"
-      )
-      if (p == "") {
-        # try relative path for tests
-        p <- file.path("inst", "extdata", "available_data_v1.rds")
-      }
-      if (!file.exists(p)) {
-        # try another relative path (some test setups)
-        p <- "../../inst/extdata/available_data_v1.rds"
-      }
-      return(p)
-    }
-
-    file_sizes_path <- get_v1_meta_path()
+    file_sizes_path <- spod_get_v1_meta_path()
     if (file.exists(file_sizes_path)) {
       file_sizes <- readRDS(file_sizes_path)
     } else {

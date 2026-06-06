@@ -1,6 +1,3 @@
-library(testthat)
-library(spanishoddata)
-
 # Use real data directory fixtures
 # Tests integration of metadata cache -> decision logic -> download call
 

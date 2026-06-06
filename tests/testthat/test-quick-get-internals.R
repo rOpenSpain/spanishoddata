@@ -1,5 +1,3 @@
-library(spanishoddata)
-
 test_that("spod_get_hmac_secret parses secret from HTML", {
   mock_html <- '
     <html>

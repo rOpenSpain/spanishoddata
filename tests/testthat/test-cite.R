@@ -1,6 +1,3 @@
-# Load testthat
-library(testthat)
-
 # --- Tests for spod_cite function ---
 
 test_that("spod_cite with default arguments prints all citations in all formats", {
