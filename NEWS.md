@@ -1,5 +1,9 @@
 # spanishoddata (development version)
 
+## Bug fixes
+
+* Improved Version 1 (2020-2021) metadata mapping to ensure redirected district files are correctly identified and added a check to alert the user if no data is found for the requested criteria.
+
 # spanishoddata 0.2.5
 
 ## Bug fixes

@@ -11,8 +11,12 @@ test_that("V1 metadata correctly maps municipios to distritos in local_path", {
     pub_ts = as.POSIXct("2021-03-01", tz = "UTC")
   )
   
+  # Ensure SPANISH_OD_DATA_DIR is set to avoid warnings
+  withr::local_envvar(c("SPANISH_OD_DATA_DIR" = tempdir()))
+
   testthat::with_mocked_bindings(
     {
+      # Call the internal function directly
       res <- spod_available_data_v1(data_dir = tempdir(), check_local_files = FALSE)
       
       # Check target_url was substituted
@@ -33,6 +37,7 @@ test_that("V1 metadata correctly maps municipios to distritos in local_path", {
 
 test_that("spod_download fails loudly when no data is found (safety switch)", {
   test_dir <- withr::local_tempdir()
+  withr::local_envvar(c("SPANISH_OD_DATA_DIR" = test_dir))
   
   # Mock available_data with expected columns but no rows
   empty_meta <- tibble::tibble(
@@ -45,6 +50,9 @@ test_that("spod_download fails loudly when no data is found (safety switch)", {
 
   testthat::with_mocked_bindings(
     {
+      # We mock spod_available_data inside the package namespace
+      # so that spod_download calls our mock
+      
       expect_error(
         spod_download(type = "od", zones = "dist", dates = "2021-02-01", data_dir = test_dir, ignore_missing_dates = FALSE, quiet = TRUE),
         "No data files found for the requested criteria"

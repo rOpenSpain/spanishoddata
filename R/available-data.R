@@ -382,13 +382,37 @@ spod_available_data_v1 <- function(
       2
     )
 
-    file_sizes <- readRDS(
-      system.file(
+    # helper to find the rds file whether installed or not
+    get_v1_meta_path <- function() {
+      p <- system.file(
         "extdata",
         "available_data_v1.rds",
         package = "spanishoddata"
       )
-    )
+      if (p == "") {
+        # try relative path for tests
+        p <- file.path("inst", "extdata", "available_data_v1.rds")
+      }
+      if (!file.exists(p)) {
+        # try another relative path (some test setups)
+        p <- "../../inst/extdata/available_data_v1.rds"
+      }
+      return(p)
+    }
+
+    file_sizes_path <- get_v1_meta_path()
+    if (file.exists(file_sizes_path)) {
+      file_sizes <- readRDS(file_sizes_path)
+    } else {
+      # Fallback to empty if not found
+      file_sizes <- tibble::tibble(
+        target_url = character(0),
+        etag = character(0),
+        true_etag = character(0),
+        true_remote_file_size_bytes = numeric(0)
+      )
+    }
+
     files_table <- dplyr::left_join(
       files_table |> dplyr::select(-"file_size_bytes"),
       file_sizes |>
@@ -410,13 +434,37 @@ spod_available_data_v1 <- function(
       ) |>
       dplyr::select(-"true_etag")
   } else {
-    file_sizes <- readRDS(
-      system.file(
+    # helper to find the rds file whether installed or not
+    get_v1_meta_path <- function() {
+      p <- system.file(
         "extdata",
         "available_data_v1.rds",
         package = "spanishoddata"
       )
-    )
+      if (p == "") {
+        # try relative path for tests
+        p <- file.path("inst", "extdata", "available_data_v1.rds")
+      }
+      if (!file.exists(p)) {
+        # try another relative path (some test setups)
+        p <- "../../inst/extdata/available_data_v1.rds"
+      }
+      return(p)
+    }
+
+    file_sizes_path <- get_v1_meta_path()
+    if (file.exists(file_sizes_path)) {
+      file_sizes <- readRDS(file_sizes_path)
+    } else {
+      # Fallback to empty if not found
+      file_sizes <- tibble::tibble(
+        target_url = character(0),
+        etag = character(0),
+        true_etag = character(0),
+        true_remote_file_size_bytes = numeric(0)
+      )
+    }
+
     if ("file_size_bytes" %in% colnames(files_table)) {
       files_table_no_size <- files_table |> dplyr::select(-"file_size_bytes")
     } else {
