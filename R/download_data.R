@@ -180,6 +180,13 @@ spod_download <- function(
     ]
   }
 
+  if (nrow(requested_files) == 0 && !isTRUE(ignore_missing_dates)) {
+    stop(
+      "No data files found for the requested criteria (type, zones, and dates) in the metadata.\n",
+      "Please check if the data for these dates is available in the selected format."
+    )
+  }
+
   # compare file sizes
   requested_files <- requested_files |>
     dplyr::mutate(
