@@ -1,6 +1,6 @@
 # Changelog
 
-## spanishoddata 0.2.6
+## spanishoddata (development version)
 
 ### Bug fixes
 
