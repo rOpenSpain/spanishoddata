@@ -1,6 +1,8 @@
 # Changelog
 
-## spanishoddata (development version)
+## spanishoddata 0.2.6
+
+CRAN release: 2026-06-07
 
 ### Bug fixes
 
