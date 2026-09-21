@@ -167,17 +167,44 @@ test_that("spod_sql_where_dates generates correct WHERE clause", {
   expect_match(res, "year = 2020 AND month = 02 AND day IN \\(15\\)")
 })
 
-test_that("spod_duckdb_limit_resources executes valid SQL", {
+test_that("spod_duckdb_limit_resources executes valid SQL and sets resources", {
   con <- DBI::dbConnect(duckdb::duckdb(), ":memory:")
   on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
 
-  spod_duckdb_limit_resources(con, max_mem_gb = 1, max_n_cpu = 1)
+  res <- spod_duckdb_limit_resources(con, max_mem_gb = 1, max_n_cpu = 1)
+  expect_identical(res, con)
 
   threads <- DBI::dbGetQuery(
     con,
-    "SELECT value FROM duckdb_settings() WHERE name = 'threads'"
-  )$value
+    "SELECT current_setting('threads') as threads"
+  )$threads
   expect_equal(as.integer(threads), 1)
+
+  # DuckDB formats 1GB (10^9 bytes) as ~953.6 MiB
+  mem1 <- DBI::dbGetQuery(
+    con,
+    "SELECT current_setting('memory_limit') as mem"
+  )$mem
+  expect_match(mem1, "953|954")
+
+  # Updating memory limit changes the setting
+  spod_duckdb_limit_resources(con, max_mem_gb = 2, max_n_cpu = 1)
+  mem2 <- DBI::dbGetQuery(
+    con,
+    "SELECT current_setting('memory_limit') as mem"
+  )$mem
+  expect_match(mem2, "1\\.8|1\\.9")
+  expect_false(identical(mem1, mem2))
+
+  # Defensive input validation checks
+  expect_error(
+    spod_duckdb_limit_resources(con, max_mem_gb = 0),
+    "Element 1 is not >= 0.1"
+  )
+  expect_error(
+    spod_duckdb_limit_resources(con, max_n_cpu = 0),
+    "Element 1 is not >= 1"
+  )
 })
 
 test_that("spod_duckdb_set_temp executes valid SQL", {

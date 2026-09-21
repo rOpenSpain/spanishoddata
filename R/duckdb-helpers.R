@@ -636,7 +636,7 @@ spod_sql_where_dates <- function(dates) {
 
 #' Set maximum memory and number of threads for a `DuckDB` connection
 #' @param con A `duckdb` connection
-#' @param max_mem_gb `integer` value of the maximum operating memory to use in GB. `NULL` by default, delegates the choice to the `DuckDB` engine which usually sets it to 80% of available memory. Caution, in HPC use, the amount of memory available to your job may be determined incorrectly by the `DuckDB` engine, so it is recommended to set this parameter explicitly according to your job's memory limits.
+#' @param max_mem_gb `numeric` value of the maximum operating memory to use in GB. `NULL` by default, delegates the choice to the `DuckDB` engine which usually sets it to 80% of available memory. Caution, in HPC use, the amount of memory available to your job may be determined incorrectly by the `DuckDB` engine, so it is recommended to set this parameter explicitly according to your job's memory limits.
 #' @param max_n_cpu The maximum number of threads to use. Defaults to the number of available cores minus 1.
 #' @return A `duckdb` connection.
 #' @keywords internal
@@ -645,11 +645,14 @@ spod_duckdb_limit_resources <- function(
   max_mem_gb = NULL,
   max_n_cpu = max(1, parallelly::availableCores() - 1)
 ) {
+  checkmate::assert_number(max_mem_gb, lower = 0.1, null.ok = TRUE)
+  checkmate::assert_integerish(max_n_cpu, lower = 1)
+
   if (!is.null(max_mem_gb)) {
     DBI::dbExecute(
       con,
       dplyr::sql(
-        glue::glue("SET max_memory='{max_mem_gb}GB';")
+        glue::glue("SET memory_limit='{max_mem_gb}GB';")
       )
     )
   }
