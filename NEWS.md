@@ -1,3 +1,9 @@
+# spanishoddata (development version)
+
+## Minor improvements and maintenance
+
+* Internal maintenance: updated DuckDB memory limit configuration setting to `memory_limit`.
+
 # spanishoddata 0.2.6
 
 ## Bug fixes

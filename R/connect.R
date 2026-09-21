@@ -47,7 +47,7 @@ spod_connect <- function(
   checkmate::assert_access(data_path, access = 'r')
   checkmate::assert_character(target_table_name, null.ok = TRUE)
   checkmate::assert_flag(quiet)
-  checkmate::assert_number(max_mem_gb, lower = 1, null.ok = TRUE)
+  checkmate::assert_number(max_mem_gb, lower = 0.1, null.ok = TRUE)
   checkmate::assert_integerish(max_n_cpu, lower = 1)
   checkmate::assert_directory_exists(temp_path, access = "rw")
 

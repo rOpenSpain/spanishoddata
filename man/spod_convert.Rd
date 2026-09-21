@@ -57,7 +57,7 @@ You can also set \code{save_path}. If it ends with ".duckdb", will save to \code
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 
-\item{max_mem_gb}{\code{integer} value of the maximum operating memory to use in GB. \code{NULL} by default, delegates the choice to the \code{DuckDB} engine which usually sets it to 80\% of available memory. Caution, in HPC use, the amount of memory available to your job may be determined incorrectly by the \code{DuckDB} engine, so it is recommended to set this parameter explicitly according to your job's memory limits.}
+\item{max_mem_gb}{\code{numeric} value of the maximum operating memory to use in GB. \code{NULL} by default, delegates the choice to the \code{DuckDB} engine which usually sets it to 80\% of available memory. Caution, in HPC use, the amount of memory available to your job may be determined incorrectly by the \code{DuckDB} engine, so it is recommended to set this parameter explicitly according to your job's memory limits.}
 
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 
