@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@rOpenSpain">
 <meta name="twitter:site" content="@rOpenSpain">
-<!-- rogtemplate style sheet --><link href="BS5/rostemplate.min.css" rel="stylesheet">
+<!-- rostemplate style sheet --><link href="BS5/rostemplate.min.css" rel="stylesheet">
 </head>
 <body>
   <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -35,7 +35,7 @@
 
     <a class="navbar-brand me-2" href="index.html"><img src="apple-touch-icon.png" alt="spanishoddata logo" height="34" width="34" class="d-inline-block me-1">spanishoddata</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.6.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,7 +153,9 @@
 </tbody>
 </table>
 <p><a href="https://rOpenSpain.github.io/spanishoddata/data-availability/data_availability.html">Open the interactive data availability plot</a>.</p>
-<iframe class="data-availability-plot" src="data-availability/data_availability.html" title="Dates for which origin-destination data is available" loading="lazy" scrolling="no" style="width:100%;aspect-ratio:10/6.2;height:auto !important;border:0;overflow:hidden;"></iframe>
+<div class="float">
+<img src="https://rOpenSpain.github.io/spanishoddata/data-availability/data_availability.png" alt="Dates for which origin-destination data is available"><div class="figcaption">Dates for which origin-destination data is available</div>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -183,7 +185,7 @@ Alternative installation and developemnt
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="ex">rstudio</span> spanishoddata/spanishoddata.Rproj</span></code></pre></div>
 <p>Then run the following command from the R console:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </details><p>You can also explore the package and the data in an interactive RStudio container right in your web browser thanks to Binder, just click <a href="https://mybinder.org/v2/gh/e-kotov/spanishoddata-playground/HEAD?urlpath=rstudio" class="external-link">the link</a> or the button: <a href="https://mybinder.org/v2/gh/e-kotov/spanishoddata-playground/HEAD?urlpath=rstudio" class="external-link"><img src="https://mybinder.org/badge_logo.svg" alt="Binder"></a>. Note that the session will be limited by memory and you will only be able to work with one full day of data.</p>
 <p>Load it as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -510,7 +512,7 @@ Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. <em>Estudio de L
 <li><a href="https://cloud.r-project.org/package=spanishoddata" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/rOpenSpain/spanishoddata/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/rOpenSpain/spanishoddata/issues" class="external-link">Report a bug</a></li>
-<li><a href="https://ropenspain.es/" class="external-link">About <img src="ROS-logo.png" alt="rOpenSpain-Logo" height="24" style="display: inline;" class="round-logo"> rOpenSpain
+<li><a href="https://ropenspain.es/" class="external-link">About <img src="ROS-logo.png" alt="rOpenSpain logo" height="24" style="display: inline;" class="round-logo"> rOpenSpain
 </a></li>
 </ul>
 </div>
@@ -570,7 +572,7 @@ Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. <em>Estudio de L
   var banner = document.createElement('div');
   banner.innerHTML = '<a href="https://ropenspain.es/" id="ROS-heading-breadcrumbs">' +
     '<div class="text-center" id="ROS-partof">' +
-    '<p>Part of <img src="ROS-logo.png" alt="rOpenSpain-Logo" id="homelogoxs"> rOpenSpain </p>' +
+    '<p>Part of <img src="ROS-logo.png" alt="rOpenSpain logo" id="homelogoxs"> rOpenSpain</p>' +
     '</div></a>'
   if (homeall.length > 0) {
     home = homeall[0];
@@ -590,15 +592,13 @@ Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. <em>Estudio de L
         <hr class="d-md-none">
 </div>
       <div class="col-md offset-md-4">
-        <h4 data-toc-skip>About <img src="ROS-logo.png" alt="ROpenSpain Logo" height="24" class="round-logo"><span class="ROS-light">
+        <h4 data-toc-skip>About <img src="ROS-logo.png" alt="rOpenSpain logo" height="24" class="round-logo"><span class="ROS-light">
             rOpenSpain</span>
 </h4>
         <p><a href="https://ropenspain.es/" class="external-link"><span class="ROS-light">rOpenSpain</span></a> is a community of
-          enthusiasts
-          of <strong>R</strong>, open data, and reproducibility that comes
-          together and organizes itself to create <strong>R</strong> packages of
-          the highest quality for the analysis
-          and use of Spanish data of general interest.
+          enthusiasts of <strong>R</strong>, open data and reproducibility that
+          works together to create high-quality <strong>R</strong> packages for
+          the analysis and use of Spanish data of general interest.
         </p>
         <p class="fst-italic text-md-end">"rOpenSci is our form, Spanish public
           data our matter"</p>
@@ -610,7 +610,7 @@ Ministerio de Transportes y Movilidad Sostenible (MITMS). 2024. <em>Estudio de L
   <div class="container">
     <div class="row">
       <div class="col-md text-center text-md-start">
-        <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+        <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
       </div>
       <div class="col-md offset-md-4 text-center text-md-start lh-base">
         <p>Template <a href="https://ropenspain.github.io/rostemplate/" class="external-link">rostemplate</a> by

@@ -144,7 +144,7 @@ spod_get(
 
 - max_mem_gb:
 
-  `integer` value of the maximum operating memory to use in GB. `NULL`
+  `numeric` value of the maximum operating memory to use in GB. `NULL`
   by default, delegates the choice to the `DuckDB` engine which usually
   sets it to 80% of available memory. Caution, in HPC use, the amount of
   memory available to your job may be determined incorrectly by the
