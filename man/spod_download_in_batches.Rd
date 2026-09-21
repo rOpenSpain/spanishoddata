@@ -6,7 +6,7 @@
 \usage{
 spod_download_in_batches(
   files_to_download,
-  batch_size = 5,
+  max_concurrent_downloads = 5,
   bar_width = 20,
   chunk_size = 1024 * 1024,
   test_size = 10 * 1024 * 1024,
@@ -18,7 +18,7 @@ spod_download_in_batches(
 \arguments{
 \item{files_to_download}{A data frame with columns \code{target_url}, \code{local_path} and \code{file_size_bytes}.}
 
-\item{batch_size}{Numeric. Number of files to download at a time.}
+\item{max_concurrent_downloads}{Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.}
 
 \item{bar_width}{Numeric. Width of the progress bar.}
 

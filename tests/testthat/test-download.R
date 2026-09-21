@@ -32,9 +32,9 @@ test_that("spod_download uses local metadata fixture (no mock on available_data)
 
   called <- FALSE
   testthat::local_mocked_bindings(
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       called <<- TRUE
-      return(files)
+      files$complete_download <- TRUE; return(files)
     },
     .package = "spanishoddata"
   )
@@ -78,12 +78,12 @@ test_that("spod_download triggers download when local file is missing", {
 
   download_files <- NULL
   testthat::local_mocked_bindings(
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       download_files <<- files
       files$downloaded <- TRUE
       files$complete_download <- TRUE
       files$local_file_size <- files$file_size_bytes
-      return(files)
+      files$complete_download <- TRUE; return(files)
     },
     .package = "spanishoddata"
   )
@@ -155,11 +155,11 @@ test_that("spod_download integration with file size mismatch", {
 
   download_triggered <- FALSE
   testthat::local_mocked_bindings(
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       download_triggered <<- TRUE
       files$downloaded <- TRUE
       files$complete_download <- TRUE
-      return(files)
+      files$complete_download <- TRUE; return(files)
     },
     .package = "spanishoddata"
   )

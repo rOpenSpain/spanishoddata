@@ -11,6 +11,7 @@
 #' @template references
 #'
 #' @inheritParams spod_download
+#' @param max_concurrent_downloads Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.
 #' @inheritParams spod_available_data
 #' @return An `sf` object (Simple Feature collection).
 #'
@@ -68,6 +69,7 @@ spod_get_zones <- function(
   ),
   ver = NULL,
   data_dir = spod_get_data_dir(),
+  max_concurrent_downloads = 5,
   quiet = FALSE
 ) {
   # Validate inputs
@@ -106,12 +108,14 @@ spod_get_zones <- function(
     zones_sf <- spod_get_zones_v1(
       zones = zones,
       data_dir = data_dir,
+      max_concurrent_downloads = max_concurrent_downloads,
       quiet = quiet
     )
   } else if (ver == 2) {
     zones_sf <- spod_get_zones_v2(
       zones = zones,
       data_dir = data_dir,
+      max_concurrent_downloads = max_concurrent_downloads,
       quiet = quiet
     )
   }
@@ -146,6 +150,7 @@ spod_get_zones_v1 <- function(
     "municipios"
   ),
   data_dir = spod_get_data_dir(),
+  max_concurrent_downloads = 5,
   quiet = FALSE
 ) {
   zones <- spod_zone_names_en2es(zones)
@@ -161,6 +166,7 @@ spod_get_zones_v1 <- function(
   spod_download_zones_v1(
     zones = zones,
     data_dir = data_dir,
+    max_concurrent_downloads = max_concurrent_downloads,
     quiet = quiet,
     metadata = metadata
   )
@@ -398,6 +404,7 @@ spod_download_zones_v1 <- function(
     "municipios"
   ),
   data_dir = spod_get_data_dir(),
+  max_concurrent_downloads = 5,
   quiet = FALSE,
   metadata = NULL
 ) {
@@ -425,7 +432,15 @@ spod_download_zones_v1 <- function(
     # disable curl::multi_download() for now
     # invisible(curl::multi_download(urls = relation_files$target_url, destfile = relation_files$local_path, resume = FALSE, progress = TRUE))
     # relation_files <- spod_multi_download_with_progress(relation_files)
-    relation_files <- spod_download_in_batches(relation_files)
+    relation_files <- spod_download_in_batches(relation_files, max_concurrent_downloads = max_concurrent_downloads)
+    
+    if (any(!relation_files$complete_download)) {
+      failed <- relation_files$target_url[!relation_files$complete_download]
+      stop(
+        "Failed to download ", length(failed), " relation files. ",
+        "First failing file: ", failed[1]
+      )
+    }
   }
 
   regex <- glue::glue("zonificacion_{zones}\\.")
@@ -440,7 +455,14 @@ spod_download_zones_v1 <- function(
     if (isFALSE(quiet)) {
       message("Downloading the file to: ", metadata_zones$local_path)
     }
-    downloaded_file <- spod_download_in_batches(metadata_zones)
+    downloaded_file <- spod_download_in_batches(metadata_zones, max_concurrent_downloads = max_concurrent_downloads)
+    if (any(!downloaded_file$complete_download)) {
+      failed <- downloaded_file$target_url[!downloaded_file$complete_download]
+      stop(
+        "Failed to download ", length(failed), " zone files. ",
+        "First failing file: ", failed[1]
+      )
+    }
     # downloaded_file <- spod_multi_download_with_progress(metadata_zones)
     # disable curl::multi_download() for now
     # downloaded_file <- curl::multi_download(
@@ -511,6 +533,7 @@ spod_get_zones_v2 <- function(
     "grandes_areas_urbanas"
   ),
   data_dir = spod_get_data_dir(),
+  max_concurrent_downloads = 5,
   quiet = FALSE
 ) {
   zones <- spod_zone_names_en2es(zones)
@@ -559,8 +582,15 @@ spod_get_zones_v2 <- function(
     #   progress = TRUE
     # )
     metadata_zones_for_download <- spod_download_in_batches(
-      metadata_zones_for_download
+      metadata_zones_for_download, max_concurrent_downloads = max_concurrent_downloads
     )
+    if (any(!metadata_zones_for_download$complete_download)) {
+      failed <- metadata_zones_for_download$target_url[!metadata_zones_for_download$complete_download]
+      stop(
+        "Failed to download ", length(failed), " zone files. ",
+        "First failing file: ", failed[1]
+      )
+    }
     # metadata_zones_for_download <- spod_multi_download_with_progress(
     #   metadata_zones_for_download
     # )

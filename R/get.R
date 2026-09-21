@@ -17,6 +17,7 @@
 #'
 #' @param duckdb_target (Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the `spod_convert` function. If not specified, it will be set to ":memory:" and the data will be stored in memory.
 #' @inheritParams spod_download
+#' @param max_concurrent_downloads Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.
 #' @inheritParams spod_duckdb_limit_resources
 #' @inheritParams spod_duckdb_set_temp
 #' @inheritParams global_quiet_param
@@ -70,6 +71,7 @@ spod_get <- function(
   max_mem_gb = NULL,
   max_n_cpu = max(1, parallelly::availableCores() - 1),
   max_download_size_gb = 1,
+  max_concurrent_downloads = 5,
   duckdb_target = ":memory:",
   temp_path = spod_get_temp_dir(),
   ignore_missing_dates = FALSE
@@ -141,6 +143,7 @@ spod_get <- function(
       zones = zones,
       dates = dates,
       max_download_size_gb = max_download_size_gb,
+      max_concurrent_downloads = max_concurrent_downloads,
       data_dir = data_dir,
       quiet = quiet,
       return_local_file_paths = FALSE,

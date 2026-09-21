@@ -8,9 +8,9 @@
 #'
 #' For detailed data descriptions, see package vignettes using [`spod_codebook(ver = 1)`][spod_codebook] and [`spod_codebook(ver = 2)`][spod_codebook] and official methodology documents in **References** section.
 #'
-#' @template references
-#'
-#' @param save_format A `character` vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If `NULL` automatically inferred from the `save_path` argument. If only `save_format` is provided, `save_path` will be set to the default location set in `SPANISH_OD_DATA_DIR` environment variable using \link{spod_set_data_dir}`(path = 'path/to/your/cache/dir')`. So for v1 data that path would be `<data_dir>/clean_data/v1/tabular/duckdb/` or `<data_dir>/clean_data/v1/tabular/parquet/`.
+#' @inheritParams spod_download
+#' @param max_concurrent_downloads Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.
+#' @param save_format The format to which the data should be converted. Can be either `"duckdb"` or `"parquet"`. Defaults to "duckdb". If `NULL` automatically inferred from the `save_path` argument. If only `save_format` is provided, `save_path` will be set to the default location set in `SPANISH_OD_DATA_DIR` environment variable using \link{spod_set_data_dir}`(path = 'path/to/your/cache/dir')`. So for v1 data that path would be `<data_dir>/clean_data/v1/tabular/duckdb/` or `<data_dir>/clean_data/v1/tabular/parquet/`.
 #'
 #' You can also set `save_path`. If it ends with ".duckdb", will save to `DuckDB` database format, if `save_path` does not end with ".duckdb", will save to `parquet` format and will treat the `save_path` as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like `year=2020/month=2/day=14` and inside each such directory there will be a `data_0.parquet` file that contains the data for that day.
 #'
@@ -80,6 +80,7 @@ spod_convert <- function(
   max_mem_gb = NULL,
   max_n_cpu = max(1, parallelly::availableCores() - 1),
   max_download_size_gb = 1,
+  max_concurrent_downloads = 5,
   ignore_missing_dates = FALSE
 ) {
   # Validate inputs
@@ -279,6 +280,7 @@ spod_convert <- function(
     max_mem_gb = max_mem_gb,
     max_n_cpu = max_n_cpu,
     max_download_size_gb = max_download_size_gb,
+    max_concurrent_downloads = max_concurrent_downloads,
     duckdb_target = duckdb_target,
     ignore_missing_dates = ignore_missing_dates
   )

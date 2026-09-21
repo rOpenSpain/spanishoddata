@@ -19,7 +19,7 @@ test_that("spod_download integration flow for v1", {
     spod_match_data_type_for_local_folders = function(...) "type",
     spod_zone_names_en2es = function(z) z,
     # Mock batch downloader to just write file and return success
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       writeLines(
         "test",
         file.path(test_dir, "v1/dist/type/distritos/data.csv.gz")
@@ -27,7 +27,7 @@ test_that("spod_download integration flow for v1", {
       files$downloaded <- TRUE
       files$complete_download <- TRUE
       files$local_file_size <- 100L
-      return(files)
+      files$complete_download <- TRUE; return(files)
     }
   )
 
@@ -69,12 +69,12 @@ test_that("spod_download integration flow for v2", {
     spod_infer_data_v_from_dates = function(...) 2,
     spod_match_data_type_for_local_folders = function(...) "type",
     spod_zone_names_en2es = function(z) z,
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       writeLines("test", file.path(test_dir, "v2/dist/type/data.csv.gz"))
       files$downloaded <- TRUE
       files$complete_download <- TRUE
       files$local_file_size <- 100L
-      return(files)
+      files$complete_download <- TRUE; return(files)
     }
   )
 
@@ -199,11 +199,11 @@ test_that("spod_download proceeds with large download when confirmed", {
     # Mock spod_readline to say "yes"
     spod_readline = function(...) "yes",
     # Mock actual download to do nothing but return success
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       files$downloaded <- TRUE
       files$complete_download <- TRUE
       files$local_file_size <- files$file_size_bytes
-      return(files)
+      files$complete_download <- TRUE; return(files)
     }
   )
 
@@ -246,11 +246,11 @@ test_that("spod_download checks local files with complete_download logic", {
   # Mock downloader to assert it was called
   called <- FALSE
   testthat::local_mocked_bindings(
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       called <<- TRUE
       files$downloaded <- TRUE
       files$complete_download <- TRUE
-      return(files)
+      files$complete_download <- TRUE; return(files)
     }
   )
 
@@ -395,7 +395,7 @@ test_that("spod_download_in_batches handles multiple files in matches", {
   )
 
   # Set batch size to 1 to force loop iterations
-  res <- spod_download_in_batches(files, batch_size = 1, show_progress = FALSE)
+  res <- spod_download_in_batches(files, max_concurrent_downloads = 1, show_progress = FALSE)
 
   expect_true(all(res$complete_download))
   expect_true(file.exists(f1))
@@ -434,11 +434,11 @@ test_that("spod_download with check_local_files=FALSE skips local file validatio
 
   download_called <- FALSE
   testthat::local_mocked_bindings(
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       download_called <<- TRUE
       files$downloaded <- TRUE
       files$complete_download <- TRUE
-      return(files)
+      files$complete_download <- TRUE; return(files)
     }
   )
 
@@ -486,12 +486,12 @@ test_that("spod_download with check_local_files=TRUE detects size mismatch", {
 
   download_called <- FALSE
   testthat::local_mocked_bindings(
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       download_called <<- TRUE
       files$downloaded <- TRUE
       files$complete_download <- TRUE
       files$local_file_size <- files$file_size_bytes
-      return(files)
+      files$complete_download <- TRUE; return(files)
     }
   )
 

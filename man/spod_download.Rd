@@ -10,6 +10,7 @@ spod_download(
     "municip", "municipios", "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"),
   dates = NULL,
   max_download_size_gb = 1,
+  max_concurrent_downloads = 5,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
   return_local_file_paths = FALSE,

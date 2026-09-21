@@ -8,6 +8,7 @@ spod_download_zones_v1(
   zones = c("districts", "dist", "distr", "distritos", "municipalities", "muni",
     "municip", "municipios"),
   data_dir = spod_get_data_dir(),
+  max_concurrent_downloads = 5,
   quiet = FALSE,
   metadata = NULL
 )

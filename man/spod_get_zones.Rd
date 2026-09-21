@@ -9,6 +9,7 @@ spod_get_zones(
     "municip", "municipios", "lua", "large_urban_areas", "gau", "grandes_areas_urbanas"),
   ver = NULL,
   data_dir = spod_get_data_dir(),
+  max_concurrent_downloads = 5,
   quiet = FALSE
 )
 }
@@ -18,6 +19,8 @@ spod_get_zones(
 \item{ver}{Integer. Can be 1 or 2. The version of the data to use. v1 spans 2020-2021, v2 covers 2022 and onwards. See more details in codebooks with \code{\link[=spod_codebook]{spod_codebook()}}.}
 
 \item{data_dir}{The directory where the data is stored. Defaults to the value returned by \code{spod_get_data_dir()} which returns the value of the environment variable \code{SPANISH_OD_DATA_DIR} or a temporary directory if the variable is not set. To set the data directory, use \link{spod_set_data_dir}.}
+
+\item{max_concurrent_downloads}{Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.}
 
 \item{quiet}{A \code{logical} value indicating whether to suppress messages. Default is \code{FALSE}.}
 }

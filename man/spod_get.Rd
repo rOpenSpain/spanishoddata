@@ -14,6 +14,7 @@ spod_get(
   max_mem_gb = NULL,
   max_n_cpu = max(1, parallelly::availableCores() - 1),
   max_download_size_gb = 1,
+  max_concurrent_downloads = 5,
   duckdb_target = ":memory:",
   temp_path = spod_get_temp_dir(),
   ignore_missing_dates = FALSE
@@ -48,6 +49,8 @@ The possible values can be any of the following:
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 
 \item{max_download_size_gb}{The maximum download size in gigabytes. Defaults to 1.}
+
+\item{max_concurrent_downloads}{Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.}
 
 \item{duckdb_target}{(Optional) The path to the duckdb file to save the data to, if a convertation from CSV is reuqested by the \code{spod_convert} function. If not specified, it will be set to ":memory:" and the data will be stored in memory.}
 

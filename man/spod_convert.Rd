@@ -17,6 +17,7 @@ spod_convert(
   max_mem_gb = NULL,
   max_n_cpu = max(1, parallelly::availableCores() - 1),
   max_download_size_gb = 1,
+  max_concurrent_downloads = 5,
   ignore_missing_dates = FALSE
 )
 }
@@ -40,7 +41,7 @@ The possible values can be any of the following:
 \item A regular expression to match dates in the format \code{YYYYMMDD}. \code{character} object. For example, \verb{^202002} will match all dates in February 2020.
 }}
 
-\item{save_format}{A \code{character} vector of length 1 with values "duckdb" or "parquet". Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \link{spod_set_data_dir}\code{(path = 'path/to/your/cache/dir')}. So for v1 data that path would be \verb{<data_dir>/clean_data/v1/tabular/duckdb/} or \verb{<data_dir>/clean_data/v1/tabular/parquet/}.
+\item{save_format}{The format to which the data should be converted. Can be either \code{"duckdb"} or \code{"parquet"}. Defaults to "duckdb". If \code{NULL} automatically inferred from the \code{save_path} argument. If only \code{save_format} is provided, \code{save_path} will be set to the default location set in \code{SPANISH_OD_DATA_DIR} environment variable using \link{spod_set_data_dir}\code{(path = 'path/to/your/cache/dir')}. So for v1 data that path would be \verb{<data_dir>/clean_data/v1/tabular/duckdb/} or \verb{<data_dir>/clean_data/v1/tabular/parquet/}.
 
 You can also set \code{save_path}. If it ends with ".duckdb", will save to \code{DuckDB} database format, if \code{save_path} does not end with ".duckdb", will save to \code{parquet} format and will treat the \code{save_path} as a path to a folder, not a file, will create necessary hive-style subdirectories in that folder. Hive style looks like \code{year=2020/month=2/day=14} and inside each such directory there will be a \code{data_0.parquet} file that contains the data for that day.}
 
@@ -62,6 +63,8 @@ You can also set \code{save_path}. If it ends with ".duckdb", will save to \code
 \item{max_n_cpu}{The maximum number of threads to use. Defaults to the number of available cores minus 1.}
 
 \item{max_download_size_gb}{The maximum download size in gigabytes. Defaults to 1.}
+
+\item{max_concurrent_downloads}{Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.}
 
 \item{ignore_missing_dates}{Logical. If \code{TRUE}, the function will not raise an error if the some of the specified dates are missing. Any dates that are missing will be skipped, however the data for any valid dates will be acquired. Defaults to \code{FALSE}.}
 }
@@ -97,14 +100,4 @@ my_od_data_2 <- spod_connect(db_2)
 spod_disconnect(my_od_data_2)
 }
 \dontshow{\}) # examplesIf}
-}
-\references{
-\itemize{
-\item \strong{For the official website of the mobility study}: \insertRef{mitms_mobility_web}{spanishoddata}
-\item \strong{For v1 data methodology}: \insertRef{mitma_methodology_2020_v3}{spanishoddata}
-\item \strong{For v2 data methodology}: \insertRef{mitms_methodology_2022_v8}{spanishoddata}
-\item \strong{For the \code{spanishoddata} R package}: \insertRef{spanishoddata-r-pkg}{spanishoddata}
-}
-
-Use \code{\link[=spod_cite]{spod_cite()}} to cite the package and the data with correct plain text, markdown, or BibTeX formats.
 }

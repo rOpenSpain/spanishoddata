@@ -375,14 +375,14 @@ test_that("spod_download_zones_v1 calls download and unzip logic", {
 
   # Mock download
   local_mocked_bindings(
-    spod_download_in_batches = function(files) {
+    spod_download_in_batches = function(files, ...) {
       download_called <<- TRUE
       # Create dummy files
       for (p in files$local_path) {
         dir.create(dirname(p), recursive = TRUE, showWarnings = FALSE)
         writeLines("test", p)
       }
-      return(files)
+      files$complete_download <- TRUE; return(files)
     }
   )
 

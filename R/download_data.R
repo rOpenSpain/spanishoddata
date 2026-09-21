@@ -80,6 +80,7 @@ spod_download <- function(
   ),
   dates = NULL,
   max_download_size_gb = 1, # 1GB
+  max_concurrent_downloads = 5,
   data_dir = spod_get_data_dir(),
   quiet = FALSE,
   return_local_file_paths = FALSE,
@@ -250,7 +251,8 @@ spod_download <- function(
 
     # use curl::multi_download in a loop on one file at a time with manual progress bar
     downloaded_files <- spod_download_in_batches(
-      files_to_download
+      files_to_download,
+      max_concurrent_downloads = max_concurrent_downloads
     )
     # downloaded_files <- spod_multi_download_with_progress(
     #   files_to_download
@@ -270,6 +272,17 @@ spod_download <- function(
         by = "local_path"
       )
 
+    if (any(!requested_files$complete_download)) {
+      failed_files <- requested_files |>
+        dplyr::filter(!.data$complete_download) |>
+        dplyr::pull("target_url")
+      stop(
+        "Failed to download ", length(failed_files), " files. ",
+        "Please check your internet connection or try again later. ",
+        "First failing file: ", failed_files[1]
+      )
+    }
+
     if (isFALSE(quiet)) {
       message("Retrieved data for requested dates.")
     }
@@ -287,7 +300,7 @@ spod_download <- function(
 #' Download multiple files with a progress bar. Retries failed downloads up to 3 times. Downloads are in parallel and in batches to show progress. First 10 Mb of a file is downloaded to check the speed.
 #'
 #' @param files_to_download A data frame with columns `target_url`, `local_path` and `file_size_bytes`.
-#' @param batch_size Numeric. Number of files to download at a time.
+#' @param max_concurrent_downloads Numeric. Number of files to download at a time. Defaults to 5. Users might need to set it to 1 on some networks if concurrent downloads are blocked.
 #' @param bar_width Numeric. Width of the progress bar.
 #' @param chunk_size Numeric. Number of bytes to download at a time for speed test.
 #' @param show_progress Logical. Whether to show the progress bar.
@@ -299,7 +312,7 @@ spod_download <- function(
 #'
 spod_download_in_batches <- function(
   files_to_download,
-  batch_size = 5,
+  max_concurrent_downloads = 5,
   bar_width = 20,
   chunk_size = 1024 * 1024,
   test_size = 10 * 1024 * 1024, # 10 MB test
@@ -465,7 +478,7 @@ spod_download_in_batches <- function(
 
   # Prepare batches of all to_download (including test file)
   rem <- which(to_download)
-  idx_batches <- split(rem, ceiling(seq_along(rem) / batch_size))
+  idx_batches <- split(rem, ceiling(seq_along(rem) / max_concurrent_downloads))
 
   # Download batches in parallel via libcurl
   for (batch in idx_batches) {
